@@ -1,5 +1,5 @@
 <script setup>
-import { Head, router, useForm } from '@inertiajs/vue3';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { computed, reactive, ref } from 'vue';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
@@ -288,6 +288,12 @@ const deleteRecipeItem = (item) => {
                 </div>
 
                 <div class="flex gap-2">
+                    <Link
+                        href="/admin/recipes"
+                        class="inline-flex items-center rounded-lg border border-bakery-brown/20 px-3 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
+                    >
+                        Receptek oldal
+                    </Link>
                     <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
                     <Button icon="pi pi-plus" label="Uj termek" @click="openCreate" />
                 </div>

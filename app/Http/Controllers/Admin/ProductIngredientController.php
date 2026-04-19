@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\ProductIngredient;
 use App\Services\ProductIngredientService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use RuntimeException;
 
 class ProductIngredientController extends Controller
@@ -22,10 +23,10 @@ class ProductIngredientController extends Controller
         try {
             $this->service->create($product, $request->validated());
         } catch (RuntimeException $exception) {
-            return redirect()->route('admin.products.index')->with('error', $exception->getMessage());
+            return $this->redirectToOrigin($request)->with('error', $exception->getMessage());
         }
 
-        return redirect()->route('admin.products.index')->with('success', 'Recept tetel hozzaadva.');
+        return $this->redirectToOrigin($request)->with('success', 'Recept tetel hozzaadva.');
     }
 
     public function update(UpdateProductIngredientRequest $request, Product $product, ProductIngredient $productIngredient): RedirectResponse
@@ -37,13 +38,13 @@ class ProductIngredientController extends Controller
         try {
             $this->service->update($product, $productIngredient, $request->validated());
         } catch (RuntimeException $exception) {
-            return redirect()->route('admin.products.index')->with('error', $exception->getMessage());
+            return $this->redirectToOrigin($request)->with('error', $exception->getMessage());
         }
 
-        return redirect()->route('admin.products.index')->with('success', 'Recept tetel frissitve.');
+        return $this->redirectToOrigin($request)->with('success', 'Recept tetel frissitve.');
     }
 
-    public function destroy(Product $product, ProductIngredient $productIngredient): RedirectResponse
+    public function destroy(Request $request, Product $product, ProductIngredient $productIngredient): RedirectResponse
     {
         $this->authorize('update', $product);
 
@@ -53,6 +54,18 @@ class ProductIngredientController extends Controller
 
         $this->service->delete($productIngredient);
 
-        return redirect()->route('admin.products.index')->with('success', 'Recept tetel torolve.');
+        return $this->redirectToOrigin($request)->with('success', 'Recept tetel torolve.');
+    }
+
+    private function redirectToOrigin(Request $request): RedirectResponse
+    {
+        $fallback = route('admin.products.index');
+        $referer = (string) $request->headers->get('referer', '');
+
+        if (str_contains($referer, '/admin/recipes') || str_contains($referer, '/admin/products')) {
+            return redirect()->to($referer);
+        }
+
+        return redirect()->to($fallback);
     }
 }

@@ -7,6 +7,7 @@ const links = [
     { label: 'Dashboard', href: '/admin/dashboard', icon: 'pi pi-chart-bar' },
     { label: 'Kategoriak', href: '/admin/categories', icon: 'pi pi-tags' },
     { label: 'Termekek', href: '/admin/products', icon: 'pi pi-box' },
+    { label: 'Receptek', href: '/admin/recipes', icon: 'pi pi-list-check' },
     { label: 'Alapanyagok', href: '/admin/ingredients', icon: 'pi pi-warehouse' },
     { label: 'Heti menuk', href: '/admin/weekly-menus', icon: 'pi pi-calendar' },
     { label: 'Rendelesek', href: '#', icon: 'pi pi-shopping-bag' },

@@ -51,6 +51,12 @@ defineProps({
                     Termekek kezelese
                 </Link>
                 <Link
+                    href="/admin/recipes"
+                    class="rounded-full border border-bakery-brown/20 px-4 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
+                >
+                    Receptek kezelese
+                </Link>
+                <Link
                     href="/admin/ingredients"
                     class="rounded-full border border-bakery-brown/20 px-4 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
                 >

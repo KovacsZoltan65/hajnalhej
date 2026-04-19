@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\IngredientController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\RecipeController;
 use App\Http\Controllers\Admin\ProductIngredientController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\WeeklyMenuController;
@@ -44,6 +45,8 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/ingredients', [IngredientController::class, 'store'])->name('ingredients.store');
         Route::put('/ingredients/{ingredient}', [IngredientController::class, 'update'])->name('ingredients.update');
         Route::delete('/ingredients/{ingredient}', [IngredientController::class, 'destroy'])->name('ingredients.destroy');
+
+        Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
 
         Route::get('/weekly-menus', [WeeklyMenuController::class, 'index'])->name('weekly-menus.index');
         Route::post('/weekly-menus', [WeeklyMenuController::class, 'store'])->name('weekly-menus.store');
