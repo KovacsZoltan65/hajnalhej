@@ -11,6 +11,7 @@ import { useConfirm } from 'primevue/useconfirm';
 import CategoryStatusBadge from '../../../Components/Admin/Categories/CategoryStatusBadge.vue';
 import ProductFormModal from '../../../Components/Admin/Products/ProductFormModal.vue';
 import ProductPrice from '../../../Components/Admin/Products/ProductPrice.vue';
+import ProductRecipeModal from '../../../Components/Admin/Products/ProductRecipeModal.vue';
 import ProductStockBadge from '../../../Components/Admin/Products/ProductStockBadge.vue';
 import SectionTitle from '../../../Components/SectionTitle.vue';
 import AdminLayout from '../../../Layouts/AdminLayout.vue';
@@ -23,6 +24,10 @@ const props = defineProps({
         required: true,
     },
     categories: {
+        type: Array,
+        required: true,
+    },
+    ingredients: {
         type: Array,
         required: true,
     },
@@ -41,6 +46,9 @@ const loading = ref(false);
 const modalVisible = ref(false);
 const mode = ref('create');
 const editingId = ref(null);
+const recipeModalVisible = ref(false);
+const recipeProductId = ref(null);
+const recipeErrors = ref({});
 
 const filterState = reactive({
     search: props.filters.search ?? '',
@@ -80,6 +88,7 @@ const form = useForm({
 const sortOrder = computed(() => (filterState.sort_direction === 'asc' ? 1 : -1));
 const currentPage = computed(() => props.products.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.products.per_page ?? 10));
+const recipeProduct = computed(() => props.products.data.find((product) => product.id === recipeProductId.value) ?? null);
 
 const load = (extra = {}) => {
     loading.value = true;
@@ -187,6 +196,55 @@ const confirmDelete = (product) => {
         },
     });
 };
+
+const openRecipe = (product) => {
+    recipeProductId.value = product.id;
+    recipeErrors.value = {};
+    recipeModalVisible.value = true;
+};
+
+const saveRecipeItem = (payload) => {
+    if (!recipeProduct.value) {
+        return;
+    }
+
+    const url = payload.id
+        ? `/admin/products/${recipeProduct.value.id}/ingredients/${payload.id}`
+        : `/admin/products/${recipeProduct.value.id}/ingredients`;
+
+    const request = payload.id ? router.put : router.post;
+
+    request(url, payload, {
+        preserveScroll: true,
+        preserveState: true,
+        onError: (errors) => {
+            recipeErrors.value = errors;
+        },
+        onSuccess: () => {
+            recipeErrors.value = {};
+        },
+    });
+};
+
+const deleteRecipeItem = (item) => {
+    if (!recipeProduct.value) {
+        return;
+    }
+
+    confirm.require({
+        header: 'Recept tetel torlese',
+        message: `Biztosan torlod ezt a recept tetelt: ${item.ingredient_name}?`,
+        rejectLabel: 'Megse',
+        acceptLabel: 'Torles',
+        acceptClass: 'p-button-danger',
+        accept: () => {
+            router.delete(`/admin/products/${recipeProduct.value.id}/ingredients/${item.id}`, {
+                preserveScroll: true,
+                preserveState: true,
+            });
+        },
+    });
+};
 </script>
 
 <template>
@@ -285,6 +343,7 @@ const confirmDelete = (product) => {
                 <Column header="Muveletek" :exportable="false">
                     <template #body="{ data }">
                         <div class="flex items-center gap-2">
+                            <Button icon="pi pi-list-check" size="small" text rounded @click="openRecipe(data)" />
                             <Button icon="pi pi-pencil" size="small" text rounded @click="openEdit(data)" />
                             <Button icon="pi pi-trash" size="small" text rounded severity="danger" @click="confirmDelete(data)" />
                         </div>
@@ -300,6 +359,14 @@ const confirmDelete = (product) => {
             :categories="categories"
             :stock-statuses="stockStatuses"
             @submit="submitForm"
+        />
+        <ProductRecipeModal
+            v-model:visible="recipeModalVisible"
+            :product="recipeProduct"
+            :ingredients="ingredients"
+            :errors="recipeErrors"
+            @save-item="saveRecipeItem"
+            @delete-item="deleteRecipeItem"
         />
         <ConfirmDialog />
     </div>

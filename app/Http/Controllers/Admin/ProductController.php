@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
+use App\Models\ProductIngredient;
+use App\Services\ProductIngredientService;
 use App\Services\ProductService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,9 +16,10 @@ use Inertia\Response;
 
 class ProductController extends Controller
 {
-    public function __construct(private readonly ProductService $service)
-    {
-    }
+    public function __construct(
+        private readonly ProductService $service,
+        private readonly ProductIngredientService $productIngredientService,
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -47,12 +50,27 @@ class ProductController extends Controller
                 'stock_status' => $product->stock_status,
                 'image_path' => $product->image_path,
                 'sort_order' => $product->sort_order,
+                'product_ingredients' => $product->productIngredients
+                    ->map(fn (ProductIngredient $item): array => [
+                        'id' => $item->id,
+                        'product_id' => $item->product_id,
+                        'ingredient_id' => $item->ingredient_id,
+                        'ingredient_name' => $item->ingredient?->name,
+                        'ingredient_unit' => $item->ingredient?->unit,
+                        'ingredient_active' => $item->ingredient?->is_active ?? false,
+                        'quantity' => (float) $item->quantity,
+                        'sort_order' => $item->sort_order,
+                        'notes' => $item->notes,
+                    ])
+                    ->values()
+                    ->all(),
                 'updated_at' => $product->updated_at?->toDateTimeString(),
             ]);
 
         return Inertia::render('Admin/Products/Index', [
             'products' => $paginator,
             'categories' => $this->service->listSelectableCategories(),
+            'ingredients' => $this->productIngredientService->listSelectableIngredients(),
             'stockStatuses' => [
                 ['value' => Product::STOCK_IN_STOCK, 'label' => 'Raktaron'],
                 ['value' => Product::STOCK_PREORDER, 'label' => 'Elojegyezheto'],

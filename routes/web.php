@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\IngredientController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductIngredientController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\WeeklyMenuController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -34,6 +36,14 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/products', [ProductController::class, 'store'])->name('products.store');
         Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+        Route::post('/products/{product}/ingredients', [ProductIngredientController::class, 'store'])->name('products.ingredients.store');
+        Route::put('/products/{product}/ingredients/{productIngredient}', [ProductIngredientController::class, 'update'])->name('products.ingredients.update');
+        Route::delete('/products/{product}/ingredients/{productIngredient}', [ProductIngredientController::class, 'destroy'])->name('products.ingredients.destroy');
+
+        Route::get('/ingredients', [IngredientController::class, 'index'])->name('ingredients.index');
+        Route::post('/ingredients', [IngredientController::class, 'store'])->name('ingredients.store');
+        Route::put('/ingredients/{ingredient}', [IngredientController::class, 'update'])->name('ingredients.update');
+        Route::delete('/ingredients/{ingredient}', [IngredientController::class, 'destroy'])->name('ingredients.destroy');
 
         Route::get('/weekly-menus', [WeeklyMenuController::class, 'index'])->name('weekly-menus.index');
         Route::post('/weekly-menus', [WeeklyMenuController::class, 'store'])->name('weekly-menus.store');

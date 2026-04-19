@@ -2,13 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Models\Category;
-use App\Models\Product;
+use App\Models\Ingredient;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
-class ProductRepository
+class IngredientRepository
 {
     /**
      * @param array<string, mixed> $filters
@@ -18,59 +17,53 @@ class ProductRepository
         $perPage = (int) ($filters['per_page'] ?? 10);
 
         return $this->adminQuery($filters)
-            ->with([
-                'category:id,name',
-                'productIngredients.ingredient:id,name,unit,is_active,deleted_at',
-            ])
             ->paginate($perPage)
             ->withQueryString();
     }
 
     /**
-     * @return Collection<int, array{id:int,name:string}>
+     * @return Collection<int, array{id:int,name:string,unit:string,is_low_stock:bool}>
      */
-    public function listSelectableCategories(): Collection
+    public function listSelectableActive(): Collection
     {
-        return Category::query()
+        return Ingredient::query()
             ->where('is_active', true)
-            ->orderBy('sort_order')
             ->orderBy('name')
-            ->get(['id', 'name'])
-            ->map(fn (Category $category): array => [
-                'id' => $category->id,
-                'name' => $category->name,
+            ->get(['id', 'name', 'unit', 'current_stock', 'minimum_stock'])
+            ->map(fn (Ingredient $ingredient): array => [
+                'id' => $ingredient->id,
+                'name' => $ingredient->name,
+                'unit' => $ingredient->unit,
+                'is_low_stock' => $ingredient->isLowStock(),
             ]);
     }
 
     /**
      * @param array<string, mixed> $data
      */
-    public function create(array $data): Product
+    public function create(array $data): Ingredient
     {
-        return Product::query()->create($data);
+        return Ingredient::query()->create($data);
     }
 
     /**
      * @param array<string, mixed> $data
      */
-    public function update(Product $product, array $data): Product
+    public function update(Ingredient $ingredient, array $data): Ingredient
     {
-        $product->update($data);
+        $ingredient->update($data);
 
-        return $product->refresh()->load([
-            'category:id,name',
-            'productIngredients.ingredient:id,name,unit,is_active,deleted_at',
-        ]);
+        return $ingredient->refresh();
     }
 
-    public function delete(Product $product): void
+    public function delete(Ingredient $ingredient): void
     {
-        $product->delete();
+        $ingredient->delete();
     }
 
     public function slugExists(string $slug, ?int $ignoreId = null): bool
     {
-        return Product::query()
+        return Ingredient::query()
             ->where('slug', $slug)
             ->when($ignoreId !== null, fn (Builder $query): Builder => $query->whereKeyNot($ignoreId))
             ->exists();
@@ -82,35 +75,32 @@ class ProductRepository
     private function adminQuery(array $filters): Builder
     {
         $search = trim((string) ($filters['search'] ?? ''));
-        $categoryId = $filters['category_id'] ?? null;
-        $isActive = $filters['is_active'] ?? null;
-        $sortField = (string) ($filters['sort_field'] ?? 'sort_order');
+        $isActive = $filters['is_active'] ?? '';
+        $unit = trim((string) ($filters['unit'] ?? ''));
+        $sortField = (string) ($filters['sort_field'] ?? 'name');
         $sortDirection = (string) ($filters['sort_direction'] ?? 'asc');
 
-        $sortableFields = ['name', 'price', 'is_active', 'sort_order'];
+        $sortableFields = ['name', 'unit', 'current_stock', 'minimum_stock', 'is_active'];
 
         if (! in_array($sortField, $sortableFields, true)) {
-            $sortField = 'sort_order';
+            $sortField = 'name';
         }
 
         if (! in_array($sortDirection, ['asc', 'desc'], true)) {
             $sortDirection = 'asc';
         }
 
-        return Product::query()
+        return Ingredient::query()
             ->when($search !== '', function (Builder $query) use ($search): void {
                 $query->where(function (Builder $innerQuery) use ($search): void {
                     $innerQuery
                         ->where('name', 'like', "%{$search}%")
-                        ->orWhere('slug', 'like', "%{$search}%");
+                        ->orWhere('slug', 'like', "%{$search}%")
+                        ->orWhere('sku', 'like', "%{$search}%");
                 });
             })
-            ->when($categoryId !== null && $categoryId !== '', function (Builder $query) use ($categoryId): void {
-                $query->where('category_id', (int) $categoryId);
-            })
-            ->when($isActive !== null && $isActive !== '', function (Builder $query) use ($isActive): void {
-                $query->where('is_active', (bool) $isActive);
-            })
+            ->when($isActive !== null && $isActive !== '', fn (Builder $query): Builder => $query->where('is_active', (bool) $isActive))
+            ->when($unit !== '', fn (Builder $query): Builder => $query->where('unit', $unit))
             ->orderBy($sortField, $sortDirection)
             ->orderBy('id');
     }
