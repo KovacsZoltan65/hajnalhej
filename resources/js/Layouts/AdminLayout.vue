@@ -34,7 +34,7 @@ const logout = () => {
             </template>
         </AppHeader>
 
-        <div class="mx-auto grid w-full max-w-6xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[16rem_1fr]">
+        <div class="grid w-full gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[16rem_1fr]">
             <div class="glass-bakery rounded-2xl p-4">
                 <div class="mb-4 border-b border-bakery-brown/10 pb-4">
                     <Link href="/admin/dashboard">
