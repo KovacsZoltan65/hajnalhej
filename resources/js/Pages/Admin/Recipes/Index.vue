@@ -170,9 +170,7 @@ const saveRecipeItem = (payload) => {
         ? `/admin/products/${editorRecipe.value.id}/ingredients/${payload.id}`
         : `/admin/products/${editorRecipe.value.id}/ingredients`;
 
-    const request = payload.id ? router.put : router.post;
-
-    request(url, payload, {
+    const options = {
         preserveScroll: true,
         preserveState: true,
         onError: (errors) => {
@@ -184,7 +182,14 @@ const saveRecipeItem = (payload) => {
             editingIngredient.value = null;
             load({ product_id: editorRecipe.value?.id ?? undefined });
         },
-    });
+    };
+
+    if (payload.id) {
+        router.put(url, payload, options);
+        return;
+    }
+
+    router.post(url, payload, options);
 };
 
 const saveRecipeStep = (payload) => {
@@ -196,9 +201,7 @@ const saveRecipeStep = (payload) => {
         ? `/admin/products/${editorRecipe.value.id}/recipe-steps/${payload.id}`
         : `/admin/products/${editorRecipe.value.id}/recipe-steps`;
 
-    const request = payload.id ? router.put : router.post;
-
-    request(url, payload, {
+    const options = {
         preserveScroll: true,
         preserveState: true,
         onError: (errors) => {
@@ -210,7 +213,14 @@ const saveRecipeStep = (payload) => {
             editingStep.value = null;
             load({ product_id: editorRecipe.value?.id ?? undefined });
         },
-    });
+    };
+
+    if (payload.id) {
+        router.put(url, payload, options);
+        return;
+    }
+
+    router.post(url, payload, options);
 };
 
 const deleteRecipeItem = (item) => {

@@ -31,9 +31,30 @@ class DatabaseSeeder extends Seeder
             RecipeStepSeeder::class,
             WeeklyMenuSeeder::class,
 
+            // Anyakovász
+            MotherStarterRecipeSeeder::class,
+            // Aktív kovász
             SourdoughStarterRecipeSeeder::class,
+            // Egyszerű kovászos fehérkenyér
             SourdoughBeginnerRecipeSeeder::class,
+            // 
             SourdoughArtisanRecipeSeeder::class,
+            // Kovászos bagett
+            SourdoughSpecialtyRecipesSeeder::class,
+            // Ciabatta
+            SourdoughCiabattaSeeder::class,
+            // Nápoji pizza
+            SourdoughNapoliPizzaSeeder::class,
+            // Kakaós csiga
+            SourdoughCocoaRollSeeder::class,
+            // Briós
+            EnrichedAndTrayBakeRecipesSeeder::class,
+
+            // Premium Bakery Pack
+            // Bagel, Croisant, Fahéjas cdiga
+            PremiumBakerySeedPackSeeder::class,
+
+            ProductionPlanSeeder::class,
         ]);
     }
 }

@@ -16,6 +16,11 @@ it('recipe step create mukodik', function (): void {
             'title' => 'Dagasztas',
             'step_type' => 'mixing',
             'description' => 'Lassu fokozat majd kozepes.',
+            'work_instruction' => 'Gyursd simara a tesztat.',
+            'completion_criteria' => 'Selymes, rugalmas allag.',
+            'attention_points' => 'Ne melegedjen 26C fole.',
+            'required_tools' => 'Spiral dagasztogep',
+            'expected_result' => 'Egyenletesen kidolgozott teszta',
             'duration_minutes' => 18,
             'wait_minutes' => 0,
             'temperature_celsius' => 24.5,
@@ -28,6 +33,7 @@ it('recipe step create mukodik', function (): void {
         'product_id' => $product->id,
         'title' => 'Dagasztas',
         'step_type' => 'mixing',
+        'work_instruction' => 'Gyursd simara a tesztat.',
         'sort_order' => 2,
     ]);
 });
@@ -49,6 +55,11 @@ it('recipe step update mukodik', function (): void {
             'title' => 'Pihentetes frissitve',
             'step_type' => 'resting',
             'description' => null,
+            'work_instruction' => 'Takard le es pihentesd.',
+            'completion_criteria' => 'Lathato gazkepzodes.',
+            'attention_points' => 'Huzatmentes kornyezet.',
+            'required_tools' => 'Erteto doboz',
+            'expected_result' => 'Elerte a kivant eresi szintet',
             'duration_minutes' => 5,
             'wait_minutes' => 25,
             'temperature_celsius' => null,
@@ -60,6 +71,7 @@ it('recipe step update mukodik', function (): void {
     $this->assertDatabaseHas('recipe_steps', [
         'id' => $step->id,
         'title' => 'Pihentetes frissitve',
+        'work_instruction' => 'Takard le es pihentesd.',
         'sort_order' => 3,
     ]);
 });
@@ -97,4 +109,3 @@ it('recipe step validacio elutasitja ha nincs aktiv vagy varakozasi ido', functi
 
     $response->assertSessionHasErrors(['duration_minutes', 'wait_minutes']);
 });
-

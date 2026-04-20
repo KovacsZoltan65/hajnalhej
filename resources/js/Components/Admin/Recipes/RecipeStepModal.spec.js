@@ -26,6 +26,8 @@ describe('RecipeStepModal', () => {
         expect(wrapper.text()).toContain('Lepes cim');
         expect(wrapper.text()).toContain('Lepes tipus');
         expect(wrapper.text()).toContain('Aktiv ido (perc)');
+        expect(wrapper.text()).toContain('Mit kell csinalni?');
+        expect(wrapper.text()).toContain('Mibol latszik, hogy kesz?');
     });
 
     it('emits submit payload', async () => {
@@ -42,5 +44,12 @@ describe('RecipeStepModal', () => {
         await wrapper.find('form').trigger('submit.prevent');
 
         expect(wrapper.emitted('submit')).toBeTruthy();
+        expect(wrapper.emitted('submit')[0][0]).toMatchObject({
+            work_instruction: null,
+            completion_criteria: null,
+            attention_points: null,
+            required_tools: null,
+            expected_result: null,
+        });
     });
 });

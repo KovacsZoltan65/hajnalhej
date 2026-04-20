@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\RecipeController;
 use App\Http\Controllers\Admin\RecipeStepController;
 use App\Http\Controllers\Admin\ProductIngredientController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductionPlanController;
 use App\Http\Controllers\Admin\WeeklyMenuController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\PublicPageController;
@@ -51,6 +52,11 @@ Route::middleware('auth')->group(function (): void {
         Route::delete('/ingredients/{ingredient}', [IngredientController::class, 'destroy'])->name('ingredients.destroy');
 
         Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
+
+        Route::get('/production-plans', [ProductionPlanController::class, 'index'])->name('production-plans.index');
+        Route::post('/production-plans', [ProductionPlanController::class, 'store'])->name('production-plans.store');
+        Route::put('/production-plans/{productionPlan}', [ProductionPlanController::class, 'update'])->name('production-plans.update');
+        Route::delete('/production-plans/{productionPlan}', [ProductionPlanController::class, 'destroy'])->name('production-plans.destroy');
 
         Route::get('/weekly-menus', [WeeklyMenuController::class, 'index'])->name('weekly-menus.index');
         Route::post('/weekly-menus', [WeeklyMenuController::class, 'store'])->name('weekly-menus.store');
