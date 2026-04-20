@@ -87,7 +87,7 @@ class ProductRepository
         $sortField = (string) ($filters['sort_field'] ?? 'sort_order');
         $sortDirection = (string) ($filters['sort_direction'] ?? 'asc');
 
-        $sortableFields = ['name', 'price', 'is_active', 'sort_order'];
+        $sortableFields = ['name', 'slug', 'price', 'is_active', 'sort_order'];
 
         if (! \in_array($sortField, $sortableFields, true)) {
             $sortField = 'sort_order';

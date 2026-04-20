@@ -21,6 +21,7 @@ class RecipeController extends Controller
         $this->authorize('viewAny', Product::class);
 
         $filters = $request->validate([
+            'product_id' => ['nullable', 'integer', 'exists:products,id'],
             'search' => ['nullable', 'string', 'max:160'],
             'category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'is_active' => ['nullable', 'in:0,1'],
@@ -66,6 +67,7 @@ class RecipeController extends Controller
             'categories' => $this->service->listSelectableCategories(),
             'ingredients' => $this->service->listSelectableIngredients(),
             'filters' => [
+                'product_id' => $filters['product_id'] ?? null,
                 'search' => (string) ($filters['search'] ?? ''),
                 'category_id' => $filters['category_id'] ?? null,
                 'is_active' => isset($filters['is_active']) ? (string) $filters['is_active'] : '',

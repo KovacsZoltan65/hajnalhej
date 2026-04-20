@@ -27,9 +27,6 @@ class UpdateProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var Product $product */
-        $product = $this->route('product');
-
         return [
             'category_id' => [
                 'required',
@@ -39,7 +36,7 @@ class UpdateProductRequest extends FormRequest
                     ->where('is_active', true)),
             ],
             'name' => ['required', 'string', 'max:160'],
-            'slug' => ['nullable', 'string', 'max:180', 'alpha_dash', Rule::unique('products', 'slug')->ignore($product->id)],
+            'slug' => ['nullable', 'string', 'max:180'],
             'short_description' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:4000'],
             'price' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
