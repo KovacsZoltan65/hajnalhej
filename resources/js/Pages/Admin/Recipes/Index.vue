@@ -6,6 +6,7 @@ import ConfirmDialog from 'primevue/confirmdialog';
 import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import { useConfirm } from 'primevue/useconfirm';
+import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
 import RecipeEditorModal from '../../../Components/Admin/Recipes/RecipeEditorModal.vue';
 import RecipeSummaryCard from '../../../Components/Admin/Recipes/RecipeSummaryCard.vue';
 import RecipeTable from '../../../Components/Admin/Recipes/RecipeTable.vue';
@@ -211,11 +212,11 @@ const deleteRecipeItem = (item) => {
                 <p class="text-sm text-bakery-dark/80">Termekre fokuszalt receptnezet aktiv.</p>
                 <Button size="small" text label="Fokusz torlese" @click="clearProductFocus" />
             </div>
-            <div class="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
-                <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+            <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-5'">
+                <template #filters>
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
-                        <InputText v-model="filterState.search" placeholder="Termek nev vagy slug" @keyup.enter="submitFilters" />
+                        <InputText v-model="filterState.search" class="w-full" placeholder="Termek nev vagy slug" @keyup.enter="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
@@ -225,13 +226,14 @@ const deleteRecipeItem = (item) => {
                             :options="categoryOptions"
                             option-label="name"
                             option-value="id"
+                            class="w-full"
                             @change="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Statusz</label>
-                        <Select v-model="filterState.is_active" :options="activeOptions" option-label="label" option-value="value" @change="submitFilters" />
+                        <Select v-model="filterState.is_active" :options="activeOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
@@ -241,6 +243,7 @@ const deleteRecipeItem = (item) => {
                             :options="recipePresenceOptions"
                             option-label="label"
                             option-value="value"
+                            class="w-full"
                             @change="submitFilters"
                         />
                     </div>
@@ -252,16 +255,17 @@ const deleteRecipeItem = (item) => {
                             :options="lowStockOptions"
                             option-label="label"
                             option-value="value"
+                            class="w-full"
                             @change="submitFilters"
                         />
                     </div>
-                </div>
+                </template>
 
-                <div class="flex gap-2">
-                    <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" @change="submitFilters" />
+                <template #actions>
+                    <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-[9rem]" @change="submitFilters" />
                     <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
-                </div>
-            </div>
+                </template>
+            </AdminTableToolbar>
 
             <div class="mt-4">
                 <RecipeTable
