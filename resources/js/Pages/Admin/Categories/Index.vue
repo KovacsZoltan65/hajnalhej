@@ -8,10 +8,12 @@ import DataTable from 'primevue/datatable';
 import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import { useConfirm } from 'primevue/useconfirm';
-import CategoryFormModal from '../../../Components/Admin/Categories/CategoryFormModal.vue';
-import CategoryStatusBadge from '../../../Components/Admin/Categories/CategoryStatusBadge.vue';
-import SectionTitle from '../../../Components/SectionTitle.vue';
-import AdminLayout from '../../../Layouts/AdminLayout.vue';
+import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
+import CategoryStatusBadge from '@/Components/Admin/Categories/CategoryStatusBadge.vue';
+import CreateModal from '@/Components/Admin/Categories/CreateModal.vue';
+import EditModal from '@/Components/Admin/Categories/EditModal.vue';
+import SectionTitle from '@/Components/SectionTitle.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 defineOptions({ layout: AdminLayout });
 
@@ -28,8 +30,8 @@ const props = defineProps({
 
 const confirm = useConfirm();
 const loading = ref(false);
-const modalVisible = ref(false);
-const mode = ref('create');
+const createModalVisible = ref(false);
+const editModalVisible = ref(false);
 const editingId = ref(null);
 
 const filterState = reactive({
@@ -94,7 +96,7 @@ const onPage = (event) => {
 };
 
 const openCreate = () => {
-    mode.value = 'create';
+    editModalVisible.value = false;
     editingId.value = null;
     form.reset();
     form.clearErrors();
@@ -103,11 +105,11 @@ const openCreate = () => {
     form.description = '';
     form.is_active = true;
     form.sort_order = 0;
-    modalVisible.value = true;
+    createModalVisible.value = true;
 };
 
 const openEdit = (category) => {
-    mode.value = 'edit';
+    createModalVisible.value = false;
     editingId.value = category.id;
     form.clearErrors();
     form.name = category.name;
@@ -115,20 +117,40 @@ const openEdit = (category) => {
     form.description = category.description ?? '';
     form.is_active = category.is_active;
     form.sort_order = category.sort_order;
-    modalVisible.value = true;
+    editModalVisible.value = true;
 };
 
-const submitForm = () => {
+const closeCreateModal = () => {
+    createModalVisible.value = false;
+};
+
+const closeEditModal = () => {
+    editModalVisible.value = false;
+};
+
+const submitCreate = () => {
     const options = {
         preserveScroll: true,
         onSuccess: () => {
-            modalVisible.value = false;
+            closeCreateModal();
             form.reset();
         },
     };
 
-    if (mode.value === 'create') {
-        form.post('/admin/categories', options);
+    form.post('/admin/categories', options);
+};
+
+const submitEdit = () => {
+    const options = {
+        preserveScroll: true,
+        onSuccess: () => {
+            closeEditModal();
+            form.reset();
+            editingId.value = null;
+        },
+    };
+
+    if (!editingId.value) {
         return;
     }
 
@@ -162,21 +184,36 @@ const confirmDelete = (category) => {
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
-            <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-end">
+            <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-2'">
+                <template #filters>
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
-                        <InputText v-model="filterState.search" placeholder="Nev vagy slug" class="min-w-64" @keyup.enter="submitFilters" />
+                        <InputText
+                            v-model="filterState.search"
+                            placeholder="Nev vagy slug"
+                            class="w-full"
+                            @keyup.enter="submitFilters"
+                        />
                     </div>
+
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Talalat / oldal</label>
-                        <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="min-w-40" @change="submitFilters" />
+                        <Select
+                            v-model="filterState.per_page"
+                            :options="perPageOptions"
+                            option-label="label"
+                            option-value="value"
+                            class="w-full"
+                            @change="submitFilters"
+                        />
                     </div>
-                    <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
-                </div>
+                </template>
 
-                <Button icon="pi pi-plus" label="Uj kategoria" @click="openCreate" />
-            </div>
+                <template #actions>
+                    <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
+                    <Button icon="pi pi-plus" label="Uj kategoria" @click="openCreate" />
+                </template>
+            </AdminTableToolbar>
 
             <DataTable
                 class="mt-4"
@@ -226,7 +263,8 @@ const confirmDelete = (category) => {
             </DataTable>
         </div>
 
-        <CategoryFormModal v-model:visible="modalVisible" :mode="mode" :form="form" @submit="submitForm" />
+        <CreateModal v-model:visible="createModalVisible" :form="form" @submit="submitCreate" />
+        <EditModal v-model:visible="editModalVisible" :form="form" @submit="submitEdit" />
         <ConfirmDialog />
     </div>
 </template>

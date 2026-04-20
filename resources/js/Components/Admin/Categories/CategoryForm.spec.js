@@ -1,15 +1,12 @@
 import { mount } from '@vue/test-utils';
-import CategoryFormModal from './CategoryFormModal.vue';
+import { reactive } from 'vue';
+import CategoryForm from './CategoryForm.vue';
 
 const stubs = {
-    Dialog: {
-        props: ['visible'],
-        template: '<div v-if="visible"><slot /></div>',
-    },
     InputText: {
-        props: ['modelValue'],
+        props: ['id', 'modelValue', 'disabled'],
         emits: ['update:modelValue'],
-        template: '<input :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+        template: '<input :id="id" :value="modelValue" :disabled="disabled" @input="$emit(\'update:modelValue\', $event.target.value)" />',
     },
     Textarea: {
         props: ['modelValue'],
@@ -26,13 +23,9 @@ const stubs = {
         emits: ['update:modelValue'],
         template: '<input type="checkbox" :checked="modelValue" @change="$emit(\'update:modelValue\', $event.target.checked)" />',
     },
-    Button: {
-        emits: ['click'],
-        template: '<button type="button" @click="$emit(\'click\')"><slot />Megse</button>',
-    },
 };
 
-describe('CategoryFormModal', () => {
+describe('CategoryForm', () => {
     const makeForm = () => ({
         name: '',
         slug: '',
@@ -43,11 +36,9 @@ describe('CategoryFormModal', () => {
         processing: false,
     });
 
-    it('renders fields when open and emits close', async () => {
-        const wrapper = mount(CategoryFormModal, {
+    it('renders category fields', () => {
+        const wrapper = mount(CategoryForm, {
             props: {
-                visible: true,
-                mode: 'create',
                 form: makeForm(),
             },
             global: { stubs },
@@ -55,24 +46,37 @@ describe('CategoryFormModal', () => {
 
         expect(wrapper.text()).toContain('Nev');
         expect(wrapper.text()).toContain('Slug');
-
-        await wrapper.find('button').trigger('click');
-        expect(wrapper.emitted('update:visible')).toBeTruthy();
+        expect(wrapper.text()).toContain('Sorrend');
     });
 
-    it('shows validation error text', () => {
-        const form = makeForm();
+    it('shows validation errors', () => {
+        const form = reactive(makeForm());
         form.errors.name = 'A kategoria neve kotelezo.';
 
-        const wrapper = mount(CategoryFormModal, {
+        const wrapper = mount(CategoryForm, {
             props: {
-                visible: true,
-                mode: 'create',
                 form,
             },
             global: { stubs },
         });
 
         expect(wrapper.text()).toContain('A kategoria neve kotelezo.');
+    });
+
+    it('auto-generates slug from name and keeps slug input disabled', async () => {
+        const form = reactive(makeForm());
+
+        const wrapper = mount(CategoryForm, {
+            props: {
+                form,
+            },
+            global: { stubs },
+        });
+
+        await wrapper.find('#category-name').setValue('Sos Pekaru');
+        await Promise.resolve();
+
+        expect(form.slug).toBe('sos-pekaru');
+        expect(wrapper.find('#category-slug').attributes('disabled')).toBeDefined();
     });
 });
