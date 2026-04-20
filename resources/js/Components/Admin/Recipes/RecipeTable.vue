@@ -71,6 +71,11 @@ const emit = defineEmits(['sort', 'page', 'open-editor']);
                 <span class="font-medium text-bakery-dark">{{ data.recipe_items_count }}</span>
             </template>
         </Column>
+        <Column field="recipe_steps_count" header="Lepesek" sortable>
+            <template #body="{ data }">
+                <span class="font-medium text-bakery-dark">{{ data.recipe_steps_count }}</span>
+            </template>
+        </Column>
         <Column field="low_stock_ingredients_count" header="Low stock alapanyag">
             <template #body="{ data }">
                 <span

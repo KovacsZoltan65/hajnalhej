@@ -21,6 +21,7 @@ class RecipeRepository
             ->with([
                 'category:id,name',
                 'productIngredients.ingredient:id,name,unit,current_stock,minimum_stock,is_active,deleted_at',
+                'recipeSteps:id,product_id,title,step_type,description,duration_minutes,wait_minutes,temperature_celsius,sort_order,is_active',
             ])
             ->paginate($perPage)
             ->withQueryString();
@@ -56,7 +57,7 @@ class RecipeRepository
         $sortField = (string) ($filters['sort_field'] ?? 'name');
         $sortDirection = (string) ($filters['sort_direction'] ?? 'asc');
 
-        $sortableFields = ['name', 'recipe_items_count'];
+        $sortableFields = ['name', 'recipe_items_count', 'recipe_steps_count'];
 
         if (! \in_array($sortField, $sortableFields, true)) {
             $sortField = 'name';
@@ -103,6 +104,7 @@ class RecipeRepository
 
         $query->withCount([
             'productIngredients as recipe_items_count',
+            'recipeSteps as recipe_steps_count',
             'productIngredients as low_stock_ingredients_count' => function (Builder $builder): void {
                 $builder->whereHas('ingredient', function (Builder $ingredientQuery): void {
                     $ingredientQuery

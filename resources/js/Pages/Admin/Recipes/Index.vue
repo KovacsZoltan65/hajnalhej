@@ -1,6 +1,6 @@
 <script setup>
 import { Head, router } from '@inertiajs/vue3';
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import Button from 'primevue/button';
 import ConfirmDialog from 'primevue/confirmdialog';
 import InputText from 'primevue/inputtext';
@@ -8,6 +8,8 @@ import Select from 'primevue/select';
 import { useConfirm } from 'primevue/useconfirm';
 import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
 import RecipeEditorModal from '../../../Components/Admin/Recipes/RecipeEditorModal.vue';
+import RecipeIngredientModal from '../../../Components/Admin/Recipes/RecipeIngredientModal.vue';
+import RecipeStepModal from '../../../Components/Admin/Recipes/RecipeStepModal.vue';
 import RecipeSummaryCard from '../../../Components/Admin/Recipes/RecipeSummaryCard.vue';
 import RecipeTable from '../../../Components/Admin/Recipes/RecipeTable.vue';
 import SectionTitle from '../../../Components/SectionTitle.vue';
@@ -28,6 +30,10 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    stepTypes: {
+        type: Array,
+        required: true,
+    },
     filters: {
         type: Object,
         required: true,
@@ -42,7 +48,12 @@ const confirm = useConfirm();
 const loading = ref(false);
 const editorVisible = ref(false);
 const editorRecipe = ref(null);
-const editorErrors = ref({});
+const ingredientModalVisible = ref(false);
+const stepModalVisible = ref(false);
+const editingIngredient = ref(null);
+const editingStep = ref(null);
+const ingredientErrors = ref({});
+const stepErrors = ref({});
 
 const filterState = reactive({
     product_id: props.filters.product_id ?? null,
@@ -131,7 +142,8 @@ const onPage = (event) => {
 
 const openEditor = (recipe) => {
     editorRecipe.value = recipe;
-    editorErrors.value = {};
+    ingredientErrors.value = {};
+    stepErrors.value = {};
     editorVisible.value = true;
 };
 
@@ -164,11 +176,39 @@ const saveRecipeItem = (payload) => {
         preserveScroll: true,
         preserveState: true,
         onError: (errors) => {
-            editorErrors.value = errors;
+            ingredientErrors.value = errors;
         },
         onSuccess: () => {
-            editorErrors.value = {};
-            load();
+            ingredientErrors.value = {};
+            ingredientModalVisible.value = false;
+            editingIngredient.value = null;
+            load({ product_id: editorRecipe.value?.id ?? undefined });
+        },
+    });
+};
+
+const saveRecipeStep = (payload) => {
+    if (!editorRecipe.value) {
+        return;
+    }
+
+    const url = payload.id
+        ? `/admin/products/${editorRecipe.value.id}/recipe-steps/${payload.id}`
+        : `/admin/products/${editorRecipe.value.id}/recipe-steps`;
+
+    const request = payload.id ? router.put : router.post;
+
+    request(url, payload, {
+        preserveScroll: true,
+        preserveState: true,
+        onError: (errors) => {
+            stepErrors.value = errors;
+        },
+        onSuccess: () => {
+            stepErrors.value = {};
+            stepModalVisible.value = false;
+            editingStep.value = null;
+            load({ product_id: editorRecipe.value?.id ?? undefined });
         },
     });
 };
@@ -188,11 +228,74 @@ const deleteRecipeItem = (item) => {
             router.delete(`/admin/products/${editorRecipe.value.id}/ingredients/${item.id}`, {
                 preserveScroll: true,
                 preserveState: true,
-                onSuccess: () => load(),
+                onSuccess: () => load({ product_id: editorRecipe.value?.id ?? undefined }),
             });
         },
     });
 };
+
+const deleteRecipeStep = (step) => {
+    if (!editorRecipe.value) {
+        return;
+    }
+
+    confirm.require({
+        header: 'Receptlepes torlese',
+        message: `Biztosan torlod ezt a receptlepest: ${step.title}?`,
+        rejectLabel: 'Megse',
+        acceptLabel: 'Torles',
+        acceptClass: 'p-button-danger',
+        accept: () => {
+            router.delete(`/admin/products/${editorRecipe.value.id}/recipe-steps/${step.id}`, {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => load({ product_id: editorRecipe.value?.id ?? undefined }),
+            });
+        },
+    });
+};
+
+const openIngredientCreate = () => {
+    editingIngredient.value = null;
+    ingredientErrors.value = {};
+    ingredientModalVisible.value = true;
+};
+
+const openIngredientEdit = (item) => {
+    editingIngredient.value = item;
+    ingredientErrors.value = {};
+    ingredientModalVisible.value = true;
+};
+
+const openStepCreate = () => {
+    editingStep.value = null;
+    stepErrors.value = {};
+    stepModalVisible.value = true;
+};
+
+const openStepEdit = (step) => {
+    editingStep.value = step;
+    stepErrors.value = {};
+    stepModalVisible.value = true;
+};
+
+watch(
+    () => props.recipes.data,
+    (recipes) => {
+        if (!editorRecipe.value) {
+            return;
+        }
+
+        const fresh = recipes.find((recipe) => recipe.id === editorRecipe.value.id) ?? null;
+        editorRecipe.value = fresh;
+
+        if (!fresh) {
+            editorVisible.value = false;
+            ingredientModalVisible.value = false;
+            stepModalVisible.value = false;
+        }
+    },
+);
 </script>
 
 <template>
@@ -284,10 +387,26 @@ const deleteRecipeItem = (item) => {
         <RecipeEditorModal
             v-model:visible="editorVisible"
             :recipe="editorRecipe"
+            @open-ingredient-create="openIngredientCreate"
+            @open-ingredient-edit="openIngredientEdit"
+            @delete-ingredient="deleteRecipeItem"
+            @open-step-create="openStepCreate"
+            @open-step-edit="openStepEdit"
+            @delete-step="deleteRecipeStep"
+        />
+        <RecipeIngredientModal
+            v-model:visible="ingredientModalVisible"
+            :item="editingIngredient"
             :ingredients="ingredients"
-            :errors="editorErrors"
-            @save-item="saveRecipeItem"
-            @delete-item="deleteRecipeItem"
+            :errors="ingredientErrors"
+            @submit="saveRecipeItem"
+        />
+        <RecipeStepModal
+            v-model:visible="stepModalVisible"
+            :item="editingStep"
+            :step-types="stepTypes"
+            :errors="stepErrors"
+            @submit="saveRecipeStep"
         />
         <ConfirmDialog />
     </div>
