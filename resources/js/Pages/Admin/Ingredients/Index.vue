@@ -8,7 +8,9 @@ import DataTable from 'primevue/datatable';
 import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import { useConfirm } from 'primevue/useconfirm';
-import IngredientFormModal from '../../../Components/Admin/Ingredients/IngredientFormModal.vue';
+import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
+import CreateModal from '@/Components/Admin/Ingredients/CreateModal.vue';
+import EditModal from '@/Components/Admin/Ingredients/EditModal.vue';
 import IngredientStatusBadge from '../../../Components/Admin/Ingredients/IngredientStatusBadge.vue';
 import IngredientStockBadge from '../../../Components/Admin/Ingredients/IngredientStockBadge.vue';
 import SectionTitle from '../../../Components/SectionTitle.vue';
@@ -33,8 +35,8 @@ const props = defineProps({
 
 const confirm = useConfirm();
 const loading = ref(false);
-const modalVisible = ref(false);
-const mode = ref('create');
+const createModalVisible = ref(false);
+const editModalVisible = ref(false);
 const editingId = ref(null);
 
 const filterState = reactive({
@@ -114,7 +116,7 @@ const onPage = (event) => {
 };
 
 const openCreate = () => {
-    mode.value = 'create';
+    editModalVisible.value = false;
     editingId.value = null;
     form.reset();
     form.clearErrors();
@@ -126,11 +128,11 @@ const openCreate = () => {
     form.minimum_stock = 0;
     form.is_active = true;
     form.notes = '';
-    modalVisible.value = true;
+    createModalVisible.value = true;
 };
 
 const openEdit = (ingredient) => {
-    mode.value = 'edit';
+    createModalVisible.value = false;
     editingId.value = ingredient.id;
     form.clearErrors();
     form.name = ingredient.name;
@@ -141,22 +143,42 @@ const openEdit = (ingredient) => {
     form.minimum_stock = ingredient.minimum_stock;
     form.is_active = ingredient.is_active;
     form.notes = ingredient.notes ?? '';
-    modalVisible.value = true;
+    editModalVisible.value = true;
 };
 
-const submitForm = () => {
+const closeCreateModal = () => {
+    createModalVisible.value = false;
+};
+
+const closeEditModal = () => {
+    editModalVisible.value = false;
+};
+
+const submitCreate = () => {
     const options = {
         preserveScroll: true,
         onSuccess: () => {
-            modalVisible.value = false;
+            closeCreateModal();
             form.reset();
         },
     };
 
-    if (mode.value === 'create') {
-        form.post('/admin/ingredients', options);
+    form.post('/admin/ingredients', options);
+};
+
+const submitEdit = () => {
+    if (!editingId.value) {
         return;
     }
+
+    const options = {
+        preserveScroll: true,
+        onSuccess: () => {
+            closeEditModal();
+            form.reset();
+            editingId.value = null;
+        },
+    };
 
     form.put(`/admin/ingredients/${editingId.value}`, options);
 };
@@ -188,34 +210,34 @@ const confirmDelete = (ingredient) => {
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
-            <div class="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
-                <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <AdminTableToolbar>
+                <template #filters>
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
-                        <InputText v-model="filterState.search" placeholder="Nev, slug vagy SKU" @keyup.enter="submitFilters" />
+                        <InputText v-model="filterState.search" class="w-full" placeholder="Nev, slug vagy SKU" @keyup.enter="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Statusz</label>
-                        <Select v-model="filterState.is_active" :options="activeOptions" option-label="label" option-value="value" @change="submitFilters" />
+                        <Select v-model="filterState.is_active" :options="activeOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Mertekegyseg</label>
-                        <Select v-model="filterState.unit" :options="unitOptions" option-label="label" option-value="value" @change="submitFilters" />
+                        <Select v-model="filterState.unit" :options="unitOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Talalat / oldal</label>
-                        <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" @change="submitFilters" />
+                        <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
-                </div>
+                </template>
 
-                <div class="flex gap-2">
+                <template #actions>
                     <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
                     <Button icon="pi pi-plus" label="Uj alapanyag" @click="openCreate" />
-                </div>
-            </div>
+                </template>
+            </AdminTableToolbar>
 
             <DataTable
                 class="mt-4"
@@ -273,7 +295,8 @@ const confirmDelete = (ingredient) => {
             </DataTable>
         </div>
 
-        <IngredientFormModal v-model:visible="modalVisible" :mode="mode" :form="form" :units="units" @submit="submitForm" />
+        <CreateModal v-model:visible="createModalVisible" :form="form" :units="units" @submit="submitCreate" />
+        <EditModal v-model:visible="editModalVisible" :form="form" :units="units" @submit="submitEdit" />
         <ConfirmDialog />
     </div>
 </template>
