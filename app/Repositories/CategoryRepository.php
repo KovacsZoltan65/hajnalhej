@@ -80,23 +80,27 @@ class CategoryRepository
 
         $sortableFields = ['name', 'sort_order', 'is_active'];
 
-        if (! in_array($sortField, $sortableFields, true)) {
+        if (! \in_array($sortField, $sortableFields, true)) {
             $sortField = 'sort_order';
         }
 
-        if (! in_array($sortDirection, ['asc', 'desc'], true)) {
+        if (! \in_array($sortDirection, ['asc', 'desc'], true)) {
             $sortDirection = 'asc';
         }
 
-        return Category::query()
+        $query = Category::query()
             ->when($search !== '', function (Builder $query) use ($search): void {
                 $query->where(function (Builder $innerQuery) use ($search): void {
                     $innerQuery
                         ->where('name', 'like', "%{$search}%")
                         ->orWhere('slug', 'like', "%{$search}%");
                 });
-            })
+            });
+
+        $query
             ->orderBy($sortField, $sortDirection)
             ->orderBy('id');
+
+        return $query;
     }
 }

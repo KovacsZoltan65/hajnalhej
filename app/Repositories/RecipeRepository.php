@@ -57,11 +57,11 @@ class RecipeRepository
 
         $sortableFields = ['name', 'recipe_items_count'];
 
-        if (! in_array($sortField, $sortableFields, true)) {
+        if (! \in_array($sortField, $sortableFields, true)) {
             $sortField = 'name';
         }
 
-        if (! in_array($sortDirection, ['asc', 'desc'], true)) {
+        if (! \in_array($sortDirection, ['asc', 'desc'], true)) {
             $sortDirection = 'asc';
         }
 
@@ -73,8 +73,12 @@ class RecipeRepository
                         ->orWhere('slug', 'like', "%{$search}%");
                 });
             })
-            ->when($categoryId !== null && $categoryId !== '', fn (Builder $builder): Builder => $builder->where('category_id', (int) $categoryId))
-            ->when($isActive !== null && $isActive !== '', fn (Builder $builder): Builder => $builder->where('is_active', (bool) $isActive));
+            ->when($categoryId !== null && $categoryId !== '', function (Builder $builder) use ($categoryId): void {
+                $builder->where('category_id', (int) $categoryId);
+            })
+            ->when($isActive !== null && $isActive !== '', function (Builder $builder) use ($isActive): void {
+                $builder->where('is_active', (bool) $isActive);
+            });
 
         if ($recipePresence === 'with_recipe') {
             $query->has('productIngredients');
@@ -85,22 +89,30 @@ class RecipeRepository
         }
 
         if ($hasLowStock === '1') {
-            $query->whereHas('productIngredients.ingredient', fn (Builder $builder): Builder => $builder
-                ->where('is_active', true)
-                ->whereNull('deleted_at')
-                ->whereColumn('current_stock', '<=', 'minimum_stock'));
+            $query->whereHas('productIngredients.ingredient', function (Builder $builder): void {
+                $builder
+                    ->where('is_active', true)
+                    ->whereNull('deleted_at')
+                    ->whereColumn('current_stock', '<=', 'minimum_stock');
+            });
         }
 
-        return $query
-            ->withCount([
-                'productIngredients as recipe_items_count',
-                'productIngredients as low_stock_ingredients_count' => fn (Builder $builder): Builder => $builder
-                    ->whereHas('ingredient', fn (Builder $ingredientQuery): Builder => $ingredientQuery
+        $query->withCount([
+            'productIngredients as recipe_items_count',
+            'productIngredients as low_stock_ingredients_count' => function (Builder $builder): void {
+                $builder->whereHas('ingredient', function (Builder $ingredientQuery): void {
+                    $ingredientQuery
                         ->where('is_active', true)
                         ->whereNull('deleted_at')
-                        ->whereColumn('current_stock', '<=', 'minimum_stock')),
-            ])
+                        ->whereColumn('current_stock', '<=', 'minimum_stock');
+                });
+            },
+        ]);
+
+        $query
             ->orderBy($sortField, $sortDirection)
             ->orderBy('id');
+
+        return $query;
     }
 }

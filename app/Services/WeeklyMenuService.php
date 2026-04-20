@@ -187,7 +187,7 @@ class WeeklyMenuService
 
         $status = (string) ($payload['status'] ?? WeeklyMenu::STATUS_DRAFT);
 
-        if (! in_array($status, WeeklyMenu::statuses(), true)) {
+        if (! \in_array($status, WeeklyMenu::statuses(), true)) {
             $status = WeeklyMenu::STATUS_DRAFT;
         }
 

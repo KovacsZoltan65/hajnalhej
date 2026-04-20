@@ -76,7 +76,7 @@ class ProductService
         }
 
         $stockStatus = (string) ($payload['stock_status'] ?? Product::STOCK_IN_STOCK);
-        if (! in_array($stockStatus, Product::stockStatuses(), true)) {
+        if (! \in_array($stockStatus, Product::stockStatuses(), true)) {
             $stockStatus = Product::STOCK_IN_STOCK;
         }
 

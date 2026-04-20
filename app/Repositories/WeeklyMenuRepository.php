@@ -191,15 +191,15 @@ class WeeklyMenuRepository
 
         $sortableFields = ['week_start', 'status', 'title'];
 
-        if (! in_array($sortField, $sortableFields, true)) {
+        if (! \in_array($sortField, $sortableFields, true)) {
             $sortField = 'week_start';
         }
 
-        if (! in_array($sortDirection, ['asc', 'desc'], true)) {
+        if (! \in_array($sortDirection, ['asc', 'desc'], true)) {
             $sortDirection = 'desc';
         }
 
-        return WeeklyMenu::query()
+        $query = WeeklyMenu::query()
             ->when($search !== '', function (Builder $query) use ($search): void {
                 $query->where(function (Builder $innerQuery) use ($search): void {
                     $innerQuery
@@ -207,8 +207,14 @@ class WeeklyMenuRepository
                         ->orWhere('slug', 'like', "%{$search}%");
                 });
             })
-            ->when($status !== '', fn (Builder $query): Builder => $query->where('status', $status))
+            ->when($status !== '', function (Builder $query) use ($status): void {
+                $query->where('status', $status);
+            });
+
+        $query
             ->orderBy($sortField, $sortDirection)
             ->orderBy('id');
+
+        return $query;
     }
 }
