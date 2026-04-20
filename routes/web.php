@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\IngredientController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\RecipeController;
+use App\Http\Controllers\Admin\RecipeStepController;
 use App\Http\Controllers\Admin\ProductIngredientController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\WeeklyMenuController;
@@ -40,6 +41,9 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/products/{product}/ingredients', [ProductIngredientController::class, 'store'])->name('products.ingredients.store');
         Route::put('/products/{product}/ingredients/{productIngredient}', [ProductIngredientController::class, 'update'])->name('products.ingredients.update');
         Route::delete('/products/{product}/ingredients/{productIngredient}', [ProductIngredientController::class, 'destroy'])->name('products.ingredients.destroy');
+        Route::post('/products/{product}/recipe-steps', [RecipeStepController::class, 'store'])->name('products.recipe-steps.store');
+        Route::put('/products/{product}/recipe-steps/{recipeStep}', [RecipeStepController::class, 'update'])->name('products.recipe-steps.update');
+        Route::delete('/products/{product}/recipe-steps/{recipeStep}', [RecipeStepController::class, 'destroy'])->name('products.recipe-steps.destroy');
 
         Route::get('/ingredients', [IngredientController::class, 'index'])->name('ingredients.index');
         Route::post('/ingredients', [IngredientController::class, 'store'])->name('ingredients.store');

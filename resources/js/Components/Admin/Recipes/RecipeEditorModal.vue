@@ -1,72 +1,23 @@
 <script setup>
-import { computed, reactive, watch } from 'vue';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
-import RecipeItemForm from './RecipeItemForm.vue';
 import RecipeIngredientList from './RecipeIngredientList.vue';
+import RecipeStepList from './RecipeStepList.vue';
 
-const props = defineProps({
+defineProps({
     visible: { type: Boolean, required: true },
     recipe: { type: Object, default: null },
-    ingredients: { type: Array, required: true },
-    errors: { type: Object, default: () => ({}) },
 });
 
-const emit = defineEmits(['update:visible', 'save-item', 'delete-item']);
-
-const form = reactive({
-    id: null,
-    ingredient_id: null,
-    quantity: null,
-    sort_order: 0,
-    notes: '',
-});
-
-const ingredientOptions = computed(() =>
-    props.ingredients.map((ingredient) => ({
-        id: ingredient.id,
-        name: ingredient.name,
-        unit: ingredient.unit,
-        is_low_stock: ingredient.is_low_stock,
-    })),
-);
-
-const selectedIngredient = computed(() => ingredientOptions.value.find((ingredient) => ingredient.id === form.ingredient_id) ?? null);
-
-const resetForm = () => {
-    form.id = null;
-    form.ingredient_id = ingredientOptions.value[0]?.id ?? null;
-    form.quantity = null;
-    form.sort_order = 0;
-    form.notes = '';
-};
-
-watch(
-    () => props.visible,
-    (open) => {
-        if (open) {
-            resetForm();
-        }
-    },
-);
-
-const editItem = (item) => {
-    form.id = item.id;
-    form.ingredient_id = item.ingredient_id;
-    form.quantity = item.quantity;
-    form.sort_order = item.sort_order;
-    form.notes = item.notes ?? '';
-};
-
-const submit = () => {
-    emit('save-item', {
-        id: form.id,
-        ingredient_id: form.ingredient_id,
-        quantity: form.quantity,
-        sort_order: form.sort_order ?? 0,
-        notes: form.notes || null,
-    });
-};
+const emit = defineEmits([
+    'update:visible',
+    'open-ingredient-create',
+    'open-ingredient-edit',
+    'delete-ingredient',
+    'open-step-create',
+    'open-step-edit',
+    'delete-step',
+]);
 </script>
 
 <template>
@@ -74,7 +25,7 @@ const submit = () => {
         :visible="visible"
         modal
         :header="recipe ? `Recept szerkesztes: ${recipe.name}` : 'Recept szerkesztese'"
-        :style="{ width: '64rem', maxWidth: '98vw' }"
+        :style="{ width: '70rem', maxWidth: '98vw' }"
         :content-style="{ maxHeight: '70vh', overflowY: 'auto' }"
         @update:visible="(value) => emit('update:visible', value)"
     >
@@ -86,45 +37,38 @@ const submit = () => {
                 </p>
             </div>
 
-            <RecipeItemForm
-                :form="form"
-                :ingredient-options="ingredientOptions"
-                :selected-ingredient="selectedIngredient"
-                :errors="errors"
-                @submit="submit"
-                @reset="resetForm"
-            />
-
-            <section class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <h4 class="font-medium text-bakery-dark">Recepttetel lista</h4>
-                    <span class="text-sm text-bakery-dark/70">{{ recipe?.recipe_items_count ?? 0 }} tetel</span>
+            <section class="rounded-2xl border border-bakery-brown/15 bg-white/85 p-4">
+                <div class="mb-3 flex items-center justify-between">
+                    <h4 class="font-medium text-bakery-dark">Hozzavalok</h4>
+                    <Button icon="pi pi-plus" label="Uj hozzavalo" size="small" @click="emit('open-ingredient-create')" />
                 </div>
+                <RecipeIngredientList
+                    :items="recipe?.product_ingredients ?? []"
+                    @edit="(item) => emit('open-ingredient-edit', item)"
+                    @delete="(item) => emit('delete-ingredient', item)"
+                />
+            </section>
 
-                <RecipeIngredientList :items="recipe?.product_ingredients ?? []" />
+            <section class="rounded-2xl border border-bakery-brown/15 bg-white/85 p-4">
+                <div class="mb-3 flex items-center justify-between">
+                    <h4 class="font-medium text-bakery-dark">Recept lepesek es idozites</h4>
+                    <Button icon="pi pi-plus" label="Uj lepes" size="small" @click="emit('open-step-create')" />
+                </div>
+                <RecipeStepList
+                    :steps="recipe?.recipe_steps ?? []"
+                    @edit="(step) => emit('open-step-edit', step)"
+                    @delete="(step) => emit('delete-step', step)"
+                />
+            </section>
 
-                <div v-if="(recipe?.product_ingredients?.length ?? 0) > 0" class="space-y-2">
-                    <p class="text-xs uppercase tracking-[0.12em] text-bakery-brown/75">Muveletek</p>
-                    <div class="space-y-2">
-                        <div
-                            v-for="item in recipe?.product_ingredients ?? []"
-                            :key="`actions-${item.id}`"
-                            class="flex items-center justify-between rounded-xl border border-bakery-brown/10 bg-white/80 px-3 py-2"
-                        >
-                            <p class="text-sm text-bakery-dark">{{ item.ingredient_name }}</p>
-                            <div class="flex items-center gap-2">
-                                <Button icon="pi pi-pencil" text size="small" rounded @click="editItem(item)" />
-                                <Button
-                                    icon="pi pi-trash"
-                                    text
-                                    size="small"
-                                    rounded
-                                    severity="danger"
-                                    @click="emit('delete-item', item)"
-                                />
-                            </div>
-                        </div>
-                    </div>
+            <section class="rounded-2xl border border-bakery-brown/15 bg-[#fcf7ef] p-4">
+                <h4 class="font-medium text-bakery-dark">Osszegzes</h4>
+                <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+                    <p class="text-sm text-bakery-dark/80">Hozzavalok: <span class="font-semibold text-bakery-dark">{{ recipe?.recipe_summary?.ingredients_count ?? 0 }}</span></p>
+                    <p class="text-sm text-bakery-dark/80">Lepesek: <span class="font-semibold text-bakery-dark">{{ recipe?.recipe_summary?.steps_count ?? 0 }}</span></p>
+                    <p class="text-sm text-bakery-dark/80">Aktiv ido: <span class="font-semibold text-bakery-dark">{{ recipe?.recipe_summary?.total_active_minutes ?? 0 }} p</span></p>
+                    <p class="text-sm text-bakery-dark/80">Varakozas: <span class="font-semibold text-bakery-dark">{{ recipe?.recipe_summary?.total_wait_minutes ?? 0 }} p</span></p>
+                    <p class="text-sm text-bakery-dark/80">Teljes ido: <span class="font-semibold text-bakery-dark">{{ recipe?.recipe_summary?.total_recipe_minutes ?? 0 }} p</span></p>
                 </div>
             </section>
         </div>

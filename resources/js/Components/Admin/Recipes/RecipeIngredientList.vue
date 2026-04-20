@@ -1,10 +1,14 @@
 <script setup>
+import Button from 'primevue/button';
+
 const props = defineProps({
     items: {
         type: Array,
         required: true,
     },
 });
+
+const emit = defineEmits(['edit', 'delete']);
 
 const formatQuantity = (value) =>
     new Intl.NumberFormat('hu-HU', {
@@ -25,12 +29,16 @@ const formatQuantity = (value) =>
                 <p class="text-xs text-bakery-dark/65">{{ formatQuantity(item.quantity) }} {{ item.ingredient_unit }}</p>
                 <p v-if="item.notes" class="mt-1 text-xs text-bakery-dark/70">{{ item.notes }}</p>
             </div>
-            <span
-                v-if="item.ingredient_is_low_stock"
-                class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800"
-            >
-                Low stock
-            </span>
+            <div class="flex items-center gap-2">
+                <span
+                    v-if="item.ingredient_is_low_stock"
+                    class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800"
+                >
+                    Low stock
+                </span>
+                <Button icon="pi pi-pencil" text size="small" rounded @click="emit('edit', item)" />
+                <Button icon="pi pi-trash" text size="small" rounded severity="danger" @click="emit('delete', item)" />
+            </div>
         </div>
         <div
             v-if="items.length === 0"

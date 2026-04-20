@@ -28,7 +28,12 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             IngredientSeeder::class,
             ProductIngredientSeeder::class,
+            RecipeStepSeeder::class,
             WeeklyMenuSeeder::class,
+
+            SourdoughStarterRecipeSeeder::class,
+            SourdoughBeginnerRecipeSeeder::class,
+            SourdoughArtisanRecipeSeeder::class,
         ]);
     }
 }

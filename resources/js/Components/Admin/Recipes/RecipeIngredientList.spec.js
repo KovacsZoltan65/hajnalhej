@@ -16,6 +16,11 @@ describe('RecipeIngredientList', () => {
                     },
                 ],
             },
+            global: {
+                stubs: {
+                    Button: { template: '<button />' },
+                },
+            },
         });
 
         expect(wrapper.text()).toContain('Low stock');
@@ -25,6 +30,11 @@ describe('RecipeIngredientList', () => {
     it('renders empty state when no items', () => {
         const wrapper = mount(RecipeIngredientList, {
             props: { items: [] },
+            global: {
+                stubs: {
+                    Button: { template: '<button />' },
+                },
+            },
         });
 
         expect(wrapper.text()).toContain('meg nincs recepttetel');

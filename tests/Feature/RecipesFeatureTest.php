@@ -4,6 +4,7 @@ use App\Models\Category;
 use App\Models\Ingredient;
 use App\Models\Product;
 use App\Models\ProductIngredient;
+use App\Models\RecipeStep;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -159,7 +160,67 @@ it('recipe editor adatokat betolti a szerkesztohoz', function (): void {
         ->has('ingredients', fn (Assert $ingredients) => $ingredients
             ->where('0.name', 'Teszt liszt')
             ->etc())
+        ->has('stepTypes', 7)
         ->has('recipes.data.0.product_ingredients', 1));
+});
+
+it('recipe summary szamitas tartalmazza az idozitesi osszegeket', function (): void {
+    $user = User::factory()->create();
+    $category = Category::factory()->create(['is_active' => true]);
+    $product = Product::factory()->create(['category_id' => $category->id, 'name' => 'Idozitett termek']);
+    $ingredient = Ingredient::factory()->create(['is_active' => true]);
+
+    ProductIngredient::factory()->create([
+        'product_id' => $product->id,
+        'ingredient_id' => $ingredient->id,
+    ]);
+
+    RecipeStep::factory()->create([
+        'product_id' => $product->id,
+        'duration_minutes' => 25,
+        'wait_minutes' => 40,
+    ]);
+    RecipeStep::factory()->create([
+        'product_id' => $product->id,
+        'duration_minutes' => 10,
+        'wait_minutes' => 5,
+    ]);
+
+    $response = $this->actingAs($user)->get('/admin/recipes');
+
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Admin/Recipes/Index')
+        ->where('recipes.data.0.recipe_summary.total_active_minutes', 35)
+        ->where('recipes.data.0.recipe_summary.total_wait_minutes', 45)
+        ->where('recipes.data.0.recipe_summary.total_recipe_minutes', 80));
+});
+
+it('recipe lepesek sort_order szerint rendezettek', function (): void {
+    $user = User::factory()->create();
+    $category = Category::factory()->create(['is_active' => true]);
+    $product = Product::factory()->create(['category_id' => $category->id, 'name' => 'Rendezes teszt']);
+
+    RecipeStep::factory()->create([
+        'product_id' => $product->id,
+        'title' => 'Masodik',
+        'sort_order' => 2,
+        'duration_minutes' => 10,
+        'wait_minutes' => 0,
+    ]);
+    RecipeStep::factory()->create([
+        'product_id' => $product->id,
+        'title' => 'Elso',
+        'sort_order' => 1,
+        'duration_minutes' => 5,
+        'wait_minutes' => 0,
+    ]);
+
+    $response = $this->actingAs($user)->get("/admin/recipes?product_id={$product->id}");
+
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Admin/Recipes/Index')
+        ->where('recipes.data.0.recipe_steps.0.title', 'Elso')
+        ->where('recipes.data.0.recipe_steps.1.title', 'Masodik'));
 });
 
 it('recipe editorbol ingredient hozzaadas mukodik', function (): void {

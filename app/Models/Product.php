@@ -69,6 +69,13 @@ class Product extends Model
             ->orderBy('id');
     }
 
+    public function recipeSteps(): HasMany
+    {
+        return $this->hasMany(RecipeStep::class)
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
     /**
      * @return array<int, string>
      */

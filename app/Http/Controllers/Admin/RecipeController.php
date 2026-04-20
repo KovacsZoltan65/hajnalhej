@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductIngredient;
+use App\Models\RecipeStep;
 use App\Services\RecipeService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -27,7 +28,7 @@ class RecipeController extends Controller
             'is_active' => ['nullable', 'in:0,1'],
             'recipe_presence' => ['nullable', 'in:all,with_recipe,without_recipe'],
             'has_low_stock_ingredient' => ['nullable', 'in:0,1'],
-            'sort_field' => ['nullable', 'in:name,recipe_items_count'],
+            'sort_field' => ['nullable', 'in:name,recipe_items_count,recipe_steps_count'],
             'sort_direction' => ['nullable', 'in:asc,desc'],
             'per_page' => ['nullable', 'integer', 'min:5', 'max:50'],
         ]);
@@ -43,6 +44,7 @@ class RecipeController extends Controller
                 'slug' => $product->slug,
                 'is_active' => $product->is_active,
                 'recipe_items_count' => $product->recipe_items_count,
+                'recipe_steps_count' => $product->recipe_steps_count,
                 'low_stock_ingredients_count' => $product->low_stock_ingredients_count,
                 'has_recipe' => $product->recipe_items_count > 0,
                 'product_ingredients' => $product->productIngredients
@@ -60,12 +62,29 @@ class RecipeController extends Controller
                     ])
                     ->values()
                     ->all(),
+                'recipe_steps' => $product->recipeSteps
+                    ->map(fn (RecipeStep $step): array => [
+                        'id' => $step->id,
+                        'product_id' => $step->product_id,
+                        'title' => $step->title,
+                        'step_type' => $step->step_type,
+                        'description' => $step->description,
+                        'duration_minutes' => $step->duration_minutes,
+                        'wait_minutes' => $step->wait_minutes,
+                        'temperature_celsius' => $step->temperature_celsius !== null ? (float) $step->temperature_celsius : null,
+                        'sort_order' => $step->sort_order,
+                        'is_active' => $step->is_active,
+                    ])
+                    ->values()
+                    ->all(),
+                'recipe_summary' => $this->service->buildRecipeWorkflowSummary($product),
             ]);
 
         return Inertia::render('Admin/Recipes/Index', [
             'recipes' => $recipes,
             'categories' => $this->service->listSelectableCategories(),
             'ingredients' => $this->service->listSelectableIngredients(),
+            'stepTypes' => $this->service->listSelectableStepTypes(),
             'filters' => [
                 'product_id' => $filters['product_id'] ?? null,
                 'search' => (string) ($filters['search'] ?? ''),
