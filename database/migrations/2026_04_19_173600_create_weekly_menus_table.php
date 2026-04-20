@@ -12,18 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('weekly_menus', function (Blueprint $table): void {
-            $table->id();
-            $table->string('title');
-            $table->string('slug')->unique();
-            $table->date('week_start')->index();
-            $table->date('week_end')->index();
-            $table->string('status')->default('draft')->index();
-            $table->text('public_note')->nullable();
-            $table->text('internal_note')->nullable();
-            $table->boolean('is_featured')->default(false)->index();
-            $table->timestamp('published_at')->nullable();
+            $table->id()->comment('Rekord azonosító');
+            $table->string('title')->comment('Heti menü admin címe');
+            $table->string('slug')->unique()->comment('Egyedi URL azonosító, SEO célra');
+            $table->date('week_start')->index()->comment('A heti menü kezdődátuma');
+            $table->date('week_end')->index()->comment('A heti menü záródátuma');
+            $table->string('status')->default('draft')->index()->comment('Állapot: draft|published|archived');
+            $table->text('public_note')->nullable()->comment('Vásárlóknak megjelenő megjegyzés');
+            $table->text('internal_note')->nullable()->comment('Belső üzemeltetési megjegyzés');
+            $table->boolean('is_featured')->default(false)->index()->comment('Kiemelt heti menü jelző');
+            $table->timestamp('published_at')->nullable()->comment('Publikálás időpontja');
             $table->timestamps();
-            $table->softDeletes();
+            $table->softDeletes()->comment('Soft delete időpontja');
         });
     }
 

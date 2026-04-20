@@ -75,24 +75,39 @@ class ProductService
             $slugInput = $product?->slug ?? 'product';
         }
 
-        $stockStatus = (string) ($payload['stock_status'] ?? Product::STOCK_IN_STOCK);
-        if (! \in_array($stockStatus, Product::stockStatuses(), true)) {
-            $stockStatus = Product::STOCK_IN_STOCK;
-        }
-
         return [
             'category_id' => (int) ($payload['category_id'] ?? 0),
             'name' => $name,
             'slug' => $slugInput,
-            'short_description' => $payload['short_description'] ?? null,
-            'description' => $payload['description'] ?? null,
+            'short_description' => $this->normalizeNullableString($payload['short_description'] ?? null),
+            'description' => $this->normalizeNullableString($payload['description'] ?? null),
             'price' => number_format((float) ($payload['price'] ?? 0), 2, '.', ''),
             'is_active' => (bool) ($payload['is_active'] ?? true),
             'is_featured' => (bool) ($payload['is_featured'] ?? false),
-            'stock_status' => $stockStatus,
-            'image_path' => $payload['image_path'] ?? null,
+            'stock_status' => $this->normalizeStockStatus((string) ($payload['stock_status'] ?? Product::STOCK_IN_STOCK)),
+            'image_path' => $this->normalizeNullableString($payload['image_path'] ?? null),
             'sort_order' => (int) ($payload['sort_order'] ?? 0),
         ];
+    }
+
+    private function normalizeNullableString(mixed $value): ?string
+    {
+        if (! \is_string($value)) {
+            return null;
+        }
+
+        $normalized = trim($value);
+
+        return $normalized !== '' ? $normalized : null;
+    }
+
+    private function normalizeStockStatus(string $stockStatus): string
+    {
+        if (! \in_array($stockStatus, Product::stockStatuses(), true)) {
+            return Product::STOCK_IN_STOCK;
+        }
+
+        return $stockStatus;
     }
 
     private function resolveUniqueSlug(string $baseSlug, ?int $ignoreId = null): string

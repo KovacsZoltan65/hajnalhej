@@ -1,15 +1,12 @@
 import { mount } from '@vue/test-utils';
-import ProductFormModal from './ProductFormModal.vue';
+import { reactive } from 'vue';
+import ProductForm from './ProductForm.vue';
 
 const stubs = {
-    Dialog: {
-        props: ['visible'],
-        template: '<div v-if="visible"><slot /></div>',
-    },
     InputText: {
-        props: ['modelValue'],
+        props: ['id', 'modelValue', 'disabled'],
         emits: ['update:modelValue'],
-        template: '<input :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+        template: '<input :id="id" :value="modelValue" :disabled="disabled" @input="$emit(\'update:modelValue\', $event.target.value)" />',
     },
     Textarea: {
         props: ['modelValue'],
@@ -27,17 +24,13 @@ const stubs = {
         template: '<input type="checkbox" :checked="modelValue" @change="$emit(\'update:modelValue\', $event.target.checked)" />',
     },
     Select: {
-        props: ['modelValue'],
+        props: ['id', 'modelValue', 'options', 'optionLabel', 'optionValue'],
         emits: ['update:modelValue'],
-        template: '<select @change="$emit(\'update:modelValue\', $event.target.value)"><slot /></select>',
-    },
-    Button: {
-        emits: ['click'],
-        template: '<button type="button" @click="$emit(\'click\')"><slot />Megse</button>',
+        template: '<select :id="id" @change="$emit(\'update:modelValue\', $event.target.value)"><slot /></select>',
     },
 };
 
-describe('ProductFormModal', () => {
+describe('ProductForm', () => {
     const makeForm = () => ({
         category_id: null,
         name: '',
@@ -54,11 +47,9 @@ describe('ProductFormModal', () => {
         processing: false,
     });
 
-    it('renders form fields when modal is visible', () => {
-        const wrapper = mount(ProductFormModal, {
+    it('renders form fields', () => {
+        const wrapper = mount(ProductForm, {
             props: {
-                visible: true,
-                mode: 'create',
                 form: makeForm(),
                 categories: [{ id: 1, name: 'Kenyerek' }],
                 stockStatuses: [{ value: 'in_stock', label: 'Raktaron' }],
@@ -69,16 +60,15 @@ describe('ProductFormModal', () => {
         expect(wrapper.text()).toContain('Kategoria');
         expect(wrapper.text()).toContain('Ar (Ft)');
         expect(wrapper.text()).toContain('Keszlet allapot');
+        expect(wrapper.text()).toContain('Slug');
     });
 
     it('shows validation errors', () => {
-        const form = makeForm();
+        const form = reactive(makeForm());
         form.errors.price = 'Az ar kotelezo.';
 
-        const wrapper = mount(ProductFormModal, {
+        const wrapper = mount(ProductForm, {
             props: {
-                visible: true,
-                mode: 'create',
                 form,
                 categories: [{ id: 1, name: 'Kenyerek' }],
                 stockStatuses: [{ value: 'in_stock', label: 'Raktaron' }],
@@ -87,5 +77,24 @@ describe('ProductFormModal', () => {
         });
 
         expect(wrapper.text()).toContain('Az ar kotelezo.');
+    });
+
+    it('auto-generates slug from name and keeps slug input disabled', async () => {
+        const form = reactive(makeForm());
+
+        const wrapper = mount(ProductForm, {
+            props: {
+                form,
+                categories: [{ id: 1, name: 'Kenyerek' }],
+                stockStatuses: [{ value: 'in_stock', label: 'Raktaron' }],
+            },
+            global: { stubs },
+        });
+
+        await wrapper.find('#product-name').setValue('Kakaos Csiga Special');
+        await Promise.resolve();
+
+        expect(form.slug).toBe('kakaos-csiga-special');
+        expect(wrapper.find('#product-slug').attributes('disabled')).toBeDefined();
     });
 });

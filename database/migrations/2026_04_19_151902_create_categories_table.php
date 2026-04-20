@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table): void {
-            $table->id();
-            $table->string('name')->unique();
-            $table->string('slug')->unique();
-            $table->text('description')->nullable();
-            $table->boolean('is_active')->default(true)->index();
-            $table->unsignedInteger('sort_order')->default(0)->index();
+            $table->id()->comment('Rekord azonosító');
+            $table->string('name')->unique()->comment('Megnevezés');
+            $table->string('slug')->unique()->comment('Egyedi URL azonosító, SEO célra');
+            $table->text('description')->nullable()->comment('Leírás');
+            $table->boolean('is_active')->default(true)->index()->comment('Publikus láthatóság státusza');
+            $table->unsignedInteger('sort_order')->default(0)->index()->comment('Admin listázási sorrend');
             $table->timestamps();
-            $table->softDeletes();
+            $table->softDeletes()->comment('Soft delete időpontja');
         });
     }
 

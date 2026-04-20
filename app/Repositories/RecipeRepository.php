@@ -48,6 +48,7 @@ class RecipeRepository
     private function adminQuery(array $filters): Builder
     {
         $search = trim((string) ($filters['search'] ?? ''));
+        $productId = $filters['product_id'] ?? null;
         $categoryId = $filters['category_id'] ?? null;
         $isActive = $filters['is_active'] ?? null;
         $recipePresence = (string) ($filters['recipe_presence'] ?? 'all');
@@ -66,6 +67,9 @@ class RecipeRepository
         }
 
         $query = Product::query()
+            ->when($productId !== null && $productId !== '', function (Builder $builder) use ($productId): void {
+                $builder->whereKey((int) $productId);
+            })
             ->when($search !== '', function (Builder $builder) use ($search): void {
                 $builder->where(function (Builder $innerQuery) use ($search): void {
                     $innerQuery

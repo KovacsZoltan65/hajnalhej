@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -34,7 +33,7 @@ class StoreProductRequest extends FormRequest
                     ->where('is_active', true)),
             ],
             'name' => ['required', 'string', 'max:160'],
-            'slug' => ['nullable', 'string', 'max:180', 'alpha_dash', Rule::unique('products', 'slug')],
+            'slug' => ['nullable', 'string', 'max:180'],
             'short_description' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:4000'],
             'price' => ['required', 'numeric', 'min:0', 'max:99999999.99'],

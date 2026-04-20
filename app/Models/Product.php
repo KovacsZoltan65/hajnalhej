@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Database\Factories\ProductFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -46,6 +48,13 @@ class Product extends Model
             'is_featured' => 'boolean',
             'sort_order' => 'integer',
         ];
+    }
+
+    protected function slug(): Attribute
+    {
+        return Attribute::make(
+            set: static fn (?string $value): string => Str::slug((string) $value),
+        );
     }
 
     public function category(): BelongsTo

@@ -29,7 +29,7 @@ class ProductController extends Controller
             'search' => ['nullable', 'string', 'max:160'],
             'category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'is_active' => ['nullable', 'in:0,1'],
-            'sort_field' => ['nullable', 'in:name,price,is_active,sort_order'],
+            'sort_field' => ['nullable', 'in:name,slug,price,is_active,sort_order'],
             'sort_direction' => ['nullable', 'in:asc,desc'],
             'per_page' => ['nullable', 'integer', 'min:5', 'max:50'],
         ]);

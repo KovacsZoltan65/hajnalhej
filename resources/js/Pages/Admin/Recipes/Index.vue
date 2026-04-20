@@ -1,6 +1,6 @@
 <script setup>
 import { Head, router } from '@inertiajs/vue3';
-import { computed, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import Button from 'primevue/button';
 import ConfirmDialog from 'primevue/confirmdialog';
 import InputText from 'primevue/inputtext';
@@ -44,6 +44,7 @@ const editorRecipe = ref(null);
 const editorErrors = ref({});
 
 const filterState = reactive({
+    product_id: props.filters.product_id ?? null,
     search: props.filters.search ?? '',
     category_id: props.filters.category_id ?? null,
     is_active: props.filters.is_active ?? '',
@@ -88,6 +89,7 @@ const load = (extra = {}) => {
     router.get(
         '/admin/recipes',
         {
+            product_id: filterState.product_id || undefined,
             search: filterState.search || undefined,
             category_id: filterState.category_id || undefined,
             is_active: filterState.is_active,
@@ -110,6 +112,10 @@ const load = (extra = {}) => {
 };
 
 const submitFilters = () => load({ page: 1 });
+const clearProductFocus = () => {
+    filterState.product_id = null;
+    load({ page: 1, product_id: undefined });
+};
 
 const onSort = (event) => {
     filterState.sort_field = event.sortField;
@@ -127,6 +133,20 @@ const openEditor = (recipe) => {
     editorErrors.value = {};
     editorVisible.value = true;
 };
+
+onMounted(() => {
+    const selectedProductId = Number(props.filters.product_id ?? 0);
+    if (selectedProductId <= 0) {
+        return;
+    }
+
+    const recipe = props.recipes.data.find((item) => item.id === selectedProductId) ?? null;
+    if (!recipe) {
+        return;
+    }
+
+    openEditor(recipe);
+});
 
 const saveRecipeItem = (payload) => {
     if (!editorRecipe.value) {
@@ -187,6 +207,10 @@ const deleteRecipeItem = (item) => {
         <RecipeSummaryCard :summary="summary" />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
+            <div v-if="filterState.product_id" class="mb-3 flex items-center justify-between rounded-lg border border-bakery-gold/40 bg-[#fdf8ec] px-3 py-2">
+                <p class="text-sm text-bakery-dark/80">Termekre fokuszalt receptnezet aktiv.</p>
+                <Button size="small" text label="Fokusz torlese" @click="clearProductFocus" />
+            </div>
             <div class="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
                 <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
                     <div class="space-y-1">

@@ -60,6 +60,21 @@ it('recipes search mukodik', function (): void {
         ->where('recipes.data.0.slug', 'magvas-vekni'));
 });
 
+it('recipes product_id szures egy adott termekre fokuszal', function (): void {
+    $user = User::factory()->create();
+    $category = Category::factory()->create(['is_active' => true]);
+    $target = Product::factory()->create(['category_id' => $category->id, 'name' => 'Target product']);
+    Product::factory()->create(['category_id' => $category->id, 'name' => 'Other product']);
+
+    $response = $this->actingAs($user)->get("/admin/recipes?product_id={$target->id}");
+
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Admin/Recipes/Index')
+        ->has('recipes.data', 1)
+        ->where('recipes.data.0.id', $target->id)
+        ->where('filters.product_id', (string) $target->id));
+});
+
 it('recipes kategoria szures mukodik', function (): void {
     $user = User::factory()->create();
     $bread = Category::factory()->create(['name' => 'Kenyerek', 'is_active' => true]);

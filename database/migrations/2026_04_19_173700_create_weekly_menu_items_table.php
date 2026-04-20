@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('weekly_menu_items', function (Blueprint $table): void {
-            $table->id();
-            $table->foreignId('weekly_menu_id')->constrained('weekly_menus')->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained('products');
-            $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
-            $table->string('override_name')->nullable();
-            $table->string('override_short_description')->nullable();
-            $table->decimal('override_price', 10, 2)->nullable();
-            $table->unsignedInteger('sort_order')->default(0)->index();
-            $table->boolean('is_active')->default(true)->index();
-            $table->string('badge_text')->nullable();
-            $table->string('stock_note')->nullable();
+            $table->id()->comment('Rekord azonosító');
+            $table->foreignId('weekly_menu_id')->constrained('weekly_menus')->cascadeOnDelete()->comment('Kapcsolódó heti menü azonosító');
+            $table->foreignId('product_id')->constrained('products')->comment('Kapcsolódó termék azonosító');
+            $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete()->comment('Megjelenített kategória azonosító');
+            $table->string('override_name')->nullable()->comment('Heti menüben felülírt terméknév');
+            $table->string('override_short_description')->nullable()->comment('Heti menüben felülírt rövid leírás');
+            $table->decimal('override_price', 10, 2)->nullable()->comment('Heti menüben felülírt ár');
+            $table->unsignedInteger('sort_order')->default(0)->index()->comment('Heti menün belüli sorrend');
+            $table->boolean('is_active')->default(true)->index()->comment('Aktív megjelenés a heti menüben');
+            $table->string('badge_text')->nullable()->comment('Termékkártya badge felirat');
+            $table->string('stock_note')->nullable()->comment('Készlettel kapcsolatos rövid megjegyzés');
             $table->timestamps();
 
             $table->unique(['weekly_menu_id', 'product_id']);
