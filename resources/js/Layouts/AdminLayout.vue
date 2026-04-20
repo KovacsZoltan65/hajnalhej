@@ -16,7 +16,7 @@ const logout = () => {
 <template>
     <div class="min-h-screen bg-[#f7efe5] text-bakery-dark">
         <FlashToast />
-        <AppHeader>
+        <AppHeader container-class="max-w-none">
             <template #actions>
                 <div class="flex items-center gap-3">
                     <p class="hidden text-sm text-bakery-dark/75 sm:block">
