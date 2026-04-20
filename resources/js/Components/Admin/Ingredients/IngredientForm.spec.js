@@ -1,15 +1,12 @@
 import { mount } from '@vue/test-utils';
-import IngredientFormModal from './IngredientFormModal.vue';
+import { reactive } from 'vue';
+import IngredientForm from './IngredientForm.vue';
 
 const stubs = {
-    Dialog: {
-        props: ['visible'],
-        template: '<div v-if="visible"><slot /></div>',
-    },
     InputText: {
-        props: ['modelValue'],
+        props: ['id', 'modelValue', 'disabled'],
         emits: ['update:modelValue'],
-        template: '<input :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+        template: '<input :id="id" :value="modelValue" :disabled="disabled" @input="$emit(\'update:modelValue\', $event.target.value)" />',
     },
     Textarea: {
         props: ['modelValue'],
@@ -27,17 +24,13 @@ const stubs = {
         template: '<input type="checkbox" :checked="modelValue" @change="$emit(\'update:modelValue\', $event.target.checked)" />',
     },
     Select: {
-        props: ['modelValue'],
+        props: ['id', 'modelValue', 'options', 'optionLabel', 'optionValue'],
         emits: ['update:modelValue'],
-        template: '<select @change="$emit(\'update:modelValue\', $event.target.value)"><slot /></select>',
-    },
-    Button: {
-        emits: ['click'],
-        template: '<button type="button" @click="$emit(\'click\')"><slot />Megse</button>',
+        template: '<select :id="id" @change="$emit(\'update:modelValue\', $event.target.value)"><slot /></select>',
     },
 };
 
-describe('IngredientFormModal', () => {
+describe('IngredientForm', () => {
     const makeForm = () => ({
         name: '',
         slug: '',
@@ -51,11 +44,9 @@ describe('IngredientFormModal', () => {
         processing: false,
     });
 
-    it('renders core fields', () => {
-        const wrapper = mount(IngredientFormModal, {
+    it('renders form fields', () => {
+        const wrapper = mount(IngredientForm, {
             props: {
-                visible: true,
-                mode: 'create',
                 form: makeForm(),
                 units: ['g', 'kg'],
             },
@@ -65,16 +56,15 @@ describe('IngredientFormModal', () => {
         expect(wrapper.text()).toContain('Nev');
         expect(wrapper.text()).toContain('Mertekegyseg');
         expect(wrapper.text()).toContain('Aktualis keszlet');
+        expect(wrapper.text()).toContain('Slug');
     });
 
-    it('shows validation message', () => {
-        const form = makeForm();
+    it('shows validation errors', () => {
+        const form = reactive(makeForm());
         form.errors.name = 'A nev kotelezo.';
 
-        const wrapper = mount(IngredientFormModal, {
+        const wrapper = mount(IngredientForm, {
             props: {
-                visible: true,
-                mode: 'create',
                 form,
                 units: ['g', 'kg'],
             },
@@ -82,5 +72,23 @@ describe('IngredientFormModal', () => {
         });
 
         expect(wrapper.text()).toContain('A nev kotelezo.');
+    });
+
+    it('auto-generates slug from name and keeps slug input disabled', async () => {
+        const form = reactive(makeForm());
+
+        const wrapper = mount(IngredientForm, {
+            props: {
+                form,
+                units: ['g', 'kg'],
+            },
+            global: { stubs },
+        });
+
+        await wrapper.find('#ingredient-name').setValue('Buza Liszt 00');
+        await Promise.resolve();
+
+        expect(form.slug).toBe('buza-liszt-00');
+        expect(wrapper.find('#ingredient-slug').attributes('disabled')).toBeDefined();
     });
 });
