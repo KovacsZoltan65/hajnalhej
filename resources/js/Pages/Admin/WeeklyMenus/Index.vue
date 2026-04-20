@@ -8,7 +8,9 @@ import DataTable from 'primevue/datatable';
 import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import { useConfirm } from 'primevue/useconfirm';
-import WeeklyMenuFormModal from '../../../Components/Admin/WeeklyMenus/WeeklyMenuFormModal.vue';
+import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
+import CreateModal from '@/Components/Admin/WeeklyMenus/CreateModal.vue';
+import EditModal from '@/Components/Admin/WeeklyMenus/EditModal.vue';
 import WeeklyMenuItemsModal from '../../../Components/Admin/WeeklyMenus/WeeklyMenuItemsModal.vue';
 import WeeklyMenuStatusBadge from '../../../Components/Admin/WeeklyMenus/WeeklyMenuStatusBadge.vue';
 import SectionTitle from '../../../Components/SectionTitle.vue';
@@ -25,9 +27,9 @@ const props = defineProps({
 
 const confirm = useConfirm();
 const loading = ref(false);
-const formVisible = ref(false);
+const createModalVisible = ref(false);
+const editModalVisible = ref(false);
 const itemsVisible = ref(false);
-const mode = ref('create');
 const editingId = ref(null);
 const selectedMenu = ref(null);
 
@@ -99,7 +101,7 @@ const onPage = (event) => {
 };
 
 const openCreate = () => {
-    mode.value = 'create';
+    editModalVisible.value = false;
     editingId.value = null;
     form.reset();
     form.clearErrors();
@@ -111,11 +113,11 @@ const openCreate = () => {
     form.public_note = '';
     form.internal_note = '';
     form.is_featured = false;
-    formVisible.value = true;
+    createModalVisible.value = true;
 };
 
 const openEdit = (menu) => {
-    mode.value = 'edit';
+    createModalVisible.value = false;
     editingId.value = menu.id;
     form.clearErrors();
     form.title = menu.title;
@@ -126,22 +128,42 @@ const openEdit = (menu) => {
     form.public_note = menu.public_note ?? '';
     form.internal_note = menu.internal_note ?? '';
     form.is_featured = menu.is_featured;
-    formVisible.value = true;
+    editModalVisible.value = true;
 };
 
-const submitForm = () => {
+const closeCreateModal = () => {
+    createModalVisible.value = false;
+};
+
+const closeEditModal = () => {
+    editModalVisible.value = false;
+};
+
+const submitCreate = () => {
     const options = {
         preserveScroll: true,
         onSuccess: () => {
-            formVisible.value = false;
+            closeCreateModal();
             form.reset();
         },
     };
 
-    if (mode.value === 'create') {
-        form.post('/admin/weekly-menus', options);
+    form.post('/admin/weekly-menus', options);
+};
+
+const submitEdit = () => {
+    if (!editingId.value) {
         return;
     }
+
+    const options = {
+        preserveScroll: true,
+        onSuccess: () => {
+            closeEditModal();
+            form.reset();
+            editingId.value = null;
+        },
+    };
 
     form.put(`/admin/weekly-menus/${editingId.value}`, options);
 };
@@ -200,27 +222,27 @@ const deleteItem = (item) => {
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
-            <div class="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
-                <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-3'">
+                <template #filters>
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
-                        <InputText v-model="filterState.search" placeholder="Cim vagy slug" @keyup.enter="submitFilters" />
+                        <InputText v-model="filterState.search" class="w-full" placeholder="Cim vagy slug" @keyup.enter="submitFilters" />
                     </div>
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Statusz</label>
-                        <Select v-model="filterState.status" :options="statusOptions" option-label="label" option-value="value" @change="submitFilters" />
+                        <Select v-model="filterState.status" :options="statusOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Talalat / oldal</label>
-                        <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" @change="submitFilters" />
+                        <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
-                    <div class="flex items-end gap-2">
-                        <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
-                    </div>
-                </div>
+                </template>
 
-                <Button icon="pi pi-plus" label="Uj heti menu" @click="openCreate" />
-            </div>
+                <template #actions>
+                    <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
+                    <Button icon="pi pi-plus" label="Uj heti menu" @click="openCreate" />
+                </template>
+            </AdminTableToolbar>
 
             <DataTable
                 class="mt-4"
@@ -289,7 +311,8 @@ const deleteItem = (item) => {
             </DataTable>
         </div>
 
-        <WeeklyMenuFormModal v-model:visible="formVisible" :mode="mode" :form="form" :statuses="statuses" @submit="submitForm" />
+        <CreateModal v-model:visible="createModalVisible" :form="form" :statuses="statuses" @submit="submitCreate" />
+        <EditModal v-model:visible="editModalVisible" :form="form" :statuses="statuses" @submit="submitEdit" />
         <WeeklyMenuItemsModal
             v-model:visible="itemsVisible"
             :menu="selectedMenu"
