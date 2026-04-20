@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('product_ingredients', function (Blueprint $table): void {
-            $table->id();
-            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
-            $table->foreignId('ingredient_id')->constrained('ingredients')->cascadeOnDelete();
-            $table->decimal('quantity', 12, 3);
-            $table->unsignedInteger('sort_order')->default(0)->index();
-            $table->text('notes')->nullable();
+            $table->id()->comment('Rekord azonosító');
+            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete()->comment('Kapcsolódó termék azonosító');
+            $table->foreignId('ingredient_id')->constrained('ingredients')->cascadeOnDelete()->comment('Kapcsolódó alapanyag azonosító');
+            $table->decimal('quantity', 12, 3)->comment('Felhasznált mennyiség');
+            $table->unsignedInteger('sort_order')->default(0)->index()->comment('Recepten belüli sorrend');
+            $table->text('notes')->nullable()->comment('Recept tétel megjegyzése');
             $table->timestamps();
 
             $table->unique(['product_id', 'ingredient_id']);
