@@ -30,6 +30,11 @@ class RecipeStepFactory extends Factory
             ]),
             'step_type' => fake()->randomElement(RecipeStep::stepTypes()),
             'description' => fake()->optional()->sentence(),
+            'work_instruction' => fake()->optional()->sentence(),
+            'completion_criteria' => fake()->optional()->sentence(),
+            'attention_points' => fake()->optional()->sentence(),
+            'required_tools' => fake()->optional()->sentence(),
+            'expected_result' => fake()->optional()->sentence(),
             'duration_minutes' => fake()->optional(80)->numberBetween(5, 180),
             'wait_minutes' => fake()->optional(70)->numberBetween(5, 240),
             'temperature_celsius' => fake()->optional()->randomFloat(1, 18, 260),
@@ -38,4 +43,3 @@ class RecipeStepFactory extends Factory
         ];
     }
 }
-

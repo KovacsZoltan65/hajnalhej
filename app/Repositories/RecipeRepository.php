@@ -21,7 +21,7 @@ class RecipeRepository
             ->with([
                 'category:id,name',
                 'productIngredients.ingredient:id,name,unit,current_stock,minimum_stock,is_active,deleted_at',
-                'recipeSteps:id,product_id,title,step_type,description,duration_minutes,wait_minutes,temperature_celsius,sort_order,is_active',
+                'recipeSteps:id,product_id,title,step_type,description,work_instruction,completion_criteria,attention_points,required_tools,expected_result,duration_minutes,wait_minutes,temperature_celsius,sort_order,is_active',
             ])
             ->paginate($perPage)
             ->withQueryString();

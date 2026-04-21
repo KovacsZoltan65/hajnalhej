@@ -24,14 +24,14 @@ class SourdoughArtisanRecipeSeeder extends Seeder
         );
 
         $product = Product::query()->updateOrCreate(
-            ['slug' => 'magas-hidracioju-artisan-kenyer'],
+            ['slug' => 'magas-hidracioju-kezmuves-kenyer'],
             [
                 'category_id' => $category->id,
-                'name' => 'Magas hidratációjú artisan kenyér',
+                'name' => 'Magas hidratációjú kezmuves kenyér',
                 'short_description' => 'Haladó kovászos kenyér magas hidratációval, nyitott bélzettel és roppanós héjjal.',
-                'description' => 'Haladó szintű artisan kovászos kenyér. Magas hidratáció, hosszabb fermentáció és óvatos kezelés szükséges a nyitott, levegős szerkezethez.',
+                'description' => 'Haladó szintű kezmuves kovászos kenyér. Magas hidratáció, hosszabb fermentáció és óvatos kezelés szükséges a nyitott, levegős szerkezethez.',
                 'price' => 2890,
-                'image_path' => 'products/magas-hidracioju-artisan-kenyer.jpg',
+                'image_path' => 'products/magas-hidracioju-kezmuves-kenyer.jpg',
                 'sort_order' => 20,
             ],
         );

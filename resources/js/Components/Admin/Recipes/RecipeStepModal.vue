@@ -22,6 +22,11 @@ const form = reactive({
     title: '',
     step_type: 'preparation',
     description: '',
+    work_instruction: '',
+    completion_criteria: '',
+    attention_points: '',
+    required_tools: '',
+    expected_result: '',
     duration_minutes: null,
     wait_minutes: null,
     temperature_celsius: null,
@@ -34,6 +39,11 @@ const resetForm = () => {
     form.title = '';
     form.step_type = props.stepTypes[0]?.value ?? 'preparation';
     form.description = '';
+    form.work_instruction = '';
+    form.completion_criteria = '';
+    form.attention_points = '';
+    form.required_tools = '';
+    form.expected_result = '';
     form.duration_minutes = null;
     form.wait_minutes = null;
     form.temperature_celsius = null;
@@ -51,6 +61,11 @@ const fillForm = () => {
     form.title = props.item.title ?? '';
     form.step_type = props.item.step_type ?? (props.stepTypes[0]?.value ?? 'preparation');
     form.description = props.item.description ?? '';
+    form.work_instruction = props.item.work_instruction ?? '';
+    form.completion_criteria = props.item.completion_criteria ?? '';
+    form.attention_points = props.item.attention_points ?? '';
+    form.required_tools = props.item.required_tools ?? '';
+    form.expected_result = props.item.expected_result ?? '';
     form.duration_minutes = props.item.duration_minutes;
     form.wait_minutes = props.item.wait_minutes;
     form.temperature_celsius = props.item.temperature_celsius;
@@ -73,6 +88,11 @@ const submit = () => {
         title: form.title,
         step_type: form.step_type,
         description: form.description || null,
+        work_instruction: form.work_instruction || null,
+        completion_criteria: form.completion_criteria || null,
+        attention_points: form.attention_points || null,
+        required_tools: form.required_tools || null,
+        expected_result: form.expected_result || null,
         duration_minutes: form.duration_minutes,
         wait_minutes: form.wait_minutes,
         temperature_celsius: form.temperature_celsius,
@@ -140,6 +160,36 @@ const close = () => emit('update:visible', false);
                 <Textarea v-model="form.description" rows="4" class="w-full" auto-resize />
                 <p v-if="errors.description" class="text-xs text-red-700">{{ errors.description }}</p>
             </div>
+
+            <div class="space-y-2 md:col-span-2">
+                <label class="text-sm font-medium text-bakery-dark">Mit kell csinalni?</label>
+                <Textarea v-model="form.work_instruction" rows="3" class="w-full" auto-resize />
+                <p v-if="errors.work_instruction" class="text-xs text-red-700">{{ errors.work_instruction }}</p>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-bakery-dark">Mibol latszik, hogy kesz?</label>
+                <Textarea v-model="form.completion_criteria" rows="3" class="w-full" auto-resize />
+                <p v-if="errors.completion_criteria" class="text-xs text-red-700">{{ errors.completion_criteria }}</p>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-bakery-dark">Mire figyelj?</label>
+                <Textarea v-model="form.attention_points" rows="3" class="w-full" auto-resize />
+                <p v-if="errors.attention_points" class="text-xs text-red-700">{{ errors.attention_points }}</p>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-bakery-dark">Szukseges eszkoz</label>
+                <Textarea v-model="form.required_tools" rows="3" class="w-full" auto-resize />
+                <p v-if="errors.required_tools" class="text-xs text-red-700">{{ errors.required_tools }}</p>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-bakery-dark">Elvart eredmeny</label>
+                <Textarea v-model="form.expected_result" rows="3" class="w-full" auto-resize />
+                <p v-if="errors.expected_result" class="text-xs text-red-700">{{ errors.expected_result }}</p>
+            </div>
         </form>
         <template #footer>
             <div class="flex justify-end gap-2">
@@ -149,4 +199,3 @@ const close = () => emit('update:visible', false);
         </template>
     </Dialog>
 </template>
-

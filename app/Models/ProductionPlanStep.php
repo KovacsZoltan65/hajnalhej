@@ -2,29 +2,24 @@
 
 namespace App\Models;
 
-use Database\Factories\RecipeStepFactory;
+use Database\Factories\ProductionPlanStepFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class RecipeStep extends Model
+class ProductionPlanStep extends Model
 {
-    public const TYPE_PREPARATION = 'preparation';
-    public const TYPE_MIXING = 'mixing';
-    public const TYPE_RESTING = 'resting';
-    public const TYPE_PROOFING = 'proofing';
-    public const TYPE_BAKING = 'baking';
-    public const TYPE_COOLING = 'cooling';
-    public const TYPE_FINISHING = 'finishing';
-
-    /** @use HasFactory<RecipeStepFactory> */
+    /** @use HasFactory<ProductionPlanStepFactory> */
     use HasFactory;
 
     /**
      * @var array<int, string>
      */
     protected $fillable = [
+        'production_plan_id',
+        'production_plan_item_id',
         'product_id',
+        'depends_on_product_id',
         'title',
         'step_type',
         'description',
@@ -33,11 +28,14 @@ class RecipeStep extends Model
         'attention_points',
         'required_tools',
         'expected_result',
+        'starts_at',
+        'ends_at',
         'duration_minutes',
         'wait_minutes',
-        'temperature_celsius',
         'sort_order',
-        'is_active',
+        'timeline_group',
+        'is_dependency',
+        'meta',
     ];
 
     /**
@@ -46,12 +44,24 @@ class RecipeStep extends Model
     protected function casts(): array
     {
         return [
+            'starts_at' => 'datetime',
+            'ends_at' => 'datetime',
             'duration_minutes' => 'integer',
             'wait_minutes' => 'integer',
-            'temperature_celsius' => 'decimal:1',
             'sort_order' => 'integer',
-            'is_active' => 'boolean',
+            'is_dependency' => 'boolean',
+            'meta' => 'array',
         ];
+    }
+
+    public function productionPlan(): BelongsTo
+    {
+        return $this->belongsTo(ProductionPlan::class);
+    }
+
+    public function productionPlanItem(): BelongsTo
+    {
+        return $this->belongsTo(ProductionPlanItem::class);
     }
 
     public function product(): BelongsTo
@@ -59,19 +69,8 @@ class RecipeStep extends Model
         return $this->belongsTo(Product::class);
     }
 
-    /**
-     * @return array<int, string>
-     */
-    public static function stepTypes(): array
+    public function dependsOnProduct(): BelongsTo
     {
-        return [
-            self::TYPE_PREPARATION,
-            self::TYPE_MIXING,
-            self::TYPE_RESTING,
-            self::TYPE_PROOFING,
-            self::TYPE_BAKING,
-            self::TYPE_COOLING,
-            self::TYPE_FINISHING,
-        ];
+        return $this->belongsTo(Product::class, 'depends_on_product_id');
     }
 }

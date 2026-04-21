@@ -26,6 +26,21 @@ const emit = defineEmits(['edit', 'delete']);
                         <Tag :value="step.step_type" severity="secondary" />
                     </div>
                     <p v-if="step.description" class="mt-1 text-xs text-bakery-dark/70">{{ step.description }}</p>
+                    <p v-if="step.work_instruction" class="mt-1 text-xs text-bakery-dark/80">
+                        <span class="font-semibold">Utasitas:</span> {{ step.work_instruction }}
+                    </p>
+                    <p v-if="step.completion_criteria" class="mt-1 text-xs text-bakery-dark/80">
+                        <span class="font-semibold">Kesz allapot:</span> {{ step.completion_criteria }}
+                    </p>
+                    <p v-if="step.attention_points" class="mt-1 text-xs text-bakery-dark/80">
+                        <span class="font-semibold">Figyelmeztetes:</span> {{ step.attention_points }}
+                    </p>
+                    <p v-if="step.required_tools" class="mt-1 text-xs text-bakery-dark/80">
+                        <span class="font-semibold">Eszkoz:</span> {{ step.required_tools }}
+                    </p>
+                    <p v-if="step.expected_result" class="mt-1 text-xs text-bakery-dark/80">
+                        <span class="font-semibold">Elvart eredmeny:</span> {{ step.expected_result }}
+                    </p>
                     <p class="mt-1 text-xs text-bakery-dark/65">
                         Aktiv: {{ step.duration_minutes ?? 0 }} p | Varakozas: {{ step.wait_minutes ?? 0 }} p
                         <span v-if="step.temperature_celsius !== null">| Homerseklet: {{ step.temperature_celsius }} C</span>
@@ -45,4 +60,3 @@ const emit = defineEmits(['edit', 'delete']);
         </div>
     </div>
 </template>
-
