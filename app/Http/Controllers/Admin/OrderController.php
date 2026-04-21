@@ -113,7 +113,7 @@ class OrderController extends Controller
         $this->authorize('update', $order);
 
         try {
-            $this->service->transitionStatus($order, $request->validated());
+            $this->service->transitionStatus($order, $request->validated(), $request->user());
         } catch (RuntimeException $exception) {
             return back()->with('error', $exception->getMessage());
         }

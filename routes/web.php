@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\IngredientController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\AuthorizationAuditController as AdminAuthorizationAuditController;
 use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\Admin\UserRoleController as AdminUserRoleController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -112,9 +113,15 @@ Route::middleware('auth')->group(function (): void {
         Route::put('/weekly-menus/{weeklyMenu}/items/{item}', [WeeklyMenuController::class, 'updateItem'])->name('weekly-menus.items.update');
         Route::delete('/weekly-menus/{weeklyMenu}/items/{item}', [WeeklyMenuController::class, 'destroyItem'])->name('weekly-menus.items.destroy');
 
-        Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
-        Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
-        Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status.update');
+        Route::name('orders.')->prefix('orders')->controller(AdminOrderController::class)->group(function() {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{order}', 'show')->name('show');
+            Route::patch('/{order}/status', 'updateStatus')->name('status.update');
+        });
+
+        //Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+        //Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+        //Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status.update');
 
         Route::get('/roles', [AdminRoleController::class, 'index'])
             ->middleware('permission:roles.view')
@@ -141,5 +148,12 @@ Route::middleware('auth')->group(function (): void {
         Route::put('/users/{user}/roles', [AdminUserRoleController::class, 'update'])
             ->middleware('permission:users.assign-roles')
             ->name('users.roles.update');
+
+        Route::get('/audit-logs', [AdminAuthorizationAuditController::class, 'index'])
+            ->middleware('permission:audit-logs.view')
+            ->name('audit-logs.index');
+        Route::get('/audit-logs/{activity}', [AdminAuthorizationAuditController::class, 'show'])
+            ->middleware('permission:audit-logs.view')
+            ->name('audit-logs.show');
     });
 });

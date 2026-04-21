@@ -70,7 +70,7 @@ class RoleController extends Controller
 
     public function store(StoreRoleRequest $request): RedirectResponse
     {
-        $this->service->create($request->validated());
+        $this->service->create($request->validated(), $request->user());
 
         return redirect()
             ->route('admin.roles.index')
@@ -81,16 +81,16 @@ class RoleController extends Controller
     {
         $this->authorize('update', $role);
 
-        $this->service->update($role, $request->validated());
+        $this->service->update($role, $request->validated(), $request->user());
 
         return back()->with('success', __('commerce.roles.updated'));
     }
 
-    public function destroy(Role $role): RedirectResponse
+    public function destroy(Request $request, Role $role): RedirectResponse
     {
         $this->authorize('delete', $role);
 
-        $this->service->delete($role);
+        $this->service->delete($role, $request->user());
 
         return redirect()
             ->route('admin.roles.index')
@@ -101,7 +101,7 @@ class RoleController extends Controller
     {
         $this->authorize('syncPermissions', $role);
 
-        $this->service->syncPermissions($role, $request->validated()['permissions']);
+        $this->service->syncPermissions($role, $request->validated()['permissions'], $request->user());
 
         return back()->with('success', __('commerce.roles.permissions_synced'));
     }

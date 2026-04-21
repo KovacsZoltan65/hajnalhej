@@ -1,6 +1,7 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3';
 import Button from 'primevue/button';
+import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import Textarea from 'primevue/textarea';
 
@@ -24,6 +25,8 @@ const props = defineProps({
 const statusForm = useForm({
     status: props.order.status,
     internal_notes: props.order.internal_notes ?? '',
+    pickup_date: props.order.pickup_date ?? '',
+    pickup_time_slot: props.order.pickup_time_slot ?? '',
 });
 
 const updateStatus = () => {
@@ -102,6 +105,18 @@ const updateStatus = () => {
                         <label class="text-sm font-medium text-bakery-dark">Belso megjegyzes</label>
                         <Textarea v-model="statusForm.internal_notes" rows="4" class="w-full" />
                         <p v-if="statusForm.errors.internal_notes" class="text-xs text-red-700">{{ statusForm.errors.internal_notes }}</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-bakery-dark">Atvetel datuma</label>
+                        <InputText v-model="statusForm.pickup_date" type="date" class="w-full" />
+                        <p v-if="statusForm.errors.pickup_date" class="text-xs text-red-700">{{ statusForm.errors.pickup_date }}</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-bakery-dark">Atveteli idosav</label>
+                        <InputText v-model="statusForm.pickup_time_slot" class="w-full" placeholder="pl. 08:00-10:00" />
+                        <p v-if="statusForm.errors.pickup_time_slot" class="text-xs text-red-700">{{ statusForm.errors.pickup_time_slot }}</p>
                     </div>
 
                     <Button type="submit" label="Statusz frissitese" class="w-full" :loading="statusForm.processing" :disabled="statusForm.processing" />

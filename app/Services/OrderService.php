@@ -3,15 +3,19 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\User;
 use App\Repositories\OrderRepository;
+use App\Services\Audit\OrderAuditService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use RuntimeException;
 
 class OrderService
 {
-    public function __construct(private readonly OrderRepository $repository)
-    {
+    public function __construct(
+        private readonly OrderRepository $repository,
+        private readonly OrderAuditService $auditService,
+    ) {
     }
 
     /**
@@ -33,41 +37,63 @@ class OrderService
     /**
      * @param array<string, mixed> $payload
      */
-    public function transitionStatus(Order $order, array $payload): Order
+    public function transitionStatus(Order $order, array $payload, ?User $actor = null): Order
     {
         $targetStatus = (string) ($payload['status'] ?? '');
+        $beforeStatus = $order->status;
+        $beforeNotes = $this->normalizeText($order->internal_notes);
+        $beforePickupDate = $order->pickup_date?->toDateString();
+        $beforePickupSlot = $this->normalizeText($order->pickup_time_slot);
+
+        $updatePayload = [
+            'status' => $targetStatus,
+            'internal_notes' => $payload['internal_notes'] ?? $order->internal_notes,
+            'pickup_date' => $payload['pickup_date'] ?? $order->pickup_date?->toDateString(),
+            'pickup_time_slot' => $payload['pickup_time_slot'] ?? $order->pickup_time_slot,
+            'confirmed_at' => $order->confirmed_at,
+            'completed_at' => $order->completed_at,
+            'cancelled_at' => $order->cancelled_at,
+        ];
 
         if ($targetStatus === $order->status) {
-            return $this->repository->update($order, [
-                'internal_notes' => $payload['internal_notes'] ?? $order->internal_notes,
-            ]);
+            $updated = $this->repository->update($order, $updatePayload);
+
+            $this->logNonStatusChanges($updated, $actor, $beforeNotes, $beforePickupDate, $beforePickupSlot);
+
+            return $updated;
         }
 
         if (! $order->canTransitionTo($targetStatus)) {
             throw new RuntimeException(__('commerce.orders.invalid_status_transition'));
         }
 
-        $timestampPayload = [
-            'status' => $targetStatus,
-            'internal_notes' => $payload['internal_notes'] ?? $order->internal_notes,
-            'confirmed_at' => $order->confirmed_at,
-            'completed_at' => $order->completed_at,
-            'cancelled_at' => $order->cancelled_at,
-        ];
-
         if ($targetStatus === Order::STATUS_CONFIRMED && $order->confirmed_at === null) {
-            $timestampPayload['confirmed_at'] = Carbon::now();
+            $updatePayload['confirmed_at'] = Carbon::now();
         }
 
         if ($targetStatus === Order::STATUS_COMPLETED && $order->completed_at === null) {
-            $timestampPayload['completed_at'] = Carbon::now();
+            $updatePayload['completed_at'] = Carbon::now();
         }
 
         if ($targetStatus === Order::STATUS_CANCELLED && $order->cancelled_at === null) {
-            $timestampPayload['cancelled_at'] = Carbon::now();
+            $updatePayload['cancelled_at'] = Carbon::now();
         }
 
-        return $this->repository->update($order, $timestampPayload);
+        $updated = $this->repository->update($order, $updatePayload);
+
+        if ($actor !== null) {
+            $this->auditService->logOrderStatusUpdated(
+                order: $updated,
+                actor: $actor,
+                fromStatus: $beforeStatus,
+                toStatus: $updated->status,
+                context: ['operation' => 'admin.order.status.update'],
+            );
+        }
+
+        $this->logNonStatusChanges($updated, $actor, $beforeNotes, $beforePickupDate, $beforePickupSlot);
+
+        return $updated;
     }
 
     /**
@@ -82,5 +108,59 @@ class OrderService
             'line_count' => count($lineSnapshots),
             'created_for' => 'future_bom_aggregation',
         ];
+    }
+
+    private function logNonStatusChanges(
+        Order $updatedOrder,
+        ?User $actor,
+        ?string $beforeNotes,
+        ?string $beforePickupDate,
+        ?string $beforePickupSlot,
+    ): void {
+        if ($actor === null) {
+            return;
+        }
+
+        $afterNotes = $this->normalizeText($updatedOrder->internal_notes);
+        $afterPickupDate = $updatedOrder->pickup_date?->toDateString();
+        $afterPickupSlot = $this->normalizeText($updatedOrder->pickup_time_slot);
+
+        if ($beforeNotes !== $afterNotes) {
+            if ($beforeNotes === null && $afterNotes !== null) {
+                $this->auditService->logInternalNoteCreated(
+                    order: $updatedOrder,
+                    actor: $actor,
+                    note: $afterNotes,
+                    context: ['operation' => 'admin.order.internal_note.create'],
+                );
+            } else {
+                $this->auditService->logInternalNoteUpdated(
+                    order: $updatedOrder,
+                    actor: $actor,
+                    beforeNote: $beforeNotes,
+                    afterNote: $afterNotes,
+                    context: ['operation' => 'admin.order.internal_note.update'],
+                );
+            }
+        }
+
+        if ($beforePickupDate !== $afterPickupDate || $beforePickupSlot !== $afterPickupSlot) {
+            $this->auditService->logPickupUpdated(
+                order: $updatedOrder,
+                actor: $actor,
+                beforeDate: $beforePickupDate,
+                beforeSlot: $beforePickupSlot,
+                afterDate: $afterPickupDate,
+                afterSlot: $afterPickupSlot,
+                context: ['operation' => 'admin.order.pickup.update'],
+            );
+        }
+    }
+
+    private function normalizeText(?string $value): ?string
+    {
+        $normalized = trim((string) $value);
+
+        return $normalized === '' ? null : $normalized;
     }
 }
