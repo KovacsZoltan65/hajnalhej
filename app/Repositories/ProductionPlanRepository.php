@@ -125,7 +125,7 @@ class ProductionPlanRepository
             $sortDirection = 'asc';
         }
 
-        return ProductionPlan::query()
+        $query = ProductionPlan::query()
             ->when($search !== '', function (Builder $builder) use ($search): void {
                 $builder->where(function (Builder $innerQuery) use ($search): void {
                     $innerQuery
@@ -145,9 +145,14 @@ class ProductionPlanRepository
             })
             ->when($targetTo, function (Builder $builder) use ($targetTo): void {
                 $builder->whereDate('target_at', '<=', $targetTo);
-            })
-            ->withCount('items')
+            });
+
+        $query->withCount('items');
+
+        $query
             ->orderBy($sortField, $sortDirection)
             ->orderBy('id');
+
+        return $query;
     }
 }
