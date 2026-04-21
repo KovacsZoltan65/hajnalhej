@@ -16,6 +16,7 @@ class IngredientService
 
     /**
      * @param array<string, mixed> $filters
+     * @return LengthAwarePaginator
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -32,6 +33,7 @@ class IngredientService
 
     /**
      * @param array<string, mixed> $payload
+     * @return Ingredient
      */
     public function create(array $payload): Ingredient
     {
@@ -43,6 +45,7 @@ class IngredientService
 
     /**
      * @param array<string, mixed> $payload
+     * @return Ingredient
      */
     public function update(Ingredient $ingredient, array $payload): Ingredient
     {
@@ -52,6 +55,11 @@ class IngredientService
         return $this->repository->update($ingredient, $normalized);
     }
 
+    /**
+     * Summary of delete
+     * @param Ingredient $ingredient
+     * @return void
+     */
     public function delete(Ingredient $ingredient): void
     {
         $this->repository->delete($ingredient);
@@ -88,6 +96,12 @@ class IngredientService
         ];
     }
 
+    /**
+     * Summary of resolveUniqueSlug
+     * @param string $baseSlug
+     * @param mixed $ignoreId
+     * @return string
+     */
     private function resolveUniqueSlug(string $baseSlug, ?int $ignoreId = null): string
     {
         $baseSlug = Str::slug($baseSlug);

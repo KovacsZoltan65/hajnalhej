@@ -18,6 +18,11 @@ class IngredientController extends Controller
     {
     }
 
+    /**
+     * Summary of index
+     * @param Request $request
+     * @return \Inertia\Response
+     */
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Ingredient::class);
@@ -61,6 +66,11 @@ class IngredientController extends Controller
         ]);
     }
 
+    /**
+     * Summary of store
+     * @param StoreIngredientRequest $request
+     * @return RedirectResponse
+     */
     public function store(StoreIngredientRequest $request): RedirectResponse
     {
         $this->service->create($request->validated());
@@ -70,6 +80,12 @@ class IngredientController extends Controller
             ->with('success', 'Alapanyag letrehozva.');
     }
 
+    /**
+     * Summary of update
+     * @param UpdateIngredientRequest $request
+     * @param Ingredient $ingredient
+     * @return RedirectResponse
+     */
     public function update(UpdateIngredientRequest $request, Ingredient $ingredient): RedirectResponse
     {
         $this->service->update($ingredient, $request->validated());
@@ -79,6 +95,11 @@ class IngredientController extends Controller
             ->with('success', 'Alapanyag frissitve.');
     }
 
+    /**
+     * Summary of destroy
+     * @param Ingredient $ingredient
+     * @return RedirectResponse
+     */
     public function destroy(Ingredient $ingredient): RedirectResponse
     {
         $this->authorize('delete', $ingredient);

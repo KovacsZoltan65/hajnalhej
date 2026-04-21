@@ -18,6 +18,11 @@ class OrderController extends Controller
     {
     }
 
+    /**
+     * Summary of index
+     * @param OrderIndexRequest $request
+     * @return \Inertia\Response
+     */
     public function index(OrderIndexRequest $request): Response
     {
         $this->authorize('viewAny', Order::class);
@@ -54,6 +59,11 @@ class OrderController extends Controller
         ]);
     }
 
+    /**
+     * Summary of show
+     * @param Order $order
+     * @return \Inertia\Response
+     */
     public function show(Order $order): Response
     {
         $this->authorize('view', $order);
@@ -92,6 +102,12 @@ class OrderController extends Controller
         ]);
     }
 
+    /**
+     * Summary of updateStatus
+     * @param UpdateOrderStatusRequest $request
+     * @param Order $order
+     * @return RedirectResponse
+     */
     public function updateStatus(UpdateOrderStatusRequest $request, Order $order): RedirectResponse
     {
         $this->authorize('update', $order);
