@@ -11,10 +11,10 @@ const links = [
     { label: 'Gyartastervezo', href: '/admin/production-plans', icon: 'pi pi-sitemap' },
     { label: 'Alapanyagok', href: '/admin/ingredients', icon: 'pi pi-warehouse' },
     { label: 'Heti menuk', href: '/admin/weekly-menus', icon: 'pi pi-calendar' },
-    { label: 'Rendelesek', href: '#', icon: 'pi pi-shopping-bag' },
+    { label: 'Rendelesek', href: '/admin/orders', icon: 'pi pi-shopping-bag' },
 ];
 
-const isActive = (href) => href !== '#' && (page.url === href || page.url.startsWith(`${href}/`));
+const isActive = (href) => page.url === href || page.url.startsWith(`${href}/`);
 </script>
 
 <template>

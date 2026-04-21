@@ -4,11 +4,13 @@ namespace App\Providers;
 
 use App\Models\Category;
 use App\Models\Ingredient;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductionPlan;
 use App\Models\WeeklyMenu;
 use App\Policies\CategoryPolicy;
 use App\Policies\IngredientPolicy;
+use App\Policies\OrderPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ProductionPlanPolicy;
 use App\Policies\WeeklyMenuPolicy;
@@ -43,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::policy(Category::class, CategoryPolicy::class);
         Gate::policy(Ingredient::class, IngredientPolicy::class);
+        Gate::policy(Order::class, OrderPolicy::class);
         Gate::policy(Product::class, ProductPolicy::class);
         Gate::policy(ProductionPlan::class, ProductionPlanPolicy::class);
         Gate::policy(WeeklyMenu::class, WeeklyMenuPolicy::class);

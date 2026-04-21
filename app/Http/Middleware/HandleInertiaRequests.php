@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\CartService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -55,12 +56,15 @@ class HandleInertiaRequests extends Middleware
                     'account' => __('auth_ui.nav.account'),
                     'logout' => __('auth_ui.nav.logout'),
                     'admin' => __('auth_ui.nav.admin'),
+                    'cart' => __('commerce.nav.cart'),
                 ],
                 'register' => [
                     'title' => __('auth_ui.register.title'),
                     'subtitle' => __('auth_ui.register.subtitle'),
                 ],
+                'commerce' => __('commerce'),
             ],
+            'cart' => app(CartService::class)->getCartPayload()['summary'],
         ];
     }
 }

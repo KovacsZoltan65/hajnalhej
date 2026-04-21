@@ -13,6 +13,7 @@ const links = [
 
 const user = computed(() => page.props.auth?.user ?? null);
 const navUi = computed(() => page.props.ui?.nav ?? {});
+const cartTotalQuantity = computed(() => page.props.cart?.total_quantity ?? 0);
 
 const isActive = (href) => page.url === href || page.url.startsWith(`${href}/`);
 const closeMobile = () => {
@@ -35,6 +36,18 @@ const closeMobile = () => {
         </nav>
 
         <div class="hidden items-center gap-2 md:flex">
+            <Link
+                href="/cart"
+                class="relative rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
+            >
+                {{ navUi.cart ?? 'Kosar' }}
+                <span
+                    v-if="cartTotalQuantity > 0"
+                    class="absolute -right-1 -top-1 rounded-full bg-bakery-gold px-1.5 py-0.5 text-[10px] font-bold text-bakery-dark"
+                >
+                    {{ cartTotalQuantity }}
+                </span>
+            </Link>
             <template v-if="!user">
                 <Link
                     href="/login"
@@ -103,6 +116,11 @@ const closeMobile = () => {
             </nav>
 
             <div class="mt-3 space-y-2 border-t border-bakery-brown/15 pt-3">
+                <Link href="/cart" class="block rounded-xl px-3 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10" @click="closeMobile">
+                    {{ navUi.cart ?? 'Kosar' }}
+                    <span v-if="cartTotalQuantity > 0" class="ml-1 rounded-full bg-bakery-gold px-1.5 py-0.5 text-[10px] font-bold text-bakery-dark">{{ cartTotalQuantity }}</span>
+                </Link>
+
                 <template v-if="!user">
                     <Link href="/login" class="block rounded-xl px-3 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10" @click="closeMobile">
                         {{ navUi.login ?? 'Belepes' }}

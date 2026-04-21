@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 
 class ProductRepository
@@ -74,6 +75,22 @@ class ProductRepository
             ->where('slug', $slug)
             ->when($ignoreId !== null, fn (Builder $query): Builder => $query->whereKeyNot($ignoreId))
             ->exists();
+    }
+
+    /**
+     * @param array<int, int> $ids
+     * @return EloquentCollection<int, Product>
+     */
+    public function findOrderableByIds(array $ids): EloquentCollection
+    {
+        return Product::query()
+            ->whereIn('id', $ids)
+            ->where('is_active', true)
+            ->where('stock_status', '!=', Product::STOCK_OUT_OF_STOCK)
+            ->with([
+                'productIngredients.ingredient:id,name,unit,is_active,deleted_at',
+            ])
+            ->get();
     }
 
     /**
