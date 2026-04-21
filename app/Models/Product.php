@@ -76,6 +76,11 @@ class Product extends Model
             ->orderBy('id');
     }
 
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     /**
      * @return array<int, string>
      */

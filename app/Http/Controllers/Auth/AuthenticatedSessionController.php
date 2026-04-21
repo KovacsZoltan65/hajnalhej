@@ -23,9 +23,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = $request->user();
+        $fallbackRoute = $user?->isAdmin() ? 'admin.dashboard' : 'account';
+
         return redirect()
-            ->intended(route('admin.dashboard'))
-            ->with('success', 'Sikeres bejelentkezes. Szep napot a peksegben!');
+            ->intended(route($fallbackRoute))
+            ->with('success', __('auth_ui.login.success'));
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -37,6 +40,6 @@ class AuthenticatedSessionController extends Controller
 
         return redirect()
             ->route('home')
-            ->with('info', 'Kijelentkezes sikeres.');
+            ->with('info', __('auth_ui.login.logout_success'));
     }
 }

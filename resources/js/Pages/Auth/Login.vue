@@ -1,5 +1,6 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
@@ -7,6 +8,9 @@ import Password from 'primevue/password';
 import PublicLayout from '../../Layouts/PublicLayout.vue';
 
 defineOptions({ layout: PublicLayout });
+
+const page = usePage();
+const ui = computed(() => page.props.ui ?? {});
 
 const form = useForm({
     email: '',
@@ -24,12 +28,12 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Bejelentkezes" />
+    <Head :title="ui.login?.title ?? 'Belepes'" />
 
     <div class="mx-auto max-w-md rounded-3xl border border-bakery-brown/15 bg-[#fff9f1] p-6 shadow-lg sm:p-8">
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-bakery-gold">Admin belepes</p>
-        <h1 class="mt-3 font-heading text-4xl text-bakery-dark">Udvozlunk vissza</h1>
-        <p class="mt-2 text-sm text-bakery-dark/75">Lepj be az admin feluletre a napi termeles attekintesehez.</p>
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-bakery-gold">Hajnalhej account</p>
+        <h1 class="mt-3 font-heading text-4xl text-bakery-dark">{{ ui.login?.title ?? 'Belepes' }}</h1>
+        <p class="mt-2 text-sm text-bakery-dark/75">{{ ui.login?.subtitle ?? 'Lepj be a fiokodba, es rendelj gyorsabban.' }}</p>
 
         <form class="mt-7 space-y-5" @submit.prevent="submit">
             <div class="space-y-2">
@@ -62,15 +66,14 @@ const submit = () => {
 
             <div class="flex items-center gap-2">
                 <Checkbox id="remember" v-model="form.remember" binary />
-                <label for="remember" class="text-sm text-bakery-dark/80">Emlékezz ram</label>
+                <label for="remember" class="text-sm text-bakery-dark/80">{{ ui.login?.remember ?? 'Emlekezz ram' }}</label>
             </div>
 
-            <Button type="submit" label="Bejelentkezes" class="w-full" :loading="form.processing" />
+            <Button type="submit" :label="ui.login?.cta ?? 'Belepek'" class="w-full" :loading="form.processing" :disabled="form.processing" />
         </form>
 
         <p class="mt-6 text-center text-xs text-bakery-dark/70">
-            Nyilvanos oldal:
-            <Link href="/" class="font-semibold text-bakery-brown hover:underline">hajnalhej kezdolap</Link>
+            <Link href="/register" class="font-semibold text-bakery-brown hover:underline">{{ ui.login?.register_link ?? 'Meg nincs fiokod? Regisztralj itt.' }}</Link>
         </p>
     </div>
 </template>

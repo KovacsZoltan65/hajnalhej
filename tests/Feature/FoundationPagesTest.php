@@ -14,6 +14,12 @@ it('login page loads', function (): void {
     $response->assertOk();
 });
 
+it('register page loads', function (): void {
+    $response = $this->get('/register');
+
+    $response->assertOk();
+});
+
 it('admin dashboard requires authentication', function (): void {
     $response = $this->get('/admin/dashboard');
 
@@ -21,7 +27,7 @@ it('admin dashboard requires authentication', function (): void {
 });
 
 it('authenticated admin can access dashboard', function (): void {
-    $admin = User::factory()->create();
+    $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->get('/admin/dashboard');
 

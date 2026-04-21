@@ -24,6 +24,12 @@ import { Link } from '@inertiajs/vue3';
                         Heti menu megnyitasa
                     </Link>
                     <Link
+                        href="/register"
+                        class="rounded-full bg-bakery-gold px-6 py-3 text-sm font-semibold text-bakery-dark transition hover:bg-[#edbb5a]"
+                    >
+                        Fiok letrehozasa
+                    </Link>
+                    <Link
                         href="/about"
                         class="rounded-full border border-bakery-brown/35 px-6 py-3 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
                     >

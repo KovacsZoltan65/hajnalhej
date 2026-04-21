@@ -1,6 +1,20 @@
 import { mount } from '@vue/test-utils';
 import WeeklyMenuSection from './WeeklyMenuSection.vue';
 
+vi.mock('@inertiajs/vue3', () => ({
+    Link: {
+        name: 'Link',
+        props: ['href'],
+        template: '<a :href="href"><slot /></a>',
+    },
+    useForm: () => ({
+        product_id: null,
+        quantity: 1,
+        processing: false,
+        post: vi.fn(),
+    }),
+}));
+
 describe('WeeklyMenuSection', () => {
     it('renders empty state without menu', () => {
         const wrapper = mount(WeeklyMenuSection, {

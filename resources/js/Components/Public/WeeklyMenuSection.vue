@@ -1,4 +1,6 @@
 <script setup>
+import { Link, useForm } from '@inertiajs/vue3';
+
 defineProps({
     menu: {
         type: Object,
@@ -13,6 +15,19 @@ defineProps({
         default: false,
     },
 });
+
+const cartForm = useForm({
+    product_id: null,
+    quantity: 1,
+});
+
+const addToCart = (productId) => {
+    cartForm.product_id = productId;
+
+    cartForm.post('/cart/items', {
+        preserveScroll: true,
+    });
+};
 </script>
 
 <template>
@@ -22,6 +37,14 @@ defineProps({
             <h2 class="mt-2 font-heading text-3xl text-bakery-dark sm:text-4xl">{{ menu.title }}</h2>
             <p class="mt-2 text-sm text-bakery-dark/75">{{ menu.week_start }} - {{ menu.week_end }}</p>
             <p v-if="menu.public_note" class="mt-4 text-sm text-bakery-dark/80">{{ menu.public_note }}</p>
+            <div class="mt-5 flex flex-wrap gap-3">
+                <Link href="/cart" class="rounded-full border border-bakery-brown/35 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream">
+                    Kosar megnyitasa
+                </Link>
+                <Link href="/checkout" class="rounded-full bg-bakery-brown px-4 py-2 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark">
+                    Penztar
+                </Link>
+            </div>
             <p v-if="fallbackUsed" class="mt-4 rounded-xl bg-amber-100 px-3 py-2 text-xs font-medium text-amber-800">
                 Jelenleg nincs aktiv heti menu a mai napra, ezert a legutobb publikalt menu lathato.
             </p>
@@ -41,6 +64,14 @@ defineProps({
                         <p v-if="item.short_description" class="mt-2 text-sm text-bakery-dark/75">{{ item.short_description }}</p>
                         <p class="mt-4 text-sm font-semibold text-bakery-brown">{{ new Intl.NumberFormat('hu-HU').format(item.price) }} Ft</p>
                         <p v-if="item.stock_note" class="mt-1 text-xs text-bakery-dark/60">{{ item.stock_note }}</p>
+                        <button
+                            type="button"
+                            class="mt-4 inline-flex rounded-full bg-bakery-brown px-4 py-2 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark disabled:cursor-not-allowed disabled:opacity-70"
+                            :disabled="cartForm.processing"
+                            @click="addToCart(item.product_id)"
+                        >
+                            Kosarba
+                        </button>
                     </div>
                 </div>
             </article>
