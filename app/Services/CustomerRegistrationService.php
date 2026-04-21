@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Repositories\CustomerRegistrationRepository;
+use App\Support\PermissionRegistry;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -24,8 +25,9 @@ class CustomerRegistrationService
                 'name' => trim((string) $payload['name']),
                 'email' => mb_strtolower(trim((string) $payload['email'])),
                 'password' => (string) $payload['password'],
-                'role' => User::ROLE_CUSTOMER,
             ]);
+
+            $user->syncRoles([PermissionRegistry::ROLE_CUSTOMER]);
 
             event(new Registered($user));
 

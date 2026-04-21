@@ -26,7 +26,7 @@ it('customer can register with valid payload', function (): void {
     $user = User::query()->where('email', 'anna@example.com')->first();
 
     expect($user)->not->toBeNull();
-    expect($user?->role)->toBe(User::ROLE_CUSTOMER);
+    expect($user?->hasRole('customer'))->toBeTrue();
     expect($user?->email_verified_at)->toBeNull();
     expect(Hash::check('SecurePass123!', (string) $user?->password))->toBeTrue();
 
@@ -65,7 +65,7 @@ it('customer cannot access admin pages', function (): void {
 
     $response = $this->actingAs($customer)->get('/admin/dashboard');
 
-    $response->assertRedirect('/account');
+    $response->assertForbidden();
 });
 
 it('account page is available for authenticated customer', function (): void {

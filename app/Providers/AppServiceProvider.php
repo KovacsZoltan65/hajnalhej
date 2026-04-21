@@ -14,6 +14,7 @@ use App\Policies\OrderPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ProductionPlanPolicy;
 use App\Policies\WeeklyMenuPolicy;
+use App\Support\PermissionRegistry;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -36,11 +37,19 @@ class AppServiceProvider extends ServiceProvider
         RedirectIfAuthenticated::redirectUsing(function () {
             $user = auth()->user();
 
-            if ($user?->isAdmin()) {
+            if ($user?->can(PermissionRegistry::ADMIN_PANEL_ACCESS)) {
                 return route('admin.dashboard');
             }
 
             return route('account');
+        });
+
+        Gate::before(function ($user, string $ability): ?bool {
+            if ($user->hasRole(PermissionRegistry::ROLE_ADMIN)) {
+                return true;
+            }
+
+            return null;
         });
 
         Gate::policy(Category::class, CategoryPolicy::class);

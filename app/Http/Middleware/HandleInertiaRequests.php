@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Services\CartService;
+use App\Support\PermissionRegistry;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -39,8 +40,9 @@ class HandleInertiaRequests extends Middleware
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'role' => $user->role,
-                    'is_admin' => $user->isAdmin(),
+                    'roles' => $user->getRoleNames()->values()->all(),
+                    'is_admin' => $user->hasRole(PermissionRegistry::ROLE_ADMIN),
+                    'can_access_admin_panel' => $user->can(PermissionRegistry::ADMIN_PANEL_ACCESS),
                     'email_verified_at' => $user->email_verified_at?->toIso8601String(),
                 ],
             ],

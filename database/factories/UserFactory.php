@@ -2,10 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Support\PermissionRegistry;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 /**
  * @extends Factory<User>
@@ -29,9 +31,16 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
-            'role' => User::ROLE_ADMIN,
             'remember_token' => Str::random(10),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (User $user): void {
+            Role::findOrCreate(PermissionRegistry::ROLE_ADMIN, 'web');
+            $user->syncRoles([PermissionRegistry::ROLE_ADMIN]);
+        });
     }
 
     /**
@@ -46,15 +55,17 @@ class UserFactory extends Factory
 
     public function admin(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'role' => User::ROLE_ADMIN,
-        ]);
+        return $this->afterCreating(function (User $user): void {
+            Role::findOrCreate(PermissionRegistry::ROLE_ADMIN, 'web');
+            $user->syncRoles([PermissionRegistry::ROLE_ADMIN]);
+        });
     }
 
     public function customer(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'role' => User::ROLE_CUSTOMER,
-        ]);
+        return $this->afterCreating(function (User $user): void {
+            Role::findOrCreate(PermissionRegistry::ROLE_CUSTOMER, 'web');
+            $user->syncRoles([PermissionRegistry::ROLE_CUSTOMER]);
+        });
     }
 }

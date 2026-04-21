@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Support\PermissionRegistry;
 use Illuminate\Foundation\Http\FormRequest;
 
 class OrderIndexRequest extends FormRequest
@@ -11,7 +12,7 @@ class OrderIndexRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->isAdmin() ?? false;
+        return $this->user()?->can(PermissionRegistry::ORDERS_VIEW) ?? false;
     }
 
     /**

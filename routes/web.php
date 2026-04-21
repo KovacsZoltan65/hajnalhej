@@ -68,7 +68,7 @@ Route::middleware('auth')->group(function (): void {
         ->middleware('throttle:6,1')
         ->name('verification.send');
 
-    Route::prefix('admin')->middleware('admin')->name('admin.')->group(function (): void {
+    Route::prefix('admin')->middleware('permission:admin.panel.access')->name('admin.')->group(function (): void {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');

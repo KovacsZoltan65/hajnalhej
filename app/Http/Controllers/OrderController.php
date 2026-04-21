@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Support\PermissionRegistry;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -15,7 +16,7 @@ class OrderController extends Controller
         $lastOrderId = (int) $request->session()->get('last_order_id', 0);
 
         $canView = $lastOrderId === $order->id
-            || ($user !== null && ($user->isAdmin() || $order->user_id === $user->id));
+            || ($user !== null && ($user->can(PermissionRegistry::ORDERS_VIEW) || $order->user_id === $user->id));
 
         abort_unless($canView, 403);
 

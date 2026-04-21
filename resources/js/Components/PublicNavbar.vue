@@ -71,7 +71,7 @@ const closeMobile = () => {
                     {{ navUi.account ?? 'Fiokom' }}
                 </Link>
                 <Link
-                    v-if="user.is_admin"
+                    v-if="user.can_access_admin_panel"
                     href="/admin/dashboard"
                     class="rounded-full bg-bakery-gold px-4 py-2 text-sm font-semibold text-bakery-dark transition hover:bg-[#edbb5a]"
                 >
@@ -135,7 +135,7 @@ const closeMobile = () => {
                         {{ navUi.account ?? 'Fiokom' }}
                     </Link>
                     <Link
-                        v-if="user.is_admin"
+                        v-if="user.can_access_admin_panel"
                         href="/admin/dashboard"
                         class="block rounded-xl bg-bakery-gold px-3 py-2 text-sm font-semibold text-bakery-dark"
                         @click="closeMobile"
