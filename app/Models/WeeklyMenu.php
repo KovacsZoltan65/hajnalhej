@@ -3,11 +3,24 @@
 namespace App\Models;
 
 use Database\Factories\WeeklyMenuFactory;
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property string $title
+ * @property string $slug
+ * @property mixed $week_start
+ * @property mixed $week_end
+ * @property string $status
+ * @property string $public_note
+ * @property string $internal_note
+ * @property bool $is_featured
+ * @property string $published_at
+ */
 class WeeklyMenu extends Model
 {
     public const STATUS_DRAFT = 'draft';

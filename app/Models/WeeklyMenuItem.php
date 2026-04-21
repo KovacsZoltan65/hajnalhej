@@ -7,6 +7,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $weekly_menu_id
+ * @property int $product_id
+ * @property int $category_id
+ * @property string $override_name
+ * @property string $override_short_description
+ * @property number $override_price
+ * @property int $sort_order
+ * @property bool $is_active
+ * @property string $badge_text
+ * @property string $stock_note
+ */
 class WeeklyMenuItem extends Model
 {
     /** @use HasFactory<WeeklyMenuItemFactory> */
