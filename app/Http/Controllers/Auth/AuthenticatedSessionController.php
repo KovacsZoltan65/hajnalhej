@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Services\Audit\UserActivityAuditService;
 use App\Support\PermissionRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,10 @@ use Inertia\Response;
 
 class AuthenticatedSessionController extends Controller
 {
+    public function __construct(private readonly UserActivityAuditService $auditService)
+    {
+    }
+
     public function create(): Response
     {
         return Inertia::render('Auth/Login');
@@ -25,6 +30,15 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = $request->user();
+        if ($user !== null) {
+            $this->auditService->logLogin($user, [
+                'operation' => 'auth.login',
+                'guard' => 'web',
+                'ip' => $request->ip(),
+                'user_agent' => (string) $request->userAgent(),
+            ]);
+        }
+
         $fallbackRoute = $user?->can(PermissionRegistry::ADMIN_PANEL_ACCESS) ? 'admin.dashboard' : 'account';
 
         return redirect()
@@ -34,6 +48,17 @@ class AuthenticatedSessionController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
+        $user = $request->user();
+
+        if ($user !== null) {
+            $this->auditService->logLogout($user, [
+                'operation' => 'auth.logout',
+                'guard' => 'web',
+                'ip' => $request->ip(),
+                'user_agent' => (string) $request->userAgent(),
+            ]);
+        }
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

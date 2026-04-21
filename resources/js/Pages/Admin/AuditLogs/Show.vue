@@ -30,7 +30,7 @@ const formatJson = (value) => JSON.stringify(value ?? {}, null, 2);
             <SectionTitle
                 eyebrow="Admin / Audit Logs"
                 :title="`Audit bejegyzes #${log.id}`"
-                description="Részletes before/after, context és diff adatok authorization eseményekhez."
+                description="Részletes before/after, context es diff adatok authorization, user activity es order esemenyekhez."
             />
 
             <Link href="/admin/audit-logs">
@@ -51,6 +51,10 @@ const formatJson = (value) => JSON.stringify(value ?? {}, null, 2);
             <div>
                 <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Idopont</p>
                 <p class="mt-2 text-sm font-semibold text-bakery-dark">{{ log.created_at }}</p>
+            </div>
+            <div>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Domain</p>
+                <p class="mt-2 text-sm font-semibold uppercase tracking-[0.1em] text-bakery-dark">{{ log.log_name }}</p>
             </div>
             <div>
                 <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Actor</p>
@@ -87,6 +91,14 @@ const formatJson = (value) => JSON.stringify(value ?? {}, null, 2);
                     removed_permissions: log.properties.removed_permissions,
                     added_roles: log.properties.added_roles,
                     removed_roles: log.properties.removed_roles,
+                    status_transition: log.properties.status_transition,
+                    pickup_transition: log.properties.pickup_transition,
+                    order: log.properties.order,
+                    customer_snapshot: log.properties.customer_snapshot,
+                    totals_snapshot: log.properties.totals_snapshot,
+                    items_summary: log.properties.items_summary,
+                    pickup_snapshot: log.properties.pickup_snapshot,
+                    note_summary: log.properties.note_summary,
                     blocked_reason: log.properties.blocked_reason,
                     actor_snapshot: log.properties.actor_snapshot,
                     role: log.properties.role,

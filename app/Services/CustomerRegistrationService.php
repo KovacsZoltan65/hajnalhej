@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Repositories\CustomerRegistrationRepository;
+use App\Services\Audit\UserActivityAuditService;
 use App\Support\PermissionRegistry;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
@@ -11,8 +12,10 @@ use Illuminate\Support\Facades\DB;
 
 class CustomerRegistrationService
 {
-    public function __construct(private readonly CustomerRegistrationRepository $repository)
-    {
+    public function __construct(
+        private readonly CustomerRegistrationRepository $repository,
+        private readonly UserActivityAuditService $auditService,
+    ) {
     }
 
     /**
@@ -35,6 +38,11 @@ class CustomerRegistrationService
         });
 
         Auth::login($user);
+
+        $this->auditService->logRegistered($user, [
+            'operation' => 'auth.register',
+            'source' => 'public.register',
+        ]);
 
         return $user;
     }

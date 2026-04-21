@@ -45,6 +45,7 @@ describe('Admin Audit Logs Index', () => {
                         {
                             id: 1,
                             event_key: 'role.created',
+                            log_name: 'authorization',
                             description: 'Role created',
                             causer: { name: 'Admin', email: 'admin@example.com' },
                             subject: { label: 'admin', type: 'role' },
@@ -55,10 +56,11 @@ describe('Admin Audit Logs Index', () => {
                     per_page: 20,
                     total: 1,
                 },
-                filters: { search: '', event_key: '', subject_type: '', per_page: 20 },
+                filters: { search: '', log_name: '', event_key: '', subject_type: '', per_page: 20 },
+                logNameLabels: { authorization: 'Authorization', orders: 'Orders', 'user-activity': 'User activity' },
                 eventOptions: ['role.created'],
                 eventLabels: { 'role.created': 'Role letrehozva' },
-                subjectTypeLabels: { role: 'Role', user: 'User' },
+                subjectTypeLabels: { role: 'Role', user: 'User', order: 'Order' },
             },
             global: { stubs },
         });

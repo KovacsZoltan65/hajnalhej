@@ -35,12 +35,17 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    logNameLabels: {
+        type: Object,
+        required: true,
+    },
 });
 
 const loading = ref(false);
 
 const filterState = reactive({
     search: props.filters.search ?? '',
+    log_name: props.filters.log_name ?? '',
     event_key: props.filters.event_key ?? '',
     subject_type: props.filters.subject_type ?? '',
     per_page: props.filters.per_page ?? 20,
@@ -63,10 +68,16 @@ const eventSelectOptions = computed(() => ([
     })),
 ]));
 
+const logNameOptions = computed(() => ([
+    { label: 'Minden domain', value: '' },
+    ...Object.entries(props.logNameLabels).map(([value, label]) => ({ value, label })),
+]));
+
 const subjectTypeOptions = computed(() => ([
     { label: 'Minden subject', value: '' },
     { label: props.subjectTypeLabels.role ?? 'Role', value: 'role' },
     { label: props.subjectTypeLabels.user ?? 'User', value: 'user' },
+    { label: props.subjectTypeLabels.order ?? 'Order', value: 'order' },
 ]));
 
 const load = (extra = {}) => {
@@ -74,6 +85,7 @@ const load = (extra = {}) => {
 
     router.get('/admin/audit-logs', {
         search: filterState.search || undefined,
+        log_name: filterState.log_name || undefined,
         event_key: filterState.event_key || undefined,
         subject_type: filterState.subject_type || undefined,
         per_page: filterState.per_page,
@@ -97,13 +109,13 @@ const onPage = (event) => {
 </script>
 
 <template>
-    <Head title="Authorization Audit Logs" />
+    <Head title="Audit Logs" />
 
     <div class="space-y-6">
         <SectionTitle
             eyebrow="Admin / Audit Logs"
-            title="Authorization audit naplo"
-            description="Role, permission es user-role admin muveletek teljesen nyomon kovetheto naploja."
+            title="Teljes audit naplo"
+            description="Authorization, felhasznaloi activity es rendelesi domain kritikus esemenyei egy helyen."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
@@ -116,6 +128,18 @@ const onPage = (event) => {
                             class="w-full"
                             placeholder="Actor nev vagy email..."
                             @keyup.enter="submitFilters"
+                        />
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Domain</label>
+                        <Select
+                            v-model="filterState.log_name"
+                            :options="logNameOptions"
+                            option-label="label"
+                            option-value="value"
+                            class="w-full"
+                            @change="submitFilters"
                         />
                     </div>
 
@@ -179,6 +203,12 @@ const onPage = (event) => {
                 </template>
 
                 <Column header="Idopont" field="created_at" />
+
+                <Column header="Domain">
+                    <template #body="{ data }">
+                        <span class="text-xs font-semibold uppercase tracking-[0.1em] text-bakery-dark/70">{{ data.log_name }}</span>
+                    </template>
+                </Column>
 
                 <Column header="Esemeny">
                     <template #body="{ data }">

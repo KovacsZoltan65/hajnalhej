@@ -358,7 +358,7 @@ class PermissionRegistry
                 'name' => self::AUDIT_LOGS_VIEW,
                 'module' => 'Roles & Permissions',
                 'label' => 'Audit naplo megtekintes',
-                'description' => 'Jogosultsag valtozasok audit naplojanak megtekintese.',
+                'description' => 'Authorization, user activity es order audit naplok megtekintese.',
                 'dangerous' => false,
                 'sort' => 320,
             ],

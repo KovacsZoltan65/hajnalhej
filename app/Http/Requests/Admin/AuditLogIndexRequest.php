@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Services\Audit\AuthorizationAuditService;
+use App\Support\AuditEventRegistry;
 use App\Support\PermissionRegistry;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -21,8 +21,9 @@ class AuditLogIndexRequest extends FormRequest
     {
         return [
             'search' => ['nullable', 'string', 'max:120'],
-            'event_key' => ['nullable', 'string', Rule::in(AuthorizationAuditService::eventKeys())],
-            'subject_type' => ['nullable', 'string', Rule::in(['role', 'user'])],
+            'log_name' => ['nullable', 'string', Rule::in(array_keys(AuditEventRegistry::logNameLabels()))],
+            'event_key' => ['nullable', 'string', Rule::in(AuditEventRegistry::eventKeys())],
+            'subject_type' => ['nullable', 'string', Rule::in(['role', 'user', 'order'])],
             'per_page' => ['nullable', 'integer', 'min:10', 'max:100'],
         ];
     }

@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use App\Repositories\OrderRepository;
+use App\Services\Audit\OrderAuditService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,7 @@ class CheckoutService
         private readonly CartService $cartService,
         private readonly OrderRepository $orderRepository,
         private readonly OrderService $orderService,
+        private readonly OrderAuditService $orderAuditService,
     ) {
     }
 
@@ -59,6 +61,16 @@ class CheckoutService
         });
 
         $this->cartService->clear();
+
+        $this->orderAuditService->logOrderPlaced(
+            order: $placedOrder,
+            actor: $user,
+            context: [
+                'operation' => 'checkout.place_order',
+                'source' => 'public.checkout',
+                'is_guest_checkout' => $user === null,
+            ],
+        );
 
         return $placedOrder;
     }

@@ -25,6 +25,8 @@ class UpdateOrderStatusRequest extends FormRequest
         return [
             'status' => ['required', 'string', Rule::in(Order::statuses())],
             'internal_notes' => ['nullable', 'string', 'max:3000'],
+            'pickup_date' => ['nullable', 'date'],
+            'pickup_time_slot' => ['nullable', 'string', 'max:60'],
         ];
     }
 }

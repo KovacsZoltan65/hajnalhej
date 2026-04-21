@@ -26,6 +26,7 @@ describe('Admin Audit Logs Show', () => {
                 log: {
                     id: 10,
                     event: 'role.permissions.synced',
+                    log_name: 'authorization',
                     created_at: '2026-04-21 13:00:00',
                     causer: { name: 'Admin', email: 'admin@example.com' },
                     subject: { label: 'admin', type: 'role' },

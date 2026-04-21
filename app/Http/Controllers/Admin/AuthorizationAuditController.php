@@ -29,10 +29,12 @@ class AuthorizationAuditController extends Controller
             'logs' => $logs,
             'filters' => [
                 'search' => (string) ($filters['search'] ?? ''),
+                'log_name' => (string) ($filters['log_name'] ?? ''),
                 'event_key' => (string) ($filters['event_key'] ?? ''),
                 'subject_type' => (string) ($filters['subject_type'] ?? ''),
                 'per_page' => (int) ($filters['per_page'] ?? 20),
             ],
+            'logNameLabels' => $this->service->logNameLabels(),
             'eventOptions' => $this->service->eventKeys(),
             'eventLabels' => $this->service->eventLabels(),
             'subjectTypeLabels' => $this->service->subjectTypeLabels(),

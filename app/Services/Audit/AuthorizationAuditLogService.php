@@ -2,7 +2,9 @@
 
 namespace App\Services\Audit;
 
+use App\Models\Order;
 use App\Repositories\AuthorizationAuditRepository;
+use App\Support\AuditEventRegistry;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Spatie\Activitylog\Models\Activity;
@@ -33,7 +35,7 @@ class AuthorizationAuditLogService
      */
     public function eventKeys(): array
     {
-        return AuthorizationAuditService::eventKeys();
+        return AuditEventRegistry::eventKeys();
     }
 
     /**
@@ -41,17 +43,15 @@ class AuthorizationAuditLogService
      */
     public function eventLabels(): array
     {
-        return [
-            AuthorizationAuditService::ROLE_CREATED => 'Role letrehozva',
-            AuthorizationAuditService::ROLE_UPDATED => 'Role frissitve',
-            AuthorizationAuditService::ROLE_DELETED => 'Role torolve',
-            AuthorizationAuditService::ROLE_UPDATE_BLOCKED => 'Role frissites tiltva',
-            AuthorizationAuditService::ROLE_DELETE_BLOCKED => 'Role torles tiltva',
-            AuthorizationAuditService::ROLE_PERMISSIONS_SYNCED => 'Role jogosultsagok szinkronizalva',
-            AuthorizationAuditService::ROLE_PERMISSIONS_SYNC_BLOCKED => 'Role jogosultsag szinkron tiltva',
-            AuthorizationAuditService::USER_ROLES_SYNCED => 'User role-ok szinkronizalva',
-            AuthorizationAuditService::USER_ROLES_SYNC_BLOCKED => 'User role szinkron tiltva',
-        ];
+        return AuditEventRegistry::eventLabels();
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function logNameLabels(): array
+    {
+        return AuditEventRegistry::logNameLabels();
     }
 
     /**
@@ -62,6 +62,7 @@ class AuthorizationAuditLogService
         return [
             'role' => 'Role',
             'user' => 'User',
+            'order' => 'Order',
         ];
     }
 
@@ -74,6 +75,7 @@ class AuthorizationAuditLogService
             'id' => $activity->id,
             'event' => $activity->event,
             'description' => $activity->description,
+            'log_name' => $activity->log_name,
             'created_at' => $activity->created_at?->toDateTimeString(),
             'causer' => [
                 'id' => $activity->causer?->id,
@@ -113,8 +115,16 @@ class AuthorizationAuditLogService
                 'removed_permissions' => Arr::get($properties, 'removed_permissions', []),
                 'added_roles' => Arr::get($properties, 'added_roles', []),
                 'removed_roles' => Arr::get($properties, 'removed_roles', []),
+                'status_transition' => Arr::get($properties, 'status_transition'),
+                'pickup_transition' => Arr::get($properties, 'pickup_transition'),
                 'role' => Arr::get($properties, 'role'),
+                'order' => Arr::get($properties, 'order'),
+                'customer_snapshot' => Arr::get($properties, 'customer_snapshot'),
+                'totals_snapshot' => Arr::get($properties, 'totals_snapshot'),
+                'items_summary' => Arr::get($properties, 'items_summary', []),
+                'pickup_snapshot' => Arr::get($properties, 'pickup_snapshot'),
                 'target_user' => Arr::get($properties, 'target_user'),
+                'note_summary' => Arr::get($properties, 'note_summary'),
                 'blocked_reason' => Arr::get($properties, 'blocked_reason'),
                 'actor_snapshot' => Arr::get($properties, 'actor_snapshot'),
             ],
@@ -130,12 +140,15 @@ class AuthorizationAuditLogService
         $subjectType = match ($activity->subject_type) {
             Role::class => 'role',
             User::class => 'user',
+            Order::class => 'order',
             default => 'unknown',
         };
 
-        $subjectLabel = $subject?->name
-            ?? $subject?->email
-            ?? ($activity->subject_type ? class_basename($activity->subject_type) : 'n/a');
+        $subjectLabel = match ($subjectType) {
+            'order' => (string) ($subject?->order_number ?? 'Order'),
+            'user' => (string) ($subject?->email ?? $subject?->name ?? 'User'),
+            default => (string) ($subject?->name ?? $subject?->email ?? ($activity->subject_type ? class_basename($activity->subject_type) : 'n/a')),
+        };
 
         return [
             'id' => $activity->subject_id,
