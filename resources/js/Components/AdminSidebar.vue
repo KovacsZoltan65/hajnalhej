@@ -1,9 +1,10 @@
 <script setup>
 import { Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 const page = usePage();
 
-const links = [
+const baseLinks = [
     { label: 'Dashboard', href: '/admin/dashboard', icon: 'pi pi-chart-bar' },
     { label: 'Kategoriak', href: '/admin/categories', icon: 'pi pi-tags' },
     { label: 'Termekek', href: '/admin/products', icon: 'pi pi-box' },
@@ -13,6 +14,21 @@ const links = [
     { label: 'Heti menuk', href: '/admin/weekly-menus', icon: 'pi pi-calendar' },
     { label: 'Rendelesek', href: '/admin/orders', icon: 'pi pi-shopping-bag' },
 ];
+
+const links = computed(() => {
+    const dynamicLinks = [...baseLinks];
+    const can = page.props.auth?.can ?? {};
+
+    if (can.manage_roles) {
+        dynamicLinks.push({ label: 'Szerepkorok', href: '/admin/roles', icon: 'pi pi-shield' });
+    }
+
+    if (can.assign_user_roles || can.view_user_permissions) {
+        dynamicLinks.push({ label: 'Felhasznalo szerepkorok', href: '/admin/user-roles', icon: 'pi pi-users' });
+    }
+
+    return dynamicLinks;
+});
 
 const isActive = (href) => page.url === href || page.url.startsWith(`${href}/`);
 </script>

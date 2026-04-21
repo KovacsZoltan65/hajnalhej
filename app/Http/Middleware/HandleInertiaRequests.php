@@ -45,6 +45,11 @@ class HandleInertiaRequests extends Middleware
                     'can_access_admin_panel' => $user->can(PermissionRegistry::ADMIN_PANEL_ACCESS),
                     'email_verified_at' => $user->email_verified_at?->toIso8601String(),
                 ],
+                'can' => [
+                    'manage_roles' => $user?->can(PermissionRegistry::ROLES_VIEW) ?? false,
+                    'assign_user_roles' => $user?->can(PermissionRegistry::USERS_ASSIGN_ROLES) ?? false,
+                    'view_user_permissions' => $user?->can(PermissionRegistry::USERS_VIEW_PERMISSIONS) ?? false,
+                ],
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),

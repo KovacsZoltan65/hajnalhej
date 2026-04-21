@@ -7,17 +7,21 @@ use App\Models\Ingredient;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductionPlan;
+use App\Models\User;
 use App\Models\WeeklyMenu;
 use App\Policies\CategoryPolicy;
 use App\Policies\IngredientPolicy;
 use App\Policies\OrderPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ProductionPlanPolicy;
+use App\Policies\RolePolicy;
+use App\Policies\UserPolicy;
 use App\Policies\WeeklyMenuPolicy;
 use App\Support\PermissionRegistry;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Permission\Models\Role;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -57,6 +61,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Order::class, OrderPolicy::class);
         Gate::policy(Product::class, ProductPolicy::class);
         Gate::policy(ProductionPlan::class, ProductionPlanPolicy::class);
+        Gate::policy(Role::class, RolePolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
         Gate::policy(WeeklyMenu::class, WeeklyMenuPolicy::class);
     }
 }
