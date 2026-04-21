@@ -10,16 +10,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
+use App\Support\PermissionRegistry;
 
-#[Fillable(['name', 'email', 'password', 'role'])]
+#[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
-
-    public const ROLE_ADMIN = 'admin';
-    public const ROLE_CUSTOMER = 'customer';
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * Get the attributes that should be cast.
@@ -36,12 +35,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isAdmin(): bool
     {
-        return $this->role === self::ROLE_ADMIN;
+        return $this->hasRole(PermissionRegistry::ROLE_ADMIN);
     }
 
     public function isCustomer(): bool
     {
-        return $this->role === self::ROLE_CUSTOMER;
+        return $this->hasRole(PermissionRegistry::ROLE_CUSTOMER);
     }
 
     public function orders(): HasMany

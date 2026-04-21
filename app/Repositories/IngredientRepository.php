@@ -11,6 +11,7 @@ class IngredientRepository
 {
     /**
      * @param array<string, mixed> $filters
+     * @return LengthAwarePaginator
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -40,6 +41,7 @@ class IngredientRepository
 
     /**
      * @param array<string, mixed> $data
+     * @return Ingredient
      */
     public function create(array $data): Ingredient
     {
@@ -48,6 +50,7 @@ class IngredientRepository
 
     /**
      * @param array<string, mixed> $data
+     * @return Ingredient
      */
     public function update(Ingredient $ingredient, array $data): Ingredient
     {
@@ -56,11 +59,22 @@ class IngredientRepository
         return $ingredient->refresh();
     }
 
+    /**
+     * Summary of delete
+     * @param Ingredient $ingredient
+     * @return void
+     */
     public function delete(Ingredient $ingredient): void
     {
         $ingredient->delete();
     }
 
+    /**
+     * Summary of slugExists
+     * @param string $slug
+     * @param mixed $ignoreId
+     * @return bool
+     */
     public function slugExists(string $slug, ?int $ignoreId = null): bool
     {
         return Ingredient::query()
@@ -71,6 +85,7 @@ class IngredientRepository
 
     /**
      * @param array<string, mixed> $filters
+     * @return Builder
      */
     private function adminQuery(array $filters): Builder
     {

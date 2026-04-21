@@ -21,4 +21,13 @@ return [
     'admin' => [
         'status_updated' => 'A rendeles statusza frissult.',
     ],
+    'roles' => [
+        'created' => 'A szerepkor letrehozva.',
+        'updated' => 'A szerepkor frissitve.',
+        'deleted' => 'A szerepkor torolve.',
+        'permissions_synced' => 'A szerepkor jogosultsagai frissitve.',
+    ],
+    'user_roles' => [
+        'updated' => 'A felhasznalo szerepkorei frissitve.',
+    ],
 ];

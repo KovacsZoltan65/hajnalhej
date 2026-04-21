@@ -11,6 +11,7 @@ class CategoryRepository
 {
     /**
      * @param array<string, mixed> $filters
+     * @return LengthAwarePaginator
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -40,6 +41,7 @@ class CategoryRepository
 
     /**
      * @param array<string, mixed> $data
+     * @return Category
      */
     public function create(array $data): Category
     {
@@ -47,7 +49,10 @@ class CategoryRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * Summary of update
+     * @param Category $category
+     * @param array $data
+     * @return Category
      */
     public function update(Category $category, array $data): Category
     {
@@ -56,11 +61,22 @@ class CategoryRepository
         return $category->refresh();
     }
 
+    /**
+     * Summary of delete
+     * @param Category $category
+     * @return void
+     */
     public function delete(Category $category): void
     {
         $category->delete();
     }
 
+    /**
+     * Summary of slugExists
+     * @param string $slug
+     * @param int $ignoreId
+     * @return bool
+     */
     public function slugExists(string $slug, ?int $ignoreId = null): bool
     {
         return Category::query()
@@ -71,6 +87,7 @@ class CategoryRepository
 
     /**
      * @param array<string, mixed> $filters
+     * @return Builder
      */
     private function adminQuery(array $filters): Builder
     {

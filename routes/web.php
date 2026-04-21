@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\IngredientController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\RoleController as AdminRoleController;
+use App\Http\Controllers\Admin\UserRoleController as AdminUserRoleController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\RecipeController;
 use App\Http\Controllers\Admin\RecipeStepController;
@@ -68,7 +70,7 @@ Route::middleware('auth')->group(function (): void {
         ->middleware('throttle:6,1')
         ->name('verification.send');
 
-    Route::prefix('admin')->middleware('admin')->name('admin.')->group(function (): void {
+    Route::prefix('admin')->middleware('permission:admin.panel.access')->name('admin.')->group(function (): void {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -113,5 +115,31 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
         Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status.update');
+
+        Route::get('/roles', [AdminRoleController::class, 'index'])
+            ->middleware('permission:roles.view')
+            ->name('roles.index');
+        Route::get('/roles/{role}', [AdminRoleController::class, 'show'])
+            ->middleware('permission:roles.view')
+            ->name('roles.show');
+        Route::post('/roles', [AdminRoleController::class, 'store'])
+            ->middleware('permission:roles.create')
+            ->name('roles.store');
+        Route::put('/roles/{role}', [AdminRoleController::class, 'update'])
+            ->middleware('permission:roles.update')
+            ->name('roles.update');
+        Route::delete('/roles/{role}', [AdminRoleController::class, 'destroy'])
+            ->middleware('permission:roles.delete')
+            ->name('roles.destroy');
+        Route::put('/roles/{role}/permissions', [AdminRoleController::class, 'syncPermissions'])
+            ->middleware('permission:roles.assign-permissions')
+            ->name('roles.permissions.sync');
+
+        Route::get('/user-roles', [AdminUserRoleController::class, 'index'])
+            ->middleware('role_or_permission:users.assign-roles|users.view-permissions')
+            ->name('user-roles.index');
+        Route::put('/users/{user}/roles', [AdminUserRoleController::class, 'update'])
+            ->middleware('permission:users.assign-roles')
+            ->name('users.roles.update');
     });
 });

@@ -21,4 +21,13 @@ return [
     'admin' => [
         'status_updated' => 'Order status has been updated.',
     ],
+    'roles' => [
+        'created' => 'Role created successfully.',
+        'updated' => 'Role has been updated.',
+        'deleted' => 'Role has been deleted.',
+        'permissions_synced' => 'Role permissions have been synced.',
+    ],
+    'user_roles' => [
+        'updated' => 'User roles have been updated.',
+    ],
 ];

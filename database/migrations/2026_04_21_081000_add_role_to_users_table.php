@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -15,12 +14,12 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table): void {
             $table->string('role', 32)
-                ->default(User::ROLE_CUSTOMER)
+                ->default('customer')
                 ->after('password')
                 ->index();
         });
 
-        DB::table('users')->update(['role' => User::ROLE_ADMIN]);
+        DB::table('users')->update(['role' => 'admin']);
     }
 
     /**

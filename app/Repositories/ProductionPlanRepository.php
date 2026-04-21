@@ -36,7 +36,10 @@ class ProductionPlanRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * Summary of update
+     * @param ProductionPlan $productionPlan
+     * @param array $data
+     * @return ProductionPlan
      */
     public function update(ProductionPlan $productionPlan, array $data): ProductionPlan
     {
@@ -45,11 +48,21 @@ class ProductionPlanRepository
         return $productionPlan->refresh();
     }
 
+    /**
+     * Summary of delete
+     * @param ProductionPlan $productionPlan
+     * @return void
+     */
     public function delete(ProductionPlan $productionPlan): void
     {
         $productionPlan->delete();
     }
 
+    /**
+     * Summary of loadForEditor
+     * @param ProductionPlan $productionPlan
+     * @return ProductionPlan
+     */
     public function loadForEditor(ProductionPlan $productionPlan): ProductionPlan
     {
         return $productionPlan->load([

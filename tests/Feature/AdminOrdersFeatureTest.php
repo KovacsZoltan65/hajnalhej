@@ -18,7 +18,7 @@ it('customer cannot access admin orders', function (): void {
 
     $response = $this->actingAs($customer)->get('/admin/orders');
 
-    $response->assertRedirect('/account');
+    $response->assertForbidden();
 });
 
 it('admin can move order status along lifecycle', function (): void {

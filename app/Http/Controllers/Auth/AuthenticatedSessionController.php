@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Support\PermissionRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +25,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = $request->user();
-        $fallbackRoute = $user?->isAdmin() ? 'admin.dashboard' : 'account';
+        $fallbackRoute = $user?->can(PermissionRegistry::ADMIN_PANEL_ACCESS) ? 'admin.dashboard' : 'account';
 
         return redirect()
             ->intended(route($fallbackRoute))

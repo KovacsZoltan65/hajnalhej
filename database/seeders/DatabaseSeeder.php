@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Support\PermissionRegistry;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,6 +16,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            RolesAndPermissionsSeeder::class,
+        ]);
+
         User::query()->updateOrCreate(
             ['email' => 'admin@hajnalhej.hu'],
             [
@@ -22,6 +27,9 @@ class DatabaseSeeder extends Seeder
                 'password' => 'bakery1234',
             ],
         );
+
+        $admin = User::query()->where('email', 'admin@hajnalhej.hu')->first();
+        $admin?->syncRoles([PermissionRegistry::ROLE_ADMIN]);
 
         $this->call([
             CategorySeeder::class,

@@ -16,6 +16,7 @@ class CategoryService
 
     /**
      * @param array<string, mixed> $filters
+     * @return LengthAwarePaginator
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -32,6 +33,7 @@ class CategoryService
 
     /**
      * @param array<string, mixed> $payload
+     * @return Category
      */
     public function create(array $payload): Category
     {
@@ -43,6 +45,7 @@ class CategoryService
 
     /**
      * @param array<string, mixed> $payload
+     * @return Category
      */
     public function update(Category $category, array $payload): Category
     {
@@ -52,6 +55,11 @@ class CategoryService
         return $this->repository->update($category, $normalized);
     }
 
+    /**
+     * Summary of delete
+     * @param Category $category
+     * @return void
+     */
     public function delete(Category $category): void
     {
         $this->repository->delete($category);
@@ -83,6 +91,12 @@ class CategoryService
         ];
     }
 
+    /**
+     * Summary of resolveUniqueSlug
+     * @param string $baseSlug
+     * @param mixed $ignoreId
+     * @return string
+     */
     private function resolveUniqueSlug(string $baseSlug, ?int $ignoreId = null): string
     {
         $baseSlug = Str::slug($baseSlug);

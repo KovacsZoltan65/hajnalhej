@@ -16,6 +16,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
+/**
+ * Summary of ProductionPlanService
+ */
 class ProductionPlanService
 {
     public function __construct(private readonly ProductionPlanRepository $repository)

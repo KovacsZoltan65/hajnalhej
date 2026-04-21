@@ -18,6 +18,11 @@ class CategoryController extends Controller
     {
     }
 
+    /**
+     * Summary of index
+     * @param Request $request
+     * @return \Inertia\Response
+     */
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Category::class);
@@ -53,6 +58,11 @@ class CategoryController extends Controller
         ]);
     }
 
+    /**
+     * Summary of store
+     * @param StoreCategoryRequest $request
+     * @return RedirectResponse
+     */
     public function store(StoreCategoryRequest $request): RedirectResponse
     {
         $this->service->create($request->validated());
@@ -62,6 +72,12 @@ class CategoryController extends Controller
             ->with('success', 'Kategoria letrehozva.');
     }
 
+    /**
+     * Summary of update
+     * @param UpdateCategoryRequest $request
+     * @param Category $category
+     * @return RedirectResponse
+     */
     public function update(UpdateCategoryRequest $request, Category $category): RedirectResponse
     {
         $this->service->update($category, $request->validated());
@@ -71,6 +87,11 @@ class CategoryController extends Controller
             ->with('success', 'Kategoria frissitve.');
     }
 
+    /**
+     * Summary of destroy
+     * @param Category $category
+     * @return RedirectResponse
+     */
     public function destroy(Category $category): RedirectResponse
     {
         $this->authorize('delete', $category);
