@@ -12,6 +12,7 @@ use App\Policies\IngredientPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ProductionPlanPolicy;
 use App\Policies\WeeklyMenuPolicy;
+use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,6 +31,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        RedirectIfAuthenticated::redirectUsing(function () {
+            $user = auth()->user();
+
+            if ($user?->isAdmin()) {
+                return route('admin.dashboard');
+            }
+
+            return route('account');
+        });
+
         Gate::policy(Category::class, CategoryPolicy::class);
         Gate::policy(Ingredient::class, IngredientPolicy::class);
         Gate::policy(Product::class, ProductPolicy::class);
