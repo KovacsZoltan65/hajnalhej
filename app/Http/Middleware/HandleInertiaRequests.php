@@ -49,6 +49,7 @@ class HandleInertiaRequests extends Middleware
                     'manage_roles' => $user?->can(PermissionRegistry::ROLES_VIEW) ?? false,
                     'assign_user_roles' => $user?->can(PermissionRegistry::USERS_ASSIGN_ROLES) ?? false,
                     'view_user_permissions' => $user?->can(PermissionRegistry::USERS_VIEW_PERMISSIONS) ?? false,
+                    'manage_audit_logs' => $user?->can(PermissionRegistry::AUDIT_LOGS_VIEW) ?? false,
                 ],
             ],
             'flash' => [

@@ -27,6 +27,10 @@ const links = computed(() => {
         dynamicLinks.push({ label: 'Felhasznalo szerepkorok', href: '/admin/user-roles', icon: 'pi pi-users' });
     }
 
+    if (can.manage_audit_logs) {
+        dynamicLinks.push({ label: 'Audit naplo', href: '/admin/audit-logs', icon: 'pi pi-history' });
+    }
+
     return dynamicLinks;
 });
 

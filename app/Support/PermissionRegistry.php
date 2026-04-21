@@ -45,6 +45,7 @@ class PermissionRegistry
     public const ROLES_ASSIGN_PERMISSIONS = 'roles.assign-permissions';
     public const USERS_ASSIGN_ROLES = 'users.assign-roles';
     public const USERS_VIEW_PERMISSIONS = 'users.view-permissions';
+    public const AUDIT_LOGS_VIEW = 'audit-logs.view';
 
     /**
      * @return array<int, string>
@@ -352,6 +353,14 @@ class PermissionRegistry
                 'description' => 'Felhasznalo effektive jogosultsagainak megtekintese.',
                 'dangerous' => false,
                 'sort' => 310,
+            ],
+            [
+                'name' => self::AUDIT_LOGS_VIEW,
+                'module' => 'Roles & Permissions',
+                'label' => 'Audit naplo megtekintes',
+                'description' => 'Jogosultsag valtozasok audit naplojanak megtekintese.',
+                'dangerous' => false,
+                'sort' => 320,
             ],
         ];
     }

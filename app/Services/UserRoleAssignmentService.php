@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
+use App\Services\Audit\AuthorizationAuditService;
 use App\Support\PermissionRegistry;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\ValidationException;
@@ -14,6 +15,7 @@ class UserRoleAssignmentService
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly RoleRepository $roleRepository,
+        private readonly AuthorizationAuditService $auditService,
     ) {
     }
 
@@ -32,6 +34,7 @@ class UserRoleAssignmentService
     {
         $existingRoleNames = $this->roleRepository->existingRoleNames();
         $invalid = array_values(array_diff($roleNames, $existingRoleNames));
+        $targetCurrentRoles = $this->userRepository->roleNames($targetUser);
 
         if ($invalid !== []) {
             throw ValidationException::withMessages([
@@ -39,7 +42,6 @@ class UserRoleAssignmentService
             ]);
         }
 
-        $targetCurrentRoles = $this->userRepository->roleNames($targetUser);
         $isRemovingAdmin = \in_array(PermissionRegistry::ROLE_ADMIN, $targetCurrentRoles, true)
             && ! \in_array(PermissionRegistry::ROLE_ADMIN, $roleNames, true);
 
@@ -47,12 +49,28 @@ class UserRoleAssignmentService
             $adminUsersCount = $this->userRepository->countUsersWithRole(PermissionRegistry::ROLE_ADMIN);
 
             if ($adminUsersCount <= 1) {
+                $this->auditService->logUserRolesSyncBlocked(
+                    $actingUser,
+                    $targetUser,
+                    'last_admin_role_removal_forbidden',
+                    $targetCurrentRoles,
+                    $roleNames,
+                );
+
                 throw ValidationException::withMessages([
                     'roles' => 'Az utolso admin szerepkor nem veheto le.',
                 ]);
             }
 
             if ($actingUser->id === $targetUser->id) {
+                $this->auditService->logUserRolesSyncBlocked(
+                    $actingUser,
+                    $targetUser,
+                    'self_admin_role_removal_forbidden',
+                    $targetCurrentRoles,
+                    $roleNames,
+                );
+
                 throw ValidationException::withMessages([
                     'roles' => 'Sajat magadrol nem veheted le az admin szerepkort.',
                 ]);
@@ -60,6 +78,9 @@ class UserRoleAssignmentService
         }
 
         $this->userRepository->syncRoles($targetUser, $roleNames);
+        $afterRoles = $this->userRepository->roleNames($targetUser->refresh());
+
+        $this->auditService->logUserRolesSynced($actingUser, $targetUser, $targetCurrentRoles, $afterRoles);
     }
 
     /**
