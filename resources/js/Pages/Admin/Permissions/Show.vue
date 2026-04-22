@@ -17,16 +17,30 @@ const props = defineProps({
         required: true,
     },
 });
+
+const moduleLabels = {
+    Admin: 'Admin',
+    Orders: 'Rendelések',
+    Products: 'Termékek',
+    Categories: 'Kategóriák',
+    Ingredients: 'Alapanyagok',
+    'Weekly Menu': 'Heti menü',
+    'Production Plans': 'Gyártási tervek',
+    Account: 'Fiók',
+    'Roles & Permissions': 'Szerepkörök és jogosultságok',
+    Security: 'Biztonság',
+};
+const moduleLabel = (moduleName) => moduleLabels[moduleName] ?? moduleName;
 </script>
 
 <template>
-    <Head :title="`Permission - ${props.permission.name}`" />
+    <Head :title="`Jogosultság - ${props.permission.name}`" />
 
     <div class="space-y-6">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <SectionTitle
-                eyebrow="Admin / Permissions"
-                :title="`Permission: ${props.permission.name}`"
+                eyebrow="Admin / Jogosultságok"
+                :title="`Jogosultság: ${props.permission.name}`"
                 description="Registry metadata, usage es drift allapot attekintes."
             />
 
@@ -37,11 +51,11 @@ const props = defineProps({
 
         <div class="grid gap-4 rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:grid-cols-2 sm:p-5">
             <div class="space-y-2">
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Permission</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Jogosultság</p>
                 <PermissionBadge :name="props.permission.name" />
             </div>
             <div class="space-y-2">
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Registry state</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Registry állapot</p>
                 <PermissionRegistryStateBadge :state="props.permission.registry_state" />
             </div>
             <div>
@@ -50,14 +64,14 @@ const props = defineProps({
             </div>
             <div>
                 <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Modul</p>
-                <p class="mt-2 text-sm font-semibold text-bakery-dark">{{ props.permission.module }}</p>
+                <p class="mt-2 text-sm font-semibold text-bakery-dark">{{ moduleLabel(props.permission.module) }}</p>
             </div>
             <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Leiras</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Leírás</p>
                 <p class="mt-2 text-sm text-bakery-dark/90">{{ props.permission.description }}</p>
             </div>
             <div class="space-y-2">
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Dangerous</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Veszélyes</p>
                 <PermissionDangerBadge :dangerous="props.permission.dangerous" />
             </div>
             <div>
@@ -65,7 +79,7 @@ const props = defineProps({
                 <p class="mt-2 text-sm font-semibold text-bakery-dark">{{ props.permission.guard_name }}</p>
             </div>
             <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Audit sensitive</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Auditérzékeny</p>
                 <p class="mt-2 text-sm font-semibold text-bakery-dark">{{ props.permission.audit_sensitive ? 'Igen' : 'Nem' }}</p>
             </div>
         </div>
@@ -77,3 +91,4 @@ const props = defineProps({
         />
     </div>
 </template>
+

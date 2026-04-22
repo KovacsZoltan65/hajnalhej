@@ -77,9 +77,9 @@ class WeeklyMenuController extends Controller
                 'per_page' => (int) ($filters['per_page'] ?? 10),
             ],
             'statuses' => [
-                ['value' => WeeklyMenu::STATUS_DRAFT, 'label' => 'Draft'],
-                ['value' => WeeklyMenu::STATUS_PUBLISHED, 'label' => 'Published'],
-                ['value' => WeeklyMenu::STATUS_ARCHIVED, 'label' => 'Archived'],
+                ['value' => WeeklyMenu::STATUS_DRAFT, 'label' => 'Piszkozat'],
+                ['value' => WeeklyMenu::STATUS_PUBLISHED, 'label' => 'Közzétéve'],
+                ['value' => WeeklyMenu::STATUS_ARCHIVED, 'label' => 'Archivált'],
             ],
             'products' => $this->service->listSelectableProducts(),
         ]);
@@ -89,14 +89,14 @@ class WeeklyMenuController extends Controller
     {
         $this->service->create($request->validated());
 
-        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menu letrehozva.');
+        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü létrehozva.');
     }
 
     public function update(UpdateWeeklyMenuRequest $request, WeeklyMenu $weeklyMenu): RedirectResponse
     {
         $this->service->update($weeklyMenu, $request->validated());
 
-        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menu frissitve.');
+        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü frissítve.');
     }
 
     public function destroy(WeeklyMenu $weeklyMenu): RedirectResponse
@@ -105,7 +105,7 @@ class WeeklyMenuController extends Controller
 
         $this->service->delete($weeklyMenu);
 
-        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menu torolve.');
+        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü törölve.');
     }
 
     public function publish(WeeklyMenu $weeklyMenu): RedirectResponse
@@ -118,7 +118,7 @@ class WeeklyMenuController extends Controller
             return redirect()->route('admin.weekly-menus.index')->with('error', $exception->getMessage());
         }
 
-        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menu publikalva.');
+        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü publikálva.');
     }
 
     public function unpublish(WeeklyMenu $weeklyMenu): RedirectResponse
@@ -127,7 +127,7 @@ class WeeklyMenuController extends Controller
 
         $this->service->unpublish($weeklyMenu);
 
-        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menu visszaallitva draft allapotba.');
+        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü visszaállítva piszkozat állapotba.');
     }
 
     public function storeItem(StoreWeeklyMenuItemRequest $request, WeeklyMenu $weeklyMenu): RedirectResponse
@@ -138,7 +138,7 @@ class WeeklyMenuController extends Controller
             return redirect()->route('admin.weekly-menus.index')->with('error', $exception->getMessage());
         }
 
-        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menu tetel letrehozva.');
+        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü tétel létrehozva.');
     }
 
     public function updateItem(UpdateWeeklyMenuItemRequest $request, WeeklyMenu $weeklyMenu, WeeklyMenuItem $item): RedirectResponse
@@ -153,7 +153,7 @@ class WeeklyMenuController extends Controller
             return redirect()->route('admin.weekly-menus.index')->with('error', $exception->getMessage());
         }
 
-        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menu tetel frissitve.');
+        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü tétel frissítve.');
     }
 
     public function destroyItem(WeeklyMenu $weeklyMenu, WeeklyMenuItem $item): RedirectResponse
@@ -166,6 +166,10 @@ class WeeklyMenuController extends Controller
 
         $this->service->deleteItem($item);
 
-        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menu tetel torolve.');
+        return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü tétel törölve.');
     }
 }
+
+
+
+

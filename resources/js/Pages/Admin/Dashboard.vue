@@ -15,26 +15,26 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Admin Dashboard" />
+    <Head title="Admin vezérlőpult" />
 
     <div class="space-y-8">
         <SectionTitle
             eyebrow="Admin"
             title="Napi attekintes"
-            description="Elso alap dashboard valos admin strukturaval, keszen a kovetkezo modulok fogadasara."
+            description="Első alap vezérlőpult valós admin struktúrával, készen a következő modulok fogadására."
         />
 
         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <DashboardCard title="Orders Today" :value="stats.ordersToday.toString()" icon="pi pi-shopping-cart" />
-            <DashboardCard title="This Week Revenue" :value="stats.weekRevenue" icon="pi pi-wallet" />
-            <DashboardCard title="Top Product" :value="stats.topProduct" icon="pi pi-star-fill" />
-            <DashboardCard title="Next Pickup Slot" :value="stats.nextPickupSlot" icon="pi pi-clock" />
+            <DashboardCard title="Mai rendelések" :value="stats.ordersToday.toString()" icon="pi pi-shopping-cart" />
+            <DashboardCard title="Heti árbevétel" :value="stats.weekRevenue" icon="pi pi-wallet" />
+            <DashboardCard title="Legnépszerűbb termék" :value="stats.topProduct" icon="pi pi-star-fill" />
+            <DashboardCard title="Következő átvételi sáv" :value="stats.nextPickupSlot" icon="pi pi-clock" />
         </div>
 
         <section class="rounded-2xl border border-bakery-brown/15 bg-[#fdf8f1] p-5">
             <h3 class="font-heading text-2xl text-bakery-dark">Kovetkezo lepesek</h3>
             <p class="mt-2 text-sm text-bakery-dark/75">
-                A kovetkezo fazisban ide csatlakoznak a valos riportok, rendelesi mutatok, valamint a CRUD modulok navigacios
+                A következő fázisban ide csatlakoznak a valós riportok, rendelési mutatók, valamint a CRUD modulok navigációs
                 celpontjai.
             </p>
             <div class="mt-4 flex flex-wrap gap-2">

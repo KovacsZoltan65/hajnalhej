@@ -7,7 +7,7 @@ describe('OrderStatusBadge', () => {
             props: { status: 'ready_for_pickup' },
         });
 
-        expect(wrapper.text()).toContain('Ready for pickup');
+        expect(wrapper.text()).toContain('Átvételre kész');
     });
 
     it('falls back to raw status for unknown status', () => {

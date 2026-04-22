@@ -7,9 +7,9 @@ const props = defineProps({
 });
 
 const map = {
-    draft: { label: 'Draft', className: 'bg-stone-200 text-stone-700' },
-    published: { label: 'Published', className: 'bg-green-100 text-green-800' },
-    archived: { label: 'Archived', className: 'bg-amber-100 text-amber-800' },
+    draft: { label: 'Piszkozat', className: 'bg-stone-200 text-stone-700' },
+    published: { label: 'Közzétéve', className: 'bg-green-100 text-green-800' },
+    archived: { label: 'Archivált', className: 'bg-amber-100 text-amber-800' },
 };
 
 const config = map[props.status] ?? map.draft;

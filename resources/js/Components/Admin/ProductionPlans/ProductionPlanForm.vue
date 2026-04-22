@@ -46,7 +46,7 @@ const removeItemRow = (index) => {
             </div>
 
             <div v-if="mode === 'edit'" class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Statusz</label>
+                <label class="text-sm font-medium text-bakery-dark">Státusz</label>
                 <Select v-model="form.status" :options="statuses" option-label="label" option-value="value" class="w-full" />
                 <p v-if="form.errors.status" class="text-xs text-red-700">{{ form.errors.status }}</p>
             </div>
@@ -113,3 +113,4 @@ const removeItemRow = (index) => {
         </div>
     </div>
 </template>
+

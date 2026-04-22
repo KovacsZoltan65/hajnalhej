@@ -39,14 +39,14 @@ const submit = () => {
 </script>
 
 <template>
-    <Head :title="`Role - ${props.role.name}`" />
+    <Head :title="`Szerepkör - ${props.role.name}`" />
 
     <div class="space-y-6">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <SectionTitle
-                eyebrow="Admin / Roles"
-                :title="`Szerepkor: ${props.role.name}`"
-                description="A role-hoz tartozok jogosultsagok szinkronizalasa modulonkent."
+                eyebrow="Admin / Szerepkörök"
+                :title="`Szerepkör: ${props.role.name}`"
+                description="A role-hoz tartozó jogosultságok szinkronizálása modulonként."
             />
 
             <Link href="/admin/roles">
@@ -56,7 +56,7 @@ const submit = () => {
 
         <div class="grid gap-4 rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:grid-cols-3 sm:p-5">
             <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Szerepkor</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Szerepkör</p>
                 <div class="mt-2">
                     <RoleBadge :role="props.role.name" :system="props.role.is_system_role" />
                 </div>
@@ -66,7 +66,7 @@ const submit = () => {
                 <p class="mt-2 text-sm font-semibold text-bakery-dark">{{ props.role.guard_name }}</p>
             </div>
             <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Felhasznalok</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Felhasználók</p>
                 <p class="mt-2 text-sm font-semibold text-bakery-dark">{{ props.role.users_count }}</p>
             </div>
         </div>
@@ -74,15 +74,15 @@ const submit = () => {
         <div class="space-y-4 rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                    <p class="text-lg font-semibold text-bakery-dark">Jogosultsag matrix</p>
+                    <p class="text-lg font-semibold text-bakery-dark">Jogosultság matrix</p>
                     <p class="text-sm text-bakery-dark/70">
-                        Osszesen {{ selectedPermissions.length }} jogosultsag kivalasztva.
+                        Összesen {{ selectedPermissions.length }} jogosultság kiválasztva.
                     </p>
                 </div>
 
                 <Button
                     v-if="can.assign_permissions"
-                    label="Jogosultsagok mentese"
+                    label="Jogosultságok mentese"
                     icon="pi pi-save"
                     :loading="form.processing"
                     :disabled="form.processing"
@@ -100,3 +100,5 @@ const submit = () => {
         </div>
     </div>
 </template>
+
+

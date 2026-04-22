@@ -24,7 +24,7 @@ describe('PermissionSyncSummaryModal', () => {
             },
         });
 
-        expect(wrapper.text()).toContain('Created');
+        expect(wrapper.text()).toContain('Létrehozva');
         expect(wrapper.text()).toContain('permissions.view');
         expect(wrapper.text()).toContain('legacy.custom');
     });

@@ -45,7 +45,7 @@ const clearCart = () => {
 
         <section v-if="cart.summary.is_empty" class="rounded-2xl border border-dashed border-bakery-brown/30 bg-[#fcf7ef] p-10 text-center">
             <h2 class="font-heading text-3xl text-bakery-dark">A kosarad jelenleg ures</h2>
-            <p class="mt-3 text-sm text-bakery-dark/75">Valassz a heti kinalatbol, es tedd be a kedvenceidet.</p>
+            <p class="mt-3 text-sm text-bakery-dark/75">Válassz a heti kínálatból, és tedd be a kedvenceidet.</p>
             <Link href="/weekly-menu" class="mt-6 inline-flex rounded-full bg-bakery-brown px-6 py-3 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark">
                 Heti menu megtekintese
             </Link>

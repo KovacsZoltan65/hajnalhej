@@ -93,7 +93,7 @@ class ProductController extends Controller
 
         return redirect()
             ->route('admin.products.index')
-            ->with('success', 'Termek letrehozva.');
+            ->with('success', 'Termék létrehozva.');
     }
 
     public function update(UpdateProductRequest $request, Product $product): RedirectResponse
@@ -102,7 +102,7 @@ class ProductController extends Controller
 
         return redirect()
             ->route('admin.products.index')
-            ->with('success', 'Termek frissitve.');
+            ->with('success', 'Termék frissítve.');
     }
 
     public function destroy(Product $product): RedirectResponse
@@ -113,6 +113,8 @@ class ProductController extends Controller
 
         return redirect()
             ->route('admin.products.index')
-            ->with('success', 'Termek torolve.');
+            ->with('success', 'Termék törölve.');
     }
 }
+
+

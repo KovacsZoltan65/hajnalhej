@@ -56,8 +56,8 @@ const perPageOptions = [
 
 const activeOptions = [
     { label: 'Mind', value: '' },
-    { label: 'Aktiv', value: '1' },
-    { label: 'Inaktiv', value: '0' },
+    { label: 'Aktív', value: '1' },
+    { label: 'Inaktív', value: '0' },
 ];
 
 const unitOptions = computed(() => [{ label: 'Mind', value: '' }, ...props.units.map((unit) => ({ label: unit, value: unit }))]);
@@ -185,9 +185,9 @@ const submitEdit = () => {
 
 const confirmDelete = (ingredient) => {
     confirm.require({
-        header: 'Alapanyag torlese',
+        header: 'Alapanyag törlése',
         message: `Biztosan torlod ezt az alapanyagot: ${ingredient.name}?`,
-        rejectLabel: 'Megse',
+        rejectLabel: 'Mégse',
         acceptLabel: 'Torles',
         acceptClass: 'p-button-danger',
         accept: () => {
@@ -200,25 +200,25 @@ const confirmDelete = (ingredient) => {
 </script>
 
 <template>
-    <Head title="Ingredients" />
+    <Head title="Alapanyagok" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Ingredients"
+            eyebrow="Admin / Alapanyagok"
             title="Alapanyagok"
-            description="Alapanyag torzs low-stock jelzessel, keszen a keszletkezeles es gyartasi kalkulacio kovetkezo lepeseihez."
+            description="Alapanyag törzs alacsony készlet jelzéssel, készen a készletkezelés és gyártási kalkuláció következő lépéseihez."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
-                        <InputText v-model="filterState.search" class="w-full" placeholder="Nev, slug vagy SKU" @keyup.enter="submitFilters" />
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
+                        <InputText v-model="filterState.search" class="w-full" placeholder="Név, slug vagy SKU" @keyup.enter="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Statusz</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Státusz</label>
                         <Select v-model="filterState.is_active" :options="activeOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
@@ -228,13 +228,13 @@ const confirmDelete = (ingredient) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Talalat / oldal</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
                         <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
+                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
                     <Button icon="pi pi-plus" label="Uj alapanyag" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
@@ -257,7 +257,7 @@ const confirmDelete = (ingredient) => {
             >
                 <template #empty>
                     <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
-                        Nincs megjelenitheto alapanyag. Hozd letre az elsot.
+                        Nincs megjeleníthető alapanyag. Hozd létre az elsőt.
                     </div>
                 </template>
 
@@ -269,7 +269,7 @@ const confirmDelete = (ingredient) => {
                         </div>
                     </template>
                 </Column>
-                <Column field="unit" header="Unit" sortable />
+                <Column field="unit" header="Mértékegység" sortable />
                 <Column field="current_stock" header="Keszlet" sortable>
                     <template #body="{ data }">
                         <IngredientStockBadge
@@ -279,7 +279,7 @@ const confirmDelete = (ingredient) => {
                         />
                     </template>
                 </Column>
-                <Column field="is_active" header="Statusz" sortable>
+                <Column field="is_active" header="Státusz" sortable>
                     <template #body="{ data }">
                         <IngredientStatusBadge :active="data.is_active" />
                     </template>
@@ -300,3 +300,5 @@ const confirmDelete = (ingredient) => {
         <ConfirmDialog />
     </div>
 </template>
+
+

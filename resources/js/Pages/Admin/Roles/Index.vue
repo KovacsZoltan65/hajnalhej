@@ -116,8 +116,8 @@ const submitEdit = () => {
 const destroyRole = (role) => {
     confirm.require({
         message: `Biztosan torlod a(z) ${role.name} szerepkort?`,
-        header: 'Szerepkor torlese',
-        rejectLabel: 'Megse',
+        header: 'Szerepkör törlése',
+        rejectLabel: 'Mégse',
         acceptLabel: 'Torles',
         acceptClass: 'p-button-danger',
         accept: () => {
@@ -128,30 +128,30 @@ const destroyRole = (role) => {
 </script>
 
 <template>
-    <Head title="Roles" />
+    <Head title="Szerepkörök" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Roles & Permissions"
-            title="Szerepkorok"
-            description="Role lista, atnevezes es jogosultsag-matrix kezelese biztonsagosan."
+            eyebrow="Admin / Szerepkörök és jogosultságok"
+            title="Szerepkörök"
+            description="Szerepkörlista, átnevezés és jogosultságmátrix kezelése biztonságosan."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 lg:grid-cols-3'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Szerepkor nev..."
+                            placeholder="Szerepkör nev..."
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Talalat / oldal</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -164,7 +164,7 @@ const destroyRole = (role) => {
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
+                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
                     <Button
                         v-if="can.create"
                         icon="pi pi-plus"
@@ -189,17 +189,17 @@ const destroyRole = (role) => {
                 @page="onPage"
             >
                 <template #empty>
-                    <div class="py-8 text-center text-sm text-bakery-dark/70">Nincs megjelenitheto szerepkor.</div>
+                    <div class="py-8 text-center text-sm text-bakery-dark/70">Nincs megjeleníthető szerepkor.</div>
                 </template>
 
-                <Column field="name" header="Szerepkor">
+                <Column field="name" header="Szerepkör">
                     <template #body="{ data }">
                         <RoleBadge :role="data.name" :system="data.is_system_role" />
                     </template>
                 </Column>
 
                 <Column field="guard_name" header="Guard" />
-                <Column field="permissions_count" header="Jogosultsagok" />
+                <Column field="permissions_count" header="Jogosultságok" />
                 <Column field="users_count" header="Felhasznalok" />
 
                 <Column header="Muveletek" :style="{ width: '17rem' }">
@@ -237,16 +237,18 @@ const destroyRole = (role) => {
     <RoleFormModal
         v-model:visible="createVisible"
         :form="createForm"
-        title="Uj szerepkor letrehozasa"
-        submit-label="Letrehozas"
+        title="Uj szerepkor létrehozása"
+        submit-label="Létrehozás"
         @submit="submitCreate"
     />
 
     <RoleFormModal
         v-model:visible="editVisible"
         :form="editForm"
-        title="Szerepkor atnevezese"
-        submit-label="Mentes"
+        title="Szerepkör atnevezese"
+        submit-label="Mentés"
         @submit="submitEdit"
     />
 </template>
+
+

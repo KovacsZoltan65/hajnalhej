@@ -11,7 +11,7 @@ describe('IngredientStockBadge', () => {
             },
         });
 
-        expect(wrapper.text()).toContain('Low stock');
+        expect(wrapper.text()).toContain('Alacsony készlet');
         expect(wrapper.text()).toContain('kg');
     });
 
@@ -27,3 +27,4 @@ describe('IngredientStockBadge', () => {
         expect(wrapper.text()).toContain('Rendben');
     });
 });
+

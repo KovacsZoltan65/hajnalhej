@@ -50,7 +50,7 @@ describe('WeeklyMenuForm', () => {
 
         expect(wrapper.text()).toContain('Cim');
         expect(wrapper.text()).toContain('Het kezdete');
-        expect(wrapper.text()).toContain('Statusz');
+        expect(wrapper.text()).toContain('Státusz');
         expect(wrapper.text()).toContain('Slug');
     });
 
@@ -87,3 +87,4 @@ describe('WeeklyMenuForm', () => {
         expect(wrapper.find('#weekly-menu-slug').attributes('disabled')).toBeDefined();
     });
 });
+

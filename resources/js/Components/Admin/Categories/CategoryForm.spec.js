@@ -44,7 +44,7 @@ describe('CategoryForm', () => {
             global: { stubs },
         });
 
-        expect(wrapper.text()).toContain('Nev');
+        expect(wrapper.text()).toContain('Név');
         expect(wrapper.text()).toContain('Slug');
         expect(wrapper.text()).toContain('Sorrend');
     });
@@ -80,3 +80,4 @@ describe('CategoryForm', () => {
         expect(wrapper.find('#category-slug').attributes('disabled')).toBeDefined();
     });
 });
+

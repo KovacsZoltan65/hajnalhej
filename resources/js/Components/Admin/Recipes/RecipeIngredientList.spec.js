@@ -23,7 +23,7 @@ describe('RecipeIngredientList', () => {
             },
         });
 
-        expect(wrapper.text()).toContain('Low stock');
+        expect(wrapper.text()).toContain('Alacsony készlet');
         expect(wrapper.text()).toContain('Liszt');
     });
 
@@ -37,6 +37,7 @@ describe('RecipeIngredientList', () => {
             },
         });
 
-        expect(wrapper.text()).toContain('meg nincs recepttetel');
+        expect(wrapper.text()).toContain('meg nincs recepttétel');
     });
 });
+

@@ -53,7 +53,7 @@ describe('IngredientForm', () => {
             global: { stubs },
         });
 
-        expect(wrapper.text()).toContain('Nev');
+        expect(wrapper.text()).toContain('Név');
         expect(wrapper.text()).toContain('Mertekegyseg');
         expect(wrapper.text()).toContain('Aktualis keszlet');
         expect(wrapper.text()).toContain('Slug');
@@ -92,3 +92,4 @@ describe('IngredientForm', () => {
         expect(wrapper.find('#ingredient-slug').attributes('disabled')).toBeDefined();
     });
 });
+

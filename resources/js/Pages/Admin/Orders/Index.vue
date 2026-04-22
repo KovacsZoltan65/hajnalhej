@@ -89,36 +89,36 @@ const onPage = (event) => {
 </script>
 
 <template>
-    <Head title="Orders" />
+    <Head title="Rendelések" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Orders"
-            title="Rendelesek"
-            description="Teljes rendelesi lista allapottal, keresessel, szuressel es reszletekkel."
+            eyebrow="Admin / Rendelések"
+            title="Rendelések"
+            description="Teljes rendelési lista allapottal, keresessel, szuressel es reszletekkel."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
-                        <InputText v-model="filterState.search" class="w-full" placeholder="Rendelesszam vagy ugyfel" @keyup.enter="submitFilters" />
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
+                        <InputText v-model="filterState.search" class="w-full" placeholder="Rendelésszám vagy ugyfel" @keyup.enter="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Statusz</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Státusz</label>
                         <Select v-model="filterState.status" :options="statusSelectOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Talalat / oldal</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
                         <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
+                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
                 </template>
             </AdminTableToolbar>
 
@@ -140,7 +140,7 @@ const onPage = (event) => {
             >
                 <template #empty>
                     <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
-                        Nincs megjelenitheto rendeles.
+                        Nincs megjeleníthető rendelés.
                     </div>
                 </template>
 
@@ -153,12 +153,12 @@ const onPage = (event) => {
                         </div>
                     </template>
                 </Column>
-                <Column field="status" header="Statusz" sortable>
+                <Column field="status" header="Státusz" sortable>
                     <template #body="{ data }">
                         <OrderStatusBadge :status="data.status" />
                     </template>
                 </Column>
-                <Column field="pickup_date" header="Atvetel" sortable>
+                <Column field="pickup_date" header="Átvétel" sortable>
                     <template #body="{ data }">
                         <div>
                             <p>{{ data.pickup_date || '-' }}</p>
@@ -182,3 +182,5 @@ const onPage = (event) => {
         </div>
     </div>
 </template>
+
+

@@ -42,9 +42,10 @@ const close = () => emit('update:visible', false);
 
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Megse" @click="close" />
-                <Button type="submit" form="product-edit-form" label="Mentes" :loading="form.processing" />
+                <Button type="button" severity="secondary" label="Mégse" @click="close" />
+                <Button type="submit" form="product-edit-form" label="Mentés" :loading="form.processing" />
             </div>
         </template>
     </Dialog>
 </template>
+

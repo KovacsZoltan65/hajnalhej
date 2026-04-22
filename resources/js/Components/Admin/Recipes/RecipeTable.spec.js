@@ -21,6 +21,6 @@ describe('RecipeTable', () => {
             global: { stubs },
         });
 
-        expect(wrapper.text()).toContain('Nincs megjelenitheto recept.');
+        expect(wrapper.text()).toContain('Nincs megjeleníthető recept.');
     });
 });

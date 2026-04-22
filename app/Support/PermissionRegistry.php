@@ -4,6 +4,11 @@ namespace App\Support;
 
 class PermissionRegistry
 {
+    /**
+     * @var array<string, array{name:string,module:string,label:string,description:string,dangerous:bool,sort:int,system:bool,audit_sensitive:bool}>|null
+     */
+    private static ?array $definitionsByNameCache = null;
+
     public const ROLE_ADMIN = 'admin';
     public const ROLE_CUSTOMER = 'customer';
 
@@ -48,6 +53,7 @@ class PermissionRegistry
     public const PERMISSIONS_VIEW = 'permissions.view';
     public const PERMISSIONS_SYNC = 'permissions.sync';
     public const PERMISSIONS_VIEW_USAGE = 'permissions.view-usage';
+    public const AUDIT_LOGS_VIEW = 'audit-logs.view';
     public const SECURITY_DASHBOARD_VIEW = 'security-dashboard.view';
 
     /**
@@ -102,6 +108,7 @@ class PermissionRegistry
             self::USERS_ASSIGN_ROLES,
             self::PERMISSIONS_VIEW,
             self::PERMISSIONS_SYNC,
+            self::AUDIT_LOGS_VIEW,
             self::SECURITY_DASHBOARD_VIEW,
         ];
     }
@@ -115,8 +122,8 @@ class PermissionRegistry
             [
                 'name' => self::ADMIN_PANEL_ACCESS,
                 'module' => 'Admin',
-                'label' => 'Admin panel eleres',
-                'description' => 'Admin feluletre belepes engedelyezese.',
+                'label' => 'Admin panel elérés',
+                'description' => 'Admin felületre belépés engedélyezése.',
                 'dangerous' => false,
                 'sort' => 10,
                 'system' => true,
@@ -124,9 +131,9 @@ class PermissionRegistry
             ],
             [
                 'name' => self::ORDERS_VIEW,
-                'module' => 'Orders',
-                'label' => 'Rendelesek megtekintese',
-                'description' => 'Rendeles lista es reszletek megtekintese.',
+                'module' => 'Rendelések',
+                'label' => 'Rendelések megtekintése',
+                'description' => 'Rendelés lista és részletek megtekintése.',
                 'dangerous' => false,
                 'sort' => 20,
                 'system' => true,
@@ -134,9 +141,9 @@ class PermissionRegistry
             ],
             [
                 'name' => self::ORDERS_UPDATE,
-                'module' => 'Orders',
-                'label' => 'Rendelesek szerkesztese',
-                'description' => 'Rendeles statusz es belso jegyzet modositas.',
+                'module' => 'Rendelések',
+                'label' => 'Rendelések szerkesztése',
+                'description' => 'Rendelés státusz és belső jegyzet módosítás.',
                 'dangerous' => true,
                 'sort' => 30,
                 'system' => true,
@@ -145,8 +152,8 @@ class PermissionRegistry
             [
                 'name' => self::PRODUCTS_VIEW,
                 'module' => 'Products',
-                'label' => 'Termekek megtekintese',
-                'description' => 'Termek lista megtekintese adminban.',
+                'label' => 'Termékek megtekintése',
+                'description' => 'Termék lista megtekintése adminban.',
                 'dangerous' => false,
                 'sort' => 40,
                 'system' => true,
@@ -155,8 +162,8 @@ class PermissionRegistry
             [
                 'name' => self::PRODUCTS_CREATE,
                 'module' => 'Products',
-                'label' => 'Termek letrehozas',
-                'description' => 'Uj termek letrehozas.',
+                'label' => 'Termék létrehozás',
+                'description' => 'Új termék létrehozás.',
                 'dangerous' => false,
                 'sort' => 50,
                 'system' => true,
@@ -165,8 +172,8 @@ class PermissionRegistry
             [
                 'name' => self::PRODUCTS_UPDATE,
                 'module' => 'Products',
-                'label' => 'Termek szerkesztes',
-                'description' => 'Meglevo termek adatok szerkesztese.',
+                'label' => 'Termék szerkesztés',
+                'description' => 'Meglévő termék adatok szerkesztése.',
                 'dangerous' => false,
                 'sort' => 60,
                 'system' => true,
@@ -175,8 +182,8 @@ class PermissionRegistry
             [
                 'name' => self::PRODUCTS_DELETE,
                 'module' => 'Products',
-                'label' => 'Termek torles',
-                'description' => 'Termek archiv/torles muvelet.',
+                'label' => 'Termék törlés',
+                'description' => 'Termék archiv/törlés muvelet.',
                 'dangerous' => true,
                 'sort' => 70,
                 'system' => true,
@@ -185,8 +192,8 @@ class PermissionRegistry
             [
                 'name' => self::CATEGORIES_VIEW,
                 'module' => 'Categories',
-                'label' => 'Kategoriak megtekintese',
-                'description' => 'Kategoriak listazasa adminban.',
+                'label' => 'Kategóriák megtekintése',
+                'description' => 'Kategóriák listázása adminban.',
                 'dangerous' => false,
                 'sort' => 80,
                 'system' => true,
@@ -195,8 +202,8 @@ class PermissionRegistry
             [
                 'name' => self::CATEGORIES_CREATE,
                 'module' => 'Categories',
-                'label' => 'Kategoria letrehozas',
-                'description' => 'Uj kategoria letrehozas.',
+                'label' => 'Kategória létrehozás',
+                'description' => 'Új kategoria létrehozás.',
                 'dangerous' => false,
                 'sort' => 90,
                 'system' => true,
@@ -205,8 +212,8 @@ class PermissionRegistry
             [
                 'name' => self::CATEGORIES_UPDATE,
                 'module' => 'Categories',
-                'label' => 'Kategoria szerkesztes',
-                'description' => 'Kategoriak szerkesztese.',
+                'label' => 'Kategória szerkesztés',
+                'description' => 'Kategóriák szerkesztése.',
                 'dangerous' => false,
                 'sort' => 100,
                 'system' => true,
@@ -215,8 +222,8 @@ class PermissionRegistry
             [
                 'name' => self::CATEGORIES_DELETE,
                 'module' => 'Categories',
-                'label' => 'Kategoria torles',
-                'description' => 'Kategoriak torlese.',
+                'label' => 'Kategória törlés',
+                'description' => 'Kategóriák törlése.',
                 'dangerous' => true,
                 'sort' => 110,
                 'system' => true,
@@ -225,8 +232,8 @@ class PermissionRegistry
             [
                 'name' => self::INGREDIENTS_VIEW,
                 'module' => 'Ingredients',
-                'label' => 'Alapanyagok megtekintese',
-                'description' => 'Alapanyag lista megtekintese.',
+                'label' => 'Alapanyagok megtekintése',
+                'description' => 'Alapanyag lista megtekintése.',
                 'dangerous' => false,
                 'sort' => 120,
                 'system' => true,
@@ -235,8 +242,8 @@ class PermissionRegistry
             [
                 'name' => self::INGREDIENTS_CREATE,
                 'module' => 'Ingredients',
-                'label' => 'Alapanyag letrehozas',
-                'description' => 'Uj alapanyag letrehozas.',
+                'label' => 'Alapanyag létrehozás',
+                'description' => 'Új alapanyag létrehozás.',
                 'dangerous' => false,
                 'sort' => 130,
                 'system' => true,
@@ -245,8 +252,8 @@ class PermissionRegistry
             [
                 'name' => self::INGREDIENTS_UPDATE,
                 'module' => 'Ingredients',
-                'label' => 'Alapanyag szerkesztes',
-                'description' => 'Alapanyag adatok modositas.',
+                'label' => 'Alapanyag szerkesztés',
+                'description' => 'Alapanyag adatok módosítás.',
                 'dangerous' => false,
                 'sort' => 140,
                 'system' => true,
@@ -255,8 +262,8 @@ class PermissionRegistry
             [
                 'name' => self::INGREDIENTS_DELETE,
                 'module' => 'Ingredients',
-                'label' => 'Alapanyag torles',
-                'description' => 'Alapanyag inaktivalas/torles.',
+                'label' => 'Alapanyag törlés',
+                'description' => 'Alapanyag inaktiválás/törlés.',
                 'dangerous' => true,
                 'sort' => 150,
                 'system' => true,
@@ -265,8 +272,8 @@ class PermissionRegistry
             [
                 'name' => self::WEEKLY_MENU_VIEW,
                 'module' => 'Weekly Menu',
-                'label' => 'Heti menu megtekintese',
-                'description' => 'Heti menu admin oldal elerese.',
+                'label' => 'Heti menü megtekintése',
+                'description' => 'Heti menü admin oldal elérése.',
                 'dangerous' => false,
                 'sort' => 160,
                 'system' => true,
@@ -275,8 +282,8 @@ class PermissionRegistry
             [
                 'name' => self::WEEKLY_MENU_CREATE,
                 'module' => 'Weekly Menu',
-                'label' => 'Heti menu letrehozas',
-                'description' => 'Uj heti menu letrehozas.',
+                'label' => 'Heti menü létrehozás',
+                'description' => 'Új heti menü létrehozás.',
                 'dangerous' => false,
                 'sort' => 170,
                 'system' => true,
@@ -285,8 +292,8 @@ class PermissionRegistry
             [
                 'name' => self::WEEKLY_MENU_UPDATE,
                 'module' => 'Weekly Menu',
-                'label' => 'Heti menu szerkesztes',
-                'description' => 'Heti menu es itemek modositas.',
+                'label' => 'Heti menü szerkesztés',
+                'description' => 'Heti menü és tételek módosítás.',
                 'dangerous' => false,
                 'sort' => 180,
                 'system' => true,
@@ -295,8 +302,8 @@ class PermissionRegistry
             [
                 'name' => self::WEEKLY_MENU_DELETE,
                 'module' => 'Weekly Menu',
-                'label' => 'Heti menu torles',
-                'description' => 'Heti menuk torlese.',
+                'label' => 'Heti menü törlés',
+                'description' => 'Heti menük törlése.',
                 'dangerous' => true,
                 'sort' => 190,
                 'system' => true,
@@ -305,8 +312,8 @@ class PermissionRegistry
             [
                 'name' => self::PRODUCTION_PLANS_VIEW,
                 'module' => 'Production Plans',
-                'label' => 'Gyartasi tervek megtekintese',
-                'description' => 'Gyartastervezo felulet megtekintese.',
+                'label' => 'Gyártási tervek megtekintése',
+                'description' => 'Gyartastervezo felulet megtekintése.',
                 'dangerous' => false,
                 'sort' => 200,
                 'system' => true,
@@ -315,8 +322,8 @@ class PermissionRegistry
             [
                 'name' => self::PRODUCTION_PLANS_CREATE,
                 'module' => 'Production Plans',
-                'label' => 'Gyartasi terv letrehozas',
-                'description' => 'Uj gyartasi terv letrehozasa.',
+                'label' => 'Gyártási terv létrehozás',
+                'description' => 'Új gyartasi terv létrehozása.',
                 'dangerous' => false,
                 'sort' => 210,
                 'system' => true,
@@ -325,8 +332,8 @@ class PermissionRegistry
             [
                 'name' => self::PRODUCTION_PLANS_UPDATE,
                 'module' => 'Production Plans',
-                'label' => 'Gyartasi terv szerkesztes',
-                'description' => 'Gyartasi terv frissites.',
+                'label' => 'Gyártási terv szerkesztés',
+                'description' => 'Gyártási terv frissítés.',
                 'dangerous' => false,
                 'sort' => 220,
                 'system' => true,
@@ -335,8 +342,8 @@ class PermissionRegistry
             [
                 'name' => self::PRODUCTION_PLANS_DELETE,
                 'module' => 'Production Plans',
-                'label' => 'Gyartasi terv torles',
-                'description' => 'Gyartasi terv torlese.',
+                'label' => 'Gyártási terv törlés',
+                'description' => 'Gyártási terv törlése.',
                 'dangerous' => true,
                 'sort' => 230,
                 'system' => true,
@@ -345,8 +352,8 @@ class PermissionRegistry
             [
                 'name' => self::ACCOUNT_VIEW,
                 'module' => 'Account',
-                'label' => 'Fiok megtekintese',
-                'description' => 'Sajat fiok oldal elerese.',
+                'label' => 'Fiók megtekintése',
+                'description' => 'Saját fiók oldal elérése.',
                 'dangerous' => false,
                 'sort' => 240,
                 'system' => true,
@@ -355,8 +362,8 @@ class PermissionRegistry
             [
                 'name' => self::ROLES_VIEW,
                 'module' => 'Roles & Permissions',
-                'label' => 'Szerepkorok megtekintese',
-                'description' => 'Szerepkor menedzsment oldalak megtekintese.',
+                'label' => 'Szerepkörök megtekintése',
+                'description' => 'Szerepkör menedzsment oldalak megtekintése.',
                 'dangerous' => false,
                 'sort' => 250,
                 'system' => true,
@@ -365,8 +372,8 @@ class PermissionRegistry
             [
                 'name' => self::ROLES_CREATE,
                 'module' => 'Roles & Permissions',
-                'label' => 'Szerepkor letrehozas',
-                'description' => 'Uj szerepkor letrehozasa.',
+                'label' => 'Szerepkör létrehozás',
+                'description' => 'Új szerepkör létrehozása.',
                 'dangerous' => false,
                 'sort' => 260,
                 'system' => true,
@@ -375,8 +382,8 @@ class PermissionRegistry
             [
                 'name' => self::ROLES_UPDATE,
                 'module' => 'Roles & Permissions',
-                'label' => 'Szerepkor szerkesztes',
-                'description' => 'Szerepkor atnevezese es frissitese.',
+                'label' => 'Szerepkör szerkesztés',
+                'description' => 'Szerepkör átnevezése és frissítése.',
                 'dangerous' => false,
                 'sort' => 270,
                 'system' => true,
@@ -385,8 +392,8 @@ class PermissionRegistry
             [
                 'name' => self::ROLES_DELETE,
                 'module' => 'Roles & Permissions',
-                'label' => 'Szerepkor torles',
-                'description' => 'Nem rendszer szerepkor torlese.',
+                'label' => 'Szerepkör törlés',
+                'description' => 'Nem rendszer szerepkör törlése.',
                 'dangerous' => true,
                 'sort' => 280,
                 'system' => true,
@@ -395,8 +402,8 @@ class PermissionRegistry
             [
                 'name' => self::ROLES_ASSIGN_PERMISSIONS,
                 'module' => 'Roles & Permissions',
-                'label' => 'Szerepkor jogosultsag kiosztas',
-                'description' => 'Role permission matrix szerkesztese.',
+                'label' => 'Szerepkör jogosultság kiosztás',
+                'description' => 'Role permission matrix szerkesztése.',
                 'dangerous' => true,
                 'sort' => 290,
                 'system' => true,
@@ -406,7 +413,7 @@ class PermissionRegistry
                 'name' => self::USERS_ASSIGN_ROLES,
                 'module' => 'Roles & Permissions',
                 'label' => 'User role kiosztas',
-                'description' => 'Felhasznalo szerepkoreinek szerkesztese.',
+                'description' => 'Felhasználó szerepköreinek szerkesztése.',
                 'dangerous' => true,
                 'sort' => 300,
                 'system' => true,
@@ -415,60 +422,29 @@ class PermissionRegistry
             [
                 'name' => self::USERS_VIEW_PERMISSIONS,
                 'module' => 'Roles & Permissions',
-                'label' => 'User jogosultsag betekintes',
-                'description' => 'Felhasznalo effektive jogosultsagainak megtekintese.',
+                'label' => 'Felhasználó jogosultság betekintés',
+                'description' => 'Felhasználó effektív jogosultságainak megtekintése.',
                 'dangerous' => false,
                 'sort' => 310,
                 'system' => true,
                 'audit_sensitive' => false,
             ],
-<<<<<<< .mine
+
             [
                 'name' => self::AUDIT_LOGS_VIEW,
                 'module' => 'Roles & Permissions',
-                'label' => 'Audit naplo megtekintes',
-                'description' => 'Authorization, user activity es order audit naplok megtekintese.',
+                'label' => 'Audit napló megtekintés',
+                'description' => 'Jogosultsági, felhasználói és rendelés audit naplók megtekintése.',
                 'dangerous' => false,
-                'sort' => 320,
+                'sort' => 315,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
             [
                 'name' => self::PERMISSIONS_VIEW,
                 'module' => 'Roles & Permissions',
-                'label' => 'Jogosultsagok megtekintese',
-                'description' => 'Permission lista es reszletek megtekintese.',
+                'label' => 'Jogosultságok megtekintése',
+                'description' => 'Jogosultság lista és részletek megtekintése.',
                 'dangerous' => false,
                 'sort' => 320,
                 'system' => true,
@@ -477,8 +453,8 @@ class PermissionRegistry
             [
                 'name' => self::PERMISSIONS_SYNC,
                 'module' => 'Roles & Permissions',
-                'label' => 'Permission registry sync',
-                'description' => 'Permission registry es adatbazis szinkronizalasa.',
+                'label' => 'Jogosultság-registry szinkron',
+                'description' => 'Jogosultság-registry és adatbázis szinkronizálása.',
                 'dangerous' => true,
                 'sort' => 330,
                 'system' => true,
@@ -487,8 +463,8 @@ class PermissionRegistry
             [
                 'name' => self::PERMISSIONS_VIEW_USAGE,
                 'module' => 'Roles & Permissions',
-                'label' => 'Permission usage megtekintes',
-                'description' => 'Permission hasznalat role es user szinten.',
+                'label' => 'Jogosultság-használat megtekintés',
+                'description' => 'Jogosultság használat szerepkör és felhasználó szinten.',
                 'dangerous' => false,
                 'sort' => 340,
                 'system' => true,
@@ -497,14 +473,14 @@ class PermissionRegistry
             [
                 'name' => self::SECURITY_DASHBOARD_VIEW,
                 'module' => 'Security',
-                'label' => 'Security dashboard megtekintese',
-                'description' => 'Security kockazati dashboard es kritikus audit esemenyek megtekintese.',
+                'label' => 'Biztonsági irányítópult megtekintése',
+                'description' => 'Biztonsági kockázati irányítópult és kritikus audit események megtekintése.',
                 'dangerous' => true,
                 'sort' => 350,
                 'system' => true,
                 'audit_sensitive' => true,
             ],
->>>>>>> .theirs
+
         ];
     }
 
@@ -540,13 +516,18 @@ class PermissionRegistry
      */
     public static function definitionsByName(): array
     {
-        $map = [];
+        if (self::$definitionsByNameCache !== null) {
+            return self::$definitionsByNameCache;
+        }
 
+        $map = [];
         foreach (self::definitions() as $definition) {
             $map[$definition['name']] = $definition;
         }
 
-        return $map;
+        self::$definitionsByNameCache = $map;
+
+        return self::$definitionsByNameCache;
     }
 
     /**
@@ -562,3 +543,5 @@ class PermissionRegistry
         return \in_array($roleName, self::systemRoles(), true);
     }
 }
+
+

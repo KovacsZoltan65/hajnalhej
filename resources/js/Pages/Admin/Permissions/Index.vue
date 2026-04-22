@@ -55,10 +55,23 @@ const filterState = reactive({
 
 const currentPage = computed(() => props.permissions.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.permissions.per_page ?? 20));
+const moduleLabels = {
+    Admin: 'Admin',
+    Orders: 'Rendelések',
+    Products: 'Termékek',
+    Categories: 'Kategóriák',
+    Ingredients: 'Alapanyagok',
+    'Weekly Menu': 'Heti menü',
+    'Production Plans': 'Gyártási tervek',
+    Account: 'Fiók',
+    'Roles & Permissions': 'Szerepkörök és jogosultságok',
+    Security: 'Biztonság',
+};
+const moduleLabel = (moduleName) => moduleLabels[moduleName] ?? moduleName;
 
 const moduleOptions = computed(() => ([
     { label: 'Minden modul', value: '' },
-    ...props.modules.map((moduleName) => ({ label: moduleName, value: moduleName })),
+    ...props.modules.map((moduleName) => ({ label: moduleLabel(moduleName), value: moduleName })),
 ]));
 
 const usageOptions = [
@@ -69,17 +82,17 @@ const usageOptions = [
 
 const registryStateOptions = [
     { label: 'Minden allapot', value: '' },
-    { label: 'Synced', value: 'synced' },
-    { label: 'Missing In DB', value: 'missing_in_db' },
-    { label: 'DB Only', value: 'orphan_db_only' },
+    { label: 'Szinkronban', value: 'synced' },
+    { label: 'Hiányzik az adatbázisból', value: 'missing_in_db' },
+    { label: 'Csak adatbázisban', value: 'orphan_db_only' },
 ];
 
 const sortFieldOptions = [
-    { label: 'Nev', value: 'name' },
+    { label: 'Név', value: 'name' },
     { label: 'Modul', value: 'module' },
-    { label: 'Role usage', value: 'roles_count' },
-    { label: 'User usage', value: 'users_count' },
-    { label: 'Registry state', value: 'registry_state' },
+    { label: 'Szerepkör használat', value: 'roles_count' },
+    { label: 'Felhasználói használat', value: 'users_count' },
+    { label: 'Registry állapot', value: 'registry_state' },
 ];
 
 const sortDirectionOptions = [
@@ -136,12 +149,12 @@ const runSync = () => {
 </script>
 
 <template>
-    <Head title="Permissions" />
+    <Head title="Jogosultságok" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Roles & Permissions"
-            title="Jogosultsagok"
+            eyebrow="Admin / Szerepkörök és jogosultságok"
+            title="Jogosultságok"
             description="Registry-first permission lista, usage nezet es drift ellenorzes."
         />
 
@@ -149,8 +162,8 @@ const runSync = () => {
             <AdminTableToolbar :filters-grid-class="'grid gap-3 md:grid-cols-2 xl:grid-cols-4'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
-                        <InputText v-model="filterState.search" class="w-full" placeholder="Nev, label, leiras..." @keyup.enter="submitFilters" />
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
+                        <InputText v-model="filterState.search" class="w-full" placeholder="Név, label, leiras..." @keyup.enter="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
@@ -159,12 +172,12 @@ const runSync = () => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Usage</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Használat</label>
                         <Select v-model="filterState.usage_state" :options="usageOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Registry state</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Registry állapot</label>
                         <Select v-model="filterState.registry_state" :options="registryStateOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
@@ -179,12 +192,12 @@ const runSync = () => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Talalat / oldal</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
                         <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Dangerous only</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Csak veszélyes</label>
                         <div class="flex h-10 items-center gap-2 rounded-lg border border-bakery-brown/15 px-3">
                             <Checkbox v-model="filterState.dangerous_only" binary input-id="dangerous-only" @change="submitFilters" />
                             <label for="dangerous-only" class="text-sm text-bakery-dark">Csak veszelyes</label>
@@ -197,7 +210,7 @@ const runSync = () => {
                     <Button
                         v-if="can.sync"
                         icon="pi pi-sync"
-                        label="Registry sync"
+                        label="Registry szinkron"
                         severity="contrast"
                         :loading="syncing"
                         :disabled="syncing"
@@ -220,31 +233,35 @@ const runSync = () => {
                 @page="onPage"
             >
                 <template #empty>
-                    <div class="py-8 text-center text-sm text-bakery-dark/70">Nincs megjelenitheto permission.</div>
+                    <div class="py-8 text-center text-sm text-bakery-dark/70">Nincs megjeleníthető jogosultság.</div>
                 </template>
 
-                <Column field="name" header="Permission">
+                <Column field="name" header="Jogosultság">
                     <template #body="{ data }">
                         <PermissionBadge :name="data.name" />
                     </template>
                 </Column>
 
-                <Column field="module" header="Modul" />
+                <Column field="module" header="Modul">
+                    <template #body="{ data }">
+                        {{ moduleLabel(data.module) }}
+                    </template>
+                </Column>
 
-                <Column field="dangerous" header="Risk">
+                <Column field="dangerous" header="Kockázat">
                     <template #body="{ data }">
                         <PermissionDangerBadge :dangerous="data.dangerous" />
                     </template>
                 </Column>
 
-                <Column field="registry_state" header="Registry state">
+                <Column field="registry_state" header="Registry állapot">
                     <template #body="{ data }">
                         <PermissionRegistryStateBadge :state="data.registry_state" />
                     </template>
                 </Column>
 
-                <Column field="roles_count" header="Role-ok" />
-                <Column field="users_count" header="Userek" />
+                <Column field="roles_count" header="Szerepkörök" />
+                <Column field="users_count" header="Felhasználók" />
                 <Column field="guard_name" header="Guard" />
 
                 <Column header="Muveletek" :style="{ width: '9rem' }">
@@ -263,3 +280,4 @@ const runSync = () => {
         :summary="page.props.flash?.sync_summary ?? null"
     />
 </template>
+

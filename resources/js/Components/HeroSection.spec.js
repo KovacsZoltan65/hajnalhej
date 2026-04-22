@@ -13,7 +13,7 @@ describe('HeroSection', () => {
     it('renders key headline content', () => {
         const wrapper = mount(HeroSection);
 
-        expect(wrapper.text()).toContain('Frissen sult kenyerek');
-        expect(wrapper.text()).toContain('Heti menu megnyitasa');
+        expect(wrapper.text()).toContain('Frissen sült kenyerek');
+        expect(wrapper.text()).toContain('Heti menu megnyitása');
     });
 });

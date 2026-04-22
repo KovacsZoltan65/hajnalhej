@@ -7,9 +7,9 @@ const props = defineProps({
 });
 
 const labelMap = {
-    synced: 'Synced',
+    synced: 'Szinkronizált',
     missing_in_db: 'Missing In DB',
-    orphan_db_only: 'DB Only',
+    orphan_db_only: 'Csak adatbázisban',
 };
 
 const classMap = {
@@ -27,3 +27,4 @@ const classMap = {
         {{ labelMap[props.state] ?? props.state }}
     </span>
 </template>
+

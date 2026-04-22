@@ -29,7 +29,7 @@ watch(
 <template>
     <div class="grid gap-4 md:grid-cols-2">
         <div class="space-y-2 md:col-span-2">
-            <label for="ingredient-name" class="text-sm font-medium text-bakery-dark">Nev</label>
+            <label for="ingredient-name" class="text-sm font-medium text-bakery-dark">Név</label>
             <InputText id="ingredient-name" v-model="form.name" class="w-full" :invalid="Boolean(form.errors.name)" />
             <p v-if="form.errors.name" class="text-xs text-red-700">{{ form.errors.name }}</p>
         </div>
@@ -96,7 +96,9 @@ watch(
 
         <div class="flex items-center gap-2 md:col-span-2">
             <ToggleSwitch id="ingredient-active" v-model="form.is_active" />
-            <label for="ingredient-active" class="text-sm text-bakery-dark/80">Aktiv alapanyag</label>
+            <label for="ingredient-active" class="text-sm text-bakery-dark/80">Aktív alapanyag</label>
         </div>
     </div>
 </template>
+
+

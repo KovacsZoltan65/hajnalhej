@@ -38,14 +38,14 @@ describe('Admin Audit Logs Show', () => {
                         removed_permissions: [],
                     },
                 },
-                eventLabels: { 'role.permissions.synced': 'Role jogosultsagok szinkronizalva' },
+                eventLabels: { 'role.permissions.synced': 'Szerepkör jogosultságok szinkronizálva' },
             },
             global: { stubs },
         });
 
-        expect(wrapper.text()).toContain('Role jogosultsagok szinkronizalva');
-        expect(wrapper.text()).toContain('Before');
-        expect(wrapper.text()).toContain('After');
-        expect(wrapper.text()).toContain('Context');
+        expect(wrapper.text()).toContain('Szerepkör jogosultságok szinkronizálva');
+        expect(wrapper.text()).toContain('Előtte');
+        expect(wrapper.text()).toContain('Utána');
+        expect(wrapper.text()).toContain('Környezet');
     });
 });

@@ -80,7 +80,7 @@ describe('Checkout page', () => {
             },
         });
 
-        expect(wrapper.text()).toContain('Rendeles osszegzese');
+        expect(wrapper.text()).toContain('Rendelés összegzése');
         expect(wrapper.text()).toContain('Kovaszos vekni');
     });
 
@@ -104,3 +104,4 @@ describe('Checkout page', () => {
         expect(wrapper.find('button').attributes('disabled')).toBeDefined();
     });
 });
+

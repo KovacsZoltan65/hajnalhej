@@ -25,13 +25,26 @@ const emit = defineEmits(['toggle', 'toggle-group']);
 
 const selectedSet = () => new Set(props.selectedPermissions);
 const isAllSelected = () => props.items.every((item) => selectedSet().has(item.name));
+const groupLabels = {
+    Admin: 'Admin',
+    Orders: 'Rendelések',
+    Products: 'Termékek',
+    Categories: 'Kategóriák',
+    Ingredients: 'Alapanyagok',
+    'Weekly Menu': 'Heti menü',
+    'Production Plans': 'Gyártási tervek',
+    Account: 'Fiók',
+    'Roles & Permissions': 'Szerepkörök és jogosultságok',
+    Security: 'Biztonság',
+};
+const groupLabel = (name) => groupLabels[name] ?? name;
 </script>
 
 <template>
     <div class="rounded-xl border border-bakery-brown/15 bg-white/70 p-4">
         <div class="mb-3 flex items-center justify-between gap-2">
             <div>
-                <p class="text-sm font-semibold text-bakery-dark">{{ groupName }}</p>
+                <p class="text-sm font-semibold text-bakery-dark">{{ groupLabel(groupName) }}</p>
                 <p class="text-xs text-bakery-dark/70">{{ items.length }} jogosultsag</p>
             </div>
 

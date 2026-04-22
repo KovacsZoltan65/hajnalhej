@@ -36,7 +36,7 @@ describe('WeeklyMenuSection', () => {
                 groups: [
                     {
                         category_name: 'Kenyerek',
-                        items: [{ id: 1, name: 'Kenyer', short_description: 'Leiras', price: 2500, badge_text: 'Uj', stock_note: null }],
+                        items: [{ id: 1, name: 'Kenyer', short_description: 'Leírás', price: 2500, badge_text: 'Uj', stock_note: null }],
                     },
                 ],
             },
@@ -46,3 +46,4 @@ describe('WeeklyMenuSection', () => {
         expect(wrapper.text()).toContain('Kenyer');
     });
 });
+

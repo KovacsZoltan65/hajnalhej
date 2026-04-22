@@ -40,7 +40,7 @@ describe('AdminSidebar', () => {
         };
 
         const wrapper = mount(AdminSidebar);
-        expect(wrapper.text()).toContain('Jogosultsagok');
+        expect(wrapper.text()).toContain('Jogosultságok');
     });
 
     it('shows security dashboard menu item when allowed', () => {
@@ -60,6 +60,7 @@ describe('AdminSidebar', () => {
         };
 
         const wrapper = mount(AdminSidebar);
-        expect(wrapper.text()).toContain('Security Dashboard');
+        expect(wrapper.text()).toContain('Biztonsági irányítópult');
     });
 });
+

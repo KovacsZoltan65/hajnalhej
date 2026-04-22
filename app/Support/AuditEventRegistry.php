@@ -26,27 +26,27 @@ class AuditEventRegistry
     public static function eventLabels(): array
     {
         return [
-            AuthorizationAuditService::ROLE_CREATED => 'Role letrehozva',
-            AuthorizationAuditService::ROLE_UPDATED => 'Role frissitve',
-            AuthorizationAuditService::ROLE_DELETED => 'Role torolve',
-            AuthorizationAuditService::ROLE_UPDATE_BLOCKED => 'Role frissites tiltva',
-            AuthorizationAuditService::ROLE_DELETE_BLOCKED => 'Role torles tiltva',
-            AuthorizationAuditService::ROLE_PERMISSIONS_SYNCED => 'Role jogosultsagok szinkronizalva',
-            AuthorizationAuditService::ROLE_PERMISSIONS_SYNC_BLOCKED => 'Role jogosultsag szinkron tiltva',
-            AuthorizationAuditService::USER_ROLES_SYNCED => 'User role-ok szinkronizalva',
-            AuthorizationAuditService::USER_ROLES_SYNC_BLOCKED => 'User role szinkron tiltva',
+            AuthorizationAuditService::ROLE_CREATED => 'Szerepkör létrehozva',
+            AuthorizationAuditService::ROLE_UPDATED => 'Szerepkör frissítve',
+            AuthorizationAuditService::ROLE_DELETED => 'Szerepkör törölve',
+            AuthorizationAuditService::ROLE_UPDATE_BLOCKED => 'Szerepkör frissítés tiltva',
+            AuthorizationAuditService::ROLE_DELETE_BLOCKED => 'Szerepkör törlés tiltva',
+            AuthorizationAuditService::ROLE_PERMISSIONS_SYNCED => 'Szerepkör jogosultságok szinkronizálva',
+            AuthorizationAuditService::ROLE_PERMISSIONS_SYNC_BLOCKED => 'Szerepkör jogosultság szinkron tiltva',
+            AuthorizationAuditService::USER_ROLES_SYNCED => 'Felhasználó szerepkörök szinkronizálva',
+            AuthorizationAuditService::USER_ROLES_SYNC_BLOCKED => 'Felhasználó szerepkör szinkron tiltva',
 
             UserActivityAuditService::USER_LOGIN => 'Felhasznalo belepett',
             UserActivityAuditService::USER_LOGOUT => 'Felhasznalo kijelentkezett',
             UserActivityAuditService::USER_REGISTERED => 'Felhasznalo regisztralt',
             UserActivityAuditService::USER_EMAIL_VERIFIED => 'Email cim megerositve',
 
-            OrderAuditService::ORDER_PLACED => 'Rendeles leadva',
-            OrderAuditService::ORDER_STATUS_UPDATED => 'Rendeles statusz frissitve',
-            OrderAuditService::ORDER_CANCELLED => 'Rendeles torolve',
-            OrderAuditService::ORDER_INTERNAL_NOTE_CREATED => 'Belso jegyzet letrehozva',
-            OrderAuditService::ORDER_INTERNAL_NOTE_UPDATED => 'Belso jegyzet frissitve',
-            OrderAuditService::ORDER_PICKUP_UPDATED => 'Atveteli adatok frissitve',
+            OrderAuditService::ORDER_PLACED => 'Rendelés leadva',
+            OrderAuditService::ORDER_STATUS_UPDATED => 'Rendelés statusz frissítve',
+            OrderAuditService::ORDER_CANCELLED => 'Rendelés torolve',
+            OrderAuditService::ORDER_INTERNAL_NOTE_CREATED => 'Belso jegyzet létrehozva',
+            OrderAuditService::ORDER_INTERNAL_NOTE_UPDATED => 'Belso jegyzet frissítve',
+            OrderAuditService::ORDER_PICKUP_UPDATED => 'Átvételi adatok frissítve',
         ];
     }
 
@@ -56,9 +56,10 @@ class AuditEventRegistry
     public static function logNameLabels(): array
     {
         return [
-            AuthorizationAuditService::LOG_NAME => 'Authorization',
-            UserActivityAuditService::LOG_NAME => 'User activity',
-            OrderAuditService::LOG_NAME => 'Orders',
+            AuthorizationAuditService::LOG_NAME => 'Jogosultságkezelés',
+            UserActivityAuditService::LOG_NAME => 'Felhasználói aktivitás',
+            OrderAuditService::LOG_NAME => 'Rendelések',
         ];
     }
 }
+

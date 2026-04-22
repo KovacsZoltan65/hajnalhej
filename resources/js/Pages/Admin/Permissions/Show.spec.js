@@ -29,7 +29,7 @@ describe('Admin Permissions Show', () => {
                 permission: {
                     name: 'permissions.view',
                     registry_state: 'synced',
-                    label: 'Jogosultsagok megtekintese',
+                    label: 'Jogosultságok megtekintese',
                     module: 'Roles & Permissions',
                     description: 'Permission lista megtekintese',
                     dangerous: false,
@@ -47,3 +47,4 @@ describe('Admin Permissions Show', () => {
         expect(wrapper.text()).toContain('usage-card');
     });
 });
+

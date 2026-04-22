@@ -7,6 +7,6 @@ describe('WeeklyMenuStatusBadge', () => {
             props: { status: 'published' },
         });
 
-        expect(wrapper.text()).toContain('Published');
+        expect(wrapper.text()).toContain('Közzétéve');
     });
 });

@@ -46,7 +46,7 @@ const addToCart = (productId) => {
                 </Link>
             </div>
             <p v-if="fallbackUsed" class="mt-4 rounded-xl bg-amber-100 px-3 py-2 text-xs font-medium text-amber-800">
-                Jelenleg nincs aktiv heti menu a mai napra, ezert a legutobb publikalt menu lathato.
+                Jelenleg nincs aktív heti menü a mai napra, ezért a legutóbb publikált menü látható.
             </p>
         </div>
 
@@ -81,7 +81,7 @@ const addToCart = (productId) => {
     <section v-else class="rounded-2xl border border-dashed border-bakery-brown/30 bg-[#fcf7ef] p-8 text-center">
         <h3 class="font-heading text-3xl text-bakery-dark">Heti menu feltoltes alatt</h3>
         <p class="mt-3 text-sm text-bakery-dark/75">
-            Jelenleg nincs publikalt heti menu. Nezz vissza hamarosan, amint frissul a kovetkezo ajanlat.
+            Jelenleg nincs publikált heti menü. Nézz vissza hamarosan, amint frissül a következő ajánlat.
         </p>
     </section>
 </template>

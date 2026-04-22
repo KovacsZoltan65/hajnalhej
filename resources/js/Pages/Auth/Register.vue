@@ -28,7 +28,7 @@ const submit = () => {
 </script>
 
 <template>
-    <Head :title="ui.register?.title ?? 'Regisztracio'" />
+    <Head :title="ui.register?.title ?? 'Regisztráció'" />
 
     <div class="mx-auto max-w-lg rounded-3xl border border-bakery-brown/15 bg-[#fff9f1] p-6 shadow-lg sm:p-8">
         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-bakery-gold">Hajnalhej account</p>
@@ -94,7 +94,7 @@ const submit = () => {
 
             <Button
                 type="submit"
-                :label="ui.register?.cta ?? 'Fiok letrehozasa'"
+                :label="ui.register?.cta ?? 'Fiók létrehozása'"
                 class="w-full"
                 :loading="form.processing"
                 :disabled="form.processing"
@@ -106,3 +106,4 @@ const submit = () => {
         </p>
     </div>
 </template>
+

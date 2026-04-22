@@ -51,7 +51,7 @@ const close = () => emit('update:visible', false);
             </div>
 
             <div class="space-y-2">
-                <p class="text-sm font-semibold text-bakery-dark">Szerepkorok</p>
+                <p class="text-sm font-semibold text-bakery-dark">Szerepkörök</p>
                 <ul class="space-y-2">
                     <li
                         v-for="role in props.roleOptions"
@@ -89,10 +89,10 @@ const close = () => emit('update:visible', false);
 
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Megse" @click="close" />
+                <Button type="button" severity="secondary" label="Mégse" @click="close" />
                 <Button
                     type="button"
-                    label="Szerepkorok mentese"
+                    label="Szerepkörök mentese"
                     :loading="props.loading"
                     :disabled="props.loading"
                     @click="emit('save')"
@@ -101,3 +101,4 @@ const close = () => emit('update:visible', false);
         </template>
     </Dialog>
 </template>
+

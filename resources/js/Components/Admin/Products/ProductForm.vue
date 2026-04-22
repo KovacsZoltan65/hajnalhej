@@ -40,7 +40,7 @@ watch(
                 :options="categories"
                 option-label="name"
                 option-value="id"
-                placeholder="Valassz kategoriat"
+                placeholder="Válassz kategóriát"
                 class="w-full"
             />
             <p v-if="form.errors.category_id" class="text-xs text-red-700">{{ form.errors.category_id }}</p>
@@ -53,7 +53,7 @@ watch(
         </div>
 
         <div class="space-y-2 md:col-span-2">
-            <label for="product-name" class="text-sm font-medium text-bakery-dark">Nev</label>
+            <label for="product-name" class="text-sm font-medium text-bakery-dark">Név</label>
             <InputText id="product-name" v-model="form.name" class="w-full" :invalid="Boolean(form.errors.name)" />
             <p v-if="form.errors.name" class="text-xs text-red-700">{{ form.errors.name }}</p>
         </div>
@@ -72,7 +72,7 @@ watch(
         </div>
 
         <div class="space-y-2 md:col-span-2">
-            <label for="product-description" class="text-sm font-medium text-bakery-dark">Leiras</label>
+            <label for="product-description" class="text-sm font-medium text-bakery-dark">Leírás</label>
             <Textarea id="product-description" v-model="form.description" rows="4" class="w-full" auto-resize />
             <p v-if="form.errors.description" class="text-xs text-red-700">{{ form.errors.description }}</p>
         </div>
@@ -104,7 +104,7 @@ watch(
 
         <div class="flex items-center gap-2">
             <ToggleSwitch id="product-active" v-model="form.is_active" />
-            <label for="product-active" class="text-sm text-bakery-dark/80">Aktiv</label>
+            <label for="product-active" class="text-sm text-bakery-dark/80">Aktív</label>
         </div>
 
         <div class="flex items-center gap-2">
@@ -113,3 +113,5 @@ watch(
         </div>
     </div>
 </template>
+
+

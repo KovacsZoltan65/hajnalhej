@@ -26,7 +26,7 @@ class ProductIngredientController extends Controller
             return $this->redirectToOrigin($request)->with('error', $exception->getMessage());
         }
 
-        return $this->redirectToOrigin($request)->with('success', 'Recept tetel hozzaadva.');
+        return $this->redirectToOrigin($request)->with('success', 'Recept tétel hozzáadva.');
     }
 
     public function update(UpdateProductIngredientRequest $request, Product $product, ProductIngredient $productIngredient): RedirectResponse
@@ -41,7 +41,7 @@ class ProductIngredientController extends Controller
             return $this->redirectToOrigin($request)->with('error', $exception->getMessage());
         }
 
-        return $this->redirectToOrigin($request)->with('success', 'Recept tetel frissitve.');
+        return $this->redirectToOrigin($request)->with('success', 'Recept tétel frissítve.');
     }
 
     public function destroy(Request $request, Product $product, ProductIngredient $productIngredient): RedirectResponse
@@ -54,7 +54,7 @@ class ProductIngredientController extends Controller
 
         $this->service->delete($productIngredient);
 
-        return $this->redirectToOrigin($request)->with('success', 'Recept tetel torolve.');
+        return $this->redirectToOrigin($request)->with('success', 'Recept tétel törölve.');
     }
 
     private function redirectToOrigin(Request $request): RedirectResponse
@@ -69,3 +69,5 @@ class ProductIngredientController extends Controller
         return redirect()->to($fallback);
     }
 }
+
+

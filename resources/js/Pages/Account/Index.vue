@@ -24,18 +24,18 @@ const resendVerification = () => {
 </script>
 
 <template>
-    <Head :title="ui.account?.title ?? 'Fiokom'" />
+    <Head :title="ui.account?.title ?? 'Fiókom'" />
 
     <section class="mx-auto max-w-3xl space-y-6">
         <header class="rounded-3xl border border-bakery-brown/15 bg-[#fff9f1] p-6 shadow-sm sm:p-8">
             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-bakery-gold">Hajnalhej account</p>
-            <h1 class="mt-3 font-heading text-4xl text-bakery-dark">{{ ui.account?.title ?? 'Fiokom' }}</h1>
+            <h1 class="mt-3 font-heading text-4xl text-bakery-dark">{{ ui.account?.title ?? 'Fiókom' }}</h1>
             <p class="mt-2 max-w-2xl text-sm text-bakery-dark/75">{{ ui.account?.subtitle ?? 'Itt kezeled a profilodat es a jovobeli gyors rendeles alapjait.' }}</p>
         </header>
 
         <div class="grid gap-4 sm:grid-cols-2">
             <article class="rounded-2xl border border-bakery-brown/15 bg-[#fff9f1] p-5">
-                <p class="text-xs uppercase tracking-[0.18em] text-bakery-dark/60">Nev</p>
+                <p class="text-xs uppercase tracking-[0.18em] text-bakery-dark/60">Név</p>
                 <p class="mt-2 text-base font-semibold text-bakery-dark">{{ props.account.name }}</p>
             </article>
 
@@ -70,3 +70,5 @@ const resendVerification = () => {
         </article>
     </section>
 </template>
+
+

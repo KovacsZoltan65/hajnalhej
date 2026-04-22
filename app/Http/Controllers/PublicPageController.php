@@ -12,6 +12,10 @@ class PublicPageController extends Controller
     {
     }
 
+    /**
+     * Summary of home
+     * @return \Inertia\Response
+     */
     public function home(): Response
     {
         return Inertia::render('Home');

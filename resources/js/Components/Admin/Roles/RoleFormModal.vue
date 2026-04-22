@@ -37,7 +37,7 @@ const close = () => emit('update:visible', false);
     >
         <form id="role-form" class="space-y-4" @submit.prevent="emit('submit')">
             <div class="space-y-2">
-                <label for="role-name" class="text-sm font-medium text-bakery-dark">Szerepkor neve</label>
+                <label for="role-name" class="text-sm font-medium text-bakery-dark">Szerepkör neve</label>
                 <InputText
                     id="role-name"
                     v-model="props.form.name"
@@ -52,7 +52,7 @@ const close = () => emit('update:visible', false);
 
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Megse" @click="close" />
+                <Button type="button" severity="secondary" label="Mégse" @click="close" />
                 <Button
                     type="submit"
                     form="role-form"
@@ -64,3 +64,4 @@ const close = () => emit('update:visible', false);
         </template>
     </Dialog>
 </template>
+

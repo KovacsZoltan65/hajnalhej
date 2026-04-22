@@ -50,8 +50,9 @@ const resendVerification = () => {
             />
 
             <Link href="/account" class="inline-flex text-sm font-semibold text-bakery-brown hover:underline">
-                {{ ui.nav?.account ?? 'Fiokom' }}
+                {{ ui.nav?.account ?? 'Fiókom' }}
             </Link>
         </div>
     </div>
 </template>
+

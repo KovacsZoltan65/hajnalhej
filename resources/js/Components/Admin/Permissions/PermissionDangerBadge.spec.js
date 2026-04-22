@@ -7,6 +7,6 @@ describe('PermissionDangerBadge', () => {
             props: { dangerous: true },
         });
 
-        expect(wrapper.text()).toContain('Dangerous');
+        expect(wrapper.text()).toContain('Veszélyes');
     });
 });

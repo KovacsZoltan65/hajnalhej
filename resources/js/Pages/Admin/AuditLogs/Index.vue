@@ -74,10 +74,10 @@ const logNameOptions = computed(() => ([
 ]));
 
 const subjectTypeOptions = computed(() => ([
-    { label: 'Minden subject', value: '' },
-    { label: props.subjectTypeLabels.role ?? 'Role', value: 'role' },
-    { label: props.subjectTypeLabels.user ?? 'User', value: 'user' },
-    { label: props.subjectTypeLabels.order ?? 'Order', value: 'order' },
+    { label: 'Minden érintett elem', value: '' },
+    { label: props.subjectTypeLabels.role ?? 'Szerepkör', value: 'role' },
+    { label: props.subjectTypeLabels.user ?? 'Felhasználó', value: 'user' },
+    { label: props.subjectTypeLabels.order ?? 'Rendelés', value: 'order' },
 ]));
 
 const load = (extra = {}) => {
@@ -109,24 +109,24 @@ const onPage = (event) => {
 </script>
 
 <template>
-    <Head title="Audit Logs" />
+    <Head title="Auditnaplók" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Audit Logs"
+            eyebrow="Admin / Auditnaplók"
             title="Teljes audit naplo"
-            description="Authorization, felhasznaloi activity es rendelesi domain kritikus esemenyei egy helyen."
+            description="Authorization, felhasználói activity es rendelesi domain kritikus esemenyei egy helyen."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Actor nev vagy email..."
+                            placeholder="Végrehajtó neve vagy email..."
                             @keyup.enter="submitFilters"
                         />
                     </div>
@@ -156,7 +156,7 @@ const onPage = (event) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Subject tipusa</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Érintett elem típusa</label>
                         <Select
                             v-model="filterState.subject_type"
                             :options="subjectTypeOptions"
@@ -168,7 +168,7 @@ const onPage = (event) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Talalat / oldal</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -199,7 +199,7 @@ const onPage = (event) => {
                 @page="onPage"
             >
                 <template #empty>
-                    <div class="py-8 text-center text-sm text-bakery-dark/70">Nincs audit bejegyzes a szurok szerint.</div>
+                    <div class="py-8 text-center text-sm text-bakery-dark/70">Nincs audit bejegyzés a szűrők szerint.</div>
                 </template>
 
                 <Column header="Idopont" field="created_at" />
@@ -216,7 +216,7 @@ const onPage = (event) => {
                     </template>
                 </Column>
 
-                <Column header="Actor">
+                <Column header="Végrehajtó">
                     <template #body="{ data }">
                         <div class="text-sm">
                             <p class="font-medium text-bakery-dark">{{ data.causer?.name ?? '-' }}</p>
@@ -225,7 +225,7 @@ const onPage = (event) => {
                     </template>
                 </Column>
 
-                <Column header="Subject">
+                <Column header="Érintett elem">
                     <template #body="{ data }">
                         <div class="text-sm">
                             <p class="font-medium text-bakery-dark">{{ data.subject?.label ?? '-' }}</p>
@@ -234,7 +234,7 @@ const onPage = (event) => {
                     </template>
                 </Column>
 
-                <Column field="description" header="Leiras" />
+                <Column field="description" header="Leírás" />
 
                 <Column header="Muveletek" :style="{ width: '9rem' }">
                     <template #body="{ data }">
@@ -247,3 +247,5 @@ const onPage = (event) => {
         </div>
     </div>
 </template>
+
+

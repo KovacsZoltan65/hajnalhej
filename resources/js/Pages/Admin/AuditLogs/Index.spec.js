@@ -59,7 +59,7 @@ describe('Admin Audit Logs Index', () => {
                 filters: { search: '', log_name: '', event_key: '', subject_type: '', per_page: 20 },
                 logNameLabels: { authorization: 'Authorization', orders: 'Orders', 'user-activity': 'User activity' },
                 eventOptions: ['role.created'],
-                eventLabels: { 'role.created': 'Role letrehozva' },
+                eventLabels: { 'role.created': 'Role létrehozva' },
                 subjectTypeLabels: { role: 'Role', user: 'User', order: 'Order' },
             },
             global: { stubs },
@@ -69,3 +69,4 @@ describe('Admin Audit Logs Index', () => {
         expect(wrapper.text()).toContain('role.created');
     });
 });
+

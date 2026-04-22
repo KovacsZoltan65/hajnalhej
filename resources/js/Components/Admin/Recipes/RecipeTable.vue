@@ -48,7 +48,7 @@ const emit = defineEmits(['sort', 'page', 'open-editor']);
     >
         <template #empty>
             <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
-                Nincs megjelenitheto recept. Valassz termeket es add hozza az elso alapanyagot.
+                Nincs megjeleníthető recept. Válassz terméket és add hozzá az első alapanyagot.
             </div>
         </template>
 
@@ -61,12 +61,12 @@ const emit = defineEmits(['sort', 'page', 'open-editor']);
             </template>
         </Column>
         <Column field="category_name" header="Kategoria" />
-        <Column field="is_active" header="Statusz">
+        <Column field="is_active" header="Státusz">
             <template #body="{ data }">
                 <CategoryStatusBadge :active="data.is_active" />
             </template>
         </Column>
-        <Column field="recipe_items_count" header="Recept tetelek" sortable>
+        <Column field="recipe_items_count" header="Recept tételek" sortable>
             <template #body="{ data }">
                 <span class="font-medium text-bakery-dark">{{ data.recipe_items_count }}</span>
             </template>
@@ -76,7 +76,7 @@ const emit = defineEmits(['sort', 'page', 'open-editor']);
                 <span class="font-medium text-bakery-dark">{{ data.recipe_steps_count }}</span>
             </template>
         </Column>
-        <Column field="low_stock_ingredients_count" header="Low stock alapanyag">
+        <Column field="low_stock_ingredients_count" header="Alacsony készlet alapanyag">
             <template #body="{ data }">
                 <span
                     class="rounded-full px-2 py-1 text-xs font-semibold"
@@ -93,3 +93,5 @@ const emit = defineEmits(['sort', 'page', 'open-editor']);
         </Column>
     </DataTable>
 </template>
+
+

@@ -77,7 +77,7 @@ class IngredientController extends Controller
 
         return redirect()
             ->route('admin.ingredients.index')
-            ->with('success', 'Alapanyag letrehozva.');
+            ->with('success', 'Alapanyag létrehozva.');
     }
 
     /**
@@ -92,7 +92,7 @@ class IngredientController extends Controller
 
         return redirect()
             ->route('admin.ingredients.index')
-            ->with('success', 'Alapanyag frissitve.');
+            ->with('success', 'Alapanyag frissítve.');
     }
 
     /**
@@ -108,6 +108,8 @@ class IngredientController extends Controller
 
         return redirect()
             ->route('admin.ingredients.index')
-            ->with('success', 'Alapanyag torolve.');
+            ->with('success', 'Alapanyag törölve.');
     }
 }
+
+

@@ -108,20 +108,20 @@ const close = () => emit('update:visible', false);
     <Dialog
         :visible="visible"
         modal
-        :header="item ? 'Receptlepes szerkesztese' : 'Uj receptlepes'"
+        :header="item ? 'Receptlépés szerkesztése' : 'Új receptlépés'"
         :style="{ width: '48rem', maxWidth: '97vw' }"
         :content-style="{ maxHeight: '70vh', overflowY: 'auto' }"
         @update:visible="(value) => emit('update:visible', value)"
     >
         <form id="recipe-step-form" class="grid gap-4 md:grid-cols-2" @submit.prevent="submit">
             <div class="space-y-2 md:col-span-2">
-                <label class="text-sm font-medium text-bakery-dark">Lepes cim</label>
+                <label class="text-sm font-medium text-bakery-dark">Lépés cím</label>
                 <InputText v-model="form.title" class="w-full" />
                 <p v-if="errors.title" class="text-xs text-red-700">{{ errors.title }}</p>
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Lepes tipus</label>
+                <label class="text-sm font-medium text-bakery-dark">Lépés típus</label>
                 <Select v-model="form.step_type" :options="stepTypes" option-label="label" option-value="value" class="w-full" />
                 <p v-if="errors.step_type" class="text-xs text-red-700">{{ errors.step_type }}</p>
             </div>
@@ -133,42 +133,42 @@ const close = () => emit('update:visible', false);
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Aktiv ido (perc)</label>
+                <label class="text-sm font-medium text-bakery-dark">Aktív idő (perc)</label>
                 <InputNumber v-model="form.duration_minutes" :min="0" fluid />
                 <p v-if="errors.duration_minutes" class="text-xs text-red-700">{{ errors.duration_minutes }}</p>
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Varakozasi ido (perc)</label>
+                <label class="text-sm font-medium text-bakery-dark">Várakozási idő (perc)</label>
                 <InputNumber v-model="form.wait_minutes" :min="0" fluid />
                 <p v-if="errors.wait_minutes" class="text-xs text-red-700">{{ errors.wait_minutes }}</p>
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Homerseklet (C)</label>
+                <label class="text-sm font-medium text-bakery-dark">Hőmérséklet (°C)</label>
                 <InputNumber v-model="form.temperature_celsius" mode="decimal" :min-fraction-digits="0" :max-fraction-digits="1" fluid />
                 <p v-if="errors.temperature_celsius" class="text-xs text-red-700">{{ errors.temperature_celsius }}</p>
             </div>
 
             <div class="flex items-center gap-2 pt-7">
                 <ToggleSwitch v-model="form.is_active" />
-                <label class="text-sm text-bakery-dark/80">Aktiv lepes</label>
+                <label class="text-sm text-bakery-dark/80">Aktív lépés</label>
             </div>
 
             <div class="space-y-2 md:col-span-2">
-                <label class="text-sm font-medium text-bakery-dark">Leiras</label>
+                <label class="text-sm font-medium text-bakery-dark">Leírás</label>
                 <Textarea v-model="form.description" rows="4" class="w-full" auto-resize />
                 <p v-if="errors.description" class="text-xs text-red-700">{{ errors.description }}</p>
             </div>
 
             <div class="space-y-2 md:col-span-2">
-                <label class="text-sm font-medium text-bakery-dark">Mit kell csinalni?</label>
+                <label class="text-sm font-medium text-bakery-dark">Mit kell csinálni?</label>
                 <Textarea v-model="form.work_instruction" rows="3" class="w-full" auto-resize />
                 <p v-if="errors.work_instruction" class="text-xs text-red-700">{{ errors.work_instruction }}</p>
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Mibol latszik, hogy kesz?</label>
+                <label class="text-sm font-medium text-bakery-dark">Miből látszik, hogy kész?</label>
                 <Textarea v-model="form.completion_criteria" rows="3" class="w-full" auto-resize />
                 <p v-if="errors.completion_criteria" class="text-xs text-red-700">{{ errors.completion_criteria }}</p>
             </div>
@@ -180,22 +180,25 @@ const close = () => emit('update:visible', false);
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Szukseges eszkoz</label>
+                <label class="text-sm font-medium text-bakery-dark">Szükséges eszköz</label>
                 <Textarea v-model="form.required_tools" rows="3" class="w-full" auto-resize />
                 <p v-if="errors.required_tools" class="text-xs text-red-700">{{ errors.required_tools }}</p>
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Elvart eredmeny</label>
+                <label class="text-sm font-medium text-bakery-dark">Elvárt eredmény</label>
                 <Textarea v-model="form.expected_result" rows="3" class="w-full" auto-resize />
                 <p v-if="errors.expected_result" class="text-xs text-red-700">{{ errors.expected_result }}</p>
             </div>
         </form>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Megse" @click="close" />
-                <Button type="submit" form="recipe-step-form" :label="item ? 'Mentes' : 'Hozzaadas'" />
+                <Button type="button" severity="secondary" label="Mégse" @click="close" />
+                <Button type="submit" form="recipe-step-form" :label="item ? 'Mentés' : 'Hozzáadás'" />
             </div>
         </template>
     </Dialog>
 </template>
+
+
+

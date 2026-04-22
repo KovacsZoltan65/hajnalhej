@@ -161,6 +161,13 @@ Route::middleware('auth')->group(function (): void {
             ->middleware('permission:permissions.view')
             ->name('permissions.show');
 
+        Route::get('/audit-logs', [AdminAuthorizationAuditController::class, 'index'])
+            ->middleware('permission:audit-logs.view')
+            ->name('audit-logs.index');
+        Route::get('/audit-logs/{activity}', [AdminAuthorizationAuditController::class, 'show'])
+            ->middleware('permission:audit-logs.view')
+            ->name('audit-logs.show');
+
         Route::get('/security-dashboard', [AdminSecurityDashboardController::class, 'index'])
             ->middleware('permission:security-dashboard.view')
             ->name('security-dashboard.index');

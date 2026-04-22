@@ -61,8 +61,8 @@ const perPageOptions = [
 
 const activeOptions = [
     { label: "Mind", value: "" },
-    { label: "Aktiv", value: "1" },
-    { label: "Inaktiv", value: "0" },
+    { label: "Aktív", value: "1" },
+    { label: "Inaktív", value: "0" },
 ];
 
 const form = useForm({
@@ -197,9 +197,9 @@ const submitEdit = () => {
 
 const confirmDelete = (product) => {
     confirm.require({
-        header: "Termek torlese",
-        message: `Biztosan torlod ezt a termeket: ${product.name}?`,
-        rejectLabel: "Megse",
+        header: "Termek törlése",
+        message: `Biztosan torlod ezt a terméket: ${product.name}?`,
+        rejectLabel: "Mégse",
         acceptLabel: "Torles",
         acceptClass: "p-button-danger",
         accept: () => {
@@ -212,11 +212,11 @@ const confirmDelete = (product) => {
 </script>
 
 <template>
-    <Head title="Products" />
+    <Head title="Termékek" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Products"
+            eyebrow="Admin / Termékek"
             title="Termekek"
             description="A Categories referencia modul mintajara epitett teljes Products CRUD."
         />
@@ -227,12 +227,12 @@ const confirmDelete = (product) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Kereses</label
+                            >Keresés</label
                         >
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Nev vagy slug"
+                            placeholder="Név vagy slug"
                             @keyup.enter="submitFilters"
                         />
                     </div>
@@ -255,7 +255,7 @@ const confirmDelete = (product) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Statusz</label
+                            >Státusz</label
                         >
                         <Select
                             v-model="filterState.is_active"
@@ -270,7 +270,7 @@ const confirmDelete = (product) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Talalat / oldal</label
+                            >Találat / oldal</label
                         >
                         <Select
                             v-model="filterState.per_page"
@@ -290,8 +290,8 @@ const confirmDelete = (product) => {
                     >
                         Receptek oldal
                     </Link>
-                    <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Uj termek" @click="openCreate" />
+                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
+                    <Button icon="pi pi-plus" label="Uj termék" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
@@ -315,11 +315,11 @@ const confirmDelete = (product) => {
                     <div
                         class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                     >
-                        Nincs megjelenitheto termek. Hozd letre az elsot.
+                        Nincs megjeleníthető termék. Hozd létre az elsőt.
                     </div>
                 </template>
 
-                <Column field="name" header="Nev" sortable />
+                <Column field="name" header="Név" sortable />
                 <Column field="slug" header="Slug" sortable>
                     <template #body="{ data }">
                         <code class="text-xs text-bakery-dark/70">/{{ data.slug }}</code>
@@ -331,7 +331,7 @@ const confirmDelete = (product) => {
                     </template>
                 </Column>
                 <Column field="sort_order" header="Sorrend" sortable />
-                <Column field="is_active" header="Statusz" sortable>
+                <Column field="is_active" header="Státusz" sortable>
                     <template #body="{ data }">
                         <CategoryStatusBadge :active="data.is_active" />
                     </template>
@@ -384,3 +384,5 @@ const confirmDelete = (product) => {
         <ConfirmDialog />
     </div>
 </template>
+
+

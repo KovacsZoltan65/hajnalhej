@@ -21,14 +21,14 @@ class RecipeStepController extends Controller
     {
         $this->service->create($product, $request->validated());
 
-        return $this->redirectToOrigin($request)->with('success', 'Receptlepes hozzaadva.');
+        return $this->redirectToOrigin($request)->with('success', 'Receptlépés hozzáadva.');
     }
 
     public function update(UpdateRecipeStepRequest $request, Product $product, RecipeStep $recipeStep): RedirectResponse
     {
         $this->service->update($product, $recipeStep, $request->validated());
 
-        return $this->redirectToOrigin($request)->with('success', 'Receptlepes frissitve.');
+        return $this->redirectToOrigin($request)->with('success', 'Receptlépés frissítve.');
     }
 
     public function destroy(Request $request, Product $product, RecipeStep $recipeStep): RedirectResponse
@@ -37,7 +37,7 @@ class RecipeStepController extends Controller
 
         $this->service->delete($product, $recipeStep);
 
-        return $this->redirectToOrigin($request)->with('success', 'Receptlepes torolve.');
+        return $this->redirectToOrigin($request)->with('success', 'Receptlépés törölve.');
     }
 
     private function redirectToOrigin(Request $request): RedirectResponse
@@ -52,4 +52,6 @@ class RecipeStepController extends Controller
         return redirect()->to($fallback);
     }
 }
+
+
 

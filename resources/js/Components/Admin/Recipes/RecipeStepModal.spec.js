@@ -23,11 +23,11 @@ describe('RecipeStepModal', () => {
             global: { stubs },
         });
 
-        expect(wrapper.text()).toContain('Lepes cim');
-        expect(wrapper.text()).toContain('Lepes tipus');
-        expect(wrapper.text()).toContain('Aktiv ido (perc)');
-        expect(wrapper.text()).toContain('Mit kell csinalni?');
-        expect(wrapper.text()).toContain('Mibol latszik, hogy kesz?');
+        expect(wrapper.text()).toContain('Lépés cím');
+        expect(wrapper.text()).toContain('Lépés típus');
+        expect(wrapper.text()).toContain('Aktív idő (perc)');
+        expect(wrapper.text()).toContain('Mit kell csinálni?');
+        expect(wrapper.text()).toContain('Miből látszik, hogy kész?');
     });
 
     it('emits submit payload', async () => {

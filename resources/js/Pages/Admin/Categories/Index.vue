@@ -159,9 +159,9 @@ const submitEdit = () => {
 
 const confirmDelete = (category) => {
     confirm.require({
-        header: 'Kategoria torlese',
-        message: `Biztosan torlod ezt a kategoriat: ${category.name}?`,
-        rejectLabel: 'Megse',
+        header: 'Kategoria törlése',
+        message: `Biztosan torlod ezt a kategóriat: ${category.name}?`,
+        rejectLabel: 'Mégse',
         acceptLabel: 'Torles',
         acceptClass: 'p-button-danger',
         accept: () => {
@@ -174,11 +174,11 @@ const confirmDelete = (category) => {
 </script>
 
 <template>
-    <Head title="Categories" />
+    <Head title="Kategóriák" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Categories"
+            eyebrow="Admin / Kategóriák"
             title="Kategoriak"
             description="Referencia CRUD modul teljes repository-service-policy architekturaval."
         />
@@ -187,17 +187,17 @@ const confirmDelete = (category) => {
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-2'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
                         <InputText
                             v-model="filterState.search"
-                            placeholder="Nev vagy slug"
+                            placeholder="Név vagy slug"
                             class="w-full"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Talalat / oldal</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -210,8 +210,8 @@ const confirmDelete = (category) => {
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Uj kategoria" @click="openCreate" />
+                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
+                    <Button icon="pi pi-plus" label="Uj kategória" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
@@ -233,11 +233,11 @@ const confirmDelete = (category) => {
             >
                 <template #empty>
                     <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
-                        Nincs megjelenitheto kategoria. Hozd letre az elsot.
+                        Nincs megjeleníthető kategória. Hozd létre az elsőt.
                     </div>
                 </template>
 
-                <Column field="name" header="Nev" sortable>
+                <Column field="name" header="Név" sortable>
                     <template #body="{ data }">
                         <div>
                             <p class="font-semibold text-bakery-dark">{{ data.name }}</p>
@@ -247,7 +247,7 @@ const confirmDelete = (category) => {
                 </Column>
                 <Column field="sort_order" header="Sorrend" sortable />
                 <Column field="products_count" header="Termekek" />
-                <Column field="is_active" header="Statusz" sortable>
+                <Column field="is_active" header="Státusz" sortable>
                     <template #body="{ data }">
                         <CategoryStatusBadge :active="data.is_active" />
                     </template>
@@ -268,3 +268,5 @@ const confirmDelete = (category) => {
         <ConfirmDialog />
     </div>
 </template>
+
+

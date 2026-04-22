@@ -64,7 +64,7 @@ class SecurityDashboardRepository
             $row = [
                 'name' => $name,
                 'label' => $name,
-                'description' => 'Csak adatbazisban letezo permission (registry drift).',
+                'description' => 'Csak adatbázisban letezo permission (registry drift).',
                 'module' => 'Orphan / Custom',
                 'dangerous' => false,
                 'system' => false,
@@ -451,21 +451,21 @@ class SecurityDashboardRepository
             $from = (string) data_get($properties, 'before.status', '-');
             $to = (string) data_get($properties, 'after.status', '-');
 
-            return "Statusz: {$from} -> {$to}";
+            return "Státusz: {$from} -> {$to}";
         }
 
         if ($activity->event === 'order.pickup.updated') {
             $date = (string) data_get($properties, 'after.pickup_date', '-');
             $slot = (string) data_get($properties, 'after.pickup_time_slot', '-');
 
-            return "Atvetel: {$date} / {$slot}";
+            return "Átvétel: {$date} / {$slot}";
         }
 
         if ($activity->event === 'permissions.synced') {
             $created = (int) count((array) data_get($properties, 'created_permissions', []));
             $orphan = (int) count((array) data_get($properties, 'orphan_permissions', []));
 
-            return "Sync eredmeny: +{$created} letrehozva, {$orphan} orphan.";
+            return "Szinkron eredmény: +{$created} létrehozva, {$orphan} árva.";
         }
 
         return (string) ($activity->description ?: ($activity->event ?? 'Audit esemeny'));
@@ -482,3 +482,6 @@ class SecurityDashboardRepository
         };
     }
 }
+
+
+

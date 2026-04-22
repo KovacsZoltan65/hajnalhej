@@ -27,7 +27,6 @@ use Illuminate\Support\ServiceProvider;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Spatie\Activitylog\Models\Activity;
 
 class AppServiceProvider extends ServiceProvider
 {

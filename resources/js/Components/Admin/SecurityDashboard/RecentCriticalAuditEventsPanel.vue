@@ -13,7 +13,7 @@ defineProps({
 <template>
     <section class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-5">
         <header class="mb-4">
-            <h3 class="font-heading text-xl text-bakery-dark">Recent Critical Audit Events</h3>
+            <h3 class="font-heading text-xl text-bakery-dark">Legutóbbi kritikus audit események</h3>
             <p class="text-sm text-bakery-dark/70">Authorization, orders es user-activity domainek friss kritikus esemenyei.</p>
         </header>
 
@@ -33,13 +33,13 @@ defineProps({
                 <p class="mt-2 text-sm text-bakery-dark/85">{{ event.summary }}</p>
                 <div class="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-bakery-dark/70">
                     <span>{{ event.timestamp }}</span>
-                    <span>Causer: {{ event.causer }}</span>
-                    <span>Subject: {{ event.subject }}</span>
+                    <span>Végrehajtó: {{ event.causer }}</span>
+                    <span>Érintett elem: {{ event.subject }}</span>
                     <Link
                         :href="`/admin/security-dashboard/events/${event.id}`"
                         class="rounded-full border border-bakery-brown/20 px-2.5 py-1 font-semibold text-bakery-brown hover:bg-bakery-brown/10"
                     >
-                        Megnyitas audit reszletben
+                        Megnyitás audit részletben
                     </Link>
                 </div>
             </article>

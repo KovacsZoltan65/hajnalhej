@@ -65,15 +65,15 @@ class SecurityRiskRegistry
     public static function auditEventMap(): array
     {
         return [
-            'authorization:role.delete_blocked' => ['label' => 'Role torles blokkolva', 'severity' => 'high', 'critical' => true],
-            'authorization:role.update_blocked' => ['label' => 'Role frissites blokkolva', 'severity' => 'high', 'critical' => true],
+            'authorization:role.delete_blocked' => ['label' => 'Role törlés blokkolva', 'severity' => 'high', 'critical' => true],
+            'authorization:role.update_blocked' => ['label' => 'Szerepkör frissítés blokkolva', 'severity' => 'high', 'critical' => true],
             'authorization:role.permissions.synced' => ['label' => 'Role permission sync', 'severity' => 'high', 'critical' => true],
             'authorization:user.roles.sync_blocked' => ['label' => 'User role sync blokkolva', 'severity' => 'high', 'critical' => true],
             'authorization:permissions.synced' => ['label' => 'Permission registry sync', 'severity' => 'high', 'critical' => true],
-            'orders:order.cancelled' => ['label' => 'Rendeles torolve', 'severity' => 'high', 'critical' => true],
-            'orders:order.status.updated' => ['label' => 'Rendeles statusz frissitve', 'severity' => 'medium', 'critical' => true],
-            'orders:order.pickup.updated' => ['label' => 'Atveteli adat modositva', 'severity' => 'medium', 'critical' => true],
-            'orders:order.internal_note.updated' => ['label' => 'Belső jegyzet frissitve', 'severity' => 'medium', 'critical' => true],
+            'orders:order.cancelled' => ['label' => 'Rendelés törölve', 'severity' => 'high', 'critical' => true],
+            'orders:order.status.updated' => ['label' => 'Rendelés statusz frissítve', 'severity' => 'medium', 'critical' => true],
+            'orders:order.pickup.updated' => ['label' => 'Átvételi adat módosítva', 'severity' => 'medium', 'critical' => true],
+            'orders:order.internal_note.updated' => ['label' => 'Belső jegyzet frissítve', 'severity' => 'medium', 'critical' => true],
             'user-activity:user.login' => ['label' => 'Felhasznaloi bejelentkezes', 'severity' => 'info', 'critical' => true],
             'user-activity:user.email.verified' => ['label' => 'Email megerositve', 'severity' => 'info', 'critical' => true],
         ];
@@ -93,4 +93,6 @@ class SecurityRiskRegistry
         ];
     }
 }
+
+
 

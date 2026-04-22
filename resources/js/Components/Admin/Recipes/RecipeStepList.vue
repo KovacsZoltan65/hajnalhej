@@ -39,10 +39,10 @@ const emit = defineEmits(['edit', 'delete']);
                         <span class="font-semibold">Eszkoz:</span> {{ step.required_tools }}
                     </p>
                     <p v-if="step.expected_result" class="mt-1 text-xs text-bakery-dark/80">
-                        <span class="font-semibold">Elvart eredmeny:</span> {{ step.expected_result }}
+                        <span class="font-semibold">Elvárt eredmény:</span> {{ step.expected_result }}
                     </p>
                     <p class="mt-1 text-xs text-bakery-dark/65">
-                        Aktiv: {{ step.duration_minutes ?? 0 }} p | Varakozas: {{ step.wait_minutes ?? 0 }} p
+                        Aktív: {{ step.duration_minutes ?? 0 }} p | Várakozás: {{ step.wait_minutes ?? 0 }} p
                         <span v-if="step.temperature_celsius !== null">| Homerseklet: {{ step.temperature_celsius }} C</span>
                     </p>
                 </div>
@@ -56,7 +56,9 @@ const emit = defineEmits(['edit', 'delete']);
             v-if="steps.length === 0"
             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-4 text-center text-sm text-bakery-dark/70"
         >
-            Ehhez a termekhez meg nincs receptlepes.
+            Ehhez a termékhez meg nincs receptlepes.
         </div>
     </div>
 </template>
+
+

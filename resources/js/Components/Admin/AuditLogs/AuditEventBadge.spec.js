@@ -6,11 +6,11 @@ describe('AuditEventBadge', () => {
         const wrapper = mount(AuditEventBadge, {
             props: {
                 eventKey: 'role.created',
-                label: 'Role letrehozva',
+                label: 'Role létrehozva',
             },
         });
 
-        expect(wrapper.text()).toContain('Role letrehozva');
+        expect(wrapper.text()).toContain('Role létrehozva');
     });
 
     it('falls back to event key when no label is provided', () => {
@@ -23,3 +23,4 @@ describe('AuditEventBadge', () => {
         expect(wrapper.text()).toContain('user.roles.sync_blocked');
     });
 });
+

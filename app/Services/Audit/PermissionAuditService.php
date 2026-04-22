@@ -45,6 +45,7 @@ class PermissionAuditService
                 'existing_permissions' => $existingPermissions,
                 'orphan_permissions' => $orphanPermissions,
             ])
-            ->log('Permissions synced from registry');
+            ->log('Jogosultságok szinkronizálva a registryből');
     }
 }
+

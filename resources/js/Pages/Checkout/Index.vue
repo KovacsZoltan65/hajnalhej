@@ -66,13 +66,13 @@ const submit = () => {
                     </div>
 
                     <div class="space-y-2">
-                        <label for="pickup_date" class="text-sm font-medium text-bakery-dark">Atvetel datuma</label>
+                        <label for="pickup_date" class="text-sm font-medium text-bakery-dark">Átvétel dátuma</label>
                         <InputText id="pickup_date" v-model="form.pickup_date" type="date" class="w-full" :invalid="Boolean(form.errors.pickup_date)" />
                         <p v-if="form.errors.pickup_date" class="text-xs text-red-700">{{ form.errors.pickup_date }}</p>
                     </div>
 
                     <div class="space-y-2">
-                        <label for="pickup_time_slot" class="text-sm font-medium text-bakery-dark">Atveteli idosav</label>
+                        <label for="pickup_time_slot" class="text-sm font-medium text-bakery-dark">Átvételi idősáv</label>
                         <InputText id="pickup_time_slot" v-model="form.pickup_time_slot" placeholder="pl. 08:00-10:00" class="w-full" :invalid="Boolean(form.errors.pickup_time_slot)" />
                         <p v-if="form.errors.pickup_time_slot" class="text-xs text-red-700">{{ form.errors.pickup_time_slot }}</p>
                     </div>
@@ -96,11 +96,11 @@ const submit = () => {
                 </label>
                 <p v-if="form.errors.accept_terms" class="text-xs text-red-700">{{ form.errors.accept_terms }}</p>
 
-                <Button type="submit" label="Rendeles leadasa" class="w-full" :loading="form.processing" :disabled="form.processing" />
+                <Button type="submit" label="Rendelés leadása" class="w-full" :loading="form.processing" :disabled="form.processing" />
             </form>
 
             <aside class="h-fit rounded-2xl border border-bakery-brown/15 bg-[#fff9f1] p-5 shadow-sm">
-                <h2 class="font-heading text-2xl text-bakery-dark">Rendeles osszegzese</h2>
+                <h2 class="font-heading text-2xl text-bakery-dark">Rendelés összegzése</h2>
                 <ul class="mt-4 space-y-3 text-sm">
                     <li v-for="item in cart.items" :key="item.product_id" class="flex items-start justify-between gap-3">
                         <div>
@@ -125,3 +125,4 @@ const submit = () => {
         </div>
     </section>
 </template>
+

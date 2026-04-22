@@ -33,7 +33,7 @@ const emit = defineEmits([
             <div class="grid gap-2 rounded-2xl border border-bakery-brown/10 bg-[#fcf7ef] p-3 sm:grid-cols-2">
                 <p class="text-sm text-bakery-dark/80">Kategoria: <span class="font-medium text-bakery-dark">{{ recipe?.category_name ?? 'Nincs' }}</span></p>
                 <p class="text-sm text-bakery-dark/80">
-                    Low stock erintett: <span class="font-medium text-bakery-dark">{{ recipe?.low_stock_ingredients_count ?? 0 }}</span>
+                    Alacsony készlet érintett: <span class="font-medium text-bakery-dark">{{ recipe?.low_stock_ingredients_count ?? 0 }}</span>
                 </p>
             </div>
 
@@ -66,8 +66,8 @@ const emit = defineEmits([
                 <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
                     <p class="text-sm text-bakery-dark/80">Hozzavalok: <span class="font-semibold text-bakery-dark">{{ recipe?.recipe_summary?.ingredients_count ?? 0 }}</span></p>
                     <p class="text-sm text-bakery-dark/80">Lepesek: <span class="font-semibold text-bakery-dark">{{ recipe?.recipe_summary?.steps_count ?? 0 }}</span></p>
-                    <p class="text-sm text-bakery-dark/80">Aktiv ido: <span class="font-semibold text-bakery-dark">{{ recipe?.recipe_summary?.total_active_minutes ?? 0 }} p</span></p>
-                    <p class="text-sm text-bakery-dark/80">Varakozas: <span class="font-semibold text-bakery-dark">{{ recipe?.recipe_summary?.total_wait_minutes ?? 0 }} p</span></p>
+                    <p class="text-sm text-bakery-dark/80">Aktív ido: <span class="font-semibold text-bakery-dark">{{ recipe?.recipe_summary?.total_active_minutes ?? 0 }} p</span></p>
+                    <p class="text-sm text-bakery-dark/80">Várakozás: <span class="font-semibold text-bakery-dark">{{ recipe?.recipe_summary?.total_wait_minutes ?? 0 }} p</span></p>
                     <p class="text-sm text-bakery-dark/80">Teljes ido: <span class="font-semibold text-bakery-dark">{{ recipe?.recipe_summary?.total_recipe_minutes ?? 0 }} p</span></p>
                 </div>
             </section>
@@ -79,3 +79,5 @@ const emit = defineEmits([
         </template>
     </Dialog>
 </template>
+
+

@@ -5,14 +5,14 @@ import { computed } from 'vue';
 const page = usePage();
 
 const baseLinks = [
-    { label: 'Dashboard', href: '/admin/dashboard', icon: 'pi pi-chart-bar' },
+    { label: 'Vezérlőpult', href: '/admin/dashboard', icon: 'pi pi-chart-bar' },
     { label: 'Kategoriak', href: '/admin/categories', icon: 'pi pi-tags' },
     { label: 'Termekek', href: '/admin/products', icon: 'pi pi-box' },
     { label: 'Receptek', href: '/admin/recipes', icon: 'pi pi-list-check' },
     { label: 'Gyartastervezo', href: '/admin/production-plans', icon: 'pi pi-sitemap' },
     { label: 'Alapanyagok', href: '/admin/ingredients', icon: 'pi pi-warehouse' },
     { label: 'Heti menuk', href: '/admin/weekly-menus', icon: 'pi pi-calendar' },
-    { label: 'Rendelesek', href: '/admin/orders', icon: 'pi pi-shopping-bag' },
+    { label: 'Rendelések', href: '/admin/orders', icon: 'pi pi-shopping-bag' },
 ];
 
 const links = computed(() => {
@@ -20,7 +20,7 @@ const links = computed(() => {
     const can = page.props.auth?.can ?? {};
 
     if (can.manage_roles) {
-        dynamicLinks.push({ label: 'Szerepkorok', href: '/admin/roles', icon: 'pi pi-shield' });
+        dynamicLinks.push({ label: 'Szerepkörök', href: '/admin/roles', icon: 'pi pi-shield' });
     }
 
     if (can.assign_user_roles || can.view_user_permissions) {
@@ -28,11 +28,11 @@ const links = computed(() => {
     }
 
     if (can.manage_permissions) {
-        dynamicLinks.push({ label: 'Jogosultsagok', href: '/admin/permissions', icon: 'pi pi-key' });
+        dynamicLinks.push({ label: 'Jogosultságok', href: '/admin/permissions', icon: 'pi pi-key' });
     }
 
     if (can.view_security_dashboard) {
-        dynamicLinks.push({ label: 'Security Dashboard', href: '/admin/security-dashboard', icon: 'pi pi-shield' });
+        dynamicLinks.push({ label: 'Biztonsági irányítópult', href: '/admin/security-dashboard', icon: 'pi pi-shield' });
     }
 
     return dynamicLinks;
@@ -43,7 +43,7 @@ const isActive = (href) => page.url === href || page.url.startsWith(`${href}/`);
 
 <template>
     <aside class="flex w-full flex-col gap-2 lg:w-64">
-        <p class="px-3 text-xs font-semibold uppercase tracking-[0.2em] text-bakery-brown/70">Admin menu</p>
+        <p class="px-3 text-xs font-semibold uppercase tracking-[0.2em] text-bakery-brown/70">Admin menü</p>
         <Link
             v-for="link in links"
             :key="link.label"
@@ -60,3 +60,4 @@ const isActive = (href) => page.url === href || page.url.startsWith(`${href}/`);
         </Link>
     </aside>
 </template>
+

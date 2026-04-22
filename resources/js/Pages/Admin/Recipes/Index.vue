@@ -75,8 +75,8 @@ const perPageOptions = [
 
 const activeOptions = [
     { label: 'Mind', value: '' },
-    { label: 'Aktiv', value: '1' },
-    { label: 'Inaktiv', value: '0' },
+    { label: 'Aktív', value: '1' },
+    { label: 'Inaktív', value: '0' },
 ];
 
 const recipePresenceOptions = [
@@ -87,7 +87,7 @@ const recipePresenceOptions = [
 
 const lowStockOptions = [
     { label: 'Mind', value: '' },
-    { label: 'Low stock erintett', value: '1' },
+    { label: 'Alacsony készlet érintett', value: '1' },
 ];
 
 const categoryOptions = computed(() => [{ id: null, name: 'Mind' }, ...props.categories]);
@@ -229,9 +229,9 @@ const deleteRecipeItem = (item) => {
     }
 
     confirm.require({
-        header: 'Recept tetel torlese',
-        message: `Biztosan torlod ezt a recept tetelt: ${item.ingredient_name}?`,
-        rejectLabel: 'Megse',
+        header: 'Recept tétel törlése',
+        message: `Biztosan torlod ezt a recept tételt: ${item.ingredient_name}?`,
+        rejectLabel: 'Mégse',
         acceptLabel: 'Torles',
         acceptClass: 'p-button-danger',
         accept: () => {
@@ -250,9 +250,9 @@ const deleteRecipeStep = (step) => {
     }
 
     confirm.require({
-        header: 'Receptlepes torlese',
+        header: 'Receptlépés törlése',
         message: `Biztosan torlod ezt a receptlepest: ${step.title}?`,
-        rejectLabel: 'Megse',
+        rejectLabel: 'Mégse',
         acceptLabel: 'Torles',
         acceptClass: 'p-button-danger',
         accept: () => {
@@ -309,26 +309,26 @@ watch(
 </script>
 
 <template>
-    <Head title="Recipes" />
+    <Head title="Receptek" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Recipes"
+            eyebrow="Admin / Receptek"
             title="Receptek"
-            description="Dedikalt recipe/BOM workflow, ahol termekenkent atlathato a recept allapot es gyorsan szerkeszthetok a tetelek."
+            description="Dedikált recept/BOM workflow, ahol termékenként átlátható a recept állapot és gyorsan szerkeszthetők a tételek."
         />
 
         <RecipeSummaryCard :summary="summary" />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <div v-if="filterState.product_id" class="mb-3 flex items-center justify-between rounded-lg border border-bakery-gold/40 bg-[#fdf8ec] px-3 py-2">
-                <p class="text-sm text-bakery-dark/80">Termekre fokuszalt receptnezet aktiv.</p>
-                <Button size="small" text label="Fokusz torlese" @click="clearProductFocus" />
+                <p class="text-sm text-bakery-dark/80">Termékre fókuszált receptnézet aktív.</p>
+                <Button size="small" text label="Fokusz törlése" @click="clearProductFocus" />
             </div>
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-5'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
                         <InputText v-model="filterState.search" class="w-full" placeholder="Termek nev vagy slug" @keyup.enter="submitFilters" />
                     </div>
 
@@ -345,7 +345,7 @@ watch(
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Statusz</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Státusz</label>
                         <Select v-model="filterState.is_active" :options="activeOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
@@ -362,7 +362,7 @@ watch(
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Low stock</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Alacsony készlet</label>
                         <Select
                             v-model="filterState.has_low_stock_ingredient"
                             :options="lowStockOptions"
@@ -376,7 +376,7 @@ watch(
 
                 <template #actions>
                     <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-[9rem]" @change="submitFilters" />
-                    <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
+                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
                 </template>
             </AdminTableToolbar>
 
@@ -421,3 +421,6 @@ watch(
         <ConfirmDialog />
     </div>
 </template>
+
+
+

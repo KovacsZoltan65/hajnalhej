@@ -34,7 +34,7 @@ const formatQuantity = (value) =>
                     v-if="item.ingredient_is_low_stock"
                     class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800"
                 >
-                    Low stock
+                    Alacsony készlet
                 </span>
                 <Button icon="pi pi-pencil" text size="small" rounded @click="emit('edit', item)" />
                 <Button icon="pi pi-trash" text size="small" rounded severity="danger" @click="emit('delete', item)" />
@@ -44,7 +44,8 @@ const formatQuantity = (value) =>
             v-if="items.length === 0"
             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-4 text-center text-sm text-bakery-dark/70"
         >
-            Ehhez a termekhez meg nincs recepttetel.
+            Ehhez a termekhez meg nincs recepttétel.
         </div>
     </div>
 </template>
+

@@ -24,7 +24,7 @@ watch(
 <template>
     <div class="grid gap-4 md:grid-cols-2">
         <div class="space-y-2 md:col-span-2">
-            <label for="category-name" class="text-sm font-medium text-bakery-dark">Nev</label>
+            <label for="category-name" class="text-sm font-medium text-bakery-dark">Név</label>
             <InputText id="category-name" v-model="form.name" class="w-full" :invalid="Boolean(form.errors.name)" />
             <p v-if="form.errors.name" class="text-xs text-red-700">{{ form.errors.name }}</p>
         </div>
@@ -32,12 +32,12 @@ watch(
         <div class="space-y-2 md:col-span-2">
             <label for="category-slug" class="text-sm font-medium text-bakery-dark">Slug</label>
             <InputText id="category-slug" v-model="form.slug" class="w-full" disabled />
-            <p class="text-xs text-bakery-dark/60">Automatikusan generalodik a nev alapjan.</p>
+            <p class="text-xs text-bakery-dark/60">Automatikusan generálódik a név alapján.</p>
             <p v-if="form.errors.slug" class="text-xs text-red-700">{{ form.errors.slug }}</p>
         </div>
 
         <div class="space-y-2 md:col-span-2">
-            <label for="category-description" class="text-sm font-medium text-bakery-dark">Leiras</label>
+            <label for="category-description" class="text-sm font-medium text-bakery-dark">Leírás</label>
             <Textarea id="category-description" v-model="form.description" rows="4" class="w-full" auto-resize />
             <p v-if="form.errors.description" class="text-xs text-red-700">{{ form.errors.description }}</p>
         </div>
@@ -50,7 +50,8 @@ watch(
 
         <div class="flex items-center gap-2 pt-7">
             <ToggleSwitch id="category-active" v-model="form.is_active" />
-            <label for="category-active" class="text-sm text-bakery-dark/80">Aktiv kategoria</label>
+            <label for="category-active" class="text-sm text-bakery-dark/80">Aktív kategória</label>
         </div>
     </div>
 </template>
+

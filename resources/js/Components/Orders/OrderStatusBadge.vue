@@ -7,12 +7,12 @@ const props = defineProps({
 });
 
 const labels = {
-    pending: 'Pending',
-    confirmed: 'Confirmed',
-    in_preparation: 'In preparation',
-    ready_for_pickup: 'Ready for pickup',
-    completed: 'Completed',
-    cancelled: 'Cancelled',
+    pending: 'Függőben',
+    confirmed: 'Megerősítve',
+    in_preparation: 'Előkészítés alatt',
+    ready_for_pickup: 'Átvételre kész',
+    completed: 'Teljesítve',
+    cancelled: 'Törölve',
 };
 
 const classes = {

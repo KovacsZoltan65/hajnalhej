@@ -2,35 +2,37 @@
 
 return [
     'nav' => [
-        'cart' => 'Kosar',
+        'cart' => 'Kosár',
     ],
     'cart' => [
-        'added' => 'A termek bekerult a kosarba.',
-        'updated' => 'A kosar frissult.',
-        'removed' => 'A tetel torolve lett a kosarbol.',
-        'cleared' => 'A kosar uritve lett.',
+        'added' => 'A termék bekerült a kosárba.',
+        'updated' => 'A kosár frissült.',
+        'removed' => 'A tétel törölve lett a kosárból.',
+        'cleared' => 'A kosár ürítve lett.',
     ],
     'validation' => [
-        'empty_cart' => 'A kosar ures, rendeleshez elobb tegyel bele termekeket.',
-        'product_not_orderable' => 'A valasztott termek jelenleg nem rendelheto.',
+        'empty_cart' => 'A kosár üres, rendeléshez előbb tegyél bele termékeket.',
+        'product_not_orderable' => 'A választott termék jelenleg nem rendelhető.',
     ],
     'orders' => [
-        'placed_success' => 'A rendelest sikeresen rogzitettuk.',
-        'invalid_status_transition' => 'A valasztott statusz atmenet nem engedelyezett.',
+        'placed_success' => 'A rendelést sikeresen rögzítettük.',
+        'invalid_status_transition' => 'A választott státusz átmenet nem engedélyezett.',
     ],
     'admin' => [
-        'status_updated' => 'A rendeles statusza frissult.',
+        'status_updated' => 'A rendelés státusza frissült.',
     ],
     'roles' => [
-        'created' => 'A szerepkor letrehozva.',
-        'updated' => 'A szerepkor frissitve.',
-        'deleted' => 'A szerepkor torolve.',
-        'permissions_synced' => 'A szerepkor jogosultsagai frissitve.',
+        'created' => 'A szerepkör létrehozva.',
+        'updated' => 'A szerepkör frissítve.',
+        'deleted' => 'A szerepkör törölve.',
+        'permissions_synced' => 'A szerepkör jogosultságai frissítve.',
     ],
     'user_roles' => [
-        'updated' => 'A felhasznalo szerepkorei frissitve.',
+        'updated' => 'A felhasználó szerepkörei frissítve.',
     ],
     'permissions' => [
-        'synced' => 'A jogosultsag-registry szinkronizacio lefutott.',
+        'synced' => 'A jogosultság-registry szinkronizáció lefutott.',
     ],
 ];
+
+

@@ -15,13 +15,13 @@ const props = defineProps({
 </script>
 
 <template>
-    <Head :title="`Audit Event #${event.id}`" />
+    <Head :title="`Audit esemény #${event.id}`" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Security / Audit"
-            :title="`Audit Event #${event.id}`"
-            description="Reszletes audit nezet a security dashboardbol."
+            eyebrow="Admin / Biztonság / Audit"
+            :title="`Audit esemény #${event.id}`"
+            description="Részletes audit nézet a biztonsági irányítópultból."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-5">
@@ -31,7 +31,7 @@ const props = defineProps({
                     <p class="text-sm font-semibold text-bakery-dark">{{ event.log_name }}</p>
                 </div>
                 <div>
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Event key</p>
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Esemény kulcs</p>
                     <p class="text-sm font-semibold text-bakery-dark">{{ event.event_key || '-' }}</p>
                 </div>
                 <div>
@@ -39,13 +39,13 @@ const props = defineProps({
                     <p class="text-sm text-bakery-dark">{{ event.created_at }}</p>
                 </div>
                 <div>
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Leiras</p>
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Leírás</p>
                     <p class="text-sm text-bakery-dark">{{ event.description }}</p>
                 </div>
             </div>
 
             <div class="mt-4 rounded-xl border border-bakery-brown/15 bg-[#fdf8f1] p-4">
-                <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Properties JSON</p>
+                <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Tulajdonságok JSON</p>
                 <pre class="mt-2 overflow-auto whitespace-pre-wrap text-xs text-bakery-dark">{{ JSON.stringify(event.properties, null, 2) }}</pre>
             </div>
 
@@ -54,10 +54,11 @@ const props = defineProps({
                     href="/admin/security-dashboard"
                     class="rounded-full border border-bakery-brown/20 px-4 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10"
                 >
-                    Vissza a Security Dashboardra
+                    Vissza a biztonsági irányítópultra
                 </Link>
             </div>
         </div>
     </div>
 </template>
+
 

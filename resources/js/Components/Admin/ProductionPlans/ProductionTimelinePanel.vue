@@ -15,7 +15,7 @@ defineProps({
         </div>
 
         <div v-if="steps.length === 0" class="rounded-lg border border-dashed border-bakery-brown/20 bg-[#fcf8f1] p-3 text-sm text-bakery-dark/70">
-            Nincs generalt timeline. Adj meg receptlepeseket a termekekhez.
+            Nincs generalt timeline. Adj meg receptlepeseket a termékekhez.
         </div>
 
         <div v-else class="max-h-72 space-y-2 overflow-y-auto pr-1">
@@ -40,7 +40,7 @@ defineProps({
                     </span>
                 </div>
                 <p class="mt-1 text-xs text-bakery-dark/75">
-                    Aktiv: {{ step.duration_minutes }} perc | Varakozas: {{ step.wait_minutes }} perc
+                    Aktív: {{ step.duration_minutes }} perc | Várakozás: {{ step.wait_minutes }} perc
                 </p>
                 <p v-if="step.work_instruction" class="mt-1 text-xs text-bakery-dark/75">
                     <span class="font-semibold">Mit kell csinalni:</span> {{ step.work_instruction }}
@@ -55,12 +55,14 @@ defineProps({
                     <span class="font-semibold">Szukseges eszkoz:</span> {{ step.required_tools }}
                 </p>
                 <p v-if="step.expected_result" class="mt-1 text-xs text-bakery-dark/75">
-                    <span class="font-semibold">Elvart eredmeny:</span> {{ step.expected_result }}
+                    <span class="font-semibold">Elvárt eredmény:</span> {{ step.expected_result }}
                 </p>
                 <p v-if="step.depends_on_product_name" class="mt-1 text-xs text-bakery-dark/75">
-                    Fuggoseg celtermek: {{ step.depends_on_product_name }}
+                    Fuggoseg celtermék: {{ step.depends_on_product_name }}
                 </p>
             </div>
         </div>
     </div>
 </template>
+
+

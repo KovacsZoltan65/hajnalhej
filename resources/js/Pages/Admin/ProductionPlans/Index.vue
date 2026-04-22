@@ -192,9 +192,9 @@ const submitEdit = () => {
 
 const confirmDelete = (plan) => {
     confirm.require({
-        header: 'Gyartasi terv torlese',
+        header: 'Gyartasi terv törlése',
         message: `Biztosan torlod ezt a tervet: ${plan.plan_number}?`,
-        rejectLabel: 'Megse',
+        rejectLabel: 'Mégse',
         acceptLabel: 'Torles',
         acceptClass: 'p-button-danger',
         accept: () => {
@@ -207,11 +207,11 @@ const confirmDelete = (plan) => {
 </script>
 
 <template>
-    <Head title="Production Plans" />
+    <Head title="Gyártási tervek" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Production Planning"
+            eyebrow="Admin / Gyártástervezés"
             title="Gyartastervezo"
             description="Celido alapu gyartastervezes: mennyisegek, idozites es osszesitett alapanyag igeny egy helyen."
         />
@@ -222,11 +222,11 @@ const confirmDelete = (plan) => {
                 <p class="mt-1 text-2xl font-semibold text-bakery-dark">{{ summary.total_plans }}</p>
             </div>
             <div class="rounded-xl bg-[#fcf8f1] p-3">
-                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">Ready</p>
+                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">Kész</p>
                 <p class="mt-1 text-2xl font-semibold text-bakery-dark">{{ summary.ready_plans }}</p>
             </div>
             <div class="rounded-xl bg-[#fcf8f1] p-3">
-                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">Draft</p>
+                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">Piszkozat</p>
                 <p class="mt-1 text-2xl font-semibold text-bakery-dark">{{ summary.draft_plans }}</p>
             </div>
             <div class="rounded-xl bg-[#fcf8f1] p-3">
@@ -239,12 +239,12 @@ const confirmDelete = (plan) => {
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-5'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
-                        <InputText v-model="filterState.search" class="w-full" placeholder="Plan szam vagy termek" @keyup.enter="submitFilters" />
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
+                        <InputText v-model="filterState.search" class="w-full" placeholder="Tervszám vagy termék" @keyup.enter="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Statusz</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Státusz</label>
                         <Select v-model="filterState.status" :options="statusOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
@@ -259,13 +259,13 @@ const confirmDelete = (plan) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Talalat / oldal</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
                         <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
+                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
                     <Button icon="pi pi-plus" label="Uj gyartasi terv" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
@@ -292,10 +292,10 @@ const confirmDelete = (plan) => {
                     </div>
                 </template>
 
-                <Column field="plan_number" header="Plan" sortable />
+                <Column field="plan_number" header="Terv" sortable />
                 <Column field="target_at" header="Celido" sortable />
                 <Column field="planned_start_at" header="Javasolt kezdes" sortable />
-                <Column field="status" header="Statusz" sortable />
+                <Column field="status" header="Státusz" sortable />
                 <Column field="total_recipe_minutes" header="Teljes ido (perc)" sortable />
                 <Column field="items_count" header="Tetel db" sortable />
                 <Column header="Muveletek">
@@ -327,3 +327,4 @@ const confirmDelete = (plan) => {
         <ConfirmDialog />
     </div>
 </template>
+

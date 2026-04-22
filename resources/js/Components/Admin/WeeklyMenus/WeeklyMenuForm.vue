@@ -47,7 +47,7 @@ watch(
         </div>
 
         <div class="space-y-2">
-            <label class="text-sm font-medium text-bakery-dark">Statusz</label>
+            <label class="text-sm font-medium text-bakery-dark">Státusz</label>
             <Select v-model="form.status" :options="statuses" option-label="label" option-value="value" class="w-full" />
         </div>
 
@@ -67,3 +67,4 @@ watch(
         </div>
     </div>
 </template>
+

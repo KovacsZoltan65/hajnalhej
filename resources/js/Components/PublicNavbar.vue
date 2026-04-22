@@ -53,13 +53,13 @@ const closeMobile = () => {
                     href="/login"
                     class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
                 >
-                    {{ navUi.login ?? 'Belepes' }}
+                    {{ navUi.login ?? 'Belépés' }}
                 </Link>
                 <Link
                     href="/register"
                     class="rounded-full bg-bakery-brown px-4 py-2 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
                 >
-                    {{ navUi.register ?? 'Regisztracio' }}
+                    {{ navUi.register ?? 'Regisztráció' }}
                 </Link>
             </template>
 
@@ -68,7 +68,7 @@ const closeMobile = () => {
                     href="/account"
                     class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
                 >
-                    {{ navUi.account ?? 'Fiokom' }}
+                    {{ navUi.account ?? 'Fiókom' }}
                 </Link>
                 <Link
                     v-if="user.can_access_admin_panel"
@@ -84,7 +84,7 @@ const closeMobile = () => {
                     type="button"
                     class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
                 >
-                    {{ navUi.logout ?? 'Kilepes' }}
+                    {{ navUi.logout ?? 'Kilépés' }}
                 </Link>
             </template>
         </div>
@@ -123,16 +123,16 @@ const closeMobile = () => {
 
                 <template v-if="!user">
                     <Link href="/login" class="block rounded-xl px-3 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10" @click="closeMobile">
-                        {{ navUi.login ?? 'Belepes' }}
+                        {{ navUi.login ?? 'Belépés' }}
                     </Link>
                     <Link href="/register" class="block rounded-xl bg-bakery-brown px-3 py-2 text-sm font-semibold text-bakery-cream" @click="closeMobile">
-                        {{ navUi.register ?? 'Regisztracio' }}
+                        {{ navUi.register ?? 'Regisztráció' }}
                     </Link>
                 </template>
 
                 <template v-else>
                     <Link href="/account" class="block rounded-xl px-3 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10" @click="closeMobile">
-                        {{ navUi.account ?? 'Fiokom' }}
+                        {{ navUi.account ?? 'Fiókom' }}
                     </Link>
                     <Link
                         v-if="user.can_access_admin_panel"
@@ -150,10 +150,11 @@ const closeMobile = () => {
                         class="block w-full rounded-xl px-3 py-2 text-left text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10"
                         @click="closeMobile"
                     >
-                        {{ navUi.logout ?? 'Kilepes' }}
+                        {{ navUi.logout ?? 'Kilépés' }}
                     </Link>
                 </template>
             </div>
         </div>
     </div>
 </template>
+

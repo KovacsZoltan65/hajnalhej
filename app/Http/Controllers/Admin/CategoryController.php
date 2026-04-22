@@ -69,7 +69,7 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', 'Kategoria letrehozva.');
+            ->with('success', 'Kategória létrehozva.');
     }
 
     /**
@@ -84,7 +84,7 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', 'Kategoria frissitve.');
+            ->with('success', 'Kategória frissítve.');
     }
 
     /**
@@ -100,6 +100,8 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', 'Kategoria torolve.');
+            ->with('success', 'Kategória törölve.');
     }
 }
+
+

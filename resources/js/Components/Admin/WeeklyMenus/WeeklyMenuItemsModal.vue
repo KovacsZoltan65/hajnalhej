@@ -123,12 +123,12 @@ const remove = (item) => emit('delete-item', item);
 
                 <div class="flex items-center gap-2">
                     <ToggleSwitch v-model="form.is_active" />
-                    <span class="text-sm">Aktiv</span>
+                    <span class="text-sm">Aktív</span>
                 </div>
 
                 <div class="md:col-span-3 flex justify-end gap-2">
                     <Button type="button" severity="secondary" label="Uj" @click="resetForm" />
-                    <Button type="submit" :label="form.id ? 'Tetel frissitese' : 'Tetel hozzaadasa'" />
+                    <Button type="submit" :label="form.id ? 'Tetel frissítése' : 'Tetel hozzaadasa'" />
                 </div>
             </form>
 
@@ -146,7 +146,7 @@ const remove = (item) => emit('delete-item', item);
                     </template>
                 </Column>
                 <Column field="sort_order" header="Sorrend" />
-                <Column field="is_active" header="Statusz">
+                <Column field="is_active" header="Státusz">
                     <template #body="{ data }">
                         <WeeklyMenuStatusBadge :status="data.is_active ? 'published' : 'draft'" />
                     </template>
@@ -163,3 +163,5 @@ const remove = (item) => emit('delete-item', item);
         </div>
     </Dialog>
 </template>
+
+

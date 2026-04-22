@@ -68,7 +68,7 @@ describe('Admin Permissions Index', () => {
             global: { stubs },
         });
 
-        expect(wrapper.text()).toContain('Registry sync');
+        expect(wrapper.text()).toContain('Registry szinkron');
         expect(wrapper.text()).toContain('Szures');
     });
 });

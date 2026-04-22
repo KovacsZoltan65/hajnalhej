@@ -39,8 +39,9 @@ const formattedMinimum = computed(() =>
             class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
             :class="isLowStock ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'"
         >
-            {{ isLowStock ? 'Low stock' : 'Rendben' }}
+            {{ isLowStock ? 'Alacsony készlet' : 'Rendben' }}
         </span>
         <p class="text-xs text-bakery-dark/70">{{ formattedCurrent }} {{ unit }} / min {{ formattedMinimum }} {{ unit }}</p>
     </div>
 </template>
+

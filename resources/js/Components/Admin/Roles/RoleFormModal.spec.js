@@ -37,7 +37,8 @@ describe('RoleFormModal', () => {
         });
 
         expect(wrapper.text()).toContain('Role create');
-        expect(wrapper.text()).toContain('Szerepkor neve');
+        expect(wrapper.text()).toContain('Szerepkör neve');
         expect(wrapper.text()).toContain('Role name is invalid.');
     });
 });
+

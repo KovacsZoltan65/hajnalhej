@@ -93,10 +93,10 @@ class SecurityDashboardService
                     ['label' => 'Info', 'value' => 'info'],
                 ],
                 'log_names' => [
-                    ['label' => 'All domains', 'value' => 'all'],
-                    ['label' => 'Authorization', 'value' => 'authorization'],
-                    ['label' => 'Orders', 'value' => 'orders'],
-                    ['label' => 'User activity', 'value' => 'user-activity'],
+                    ['label' => 'Minden domain', 'value' => 'all'],
+                    ['label' => 'Jogosultságkezelés', 'value' => 'authorization'],
+                    ['label' => 'Rendelések', 'value' => 'orders'],
+                    ['label' => 'Felhasználói aktivitás', 'value' => 'user-activity'],
                 ],
             ],
         ];
@@ -135,4 +135,6 @@ class SecurityDashboardService
         };
     }
 }
+
+
 

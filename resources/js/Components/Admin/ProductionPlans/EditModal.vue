@@ -36,11 +36,11 @@ const timelineSteps = computed(() => props.selectedPlan?.details?.timeline_steps
 
             <div v-if="summary" class="grid gap-3 rounded-xl border border-bakery-brown/15 bg-[#fcf8f1] p-4 sm:grid-cols-2 xl:grid-cols-4">
                 <div class="rounded-lg bg-white p-3">
-                    <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/70">Aktiv ido</p>
+                    <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/70">Aktív ido</p>
                     <p class="mt-1 text-lg font-semibold text-bakery-dark">{{ summary.total_active_minutes }} perc</p>
                 </div>
                 <div class="rounded-lg bg-white p-3">
-                    <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/70">Varakozasi ido</p>
+                    <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/70">Várakozási ido</p>
                     <p class="mt-1 text-lg font-semibold text-bakery-dark">{{ summary.total_wait_minutes }} perc</p>
                 </div>
                 <div class="rounded-lg bg-white p-3">
@@ -91,9 +91,11 @@ const timelineSteps = computed(() => props.selectedPlan?.details?.timeline_steps
 
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Megse" @click="close" />
-                <Button type="submit" form="production-plan-edit-form" label="Mentes" :loading="form.processing" />
+                <Button type="button" severity="secondary" label="Mégse" @click="close" />
+                <Button type="submit" form="production-plan-edit-form" label="Mentés" :loading="form.processing" />
             </div>
         </template>
     </Dialog>
 </template>
+
+

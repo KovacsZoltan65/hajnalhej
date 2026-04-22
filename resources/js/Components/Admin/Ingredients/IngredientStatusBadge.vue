@@ -12,6 +12,6 @@ defineProps({
         class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
         :class="active ? 'bg-green-100 text-green-800' : 'bg-stone-200 text-stone-700'"
     >
-        {{ active ? 'Aktiv' : 'Inaktiv' }}
+        {{ active ? 'Aktív' : 'Inaktív' }}
     </span>
 </template>

@@ -170,9 +170,9 @@ const submitEdit = () => {
 
 const confirmDelete = (menu) => {
     confirm.require({
-        header: 'Heti menu torlese',
+        header: 'Heti menu törlése',
         message: `Biztosan torlod: ${menu.title}?`,
-        rejectLabel: 'Megse',
+        rejectLabel: 'Mégse',
         acceptLabel: 'Torles',
         acceptClass: 'p-button-danger',
         accept: () => {
@@ -212,35 +212,35 @@ const deleteItem = (item) => {
 </script>
 
 <template>
-    <Head title="Weekly Menus" />
+    <Head title="Heti menük" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Weekly Menus"
+            eyebrow="Admin / Heti menük"
             title="Heti menuk"
-            description="A heti kinalat kezelesi modulja termek-hozzarendelessel es publikacios workflow-val."
+            description="A heti kínálat kezelési modulja termék-hozzárendeléssel és publikációs workflow-val."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-3'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
                         <InputText v-model="filterState.search" class="w-full" placeholder="Cim vagy slug" @keyup.enter="submitFilters" />
                     </div>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Statusz</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Státusz</label>
                         <Select v-model="filterState.status" :options="statusOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Talalat / oldal</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
                         <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Uj heti menu" @click="openCreate" />
+                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
+                    <Button icon="pi pi-plus" label="Új heti menu" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
@@ -277,7 +277,7 @@ const deleteItem = (item) => {
                 <Column field="week_start" header="Het" sortable>
                     <template #body="{ data }">{{ data.week_start }} - {{ data.week_end }}</template>
                 </Column>
-                <Column field="status" header="Statusz" sortable>
+                <Column field="status" header="Státusz" sortable>
                     <template #body="{ data }">
                         <WeeklyMenuStatusBadge :status="data.status" />
                     </template>
@@ -291,7 +291,7 @@ const deleteItem = (item) => {
                             <Button icon="pi pi-trash" text size="small" rounded severity="danger" @click="confirmDelete(data)" />
                             <Button
                                 v-if="data.status !== 'published'"
-                                label="Publish"
+                                label="Közzététel"
                                 size="small"
                                 text
                                 class="!text-green-700"
@@ -299,7 +299,7 @@ const deleteItem = (item) => {
                             />
                             <Button
                                 v-else
-                                label="Unpublish"
+                                label="Közzététel visszavonása"
                                 size="small"
                                 text
                                 class="!text-amber-700"
@@ -323,3 +323,5 @@ const deleteItem = (item) => {
         <ConfirmDialog />
     </div>
 </template>
+
+

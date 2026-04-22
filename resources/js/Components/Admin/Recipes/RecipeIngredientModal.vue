@@ -107,7 +107,7 @@ const close = () => emit('update:visible', false);
                                 class="rounded-full px-2 py-0.5 text-xs"
                                 :class="slotProps.option.is_low_stock ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'"
                             >
-                                {{ slotProps.option.is_low_stock ? 'Low stock' : 'OK' }}
+                                {{ slotProps.option.is_low_stock ? 'Alacsony készlet' : 'OK' }}
                             </span>
                         </div>
                     </template>
@@ -141,10 +141,12 @@ const close = () => emit('update:visible', false);
         </form>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Megse" @click="close" />
-                <Button type="submit" form="recipe-ingredient-form" :label="item ? 'Mentes' : 'Hozzaadas'" />
+                <Button type="button" severity="secondary" label="Mégse" @click="close" />
+                <Button type="submit" form="recipe-ingredient-form" :label="item ? 'Mentés' : 'Hozzáadás'" />
             </div>
         </template>
     </Dialog>
 </template>
+
+
 

@@ -115,11 +115,11 @@ const saveRoles = () => {
 </script>
 
 <template>
-    <Head title="User Roles" />
+    <Head title="Felhasználói szerepkörök" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / User Roles"
+            eyebrow="Admin / Felhasználói szerepkörök"
             title="Felhasznalo szerepkorok"
             description="Felhasznalok szerepkoreinek kezelese es effektiv jogosultsagok attekintese."
         />
@@ -128,17 +128,17 @@ const saveRoles = () => {
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 lg:grid-cols-3'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kereses</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Nev vagy email..."
+                            placeholder="Név vagy email..."
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Talalat / oldal</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -151,7 +151,7 @@ const saveRoles = () => {
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Kereses" @click="submitFilters" />
+                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
                 </template>
             </AdminTableToolbar>
 
@@ -169,13 +169,13 @@ const saveRoles = () => {
                 @page="onPage"
             >
                 <template #empty>
-                    <div class="py-8 text-center text-sm text-bakery-dark/70">Nincs megjelenitheto felhasznalo.</div>
+                    <div class="py-8 text-center text-sm text-bakery-dark/70">Nincs megjeleníthető felhasználó.</div>
                 </template>
 
-                <Column field="name" header="Nev" />
+                <Column field="name" header="Név" />
                 <Column field="email" header="Email" />
 
-                <Column header="Szerepkorok">
+                <Column header="Szerepkörök">
                     <template #body="{ data }">
                         <div class="flex flex-wrap gap-1.5">
                             <RoleBadge
@@ -198,7 +198,7 @@ const saveRoles = () => {
                     <template #body="{ data }">
                         <Button
                             v-if="can.assign_roles"
-                            label="Szerepkorok kezelese"
+                            label="Szerepkörök kezelese"
                             size="small"
                             outlined
                             @click="openAssignModal(data)"
@@ -220,3 +220,5 @@ const saveRoles = () => {
         @save="saveRoles"
     />
 </template>
+
+

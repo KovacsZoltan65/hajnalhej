@@ -85,7 +85,7 @@ class ProductionPlanController extends Controller
 
         return redirect()
             ->route('admin.production-plans.index')
-            ->with('success', 'Gyartasi terv letrehozva.');
+            ->with('success', 'Gyártási terv létrehozva.');
     }
 
     public function update(UpdateProductionPlanRequest $request, ProductionPlan $productionPlan): RedirectResponse
@@ -96,7 +96,7 @@ class ProductionPlanController extends Controller
 
         return redirect()
             ->route('admin.production-plans.index')
-            ->with('success', 'Gyartasi terv frissitve.');
+            ->with('success', 'Gyártási terv frissítve.');
     }
 
     public function destroy(Request $request, ProductionPlan $productionPlan): RedirectResponse
@@ -107,6 +107,8 @@ class ProductionPlanController extends Controller
 
         return redirect()
             ->route('admin.production-plans.index')
-            ->with('success', 'Gyartasi terv torolve.');
+            ->with('success', 'Gyártási terv törölve.');
     }
 }
+
+
