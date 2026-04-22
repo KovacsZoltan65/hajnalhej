@@ -27,6 +27,10 @@ const links = computed(() => {
         dynamicLinks.push({ label: 'Felhasznalo szerepkorok', href: '/admin/user-roles', icon: 'pi pi-users' });
     }
 
+    if (can.manage_permissions) {
+        dynamicLinks.push({ label: 'Jogosultsagok', href: '/admin/permissions', icon: 'pi pi-key' });
+    }
+
     return dynamicLinks;
 });
 

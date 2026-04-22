@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\IngredientController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\Admin\UserRoleController as AdminUserRoleController;
+use App\Http\Controllers\Admin\PermissionController as AdminPermissionController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\RecipeController;
 use App\Http\Controllers\Admin\RecipeStepController;
@@ -141,5 +142,15 @@ Route::middleware('auth')->group(function (): void {
         Route::put('/users/{user}/roles', [AdminUserRoleController::class, 'update'])
             ->middleware('permission:users.assign-roles')
             ->name('users.roles.update');
+
+        Route::get('/permissions', [AdminPermissionController::class, 'index'])
+            ->middleware('permission:permissions.view')
+            ->name('permissions.index');
+        Route::post('/permissions/sync', [AdminPermissionController::class, 'sync'])
+            ->middleware('permission:permissions.sync')
+            ->name('permissions.sync');
+        Route::get('/permissions/{permissionName}', [AdminPermissionController::class, 'show'])
+            ->middleware('permission:permissions.view')
+            ->name('permissions.show');
     });
 });

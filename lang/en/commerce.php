@@ -30,4 +30,7 @@ return [
     'user_roles' => [
         'updated' => 'User roles have been updated.',
     ],
+    'permissions' => [
+        'synced' => 'Permission registry synchronization completed.',
+    ],
 ];
