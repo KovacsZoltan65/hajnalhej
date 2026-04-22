@@ -31,6 +31,10 @@ const links = computed(() => {
         dynamicLinks.push({ label: 'Jogosultsagok', href: '/admin/permissions', icon: 'pi pi-key' });
     }
 
+    if (can.view_security_dashboard) {
+        dynamicLinks.push({ label: 'Security Dashboard', href: '/admin/security-dashboard', icon: 'pi pi-shield' });
+    }
+
     return dynamicLinks;
 });
 

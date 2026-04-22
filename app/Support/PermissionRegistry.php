@@ -48,6 +48,7 @@ class PermissionRegistry
     public const PERMISSIONS_VIEW = 'permissions.view';
     public const PERMISSIONS_SYNC = 'permissions.sync';
     public const PERMISSIONS_VIEW_USAGE = 'permissions.view-usage';
+    public const SECURITY_DASHBOARD_VIEW = 'security-dashboard.view';
 
     /**
      * @return array<int, string>
@@ -101,6 +102,7 @@ class PermissionRegistry
             self::USERS_ASSIGN_ROLES,
             self::PERMISSIONS_VIEW,
             self::PERMISSIONS_SYNC,
+            self::SECURITY_DASHBOARD_VIEW,
         ];
     }
 
@@ -449,6 +451,16 @@ class PermissionRegistry
                 'sort' => 340,
                 'system' => true,
                 'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::SECURITY_DASHBOARD_VIEW,
+                'module' => 'Security',
+                'label' => 'Security dashboard megtekintese',
+                'description' => 'Security kockazati dashboard es kritikus audit esemenyek megtekintese.',
+                'dangerous' => true,
+                'sort' => 350,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
         ];
     }

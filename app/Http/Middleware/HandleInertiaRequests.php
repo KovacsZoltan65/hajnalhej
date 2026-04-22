@@ -51,6 +51,7 @@ class HandleInertiaRequests extends Middleware
                     'view_user_permissions' => $user?->can(PermissionRegistry::USERS_VIEW_PERMISSIONS) ?? false,
                     'manage_permissions' => $user?->can(PermissionRegistry::PERMISSIONS_VIEW) ?? false,
                     'sync_permissions' => $user?->can(PermissionRegistry::PERMISSIONS_SYNC) ?? false,
+                    'view_security_dashboard' => $user?->can(PermissionRegistry::SECURITY_DASHBOARD_VIEW) ?? false,
                 ],
             ],
             'flash' => [
