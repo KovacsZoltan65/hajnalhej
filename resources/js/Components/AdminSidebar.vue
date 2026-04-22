@@ -6,12 +6,12 @@ const page = usePage();
 
 const baseLinks = [
     { label: 'Vezérlőpult', href: '/admin/dashboard', icon: 'pi pi-chart-bar' },
-    { label: 'Kategoriak', href: '/admin/categories', icon: 'pi pi-tags' },
-    { label: 'Termekek', href: '/admin/products', icon: 'pi pi-box' },
+    { label: 'Kategóriák', href: '/admin/categories', icon: 'pi pi-tags' },
+    { label: 'Termékek', href: '/admin/products', icon: 'pi pi-box' },
     { label: 'Receptek', href: '/admin/recipes', icon: 'pi pi-list-check' },
-    { label: 'Gyartastervezo', href: '/admin/production-plans', icon: 'pi pi-sitemap' },
+    { label: 'Gyártástervező', href: '/admin/production-plans', icon: 'pi pi-sitemap' },
     { label: 'Alapanyagok', href: '/admin/ingredients', icon: 'pi pi-warehouse' },
-    { label: 'Heti menuk', href: '/admin/weekly-menus', icon: 'pi pi-calendar' },
+    { label: 'Heti menük', href: '/admin/weekly-menus', icon: 'pi pi-calendar' },
     { label: 'Rendelések', href: '/admin/orders', icon: 'pi pi-shopping-bag' },
 ];
 
@@ -24,7 +24,7 @@ const links = computed(() => {
     }
 
     if (can.assign_user_roles || can.view_user_permissions) {
-        dynamicLinks.push({ label: 'Felhasznalo szerepkorok', href: '/admin/user-roles', icon: 'pi pi-users' });
+        dynamicLinks.push({ label: 'Felhasználói szerepkörök', href: '/admin/user-roles', icon: 'pi pi-users' });
     }
 
     if (can.manage_permissions) {
@@ -48,7 +48,7 @@ const isActive = (href) => page.url === href || page.url.startsWith(`${href}/`);
             v-for="link in links"
             :key="link.label"
             :href="link.href"
-            class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition"
+            class="flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition"
             :class="
                 isActive(link.href)
                     ? 'bg-bakery-brown text-bakery-cream shadow-sm'

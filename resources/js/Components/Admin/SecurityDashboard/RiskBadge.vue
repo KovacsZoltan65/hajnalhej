@@ -22,7 +22,6 @@ const severityMap = {
         :value="level.toUpperCase()"
         :severity="severityMap[level] ?? 'secondary'"
         rounded
-        class="text-[11px] font-semibold tracking-[0.08em]"
+        class="text-[11px] font-semibold tracking-[0.06em] !px-2.5 !py-1"
     />
 </template>
-

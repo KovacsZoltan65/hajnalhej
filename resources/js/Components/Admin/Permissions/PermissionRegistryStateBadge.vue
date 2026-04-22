@@ -8,7 +8,7 @@ const props = defineProps({
 
 const labelMap = {
     synced: 'Szinkronizált',
-    missing_in_db: 'Missing In DB',
+    missing_in_db: 'Hiányzik az adatbázisból',
     orphan_db_only: 'Csak adatbázisban',
 };
 
@@ -21,7 +21,7 @@ const classMap = {
 
 <template>
     <span
-        class="inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold"
+        class="ui-badge"
         :class="classMap[props.state] ?? 'bg-slate-100 text-slate-700'"
     >
         {{ labelMap[props.state] ?? props.state }}

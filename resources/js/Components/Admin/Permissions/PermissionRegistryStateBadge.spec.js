@@ -7,6 +7,6 @@ describe('PermissionRegistryStateBadge', () => {
             props: { state: 'missing_in_db' },
         });
 
-        expect(wrapper.text()).toContain('Missing In DB');
+        expect(wrapper.text()).toContain('Hiányzik az adatbázisból');
     });
 });

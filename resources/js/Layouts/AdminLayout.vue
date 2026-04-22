@@ -14,28 +14,28 @@ const logout = () => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-[#f7efe5] text-bakery-dark">
+    <div class="ui-shell min-h-screen bg-[#f7efe5] text-bakery-dark">
         <FlashToast />
         <AppHeader container-class="max-w-none">
             <template #actions>
                 <div class="flex items-center gap-3">
                     <p class="hidden text-sm text-bakery-dark/75 sm:block">
-                        Belepve:
+                        Belépve:
                         <span class="font-semibold">{{ page.props.auth?.user?.name }}</span>
                     </p>
                     <button
                         type="button"
-                        class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
+                        class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bakery-gold/70"
                         @click="logout"
                     >
-                        Kijelentkezes
+                        Kijelentkezés
                     </button>
                 </div>
             </template>
         </AppHeader>
 
-        <div class="grid w-full gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[16rem_1fr]">
-            <div class="glass-bakery rounded-2xl p-4">
+        <div class="ui-main grid w-full gap-6 px-4 sm:px-6 lg:grid-cols-[16rem_1fr]">
+            <div class="ui-card ui-card-elevated glass-bakery p-4">
                 <div class="mb-4 border-b border-bakery-brown/10 pb-4">
                     <Link href="/admin/dashboard">
                         <AppLogo />
@@ -44,7 +44,7 @@ const logout = () => {
                 <AdminSidebar />
             </div>
 
-            <main class="rounded-2xl border border-bakery-brown/10 bg-white/70 p-6 shadow-sm sm:p-8">
+            <main class="ui-card ui-card-elevated p-6 sm:p-8">
                 <slot />
             </main>
         </div>

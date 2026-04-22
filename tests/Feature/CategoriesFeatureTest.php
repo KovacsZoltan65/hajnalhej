@@ -54,7 +54,7 @@ it('category create invalid adatokkal hibazik', function (): void {
 it('category update mukodik', function (): void {
     $user = User::factory()->create();
     $category = Category::factory()->create([
-        'name' => 'Edes pekaru',
+        'name' => 'Édes Pékáru',
         'slug' => 'edes-pekaru',
     ]);
 

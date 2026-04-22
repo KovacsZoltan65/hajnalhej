@@ -20,6 +20,12 @@
 :root {
     color: var(--color-bakery-dark);
     background-color: var(--color-bakery-cream);
+    --ui-radius-card: 1.15rem;
+    --ui-radius-pill: 9999px;
+    --ui-shadow-soft: 0 8px 24px rgba(43, 33, 24, 0.06);
+    --ui-shadow-card: 0 14px 34px rgba(43, 33, 24, 0.08);
+    --ui-border-soft: rgba(107, 68, 35, 0.14);
+    --ui-border-strong: rgba(107, 68, 35, 0.22);
 }
 
 body {
@@ -29,6 +35,9 @@ body {
         radial-gradient(circle at 85% 0%, rgba(107, 68, 35, 0.12), transparent 30%),
         linear-gradient(180deg, #f8f1e7 0%, #f4ebdd 100%);
     min-height: 100vh;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .font-heading {
@@ -71,6 +80,141 @@ body {
 
 .rise-in {
     animation: rise-in 0.6s ease-out both;
+}
+
+.ui-shell {
+    position: relative;
+}
+
+.ui-shell::after {
+    content: '';
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 15% 10%, rgba(217, 164, 65, 0.06), transparent 28%),
+        radial-gradient(circle at 90% 0%, rgba(107, 68, 35, 0.05), transparent 26%);
+    z-index: -1;
+}
+
+.ui-main {
+    padding-block: clamp(1.5rem, 2.4vw, 2.5rem);
+}
+
+.ui-card {
+    border: 1px solid var(--ui-border-soft);
+    border-radius: var(--ui-radius-card);
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: var(--ui-shadow-soft);
+}
+
+.ui-card-elevated {
+    box-shadow: var(--ui-shadow-card);
+    border-color: var(--ui-border-strong);
+}
+
+.ui-card-soft {
+    border: 1px solid rgba(107, 68, 35, 0.12);
+    border-radius: calc(var(--ui-radius-card) - 0.25rem);
+    background: #fcf7ef;
+}
+
+.ui-section {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 1.7vw, 1.4rem);
+}
+
+.ui-toolbar {
+    border-radius: calc(var(--ui-radius-card) - 0.25rem);
+    border: 1px solid rgba(107, 68, 35, 0.12);
+    background: rgba(255, 251, 244, 0.72);
+    padding: 0.85rem;
+}
+
+.ui-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: var(--ui-radius-pill);
+    padding: 0.28rem 0.62rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.ui-badge-muted {
+    border: 1px solid rgba(107, 68, 35, 0.15);
+    background: rgba(255, 252, 246, 0.9);
+    color: rgba(43, 33, 24, 0.86);
+}
+
+.btn-touch {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+}
+
+.ui-loading-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.ui-loading-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    animation: ui-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes ui-shimmer {
+    to {
+        transform: translateX(100%);
+    }
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: rgba(43, 33, 24, 0.76);
+    padding-block: 0.88rem;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+    padding-block: 0.88rem;
+}
+
+.p-datatable .p-paginator {
+    border-top: 1px solid rgba(107, 68, 35, 0.12);
+    padding-top: 0.8rem;
+}
+
+.p-toast .p-toast-message {
+    border-radius: 1rem;
+    border: 1px solid rgba(107, 68, 35, 0.15);
+    box-shadow: var(--ui-shadow-soft);
+}
+
+.p-button {
+    transition: transform 0.16s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.p-button:enabled:active {
+    transform: translateY(1px);
+}
+
+.p-button.p-button-loading,
+.p-button:disabled {
+    opacity: 0.78;
+}
+
+.p-progressspinner {
+    width: 1.15rem;
+    height: 1.15rem;
 }
 
 /* Keep PrimeIcons glyph rendering stable even if global font rules change. */

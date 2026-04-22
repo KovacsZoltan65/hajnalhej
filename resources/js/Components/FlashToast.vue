@@ -23,7 +23,7 @@ watch(
         }
 
         if (flash.info) {
-            toast.add({ severity: 'info', summary: 'Informacio', detail: flash.info, life: 3000 });
+            toast.add({ severity: 'info', summary: 'Információ', detail: flash.info, life: 3000 });
         }
     },
     { deep: true, immediate: true },

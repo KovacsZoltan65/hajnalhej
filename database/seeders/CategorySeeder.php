@@ -14,8 +14,8 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             ['name' => 'Kenyerek', 'slug' => 'kenyerek', 'sort_order' => 1],
-            ['name' => 'Edes pekaru', 'slug' => 'edes-pekaru', 'sort_order' => 2],
-            ['name' => 'Sos pekaru', 'slug' => 'sos-pekaru', 'sort_order' => 3],
+            ['name' => 'Édes Pékáru', 'slug' => 'edes-pekaru', 'sort_order' => 2],
+            ['name' => 'Sós pékáru', 'slug' => 'sos-pekaru', 'sort_order' => 3],
             ['name' => 'Pizza', 'slug' => 'pizza', 'sort_order' => 4],
         ];
 

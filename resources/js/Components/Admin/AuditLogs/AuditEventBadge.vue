@@ -40,7 +40,7 @@ const classForEvent = (eventKey) => {
 </script>
 
 <template>
-    <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold" :class="classForEvent(props.eventKey)">
+    <span class="ui-badge" :class="classForEvent(props.eventKey)">
         {{ props.label || props.eventKey }}
     </span>
 </template>

@@ -167,7 +167,7 @@ it('product delete soft delete-ol', function (): void {
 it('product category filter mukodik', function (): void {
     $user = User::factory()->create();
     $bread = Category::factory()->create(['name' => 'Kenyerek', 'is_active' => true]);
-    $sweet = Category::factory()->create(['name' => 'Edes pekaru', 'is_active' => true]);
+    $sweet = Category::factory()->create(['name' => 'Édes Pékáru', 'is_active' => true]);
 
     Product::factory()->create(['name' => 'Focaccia', 'slug' => 'focaccia', 'category_id' => $bread->id]);
     Product::factory()->create(['name' => 'Kakaos csiga', 'slug' => 'kakaos-csiga', 'category_id' => $sweet->id]);

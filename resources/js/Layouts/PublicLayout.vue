@@ -6,7 +6,7 @@ import PublicNavbar from '../Components/PublicNavbar.vue';
 </script>
 
 <template>
-    <div class="min-h-screen text-bakery-dark">
+    <div class="ui-shell min-h-screen text-bakery-dark">
         <FlashToast />
         <AppHeader>
             <template #actions>
@@ -14,7 +14,7 @@ import PublicNavbar from '../Components/PublicNavbar.vue';
             </template>
         </AppHeader>
 
-        <main class="mx-auto w-full max-w-6xl px-4 pb-10 pt-8 sm:px-6">
+        <main class="ui-main mx-auto w-full max-w-6xl px-4 pb-12 sm:px-6">
             <slot />
         </main>
 

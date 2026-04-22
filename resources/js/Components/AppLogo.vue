@@ -4,8 +4,8 @@
             <span class="font-heading text-lg">H</span>
         </div>
         <div>
-            <p class="font-heading text-xl font-semibold leading-tight text-bakery-dark">Hajnalhej</p>
-            <p class="text-xs uppercase tracking-[0.18em] text-bakery-brown/80">Ropogos reggelek.</p>
+            <p class="font-heading text-xl font-semibold leading-tight tracking-[0.01em] text-bakery-dark">Hajnalhéj</p>
+            <p class="text-[0.67rem] uppercase tracking-[0.2em] text-bakery-brown/80">Ropogós reggelek.</p>
         </div>
     </div>
 </template>

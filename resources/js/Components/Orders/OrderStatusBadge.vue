@@ -26,7 +26,7 @@ const classes = {
 </script>
 
 <template>
-    <span class="rounded-full px-2.5 py-1 text-xs font-semibold" :class="classes[props.status] ?? 'bg-slate-100 text-slate-700'">
+    <span class="ui-badge" :class="classes[props.status] ?? 'ui-badge-muted'">
         {{ labels[props.status] ?? props.status }}
     </span>
 </template>

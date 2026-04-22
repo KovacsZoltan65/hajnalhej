@@ -20,10 +20,10 @@ class CategoryFactory extends Factory
     {
         $name = fake()->randomElement([
             'Kenyerek',
-            'Edes pekaru',
-            'Sos pekaru',
+            'Édes Pékáru',
+            'Sós pékáru',
             'Pizza',
-            'Szezonalis kulonlegessegek',
+            'Szezonális különlegességek',
         ]).' '.fake()->unique()->numerify('####');
 
         return [
