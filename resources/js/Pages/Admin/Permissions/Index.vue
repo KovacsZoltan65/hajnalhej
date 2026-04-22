@@ -76,12 +76,12 @@ const moduleOptions = computed(() => ([
 
 const usageOptions = [
     { label: 'Mind', value: '' },
-    { label: 'Hasznalt', value: 'used' },
-    { label: 'Nem hasznalt', value: 'unused' },
+    { label: 'Használt', value: 'used' },
+    { label: 'Nem használt', value: 'unused' },
 ];
 
 const registryStateOptions = [
-    { label: 'Minden allapot', value: '' },
+    { label: 'Minden állapot', value: '' },
     { label: 'Szinkronban', value: 'synced' },
     { label: 'Hiányzik az adatbázisból', value: 'missing_in_db' },
     { label: 'Csak adatbázisban', value: 'orphan_db_only' },
@@ -96,8 +96,8 @@ const sortFieldOptions = [
 ];
 
 const sortDirectionOptions = [
-    { label: 'Novekvo', value: 'asc' },
-    { label: 'Csokkeno', value: 'desc' },
+    { label: 'Növekvő', value: 'asc' },
+    { label: 'Csökkenő', value: 'desc' },
 ];
 
 const perPageOptions = [
@@ -146,6 +146,17 @@ const runSync = () => {
         },
     });
 };
+const clearFilters = () => {
+    filterState.search = '';
+    filterState.module = '';
+    filterState.dangerous_only = false;
+    filterState.usage_state = '';
+    filterState.registry_state = '';
+    filterState.sort_field = 'name';
+    filterState.sort_direction = 'asc';
+    filterState.per_page = 20;
+    submitFilters();
+};
 </script>
 
 <template>
@@ -155,7 +166,7 @@ const runSync = () => {
         <SectionTitle
             eyebrow="Admin / Szerepkörök és jogosultságok"
             title="Jogosultságok"
-            description="Registry-first permission lista, usage nezet es drift ellenorzes."
+            description="Registry-alapú jogosultságlista, használatnézet és drift ellenőrzés."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
@@ -163,7 +174,7 @@ const runSync = () => {
                 <template #filters>
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
-                        <InputText v-model="filterState.search" class="w-full" placeholder="Név, label, leiras..." @keyup.enter="submitFilters" />
+                        <InputText v-model="filterState.search" class="w-full" placeholder="Név, címke, leírás..." @keyup.enter="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
@@ -182,12 +193,12 @@ const runSync = () => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Rendezes mezo</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Rendezés mező</label>
                         <Select v-model="filterState.sort_field" :options="sortFieldOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Irany</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Irány</label>
                         <Select v-model="filterState.sort_direction" :options="sortDirectionOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
@@ -200,13 +211,13 @@ const runSync = () => {
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Csak veszélyes</label>
                         <div class="flex h-10 items-center gap-2 rounded-lg border border-bakery-brown/15 px-3">
                             <Checkbox v-model="filterState.dangerous_only" binary input-id="dangerous-only" @change="submitFilters" />
-                            <label for="dangerous-only" class="text-sm text-bakery-dark">Csak veszelyes</label>
+                            <label for="dangerous-only" class="text-sm text-bakery-dark">Csak veszélyes</label>
                         </div>
                     </div>
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Szures" @click="submitFilters" />
+                    <Button icon="pi pi-search" label="Szűrés" @click="submitFilters" />
                     <Button
                         v-if="can.sync"
                         icon="pi pi-sync"
@@ -219,22 +230,29 @@ const runSync = () => {
                 </template>
             </AdminTableToolbar>
 
-            <DataTable
-                class="mt-4"
-                :value="permissions.data"
-                lazy
-                paginator
-                :rows="permissions.per_page"
-                :first="first"
-                :total-records="permissions.total"
-                :loading="loading"
-                data-key="name"
-                paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-                @page="onPage"
-            >
-                <template #empty>
-                    <div class="py-8 text-center text-sm text-bakery-dark/70">Nincs megjeleníthető jogosultság.</div>
-                </template>
+            <div class="mt-4 overflow-x-auto">
+                <DataTable
+                    :value="permissions.data"
+                    lazy
+                    paginator
+                    scrollable
+                    :rows="permissions.per_page"
+                    :first="first"
+                    :total-records="permissions.total"
+                    :loading="loading"
+                    data-key="name"
+                    paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                    @page="onPage"
+                >
+                    <template #empty>
+                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                            <p>Nincs megjeleníthető jogosultság.</p>
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                                <Button v-if="can.sync" label="Registry szinkron" size="small" @click="runSync" />
+                            </div>
+                        </div>
+                    </template>
 
                 <Column field="name" header="Jogosultság">
                     <template #body="{ data }">
@@ -264,14 +282,15 @@ const runSync = () => {
                 <Column field="users_count" header="Felhasználók" />
                 <Column field="guard_name" header="Guard" />
 
-                <Column header="Muveletek" :style="{ width: '9rem' }">
+                <Column header="Műveletek" :style="{ width: '9rem' }">
                     <template #body="{ data }">
                         <Link :href="`/admin/permissions/${encodeURIComponent(data.name)}`">
-                            <Button label="Reszletek" size="small" text />
+                            <Button label="Részletek" size="small" text class="!min-h-11" />
                         </Link>
                     </template>
                 </Column>
-            </DataTable>
+                </DataTable>
+            </div>
         </div>
     </div>
 

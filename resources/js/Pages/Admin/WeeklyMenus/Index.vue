@@ -88,6 +88,14 @@ const load = (extra = {}) => {
 };
 
 const submitFilters = () => load({ page: 1 });
+const clearFilters = () => {
+    filterState.search = '';
+    filterState.status = '';
+    filterState.sort_field = 'week_start';
+    filterState.sort_direction = 'desc';
+    filterState.per_page = 10;
+    submitFilters();
+};
 
 const onSort = (event) => {
     filterState.sort_field = event.sortField;
@@ -170,10 +178,10 @@ const submitEdit = () => {
 
 const confirmDelete = (menu) => {
     confirm.require({
-        header: 'Heti menu törlése',
-        message: `Biztosan torlod: ${menu.title}?`,
+        header: 'Heti menü törlése',
+        message: `Biztosan törlöd: ${menu.title}?`,
         rejectLabel: 'Mégse',
-        acceptLabel: 'Torles',
+        acceptLabel: 'Törlés',
         acceptClass: 'p-button-danger',
         accept: () => {
             router.delete(`/admin/weekly-menus/${menu.id}`, { preserveScroll: true });
@@ -217,8 +225,8 @@ const deleteItem = (item) => {
     <div class="space-y-6">
         <SectionTitle
             eyebrow="Admin / Heti menük"
-            title="Heti menuk"
-            description="A heti kínálat kezelési modulja termék-hozzárendeléssel és publikációs workflow-val."
+            title="Heti menük"
+            description="A heti kínálat kezelési modulja termék-hozzárendeléssel és publikációs folyamattal."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
@@ -226,7 +234,7 @@ const deleteItem = (item) => {
                 <template #filters>
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
-                        <InputText v-model="filterState.search" class="w-full" placeholder="Cim vagy slug" @keyup.enter="submitFilters" />
+                        <InputText v-model="filterState.search" class="w-full" placeholder="Cím vagy slug" @keyup.enter="submitFilters" />
                     </div>
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Státusz</label>
@@ -240,75 +248,81 @@ const deleteItem = (item) => {
 
                 <template #actions>
                     <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Új heti menu" @click="openCreate" />
+                    <Button icon="pi pi-plus" label="Új heti menü" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
-            <DataTable
-                class="mt-4"
-                :value="weeklyMenus.data"
-                lazy
-                paginator
-                :rows="weeklyMenus.per_page"
-                :first="first"
-                :total-records="weeklyMenus.total"
-                :loading="loading"
-                data-key="id"
-                sort-mode="single"
-                :sort-field="filterState.sort_field"
-                :sort-order="sortOrder"
-                @sort="onSort"
-                @page="onPage"
-            >
-                <template #empty>
-                    <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
-                        Nincs heti menu. Hozd letre az elso menut.
-                    </div>
-                </template>
+            <div class="mt-4 overflow-x-auto">
+                <DataTable
+                    :value="weeklyMenus.data"
+                    lazy
+                    paginator
+                    scrollable
+                    :rows="weeklyMenus.per_page"
+                    :first="first"
+                    :total-records="weeklyMenus.total"
+                    :loading="loading"
+                    data-key="id"
+                    sort-mode="single"
+                    :sort-field="filterState.sort_field"
+                    :sort-order="sortOrder"
+                    @sort="onSort"
+                    @page="onPage"
+                >
+                    <template #empty>
+                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                            <p>Nincs heti menü.</p>
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                                <Button label="Új heti menü" size="small" @click="openCreate" />
+                            </div>
+                        </div>
+                    </template>
 
-                <Column field="title" header="Cim" sortable>
-                    <template #body="{ data }">
-                        <div>
-                            <p class="font-semibold text-bakery-dark">{{ data.title }}</p>
-                            <p class="text-xs text-bakery-dark/60">/{{ data.slug }}</p>
-                        </div>
-                    </template>
-                </Column>
-                <Column field="week_start" header="Het" sortable>
-                    <template #body="{ data }">{{ data.week_start }} - {{ data.week_end }}</template>
-                </Column>
-                <Column field="status" header="Státusz" sortable>
-                    <template #body="{ data }">
-                        <WeeklyMenuStatusBadge :status="data.status" />
-                    </template>
-                </Column>
-                <Column field="items_count" header="Tetelek" />
-                <Column header="Muveletek">
-                    <template #body="{ data }">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <Button icon="pi pi-list" text size="small" rounded @click="openItems(data)" />
-                            <Button icon="pi pi-pencil" text size="small" rounded @click="openEdit(data)" />
-                            <Button icon="pi pi-trash" text size="small" rounded severity="danger" @click="confirmDelete(data)" />
-                            <Button
-                                v-if="data.status !== 'published'"
-                                label="Közzététel"
-                                size="small"
-                                text
-                                class="!text-green-700"
-                                @click="publish(data)"
-                            />
-                            <Button
-                                v-else
-                                label="Közzététel visszavonása"
-                                size="small"
-                                text
-                                class="!text-amber-700"
-                                @click="unpublish(data)"
-                            />
-                        </div>
-                    </template>
-                </Column>
-            </DataTable>
+                    <Column field="title" header="Cím" sortable>
+                        <template #body="{ data }">
+                            <div>
+                                <p class="font-semibold text-bakery-dark">{{ data.title }}</p>
+                                <p class="text-xs text-bakery-dark/60">/{{ data.slug }}</p>
+                            </div>
+                        </template>
+                    </Column>
+                    <Column field="week_start" header="Hét" sortable>
+                        <template #body="{ data }">{{ data.week_start }} - {{ data.week_end }}</template>
+                    </Column>
+                    <Column field="status" header="Státusz" sortable>
+                        <template #body="{ data }">
+                            <WeeklyMenuStatusBadge :status="data.status" />
+                        </template>
+                    </Column>
+                    <Column field="items_count" header="Tételek" />
+                    <Column header="Műveletek">
+                        <template #body="{ data }">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <Button icon="pi pi-list" text rounded class="!h-11 !w-11" aria-label="Heti menü tételei" @click="openItems(data)" />
+                                <Button icon="pi pi-pencil" text rounded class="!h-11 !w-11" aria-label="Heti menü szerkesztése" @click="openEdit(data)" />
+                                <Button icon="pi pi-trash" text rounded severity="danger" class="!h-11 !w-11" aria-label="Heti menü törlése" @click="confirmDelete(data)" />
+                                <Button
+                                    v-if="data.status !== 'published'"
+                                    label="Közzététel"
+                                    size="small"
+                                    text
+                                    class="!min-h-11 !text-green-700"
+                                    @click="publish(data)"
+                                />
+                                <Button
+                                    v-else
+                                    label="Közzététel visszavonása"
+                                    size="small"
+                                    text
+                                    class="!min-h-11 !text-amber-700"
+                                    @click="unpublish(data)"
+                                />
+                            </div>
+                        </template>
+                    </Column>
+                </DataTable>
+            </div>
         </div>
 
         <CreateModal v-model:visible="createModalVisible" :form="form" :statuses="statuses" @submit="submitCreate" />

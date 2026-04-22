@@ -73,6 +73,11 @@ const load = (extra = {}) => {
 };
 
 const submitFilters = () => load({ page: 1 });
+const clearFilters = () => {
+    filterState.search = '';
+    filterState.per_page = 15;
+    submitFilters();
+};
 
 const onPage = (event) => {
     filterState.per_page = event.rows;
@@ -115,10 +120,10 @@ const submitEdit = () => {
 
 const destroyRole = (role) => {
     confirm.require({
-        message: `Biztosan torlod a(z) ${role.name} szerepkort?`,
+        message: `Biztosan törlöd a(z) ${role.name} szerepkört?`,
         header: 'Szerepkör törlése',
         rejectLabel: 'Mégse',
-        acceptLabel: 'Torles',
+        acceptLabel: 'Törlés',
         acceptClass: 'p-button-danger',
         accept: () => {
             router.delete(`/admin/roles/${role.id}`, { preserveScroll: true });
@@ -145,7 +150,7 @@ const destroyRole = (role) => {
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Szerepkör nev..."
+                            placeholder="Szerepkör neve..."
                             @keyup.enter="submitFilters"
                         />
                     </div>
@@ -168,29 +173,36 @@ const destroyRole = (role) => {
                     <Button
                         v-if="can.create"
                         icon="pi pi-plus"
-                        label="Uj szerepkor"
+                        label="Új szerepkör"
                         severity="contrast"
                         @click="openCreate"
                     />
                 </template>
             </AdminTableToolbar>
 
-            <DataTable
-                class="mt-4"
-                :value="roles.data"
-                lazy
-                paginator
-                :rows="roles.per_page"
-                :first="first"
-                :total-records="roles.total"
-                :loading="loading"
-                data-key="id"
-                paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-                @page="onPage"
-            >
-                <template #empty>
-                    <div class="py-8 text-center text-sm text-bakery-dark/70">Nincs megjeleníthető szerepkor.</div>
-                </template>
+            <div class="mt-4 overflow-x-auto">
+                <DataTable
+                    :value="roles.data"
+                    lazy
+                    paginator
+                    scrollable
+                    :rows="roles.per_page"
+                    :first="first"
+                    :total-records="roles.total"
+                    :loading="loading"
+                    data-key="id"
+                    paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                    @page="onPage"
+                >
+                    <template #empty>
+                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                            <p>Nincs megjeleníthető szerepkör.</p>
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                                <Button v-if="can.create" label="Új szerepkör" size="small" @click="openCreate" />
+                            </div>
+                        </div>
+                    </template>
 
                 <Column field="name" header="Szerepkör">
                     <template #body="{ data }">
@@ -200,35 +212,38 @@ const destroyRole = (role) => {
 
                 <Column field="guard_name" header="Guard" />
                 <Column field="permissions_count" header="Jogosultságok" />
-                <Column field="users_count" header="Felhasznalok" />
+                <Column field="users_count" header="Felhasználók" />
 
-                <Column header="Muveletek" :style="{ width: '17rem' }">
+                <Column header="Műveletek" :style="{ width: '17rem' }">
                     <template #body="{ data }">
                         <div class="flex flex-wrap gap-2">
                             <Link :href="`/admin/roles/${data.id}`">
-                                <Button label="Reszletek" size="small" text />
+                                <Button label="Részletek" size="small" text class="!min-h-11" />
                             </Link>
                             <Button
                                 v-if="can.update"
-                                label="Atnevezes"
+                                label="Átnevezés"
                                 size="small"
                                 outlined
+                                class="!min-h-11"
                                 :disabled="data.is_system_role"
                                 @click="openEdit(data)"
                             />
                             <Button
                                 v-if="can.delete"
-                                label="Torles"
+                                label="Törlés"
                                 size="small"
                                 severity="danger"
                                 text
+                                class="!min-h-11"
                                 :disabled="data.is_system_role"
                                 @click="destroyRole(data)"
                             />
                         </div>
                     </template>
                 </Column>
-            </DataTable>
+                </DataTable>
+            </div>
         </div>
     </div>
 
@@ -237,7 +252,7 @@ const destroyRole = (role) => {
     <RoleFormModal
         v-model:visible="createVisible"
         :form="createForm"
-        title="Uj szerepkor létrehozása"
+        title="Új szerepkör létrehozása"
         submit-label="Létrehozás"
         @submit="submitCreate"
     />
@@ -245,7 +260,7 @@ const destroyRole = (role) => {
     <RoleFormModal
         v-model:visible="editVisible"
         :form="editForm"
-        title="Szerepkör atnevezese"
+        title="Szerepkör átnevezése"
         submit-label="Mentés"
         @submit="submitEdit"
     />

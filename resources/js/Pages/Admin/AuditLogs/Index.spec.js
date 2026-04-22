@@ -65,7 +65,7 @@ describe('Admin Audit Logs Index', () => {
             global: { stubs },
         });
 
-        expect(wrapper.text()).toContain('Szures');
+        expect(wrapper.text()).toContain('Szűrés');
         expect(wrapper.text()).toContain('role.created');
     });
 });

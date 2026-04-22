@@ -31,28 +31,30 @@ const emit = defineEmits(['sort', 'page', 'open-editor']);
 </script>
 
 <template>
-    <DataTable
-        :value="recipes.data"
-        lazy
-        paginator
-        :rows="recipes.per_page"
-        :first="first"
-        :total-records="recipes.total"
-        :loading="loading"
-        data-key="id"
-        sort-mode="single"
-        :sort-field="sortField"
-        :sort-order="sortOrder"
-        @sort="(event) => emit('sort', event)"
-        @page="(event) => emit('page', event)"
-    >
-        <template #empty>
-            <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
-                Nincs megjeleníthető recept. Válassz terméket és add hozzá az első alapanyagot.
-            </div>
-        </template>
+    <div class="overflow-x-auto">
+        <DataTable
+            :value="recipes.data"
+            lazy
+            paginator
+            scrollable
+            :rows="recipes.per_page"
+            :first="first"
+            :total-records="recipes.total"
+            :loading="loading"
+            data-key="id"
+            sort-mode="single"
+            :sort-field="sortField"
+            :sort-order="sortOrder"
+            @sort="(event) => emit('sort', event)"
+            @page="(event) => emit('page', event)"
+        >
+            <template #empty>
+                <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                    Nincs megjeleníthető recept. Válassz terméket, majd add hozzá az első alapanyagot.
+                </div>
+            </template>
 
-        <Column field="name" header="Termek" sortable>
+        <Column field="name" header="Termék" sortable>
             <template #body="{ data }">
                 <div>
                     <p class="font-semibold text-bakery-dark">{{ data.name }}</p>
@@ -60,7 +62,7 @@ const emit = defineEmits(['sort', 'page', 'open-editor']);
                 </div>
             </template>
         </Column>
-        <Column field="category_name" header="Kategoria" />
+        <Column field="category_name" header="Kategória" />
         <Column field="is_active" header="Státusz">
             <template #body="{ data }">
                 <CategoryStatusBadge :active="data.is_active" />
@@ -71,7 +73,7 @@ const emit = defineEmits(['sort', 'page', 'open-editor']);
                 <span class="font-medium text-bakery-dark">{{ data.recipe_items_count }}</span>
             </template>
         </Column>
-        <Column field="recipe_steps_count" header="Lepesek" sortable>
+        <Column field="recipe_steps_count" header="Lépések" sortable>
             <template #body="{ data }">
                 <span class="font-medium text-bakery-dark">{{ data.recipe_steps_count }}</span>
             </template>
@@ -86,12 +88,13 @@ const emit = defineEmits(['sort', 'page', 'open-editor']);
                 </span>
             </template>
         </Column>
-        <Column header="Muveletek" :exportable="false">
+        <Column header="Műveletek" :exportable="false">
             <template #body="{ data }">
-                <Button icon="pi pi-pencil" size="small" text rounded @click="emit('open-editor', data)" />
+                <Button icon="pi pi-pencil" text rounded class="!h-11 !w-11" aria-label="Recept szerkesztése" @click="emit('open-editor', data)" />
             </template>
         </Column>
-    </DataTable>
+        </DataTable>
+    </div>
 </template>
 
 

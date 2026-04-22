@@ -69,6 +69,6 @@ describe('Admin Permissions Index', () => {
         });
 
         expect(wrapper.text()).toContain('Registry szinkron');
-        expect(wrapper.text()).toContain('Szures');
+        expect(wrapper.text()).toContain('Szűrés');
     });
 });

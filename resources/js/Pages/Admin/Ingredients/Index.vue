@@ -103,6 +103,15 @@ const load = (extra = {}) => {
 };
 
 const submitFilters = () => load({ page: 1 });
+const clearFilters = () => {
+    filterState.search = '';
+    filterState.is_active = '';
+    filterState.unit = '';
+    filterState.sort_field = 'name';
+    filterState.sort_direction = 'asc';
+    filterState.per_page = 10;
+    submitFilters();
+};
 
 const onSort = (event) => {
     filterState.sort_field = event.sortField;
@@ -186,9 +195,9 @@ const submitEdit = () => {
 const confirmDelete = (ingredient) => {
     confirm.require({
         header: 'Alapanyag törlése',
-        message: `Biztosan torlod ezt az alapanyagot: ${ingredient.name}?`,
+        message: `Biztosan törlöd ezt az alapanyagot: ${ingredient.name}?`,
         rejectLabel: 'Mégse',
-        acceptLabel: 'Torles',
+        acceptLabel: 'Törlés',
         acceptClass: 'p-button-danger',
         accept: () => {
             router.delete(`/admin/ingredients/${ingredient.id}`, {
@@ -223,7 +232,7 @@ const confirmDelete = (ingredient) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Mertekegyseg</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Mértékegység</label>
                         <Select v-model="filterState.unit" :options="unitOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
@@ -235,31 +244,36 @@ const confirmDelete = (ingredient) => {
 
                 <template #actions>
                     <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Uj alapanyag" @click="openCreate" />
+                    <Button icon="pi pi-plus" label="Új alapanyag" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
-            <DataTable
-                class="mt-4"
-                :value="ingredients.data"
-                lazy
-                paginator
-                :rows="ingredients.per_page"
-                :first="first"
-                :total-records="ingredients.total"
-                :loading="loading"
-                data-key="id"
-                sort-mode="single"
-                :sort-field="filterState.sort_field"
-                :sort-order="sortOrder"
-                @sort="onSort"
-                @page="onPage"
-            >
-                <template #empty>
-                    <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
-                        Nincs megjeleníthető alapanyag. Hozd létre az elsőt.
-                    </div>
-                </template>
+            <div class="mt-4 overflow-x-auto">
+                <DataTable
+                    :value="ingredients.data"
+                    lazy
+                    paginator
+                    scrollable
+                    :rows="ingredients.per_page"
+                    :first="first"
+                    :total-records="ingredients.total"
+                    :loading="loading"
+                    data-key="id"
+                    sort-mode="single"
+                    :sort-field="filterState.sort_field"
+                    :sort-order="sortOrder"
+                    @sort="onSort"
+                    @page="onPage"
+                >
+                    <template #empty>
+                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                            <p>Nincs megjeleníthető alapanyag.</p>
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                                <Button label="Új alapanyag" size="small" @click="openCreate" />
+                            </div>
+                        </div>
+                    </template>
 
                 <Column field="name" header="Alapanyag" sortable>
                     <template #body="{ data }">
@@ -270,7 +284,7 @@ const confirmDelete = (ingredient) => {
                     </template>
                 </Column>
                 <Column field="unit" header="Mértékegység" sortable />
-                <Column field="current_stock" header="Keszlet" sortable>
+                <Column field="current_stock" header="Készlet" sortable>
                     <template #body="{ data }">
                         <IngredientStockBadge
                             :current-stock="data.current_stock"
@@ -284,15 +298,16 @@ const confirmDelete = (ingredient) => {
                         <IngredientStatusBadge :active="data.is_active" />
                     </template>
                 </Column>
-                <Column header="Muveletek" :exportable="false">
+                <Column header="Műveletek" :exportable="false">
                     <template #body="{ data }">
                         <div class="flex items-center gap-2">
-                            <Button icon="pi pi-pencil" size="small" text rounded @click="openEdit(data)" />
-                            <Button icon="pi pi-trash" size="small" text rounded severity="danger" @click="confirmDelete(data)" />
+                            <Button icon="pi pi-pencil" text rounded class="!h-11 !w-11" aria-label="Alapanyag szerkesztése" @click="openEdit(data)" />
+                            <Button icon="pi pi-trash" text rounded severity="danger" class="!h-11 !w-11" aria-label="Alapanyag törlése" @click="confirmDelete(data)" />
                         </div>
                     </template>
                 </Column>
-            </DataTable>
+                </DataTable>
+            </div>
         </div>
 
         <CreateModal v-model:visible="createModalVisible" :form="form" :units="units" @submit="submitCreate" />

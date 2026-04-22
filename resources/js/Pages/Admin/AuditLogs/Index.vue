@@ -101,6 +101,14 @@ const load = (extra = {}) => {
 };
 
 const submitFilters = () => load({ page: 1 });
+const clearFilters = () => {
+    filterState.search = '';
+    filterState.log_name = '';
+    filterState.event_key = '';
+    filterState.subject_type = '';
+    filterState.per_page = 20;
+    submitFilters();
+};
 
 const onPage = (event) => {
     filterState.per_page = event.rows;
@@ -114,8 +122,8 @@ const onPage = (event) => {
     <div class="space-y-6">
         <SectionTitle
             eyebrow="Admin / Auditnaplók"
-            title="Teljes audit naplo"
-            description="Authorization, felhasználói activity es rendelesi domain kritikus esemenyei egy helyen."
+            title="Teljes audit napló"
+            description="Jogosultsági, felhasználói aktivitási és rendelési kritikus események egy helyen."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
@@ -144,7 +152,7 @@ const onPage = (event) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Esemeny</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Esemény</label>
                         <Select
                             v-model="filterState.event_key"
                             :options="eventSelectOptions"
@@ -181,28 +189,34 @@ const onPage = (event) => {
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Szures" @click="submitFilters" />
+                    <Button icon="pi pi-search" label="Szűrés" @click="submitFilters" />
                 </template>
             </AdminTableToolbar>
 
-            <DataTable
-                class="mt-4"
-                :value="logs.data"
-                lazy
-                paginator
-                :rows="logs.per_page"
-                :first="first"
-                :total-records="logs.total"
-                :loading="loading"
-                data-key="id"
-                paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-                @page="onPage"
-            >
-                <template #empty>
-                    <div class="py-8 text-center text-sm text-bakery-dark/70">Nincs audit bejegyzés a szűrők szerint.</div>
-                </template>
+            <div class="mt-4 overflow-x-auto">
+                <DataTable
+                    :value="logs.data"
+                    lazy
+                    paginator
+                    scrollable
+                    :rows="logs.per_page"
+                    :first="first"
+                    :total-records="logs.total"
+                    :loading="loading"
+                    data-key="id"
+                    paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                    @page="onPage"
+                >
+                    <template #empty>
+                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                            <p>Nincs audit bejegyzés a szűrők szerint.</p>
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                            </div>
+                        </div>
+                    </template>
 
-                <Column header="Idopont" field="created_at" />
+                <Column header="Időpont" field="created_at" />
 
                 <Column header="Domain">
                     <template #body="{ data }">
@@ -210,7 +224,7 @@ const onPage = (event) => {
                     </template>
                 </Column>
 
-                <Column header="Esemeny">
+                <Column header="Esemény">
                     <template #body="{ data }">
                         <AuditEventBadge :event-key="data.event_key" :label="eventLabels[data.event_key] ?? data.event_key" />
                     </template>
@@ -236,14 +250,15 @@ const onPage = (event) => {
 
                 <Column field="description" header="Leírás" />
 
-                <Column header="Muveletek" :style="{ width: '9rem' }">
+                <Column header="Műveletek" :style="{ width: '9rem' }">
                     <template #body="{ data }">
                         <Link :href="`/admin/audit-logs/${data.id}`">
-                            <Button label="Reszletek" size="small" text />
+                            <Button label="Részletek" size="small" text class="!min-h-11" />
                         </Link>
                     </template>
                 </Column>
-            </DataTable>
+                </DataTable>
+            </div>
         </div>
     </div>
 </template>

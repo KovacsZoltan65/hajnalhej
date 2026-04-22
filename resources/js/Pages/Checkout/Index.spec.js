@@ -42,6 +42,9 @@ vi.mock('primevue/inputmask', () => ({
 vi.mock('primevue/textarea', () => ({
     default: { name: 'Textarea', template: '<textarea />' },
 }));
+vi.mock('primevue/checkbox', () => ({
+    default: { name: 'Checkbox', template: '<input type="checkbox" />' },
+}));
 
 describe('Checkout page', () => {
     beforeEach(() => {

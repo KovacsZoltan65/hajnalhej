@@ -79,6 +79,11 @@ const load = (extra = {}) => {
 };
 
 const submitFilters = () => load({ page: 1 });
+const clearFilters = () => {
+    filterState.search = '';
+    filterState.per_page = 15;
+    submitFilters();
+};
 
 const onPage = (event) => {
     filterState.per_page = event.rows;
@@ -120,8 +125,8 @@ const saveRoles = () => {
     <div class="space-y-6">
         <SectionTitle
             eyebrow="Admin / Felhasználói szerepkörök"
-            title="Felhasznalo szerepkorok"
-            description="Felhasznalok szerepkoreinek kezelese es effektiv jogosultsagok attekintese."
+            title="Felhasználói szerepkörök"
+            description="Felhasználók szerepköreinek kezelése és effektív jogosultságaik áttekintése."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
@@ -155,22 +160,28 @@ const saveRoles = () => {
                 </template>
             </AdminTableToolbar>
 
-            <DataTable
-                class="mt-4"
-                :value="users.data"
-                lazy
-                paginator
-                :rows="users.per_page"
-                :first="first"
-                :total-records="users.total"
-                :loading="loading"
-                data-key="id"
-                paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-                @page="onPage"
-            >
-                <template #empty>
-                    <div class="py-8 text-center text-sm text-bakery-dark/70">Nincs megjeleníthető felhasználó.</div>
-                </template>
+            <div class="mt-4 overflow-x-auto">
+                <DataTable
+                    :value="users.data"
+                    lazy
+                    paginator
+                    scrollable
+                    :rows="users.per_page"
+                    :first="first"
+                    :total-records="users.total"
+                    :loading="loading"
+                    data-key="id"
+                    paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                    @page="onPage"
+                >
+                    <template #empty>
+                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                            <p>Nincs megjeleníthető felhasználó.</p>
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                            </div>
+                        </div>
+                    </template>
 
                 <Column field="name" header="Név" />
                 <Column field="email" header="Email" />
@@ -188,24 +199,26 @@ const saveRoles = () => {
                     </template>
                 </Column>
 
-                <Column v-if="can.view_permissions" header="Effektiv jogosultsagok">
+                <Column v-if="can.view_permissions" header="Effektív jogosultságok">
                     <template #body="{ data }">
                         <span class="text-sm text-bakery-dark/75">{{ data.permissions.length }}</span>
                     </template>
                 </Column>
 
-                <Column header="Muveletek" :style="{ width: '12rem' }">
+                <Column header="Műveletek" :style="{ width: '12rem' }">
                     <template #body="{ data }">
                         <Button
                             v-if="can.assign_roles"
-                            label="Szerepkörök kezelese"
+                            label="Szerepkörök kezelése"
                             size="small"
                             outlined
+                            class="!min-h-11"
                             @click="openAssignModal(data)"
                         />
                     </template>
                 </Column>
-            </DataTable>
+                </DataTable>
+            </div>
         </div>
     </div>
 

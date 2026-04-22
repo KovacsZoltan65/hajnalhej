@@ -83,6 +83,13 @@ const load = (extra = {}) => {
 };
 
 const submitFilters = () => load({ page: 1 });
+const clearFilters = () => {
+    filterState.search = '';
+    filterState.per_page = 10;
+    filterState.sort_field = 'sort_order';
+    filterState.sort_direction = 'asc';
+    submitFilters();
+};
 
 const onSort = (event) => {
     filterState.sort_field = event.sortField;
@@ -159,10 +166,10 @@ const submitEdit = () => {
 
 const confirmDelete = (category) => {
     confirm.require({
-        header: 'Kategoria törlése',
-        message: `Biztosan torlod ezt a kategóriat: ${category.name}?`,
+        header: 'Kategória törlése',
+        message: `Biztosan törlöd ezt a kategóriát: ${category.name}?`,
         rejectLabel: 'Mégse',
-        acceptLabel: 'Torles',
+        acceptLabel: 'Törlés',
         acceptClass: 'p-button-danger',
         accept: () => {
             router.delete(`/admin/categories/${category.id}`, {
@@ -179,8 +186,8 @@ const confirmDelete = (category) => {
     <div class="space-y-6">
         <SectionTitle
             eyebrow="Admin / Kategóriák"
-            title="Kategoriak"
-            description="Referencia CRUD modul teljes repository-service-policy architekturaval."
+            title="Kategóriák"
+            description="Referencia CRUD modul teljes repository-service-policy architektúrával."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
@@ -211,56 +218,62 @@ const confirmDelete = (category) => {
 
                 <template #actions>
                     <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Uj kategória" @click="openCreate" />
+                    <Button icon="pi pi-plus" label="Új kategória" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
-            <DataTable
-                class="mt-4"
-                :value="categories.data"
-                lazy
-                paginator
-                :rows="categories.per_page"
-                :first="first"
-                :total-records="categories.total"
-                :loading="loading"
-                data-key="id"
-                sort-mode="single"
-                :sort-field="filterState.sort_field"
-                :sort-order="sortOrder"
-                @sort="onSort"
-                @page="onPage"
-            >
-                <template #empty>
-                    <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
-                        Nincs megjeleníthető kategória. Hozd létre az elsőt.
-                    </div>
-                </template>
+            <div class="mt-4 overflow-x-auto">
+                <DataTable
+                    :value="categories.data"
+                    lazy
+                    paginator
+                    scrollable
+                    :rows="categories.per_page"
+                    :first="first"
+                    :total-records="categories.total"
+                    :loading="loading"
+                    data-key="id"
+                    sort-mode="single"
+                    :sort-field="filterState.sort_field"
+                    :sort-order="sortOrder"
+                    @sort="onSort"
+                    @page="onPage"
+                >
+                    <template #empty>
+                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                            <p>Nincs megjeleníthető kategória.</p>
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                                <Button label="Új kategória" size="small" @click="openCreate" />
+                            </div>
+                        </div>
+                    </template>
 
-                <Column field="name" header="Név" sortable>
-                    <template #body="{ data }">
-                        <div>
-                            <p class="font-semibold text-bakery-dark">{{ data.name }}</p>
-                            <p class="text-xs text-bakery-dark/60">/{{ data.slug }}</p>
-                        </div>
-                    </template>
-                </Column>
-                <Column field="sort_order" header="Sorrend" sortable />
-                <Column field="products_count" header="Termekek" />
-                <Column field="is_active" header="Státusz" sortable>
-                    <template #body="{ data }">
-                        <CategoryStatusBadge :active="data.is_active" />
-                    </template>
-                </Column>
-                <Column header="Muveletek" :exportable="false">
-                    <template #body="{ data }">
-                        <div class="flex items-center gap-2">
-                            <Button icon="pi pi-pencil" size="small" text rounded @click="openEdit(data)" />
-                            <Button icon="pi pi-trash" size="small" text rounded severity="danger" @click="confirmDelete(data)" />
-                        </div>
-                    </template>
-                </Column>
-            </DataTable>
+                    <Column field="name" header="Név" sortable>
+                        <template #body="{ data }">
+                            <div>
+                                <p class="font-semibold text-bakery-dark">{{ data.name }}</p>
+                                <p class="text-xs text-bakery-dark/60">/{{ data.slug }}</p>
+                            </div>
+                        </template>
+                    </Column>
+                    <Column field="sort_order" header="Sorrend" sortable />
+                    <Column field="products_count" header="Termékek" />
+                    <Column field="is_active" header="Státusz" sortable>
+                        <template #body="{ data }">
+                            <CategoryStatusBadge :active="data.is_active" />
+                        </template>
+                    </Column>
+                    <Column header="Műveletek" :exportable="false">
+                        <template #body="{ data }">
+                            <div class="flex items-center gap-2">
+                                <Button icon="pi pi-pencil" text rounded class="!h-11 !w-11" aria-label="Kategória szerkesztése" @click="openEdit(data)" />
+                                <Button icon="pi pi-trash" text rounded severity="danger" class="!h-11 !w-11" aria-label="Kategória törlése" @click="confirmDelete(data)" />
+                            </div>
+                        </template>
+                    </Column>
+                </DataTable>
+            </div>
         </div>
 
         <CreateModal v-model:visible="createModalVisible" :form="form" @submit="submitCreate" />

@@ -86,7 +86,7 @@ const remove = (item) => emit('delete-item', item);
     <Dialog
         :visible="visible"
         modal
-        :header="menu ? `Tetelkezeles: ${menu.title}` : 'Tetelkezeles'"
+        :header="menu ? `Tételkezelés: ${menu.title}` : 'Tételkezelés'"
         :style="{ width: '70rem', maxWidth: '98vw' }"
         @update:visible="(value) => emit('update:visible', value)"
     >
@@ -97,7 +97,7 @@ const remove = (item) => emit('delete-item', item);
                     :options="products"
                     option-label="name"
                     option-value="id"
-                    placeholder="Termek"
+                    placeholder="Termék"
                     class="md:col-span-3"
                     filter
                 >
@@ -105,21 +105,21 @@ const remove = (item) => emit('delete-item', item);
                         <div class="flex items-center justify-between gap-4">
                             <div>
                                 <p class="font-medium">{{ slotProps.option.name }}</p>
-                                <p class="text-xs text-bakery-dark/70">{{ slotProps.option.category_name ?? 'Kategoria nelkul' }}</p>
+                                <p class="text-xs text-bakery-dark/70">{{ slotProps.option.category_name ?? 'Kategória nélkül' }}</p>
                             </div>
                             <span class="text-xs text-bakery-brown">{{ new Intl.NumberFormat('hu-HU').format(slotProps.option.price) }} Ft</span>
                         </div>
                     </template>
                 </Select>
 
-                <InputText v-model="form.override_name" placeholder="Override nev (opcionalis)" class="md:col-span-2" />
-                <InputNumber v-model="form.override_price" mode="decimal" :min="0" :min-fraction-digits="2" :max-fraction-digits="2" placeholder="Override ar" fluid />
+                <InputText v-model="form.override_name" placeholder="Felülírt név (opcionális)" class="md:col-span-2" />
+                <InputNumber v-model="form.override_price" mode="decimal" :min="0" :min-fraction-digits="2" :max-fraction-digits="2" placeholder="Felülírt ár" fluid />
 
-                <InputText v-model="form.override_short_description" placeholder="Override rovid leiras" class="md:col-span-2" />
+                <InputText v-model="form.override_short_description" placeholder="Felülírt rövid leírás" class="md:col-span-2" />
                 <InputNumber v-model="form.sort_order" :min="0" placeholder="Sorrend" fluid />
 
                 <InputText v-model="form.badge_text" placeholder="Badge" />
-                <InputText v-model="form.stock_note" placeholder="Keszlet megjegyzes" />
+                <InputText v-model="form.stock_note" placeholder="Készlet megjegyzés" />
 
                 <div class="flex items-center gap-2">
                     <ToggleSwitch v-model="form.is_active" />
@@ -127,39 +127,46 @@ const remove = (item) => emit('delete-item', item);
                 </div>
 
                 <div class="md:col-span-3 flex justify-end gap-2">
-                    <Button type="button" severity="secondary" label="Uj" @click="resetForm" />
-                    <Button type="submit" :label="form.id ? 'Tetel frissítése' : 'Tetel hozzaadasa'" />
+                    <Button type="button" severity="secondary" label="Új" @click="resetForm" />
+                    <Button type="submit" :label="form.id ? 'Tétel frissítése' : 'Tétel hozzáadása'" />
                 </div>
             </form>
 
-            <DataTable :value="menu?.items ?? []" data-key="id">
-                <template #empty>
-                    <div class="p-4 text-sm text-bakery-dark/70">Nincs tetel a heti menuhoz.</div>
-                </template>
-
-                <Column field="product_name" header="Termek" />
-                <Column field="override_name" header="Override nev" />
-                <Column field="override_price" header="Override ar">
-                    <template #body="{ data }">
-                        <span v-if="data.override_price !== null">{{ new Intl.NumberFormat('hu-HU').format(data.override_price) }} Ft</span>
-                        <span v-else class="text-bakery-dark/60">-</span>
-                    </template>
-                </Column>
-                <Column field="sort_order" header="Sorrend" />
-                <Column field="is_active" header="Státusz">
-                    <template #body="{ data }">
-                        <WeeklyMenuStatusBadge :status="data.is_active ? 'published' : 'draft'" />
-                    </template>
-                </Column>
-                <Column header="Muveletek">
-                    <template #body="{ data }">
-                        <div class="flex items-center gap-2">
-                            <Button icon="pi pi-pencil" size="small" text rounded @click="editItem(data)" />
-                            <Button icon="pi pi-trash" size="small" text rounded severity="danger" @click="remove(data)" />
+            <div class="overflow-x-auto">
+                <DataTable :value="menu?.items ?? []" data-key="id" scrollable>
+                    <template #empty>
+                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-4 text-center text-sm text-bakery-dark/70">
+                            <p>Nincs tétel a heti menühöz.</p>
+                            <div class="mt-3 flex justify-center">
+                                <Button label="Új tétel felvétele" size="small" @click="resetForm" />
+                            </div>
                         </div>
                     </template>
-                </Column>
-            </DataTable>
+
+                    <Column field="product_name" header="Termék" />
+                    <Column field="override_name" header="Felülírt név" />
+                    <Column field="override_price" header="Felülírt ár">
+                        <template #body="{ data }">
+                            <span v-if="data.override_price !== null">{{ new Intl.NumberFormat('hu-HU').format(data.override_price) }} Ft</span>
+                            <span v-else class="text-bakery-dark/60">-</span>
+                        </template>
+                    </Column>
+                    <Column field="sort_order" header="Sorrend" />
+                    <Column field="is_active" header="Státusz">
+                        <template #body="{ data }">
+                            <WeeklyMenuStatusBadge :status="data.is_active ? 'published' : 'draft'" />
+                        </template>
+                    </Column>
+                    <Column header="Műveletek">
+                        <template #body="{ data }">
+                            <div class="flex items-center gap-2">
+                                <Button icon="pi pi-pencil" text rounded class="!h-11 !w-11" aria-label="Tétel szerkesztése" @click="editItem(data)" />
+                                <Button icon="pi pi-trash" text rounded severity="danger" class="!h-11 !w-11" aria-label="Tétel törlése" @click="remove(data)" />
+                            </div>
+                        </template>
+                    </Column>
+                </DataTable>
+            </div>
         </div>
     </Dialog>
 </template>

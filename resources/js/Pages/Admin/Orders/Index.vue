@@ -75,6 +75,14 @@ const load = (extra = {}) => {
 };
 
 const submitFilters = () => load({ page: 1 });
+const clearFilters = () => {
+    filterState.search = '';
+    filterState.status = '';
+    filterState.sort_field = 'placed_at';
+    filterState.sort_direction = 'desc';
+    filterState.per_page = 15;
+    submitFilters();
+};
 
 const onSort = (event) => {
     filterState.sort_field = event.sortField;
@@ -95,7 +103,7 @@ const onPage = (event) => {
         <SectionTitle
             eyebrow="Admin / Rendelések"
             title="Rendelések"
-            description="Teljes rendelési lista allapottal, keresessel, szuressel es reszletekkel."
+            description="Teljes rendelési lista állapotokkal, kereséssel, szűréssel és részletekkel."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
@@ -103,7 +111,7 @@ const onPage = (event) => {
                 <template #filters>
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
-                        <InputText v-model="filterState.search" class="w-full" placeholder="Rendelésszám vagy ugyfel" @keyup.enter="submitFilters" />
+                        <InputText v-model="filterState.search" class="w-full" placeholder="Rendelésszám vagy ügyfél" @keyup.enter="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
@@ -122,30 +130,34 @@ const onPage = (event) => {
                 </template>
             </AdminTableToolbar>
 
-            <DataTable
-                class="mt-4"
-                :value="orders.data"
-                lazy
-                paginator
-                :rows="orders.per_page"
-                :first="first"
-                :total-records="orders.total"
-                :loading="loading"
-                data-key="id"
-                sort-mode="single"
-                :sort-field="filterState.sort_field"
-                :sort-order="sortOrder"
-                @sort="onSort"
-                @page="onPage"
-            >
-                <template #empty>
-                    <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
-                        Nincs megjeleníthető rendelés.
-                    </div>
-                </template>
+            <div class="mt-4 overflow-x-auto">
+                <DataTable
+                    :value="orders.data"
+                    lazy
+                    paginator
+                    scrollable
+                    :rows="orders.per_page"
+                    :first="first"
+                    :total-records="orders.total"
+                    :loading="loading"
+                    data-key="id"
+                    sort-mode="single"
+                    :sort-field="filterState.sort_field"
+                    :sort-order="sortOrder"
+                    @sort="onSort"
+                    @page="onPage"
+                >
+                    <template #empty>
+                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                            <p>Nincs megjeleníthető rendelés.</p>
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                            </div>
+                        </div>
+                    </template>
 
-                <Column field="order_number" header="Azonosito" sortable />
-                <Column field="customer_name" header="Vasarlo" sortable>
+                <Column field="order_number" header="Azonosító" sortable />
+                <Column field="customer_name" header="Vásárló" sortable>
                     <template #body="{ data }">
                         <div>
                             <p class="font-medium text-bakery-dark">{{ data.customer_name }}</p>
@@ -166,19 +178,20 @@ const onPage = (event) => {
                         </div>
                     </template>
                 </Column>
-                <Column field="total" header="Vegosszeg" sortable>
+                <Column field="total" header="Végösszeg" sortable>
                     <template #body="{ data }">
                         {{ new Intl.NumberFormat('hu-HU').format(data.total) }} Ft
                     </template>
                 </Column>
-                <Column header="Muveletek">
+                <Column header="Műveletek">
                     <template #body="{ data }">
-                        <Link :href="`/admin/orders/${data.id}`" class="inline-flex rounded-md border border-bakery-brown/20 px-2.5 py-1.5 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10">
-                            Reszletek
+                        <Link :href="`/admin/orders/${data.id}`" class="inline-flex min-h-11 items-center rounded-md border border-bakery-brown/20 px-3 py-2 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10">
+                            Részletek
                         </Link>
                     </template>
                 </Column>
-            </DataTable>
+                </DataTable>
+            </div>
         </div>
     </div>
 </template>

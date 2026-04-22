@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import Button from 'primevue/button';
+import Checkbox from 'primevue/checkbox';
 import InputMask from 'primevue/inputmask';
 import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
@@ -36,19 +37,19 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Penztar" />
+    <Head title="Pénztár" />
 
     <section class="mx-auto max-w-6xl space-y-6">
         <header class="rounded-3xl border border-bakery-brown/15 bg-[#fff7eb] p-6 sm:p-8">
-            <h1 class="font-heading text-4xl text-bakery-dark">Penztar</h1>
-            <p class="mt-2 text-sm text-bakery-dark/75">Told ki az adatokat, ellenorizd az osszegzest, es add le a rendelest.</p>
+            <h1 class="font-heading text-4xl text-bakery-dark">Pénztár</h1>
+            <p class="mt-2 text-sm text-bakery-dark/75">Töltsd ki az adatokat, ellenőrizd az összegzést, és add le a rendelést.</p>
         </header>
 
         <div class="grid gap-6 lg:grid-cols-[1fr_24rem]">
             <form class="space-y-4 rounded-2xl border border-bakery-brown/15 bg-white/80 p-5" @submit.prevent="submit">
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div class="space-y-2 sm:col-span-2">
-                        <label for="customer_name" class="text-sm font-medium text-bakery-dark">Teljes nev</label>
+                        <label for="customer_name" class="text-sm font-medium text-bakery-dark">Teljes név</label>
                         <InputText id="customer_name" v-model="form.customer_name" class="w-full" :invalid="Boolean(form.errors.customer_name)" />
                         <p v-if="form.errors.customer_name" class="text-xs text-red-700">{{ form.errors.customer_name }}</p>
                     </div>
@@ -60,7 +61,7 @@ const submit = () => {
                     </div>
 
                     <div class="space-y-2">
-                        <label for="customer_phone" class="text-sm font-medium text-bakery-dark">Telefonszam</label>
+                        <label for="customer_phone" class="text-sm font-medium text-bakery-dark">Telefonszám</label>
                         <InputMask id="customer_phone" v-model="form.customer_phone" mask="+36999999999" class="w-full" :invalid="Boolean(form.errors.customer_phone)" />
                         <p v-if="form.errors.customer_phone" class="text-xs text-red-700">{{ form.errors.customer_phone }}</p>
                     </div>
@@ -78,21 +79,37 @@ const submit = () => {
                     </div>
 
                     <div class="space-y-2 sm:col-span-2">
-                        <label for="notes" class="text-sm font-medium text-bakery-dark">Megjegyzes</label>
+                        <label for="notes" class="text-sm font-medium text-bakery-dark">Megjegyzés</label>
                         <Textarea id="notes" v-model="form.notes" rows="4" class="w-full" :invalid="Boolean(form.errors.notes)" />
                         <p v-if="form.errors.notes" class="text-xs text-red-700">{{ form.errors.notes }}</p>
                     </div>
                 </div>
 
-                <label class="flex items-start gap-2 rounded-xl border border-bakery-brown/15 px-3 py-2 text-sm text-bakery-dark/85">
-                    <input v-model="form.accept_privacy" type="checkbox" class="mt-1" />
-                    Elfogadom az adatkezelesi tajekoztatot.
+                <label
+                    for="accept_privacy"
+                    class="flex cursor-pointer items-start gap-3 rounded-xl border border-bakery-brown/15 px-3 py-2 text-sm text-bakery-dark/85"
+                >
+                    <Checkbox
+                        input-id="accept_privacy"
+                        v-model="form.accept_privacy"
+                        binary
+                        class="mt-0.5"
+                    />
+                    <span>Elfogadom az adatkezelési tájékoztatót.</span>
                 </label>
                 <p v-if="form.errors.accept_privacy" class="text-xs text-red-700">{{ form.errors.accept_privacy }}</p>
 
-                <label class="flex items-start gap-2 rounded-xl border border-bakery-brown/15 px-3 py-2 text-sm text-bakery-dark/85">
-                    <input v-model="form.accept_terms" type="checkbox" class="mt-1" />
-                    Elfogadom az ASZF-et.
+                <label
+                    for="accept_terms"
+                    class="flex cursor-pointer items-start gap-3 rounded-xl border border-bakery-brown/15 px-3 py-2 text-sm text-bakery-dark/85"
+                >
+                    <Checkbox
+                        input-id="accept_terms"
+                        v-model="form.accept_terms"
+                        binary
+                        class="mt-0.5"
+                    />
+                    <span>Elfogadom az ÁSZF-et.</span>
                 </label>
                 <p v-if="form.errors.accept_terms" class="text-xs text-red-700">{{ form.errors.accept_terms }}</p>
 
@@ -113,13 +130,13 @@ const submit = () => {
 
                 <div class="mt-5 border-t border-bakery-brown/10 pt-4 text-sm">
                     <div class="flex justify-between font-semibold text-bakery-dark">
-                        <span>Vegosszeg</span>
+                        <span>Végösszeg</span>
                         <span>{{ new Intl.NumberFormat('hu-HU').format(cart.summary.total) }} Ft</span>
                     </div>
                 </div>
 
                 <Link href="/cart" class="mt-4 inline-flex text-sm font-semibold text-bakery-brown hover:underline">
-                    Vissza a kosarhoz
+                    Vissza a kosárhoz
                 </Link>
             </aside>
         </div>

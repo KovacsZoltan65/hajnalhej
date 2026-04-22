@@ -82,7 +82,7 @@ const activeOptions = [
 const recipePresenceOptions = [
     { label: 'Mind', value: 'all' },
     { label: 'Recepttel', value: 'with_recipe' },
-    { label: 'Recept nelkul', value: 'without_recipe' },
+    { label: 'Recept nélkül', value: 'without_recipe' },
 ];
 
 const lowStockOptions = [
@@ -230,9 +230,9 @@ const deleteRecipeItem = (item) => {
 
     confirm.require({
         header: 'Recept tétel törlése',
-        message: `Biztosan torlod ezt a recept tételt: ${item.ingredient_name}?`,
+        message: `Biztosan törlöd ezt a recept tételt: ${item.ingredient_name}?`,
         rejectLabel: 'Mégse',
-        acceptLabel: 'Torles',
+        acceptLabel: 'Törlés',
         acceptClass: 'p-button-danger',
         accept: () => {
             router.delete(`/admin/products/${editorRecipe.value.id}/ingredients/${item.id}`, {
@@ -251,9 +251,9 @@ const deleteRecipeStep = (step) => {
 
     confirm.require({
         header: 'Receptlépés törlése',
-        message: `Biztosan torlod ezt a receptlepest: ${step.title}?`,
+        message: `Biztosan törlöd ezt a receptlépést: ${step.title}?`,
         rejectLabel: 'Mégse',
-        acceptLabel: 'Torles',
+        acceptLabel: 'Törlés',
         acceptClass: 'p-button-danger',
         accept: () => {
             router.delete(`/admin/products/${editorRecipe.value.id}/recipe-steps/${step.id}`, {
@@ -315,7 +315,7 @@ watch(
         <SectionTitle
             eyebrow="Admin / Receptek"
             title="Receptek"
-            description="Dedikált recept/BOM workflow, ahol termékenként átlátható a recept állapot és gyorsan szerkeszthetők a tételek."
+            description="Dedikált recept/BOM folyamat, ahol termékenként átlátható a receptállapot és gyorsan szerkeszthetők a tételek."
         />
 
         <RecipeSummaryCard :summary="summary" />
@@ -323,17 +323,17 @@ watch(
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <div v-if="filterState.product_id" class="mb-3 flex items-center justify-between rounded-lg border border-bakery-gold/40 bg-[#fdf8ec] px-3 py-2">
                 <p class="text-sm text-bakery-dark/80">Termékre fókuszált receptnézet aktív.</p>
-                <Button size="small" text label="Fokusz törlése" @click="clearProductFocus" />
+                <Button size="small" text label="Fókusz törlése" @click="clearProductFocus" />
             </div>
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-5'">
                 <template #filters>
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
-                        <InputText v-model="filterState.search" class="w-full" placeholder="Termek nev vagy slug" @keyup.enter="submitFilters" />
+                        <InputText v-model="filterState.search" class="w-full" placeholder="Terméknév vagy slug" @keyup.enter="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kategoria</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kategória</label>
                         <Select
                             v-model="filterState.category_id"
                             :options="categoryOptions"
@@ -350,7 +350,7 @@ watch(
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Recept allapot</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Receptállapot</label>
                         <Select
                             v-model="filterState.recipe_presence"
                             :options="recipePresenceOptions"

@@ -126,6 +126,16 @@ const load = (extra = {}) => {
 };
 
 const submitFilters = () => load({ page: 1 });
+const clearFilters = () => {
+    filterState.search = '';
+    filterState.status = '';
+    filterState.target_from = '';
+    filterState.target_to = '';
+    filterState.sort_field = 'target_at';
+    filterState.sort_direction = 'asc';
+    filterState.per_page = 10;
+    submitFilters();
+};
 
 const onSort = (event) => {
     filterState.sort_field = event.sortField;
@@ -192,10 +202,10 @@ const submitEdit = () => {
 
 const confirmDelete = (plan) => {
     confirm.require({
-        header: 'Gyartasi terv törlése',
-        message: `Biztosan torlod ezt a tervet: ${plan.plan_number}?`,
+        header: 'Gyártási terv törlése',
+        message: `Biztosan törlöd ezt a tervet: ${plan.plan_number}?`,
         rejectLabel: 'Mégse',
-        acceptLabel: 'Torles',
+        acceptLabel: 'Törlés',
         acceptClass: 'p-button-danger',
         accept: () => {
             router.delete(`/admin/production-plans/${plan.id}`, {
@@ -212,8 +222,8 @@ const confirmDelete = (plan) => {
     <div class="space-y-6">
         <SectionTitle
             eyebrow="Admin / Gyártástervezés"
-            title="Gyartastervezo"
-            description="Celido alapu gyartastervezes: mennyisegek, idozites es osszesitett alapanyag igeny egy helyen."
+            title="Gyártástervező"
+            description="Célidő alapú gyártástervezés: mennyiségek, időzítés és összesített alapanyagigény egy helyen."
         />
 
         <div class="grid gap-3 rounded-2xl border border-bakery-brown/15 bg-white/85 p-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -230,7 +240,7 @@ const confirmDelete = (plan) => {
                 <p class="mt-1 text-2xl font-semibold text-bakery-dark">{{ summary.draft_plans }}</p>
             </div>
             <div class="rounded-xl bg-[#fcf8f1] p-3">
-                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">Ossz recept ido</p>
+                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">Össz receptidő</p>
                 <p class="mt-1 text-2xl font-semibold text-bakery-dark">{{ summary.total_recipe_minutes }} perc</p>
             </div>
         </div>
@@ -249,12 +259,12 @@ const confirmDelete = (plan) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Celido tol</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Célidő -tól</label>
                         <InputText v-model="filterState.target_from" type="date" class="w-full" />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Celido ig</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Célidő -ig</label>
                         <InputText v-model="filterState.target_to" type="date" class="w-full" />
                     </div>
 
@@ -266,47 +276,53 @@ const confirmDelete = (plan) => {
 
                 <template #actions>
                     <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Uj gyartasi terv" @click="openCreate" />
+                    <Button icon="pi pi-plus" label="Új gyártási terv" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
-            <DataTable
-                class="mt-4"
-                :value="productionPlans.data"
-                lazy
-                paginator
-                :rows="productionPlans.per_page"
-                :first="first"
-                :total-records="productionPlans.total"
-                :loading="loading"
-                data-key="id"
-                sort-mode="single"
-                :sort-field="filterState.sort_field"
-                :sort-order="sortOrder"
-                @sort="onSort"
-                @page="onPage"
-            >
-                <template #empty>
-                    <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
-                        Nincs gyartasi terv. Hozd letre az elsot.
-                    </div>
-                </template>
+            <div class="mt-4 overflow-x-auto">
+                <DataTable
+                    :value="productionPlans.data"
+                    lazy
+                    paginator
+                    scrollable
+                    :rows="productionPlans.per_page"
+                    :first="first"
+                    :total-records="productionPlans.total"
+                    :loading="loading"
+                    data-key="id"
+                    sort-mode="single"
+                    :sort-field="filterState.sort_field"
+                    :sort-order="sortOrder"
+                    @sort="onSort"
+                    @page="onPage"
+                >
+                    <template #empty>
+                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                            <p>Nincs gyártási terv.</p>
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                                <Button label="Új gyártási terv" size="small" @click="openCreate" />
+                            </div>
+                        </div>
+                    </template>
 
                 <Column field="plan_number" header="Terv" sortable />
-                <Column field="target_at" header="Celido" sortable />
-                <Column field="planned_start_at" header="Javasolt kezdes" sortable />
+                <Column field="target_at" header="Célidő" sortable />
+                <Column field="planned_start_at" header="Javasolt kezdés" sortable />
                 <Column field="status" header="Státusz" sortable />
-                <Column field="total_recipe_minutes" header="Teljes ido (perc)" sortable />
-                <Column field="items_count" header="Tetel db" sortable />
-                <Column header="Muveletek">
+                <Column field="total_recipe_minutes" header="Teljes idő (perc)" sortable />
+                <Column field="items_count" header="Tétel db" sortable />
+                <Column header="Műveletek">
                     <template #body="{ data }">
                         <div class="flex items-center gap-2">
-                            <Button icon="pi pi-pencil" size="small" text rounded @click="openEdit(data)" />
-                            <Button icon="pi pi-trash" size="small" text rounded severity="danger" @click="confirmDelete(data)" />
+                            <Button icon="pi pi-pencil" text rounded class="!h-11 !w-11" aria-label="Gyártási terv szerkesztése" @click="openEdit(data)" />
+                            <Button icon="pi pi-trash" text rounded severity="danger" class="!h-11 !w-11" aria-label="Gyártási terv törlése" @click="confirmDelete(data)" />
                         </div>
                     </template>
                 </Column>
-            </DataTable>
+                </DataTable>
+            </div>
         </div>
 
         <CreateModal

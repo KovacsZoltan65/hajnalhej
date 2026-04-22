@@ -109,6 +109,15 @@ const load = (extra = {}) => {
 };
 
 const submitFilters = () => load({ page: 1 });
+const clearFilters = () => {
+    filterState.search = "";
+    filterState.category_id = null;
+    filterState.is_active = "";
+    filterState.sort_field = "sort_order";
+    filterState.sort_direction = "asc";
+    filterState.per_page = 10;
+    submitFilters();
+};
 
 const onSort = (event) => {
     filterState.sort_field = event.sortField;
@@ -197,10 +206,10 @@ const submitEdit = () => {
 
 const confirmDelete = (product) => {
     confirm.require({
-        header: "Termek törlése",
-        message: `Biztosan torlod ezt a terméket: ${product.name}?`,
+        header: "Termék törlése",
+        message: `Biztosan törlöd ezt a terméket: ${product.name}?`,
         rejectLabel: "Mégse",
-        acceptLabel: "Torles",
+        acceptLabel: "Törlés",
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(`/admin/products/${product.id}`, {
@@ -217,8 +226,8 @@ const confirmDelete = (product) => {
     <div class="space-y-6">
         <SectionTitle
             eyebrow="Admin / Termékek"
-            title="Termekek"
-            description="A Categories referencia modul mintajara epitett teljes Products CRUD."
+            title="Termékek"
+            description="A Kategóriák referencia modul mintájára épített teljes termékkezelés."
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
@@ -240,7 +249,7 @@ const confirmDelete = (product) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Kategoria</label
+                            >Kategória</label
                         >
                         <Select
                             v-model="filterState.category_id"
@@ -291,33 +300,38 @@ const confirmDelete = (product) => {
                         Receptek oldal
                     </Link>
                     <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Uj termék" @click="openCreate" />
+                    <Button icon="pi pi-plus" label="Új termék" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
-            <DataTable
-                class="mt-4"
-                :value="products.data"
-                lazy
-                paginator
-                :rows="products.per_page"
-                :first="first"
-                :total-records="products.total"
-                :loading="loading"
-                data-key="id"
-                sort-mode="single"
-                :sort-field="filterState.sort_field"
-                :sort-order="sortOrder"
-                @sort="onSort"
-                @page="onPage"
-            >
-                <template #empty>
-                    <div
-                        class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
-                    >
-                        Nincs megjeleníthető termék. Hozd létre az elsőt.
-                    </div>
-                </template>
+            <div class="mt-4 overflow-x-auto">
+                <DataTable
+                    :value="products.data"
+                    lazy
+                    paginator
+                    scrollable
+                    :rows="products.per_page"
+                    :first="first"
+                    :total-records="products.total"
+                    :loading="loading"
+                    data-key="id"
+                    sort-mode="single"
+                    :sort-field="filterState.sort_field"
+                    :sort-order="sortOrder"
+                    @sort="onSort"
+                    @page="onPage"
+                >
+                    <template #empty>
+                        <div
+                            class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
+                        >
+                            <p>Nincs megjeleníthető termék.</p>
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                                <Button label="Új termék" size="small" @click="openCreate" />
+                            </div>
+                        </div>
+                    </template>
 
                 <Column field="name" header="Név" sortable />
                 <Column field="slug" header="Slug" sortable>
@@ -325,7 +339,7 @@ const confirmDelete = (product) => {
                         <code class="text-xs text-bakery-dark/70">/{{ data.slug }}</code>
                     </template>
                 </Column>
-                <Column field="price" header="Ar" sortable>
+                <Column field="price" header="Ár" sortable>
                     <template #body="{ data }">
                         <ProductPrice :price="data.price" />
                     </template>
@@ -336,34 +350,37 @@ const confirmDelete = (product) => {
                         <CategoryStatusBadge :active="data.is_active" />
                     </template>
                 </Column>
-                <Column header="Muveletek" :exportable="false">
+                <Column header="Műveletek" :exportable="false">
                     <template #body="{ data }">
                         <div class="flex items-center gap-2">
                             <Link
                                 :href="`/admin/recipes?product_id=${data.id}`"
-                                class="inline-flex items-center rounded-md border border-bakery-brown/20 px-2.5 py-1.5 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10"
+                                class="inline-flex min-h-11 items-center rounded-md border border-bakery-brown/20 px-3 py-2 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10"
                             >
                                 Recept
                             </Link>
                             <Button
                                 icon="pi pi-pencil"
-                                size="small"
                                 text
                                 rounded
+                                class="!h-11 !w-11"
+                                aria-label="Termék szerkesztése"
                                 @click="openEdit(data)"
                             />
                             <Button
                                 icon="pi pi-trash"
-                                size="small"
                                 text
                                 rounded
                                 severity="danger"
+                                class="!h-11 !w-11"
+                                aria-label="Termék törlése"
                                 @click="confirmDelete(data)"
                             />
                         </div>
                     </template>
                 </Column>
-            </DataTable>
+                </DataTable>
+            </div>
         </div>
 
         <CreateModal

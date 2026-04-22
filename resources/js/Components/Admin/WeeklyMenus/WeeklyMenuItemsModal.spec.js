@@ -18,12 +18,12 @@ describe('WeeklyMenuItemsModal', () => {
         const wrapper = mount(WeeklyMenuItemsModal, {
             props: {
                 visible: true,
-                menu: { id: 1, title: 'Heti menu teszt', items: [] },
-                products: [{ id: 1, name: 'Kenyer', category_name: 'Kenyerek', price: 1200 }],
+                menu: { id: 1, title: 'Heti menü teszt', items: [] },
+                products: [{ id: 1, name: 'Kenyér', category_name: 'Kenyerek', price: 1200 }],
             },
             global: { stubs },
         });
 
-        expect(wrapper.text()).toContain('Nincs tetel a heti menuhoz.');
+        expect(wrapper.text()).toContain('Nincs tétel a heti menühöz.');
     });
 });

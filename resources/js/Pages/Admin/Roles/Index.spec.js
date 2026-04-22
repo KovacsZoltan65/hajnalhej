@@ -83,7 +83,7 @@ describe('Admin Roles Index', () => {
             },
         });
 
-        expect(wrapper.text()).toContain('Uj szerepkor');
+        expect(wrapper.text()).toContain('Új szerepkör');
     });
 
     it('hides create action when permission is missing', () => {
@@ -100,6 +100,6 @@ describe('Admin Roles Index', () => {
             },
         });
 
-        expect(wrapper.text()).not.toContain('Uj szerepkor');
+        expect(wrapper.text()).not.toContain('Új szerepkör');
     });
 });
