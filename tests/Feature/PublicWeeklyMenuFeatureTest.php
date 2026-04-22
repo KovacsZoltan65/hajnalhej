@@ -17,7 +17,7 @@ it('public weekly menu published menu megjelenik', function (): void {
     ]);
 
     $menu = WeeklyMenu::factory()->create([
-        'title' => 'Aktualis menu',
+        'title' => 'Aktuális menü',
         'status' => WeeklyMenu::STATUS_PUBLISHED,
         'week_start' => Carbon::today()->startOfWeek(),
         'week_end' => Carbon::today()->endOfWeek(),
@@ -35,7 +35,7 @@ it('public weekly menu published menu megjelenik', function (): void {
 
     $response->assertInertia(fn (Assert $page) => $page
         ->component('WeeklyMenu')
-        ->where('menu.title', 'Aktualis menu')
+        ->where('menu.title', 'Aktuális menü')
         ->where('fallback_used', false));
 });
 

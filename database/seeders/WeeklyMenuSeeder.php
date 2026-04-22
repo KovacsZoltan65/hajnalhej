@@ -21,7 +21,7 @@ class WeeklyMenuSeeder extends Seeder
         $menu = WeeklyMenu::query()->updateOrCreate(
             ['slug' => 'aktualis-heti-menu'],
             [
-                'title' => 'Aktualis heti menu',
+                'title' => 'Aktuális heti menü',
                 'week_start' => $weekStart->toDateString(),
                 'week_end' => $weekEnd->toDateString(),
                 'status' => WeeklyMenu::STATUS_PUBLISHED,

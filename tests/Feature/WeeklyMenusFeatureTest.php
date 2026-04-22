@@ -26,7 +26,7 @@ it('weekly menu create mukodik valid adatokkal', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)->post('/admin/weekly-menus', [
-        'title' => 'Aktualis heti menu',
+        'title' => 'Aktuális heti menü',
         'slug' => 'aktualis-heti-menu',
         'week_start' => '2026-04-20',
         'week_end' => '2026-04-26',
@@ -39,7 +39,7 @@ it('weekly menu create mukodik valid adatokkal', function (): void {
     $response->assertRedirect('/admin/weekly-menus');
 
     $this->assertDatabaseHas('weekly_menus', [
-        'title' => 'Aktualis heti menu',
+        'title' => 'Aktuális heti menü',
         'slug' => 'aktualis-heti-menu',
         'status' => 'draft',
     ]);

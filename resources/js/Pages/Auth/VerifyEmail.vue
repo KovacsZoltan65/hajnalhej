@@ -24,11 +24,11 @@ const resendVerification = () => {
 </script>
 
 <template>
-    <Head :title="ui.verification?.title ?? 'Email megerosites'" />
+    <Head :title="ui.verification?.title ?? 'Email megerősítés'" />
 
     <div class="mx-auto max-w-lg rounded-3xl border border-bakery-brown/15 bg-[#fff9f1] p-6 shadow-lg sm:p-8">
         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-bakery-gold">Hajnalhej account</p>
-        <h1 class="mt-3 font-heading text-4xl text-bakery-dark">{{ ui.verification?.title ?? 'Email megerosites' }}</h1>
+        <h1 class="mt-3 font-heading text-4xl text-bakery-dark">{{ ui.verification?.title ?? 'Email megerősítés' }}</h1>
         <p class="mt-2 text-sm text-bakery-dark/75">{{ ui.verification?.subtitle ?? 'Kuldtunk egy megerosito linket az emailedre.' }}</p>
 
         <div class="mt-6 space-y-3">
@@ -36,7 +36,7 @@ const resendVerification = () => {
                 class="rounded-2xl border px-4 py-3 text-sm"
                 :class="props.isVerified ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'"
             >
-                {{ props.isVerified ? (ui.account?.email_status_verified ?? 'Email megerositve') : (ui.account?.email_status_pending ?? 'Email megerosites folyamatban') }}
+                {{ props.isVerified ? (ui.account?.email_status_verified ?? 'Email megerositve') : (ui.account?.email_status_pending ?? 'Email megerősítés folyamatban') }}
             </p>
 
             <Button

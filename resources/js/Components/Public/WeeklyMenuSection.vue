@@ -33,7 +33,7 @@ const addToCart = (productId) => {
 <template>
     <section v-if="menu" class="space-y-8">
         <div class="rounded-3xl border border-bakery-brown/15 bg-[#fff7eb] p-6 sm:p-8">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-bakery-gold">Aktualis heti menu</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-bakery-gold">Aktuális heti menü</p>
             <h2 class="mt-2 font-heading text-3xl text-bakery-dark sm:text-4xl">{{ menu.title }}</h2>
             <p class="mt-2 text-sm text-bakery-dark/75">{{ menu.week_start }} - {{ menu.week_end }}</p>
             <p v-if="menu.public_note" class="mt-4 text-sm text-bakery-dark/80">{{ menu.public_note }}</p>
