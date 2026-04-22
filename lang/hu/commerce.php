@@ -30,4 +30,7 @@ return [
     'user_roles' => [
         'updated' => 'A felhasznalo szerepkorei frissitve.',
     ],
+    'permissions' => [
+        'synced' => 'A jogosultsag-registry szinkronizacio lefutott.',
+    ],
 ];

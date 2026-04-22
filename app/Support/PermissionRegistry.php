@@ -45,7 +45,10 @@ class PermissionRegistry
     public const ROLES_ASSIGN_PERMISSIONS = 'roles.assign-permissions';
     public const USERS_ASSIGN_ROLES = 'users.assign-roles';
     public const USERS_VIEW_PERMISSIONS = 'users.view-permissions';
-    public const AUDIT_LOGS_VIEW = 'audit-logs.view';
+    public const PERMISSIONS_VIEW = 'permissions.view';
+    public const PERMISSIONS_SYNC = 'permissions.sync';
+    public const PERMISSIONS_VIEW_USAGE = 'permissions.view-usage';
+    public const SECURITY_DASHBOARD_VIEW = 'security-dashboard.view';
 
     /**
      * @return array<int, string>
@@ -97,11 +100,14 @@ class PermissionRegistry
             self::ROLES_VIEW,
             self::ROLES_ASSIGN_PERMISSIONS,
             self::USERS_ASSIGN_ROLES,
+            self::PERMISSIONS_VIEW,
+            self::PERMISSIONS_SYNC,
+            self::SECURITY_DASHBOARD_VIEW,
         ];
     }
 
     /**
-     * @return array<int, array{name:string,module:string,label:string,description:string,dangerous:bool,sort:int}>
+     * @return array<int, array{name:string,module:string,label:string,description:string,dangerous:bool,sort:int,system:bool,audit_sensitive:bool}>
      */
     public static function definitions(): array
     {
@@ -113,6 +119,8 @@ class PermissionRegistry
                 'description' => 'Admin feluletre belepes engedelyezese.',
                 'dangerous' => false,
                 'sort' => 10,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::ORDERS_VIEW,
@@ -121,6 +129,8 @@ class PermissionRegistry
                 'description' => 'Rendeles lista es reszletek megtekintese.',
                 'dangerous' => false,
                 'sort' => 20,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::ORDERS_UPDATE,
@@ -129,6 +139,8 @@ class PermissionRegistry
                 'description' => 'Rendeles statusz es belso jegyzet modositas.',
                 'dangerous' => true,
                 'sort' => 30,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
             [
                 'name' => self::PRODUCTS_VIEW,
@@ -137,6 +149,8 @@ class PermissionRegistry
                 'description' => 'Termek lista megtekintese adminban.',
                 'dangerous' => false,
                 'sort' => 40,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::PRODUCTS_CREATE,
@@ -145,6 +159,8 @@ class PermissionRegistry
                 'description' => 'Uj termek letrehozas.',
                 'dangerous' => false,
                 'sort' => 50,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::PRODUCTS_UPDATE,
@@ -153,6 +169,8 @@ class PermissionRegistry
                 'description' => 'Meglevo termek adatok szerkesztese.',
                 'dangerous' => false,
                 'sort' => 60,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::PRODUCTS_DELETE,
@@ -161,6 +179,8 @@ class PermissionRegistry
                 'description' => 'Termek archiv/torles muvelet.',
                 'dangerous' => true,
                 'sort' => 70,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
             [
                 'name' => self::CATEGORIES_VIEW,
@@ -169,6 +189,8 @@ class PermissionRegistry
                 'description' => 'Kategoriak listazasa adminban.',
                 'dangerous' => false,
                 'sort' => 80,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::CATEGORIES_CREATE,
@@ -177,6 +199,8 @@ class PermissionRegistry
                 'description' => 'Uj kategoria letrehozas.',
                 'dangerous' => false,
                 'sort' => 90,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::CATEGORIES_UPDATE,
@@ -185,6 +209,8 @@ class PermissionRegistry
                 'description' => 'Kategoriak szerkesztese.',
                 'dangerous' => false,
                 'sort' => 100,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::CATEGORIES_DELETE,
@@ -193,6 +219,8 @@ class PermissionRegistry
                 'description' => 'Kategoriak torlese.',
                 'dangerous' => true,
                 'sort' => 110,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
             [
                 'name' => self::INGREDIENTS_VIEW,
@@ -201,6 +229,8 @@ class PermissionRegistry
                 'description' => 'Alapanyag lista megtekintese.',
                 'dangerous' => false,
                 'sort' => 120,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::INGREDIENTS_CREATE,
@@ -209,6 +239,8 @@ class PermissionRegistry
                 'description' => 'Uj alapanyag letrehozas.',
                 'dangerous' => false,
                 'sort' => 130,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::INGREDIENTS_UPDATE,
@@ -217,6 +249,8 @@ class PermissionRegistry
                 'description' => 'Alapanyag adatok modositas.',
                 'dangerous' => false,
                 'sort' => 140,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::INGREDIENTS_DELETE,
@@ -225,6 +259,8 @@ class PermissionRegistry
                 'description' => 'Alapanyag inaktivalas/torles.',
                 'dangerous' => true,
                 'sort' => 150,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
             [
                 'name' => self::WEEKLY_MENU_VIEW,
@@ -233,6 +269,8 @@ class PermissionRegistry
                 'description' => 'Heti menu admin oldal elerese.',
                 'dangerous' => false,
                 'sort' => 160,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::WEEKLY_MENU_CREATE,
@@ -241,6 +279,8 @@ class PermissionRegistry
                 'description' => 'Uj heti menu letrehozas.',
                 'dangerous' => false,
                 'sort' => 170,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::WEEKLY_MENU_UPDATE,
@@ -249,6 +289,8 @@ class PermissionRegistry
                 'description' => 'Heti menu es itemek modositas.',
                 'dangerous' => false,
                 'sort' => 180,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::WEEKLY_MENU_DELETE,
@@ -257,6 +299,8 @@ class PermissionRegistry
                 'description' => 'Heti menuk torlese.',
                 'dangerous' => true,
                 'sort' => 190,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
             [
                 'name' => self::PRODUCTION_PLANS_VIEW,
@@ -265,6 +309,8 @@ class PermissionRegistry
                 'description' => 'Gyartastervezo felulet megtekintese.',
                 'dangerous' => false,
                 'sort' => 200,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::PRODUCTION_PLANS_CREATE,
@@ -273,6 +319,8 @@ class PermissionRegistry
                 'description' => 'Uj gyartasi terv letrehozasa.',
                 'dangerous' => false,
                 'sort' => 210,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::PRODUCTION_PLANS_UPDATE,
@@ -281,6 +329,8 @@ class PermissionRegistry
                 'description' => 'Gyartasi terv frissites.',
                 'dangerous' => false,
                 'sort' => 220,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::PRODUCTION_PLANS_DELETE,
@@ -289,6 +339,8 @@ class PermissionRegistry
                 'description' => 'Gyartasi terv torlese.',
                 'dangerous' => true,
                 'sort' => 230,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
             [
                 'name' => self::ACCOUNT_VIEW,
@@ -297,6 +349,8 @@ class PermissionRegistry
                 'description' => 'Sajat fiok oldal elerese.',
                 'dangerous' => false,
                 'sort' => 240,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::ROLES_VIEW,
@@ -305,6 +359,8 @@ class PermissionRegistry
                 'description' => 'Szerepkor menedzsment oldalak megtekintese.',
                 'dangerous' => false,
                 'sort' => 250,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::ROLES_CREATE,
@@ -313,6 +369,8 @@ class PermissionRegistry
                 'description' => 'Uj szerepkor letrehozasa.',
                 'dangerous' => false,
                 'sort' => 260,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
             [
                 'name' => self::ROLES_UPDATE,
@@ -321,6 +379,8 @@ class PermissionRegistry
                 'description' => 'Szerepkor atnevezese es frissitese.',
                 'dangerous' => false,
                 'sort' => 270,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
             [
                 'name' => self::ROLES_DELETE,
@@ -329,6 +389,8 @@ class PermissionRegistry
                 'description' => 'Nem rendszer szerepkor torlese.',
                 'dangerous' => true,
                 'sort' => 280,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
             [
                 'name' => self::ROLES_ASSIGN_PERMISSIONS,
@@ -337,6 +399,8 @@ class PermissionRegistry
                 'description' => 'Role permission matrix szerkesztese.',
                 'dangerous' => true,
                 'sort' => 290,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
             [
                 'name' => self::USERS_ASSIGN_ROLES,
@@ -345,6 +409,8 @@ class PermissionRegistry
                 'description' => 'Felhasznalo szerepkoreinek szerkesztese.',
                 'dangerous' => true,
                 'sort' => 300,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
             [
                 'name' => self::USERS_VIEW_PERMISSIONS,
@@ -353,7 +419,10 @@ class PermissionRegistry
                 'description' => 'Felhasznalo effektive jogosultsagainak megtekintese.',
                 'dangerous' => false,
                 'sort' => 310,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
+<<<<<<< .mine
             [
                 'name' => self::AUDIT_LOGS_VIEW,
                 'module' => 'Roles & Permissions',
@@ -362,11 +431,85 @@ class PermissionRegistry
                 'dangerous' => false,
                 'sort' => 320,
             ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=======
+            [
+                'name' => self::PERMISSIONS_VIEW,
+                'module' => 'Roles & Permissions',
+                'label' => 'Jogosultsagok megtekintese',
+                'description' => 'Permission lista es reszletek megtekintese.',
+                'dangerous' => false,
+                'sort' => 320,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::PERMISSIONS_SYNC,
+                'module' => 'Roles & Permissions',
+                'label' => 'Permission registry sync',
+                'description' => 'Permission registry es adatbazis szinkronizalasa.',
+                'dangerous' => true,
+                'sort' => 330,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::PERMISSIONS_VIEW_USAGE,
+                'module' => 'Roles & Permissions',
+                'label' => 'Permission usage megtekintes',
+                'description' => 'Permission hasznalat role es user szinten.',
+                'dangerous' => false,
+                'sort' => 340,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::SECURITY_DASHBOARD_VIEW,
+                'module' => 'Security',
+                'label' => 'Security dashboard megtekintese',
+                'description' => 'Security kockazati dashboard es kritikus audit esemenyek megtekintese.',
+                'dangerous' => true,
+                'sort' => 350,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+>>>>>>> .theirs
         ];
     }
 
     /**
-     * @return array<string, array<int, array{name:string,label:string,description:string,dangerous:bool,sort:int}>>
+     * @return array<string, array<int, array{name:string,label:string,description:string,dangerous:bool,sort:int,system:bool,audit_sensitive:bool}>>
      */
     public static function groupedDefinitions(): array
     {
@@ -379,6 +522,8 @@ class PermissionRegistry
                 'description' => $definition['description'],
                 'dangerous' => $definition['dangerous'],
                 'sort' => $definition['sort'],
+                'system' => $definition['system'],
+                'audit_sensitive' => $definition['audit_sensitive'],
             ];
         }
 
@@ -388,6 +533,28 @@ class PermissionRegistry
         }
 
         return $groups;
+    }
+
+    /**
+     * @return array<string, array{name:string,module:string,label:string,description:string,dangerous:bool,sort:int,system:bool,audit_sensitive:bool}>
+     */
+    public static function definitionsByName(): array
+    {
+        $map = [];
+
+        foreach (self::definitions() as $definition) {
+            $map[$definition['name']] = $definition;
+        }
+
+        return $map;
+    }
+
+    /**
+     * @return array{name:string,module:string,label:string,description:string,dangerous:bool,sort:int,system:bool,audit_sensitive:bool}|null
+     */
+    public static function definition(string $permissionName): ?array
+    {
+        return self::definitionsByName()[$permissionName] ?? null;
     }
 
     public static function isSystemRole(string $roleName): bool

@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\AuthorizationAuditController as AdminAuthorizationAuditController;
 use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\Admin\UserRoleController as AdminUserRoleController;
+use App\Http\Controllers\Admin\PermissionController as AdminPermissionController;
+use App\Http\Controllers\Admin\SecurityDashboardController as AdminSecurityDashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\RecipeController;
 use App\Http\Controllers\Admin\RecipeStepController;
@@ -149,11 +151,21 @@ Route::middleware('auth')->group(function (): void {
             ->middleware('permission:users.assign-roles')
             ->name('users.roles.update');
 
-        Route::get('/audit-logs', [AdminAuthorizationAuditController::class, 'index'])
-            ->middleware('permission:audit-logs.view')
-            ->name('audit-logs.index');
-        Route::get('/audit-logs/{activity}', [AdminAuthorizationAuditController::class, 'show'])
-            ->middleware('permission:audit-logs.view')
-            ->name('audit-logs.show');
+        Route::get('/permissions', [AdminPermissionController::class, 'index'])
+            ->middleware('permission:permissions.view')
+            ->name('permissions.index');
+        Route::post('/permissions/sync', [AdminPermissionController::class, 'sync'])
+            ->middleware('permission:permissions.sync')
+            ->name('permissions.sync');
+        Route::get('/permissions/{permissionName}', [AdminPermissionController::class, 'show'])
+            ->middleware('permission:permissions.view')
+            ->name('permissions.show');
+
+        Route::get('/security-dashboard', [AdminSecurityDashboardController::class, 'index'])
+            ->middleware('permission:security-dashboard.view')
+            ->name('security-dashboard.index');
+        Route::get('/security-dashboard/events/{activity}', [AdminSecurityDashboardController::class, 'showEvent'])
+            ->middleware('permission:security-dashboard.view')
+            ->name('security-dashboard.events.show');
     });
 });

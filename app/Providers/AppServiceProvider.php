@@ -12,10 +12,12 @@ use App\Models\WeeklyMenu;
 use App\Policies\CategoryPolicy;
 use App\Policies\IngredientPolicy;
 use App\Policies\OrderPolicy;
+use App\Policies\PermissionPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ProductionPlanPolicy;
 use App\Policies\AuthorizationAuditPolicy;
 use App\Policies\RolePolicy;
+use App\Policies\SecurityDashboardPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\WeeklyMenuPolicy;
 use App\Support\PermissionRegistry;
@@ -24,6 +26,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Spatie\Activitylog\Models\Activity;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -61,10 +65,12 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Category::class, CategoryPolicy::class);
         Gate::policy(Ingredient::class, IngredientPolicy::class);
         Gate::policy(Order::class, OrderPolicy::class);
+        Gate::policy(Permission::class, PermissionPolicy::class);
         Gate::policy(Product::class, ProductPolicy::class);
         Gate::policy(ProductionPlan::class, ProductionPlanPolicy::class);
         Gate::policy(Activity::class, AuthorizationAuditPolicy::class);
         Gate::policy(Role::class, RolePolicy::class);
+        Gate::policy(Activity::class, SecurityDashboardPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(WeeklyMenu::class, WeeklyMenuPolicy::class);
     }
