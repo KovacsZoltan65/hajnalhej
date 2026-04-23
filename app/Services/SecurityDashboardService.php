@@ -53,14 +53,14 @@ class SecurityDashboardService
                 [
                     'title' => 'Privileged users',
                     'value' => (string) $privilegedUsers->count(),
-                    'tone' => $privilegedUsers->contains(fn (array $user): bool => in_array($user['risk_level'], ['critical', 'high'], true))
+                    'tone' => $privilegedUsers->contains(fn (array $user): bool => \in_array($user['risk_level'], ['critical', 'high'], true))
                         ? 'high'
                         : 'medium',
                 ],
                 [
                     'title' => 'Critical audit events',
                     'value' => (string) $recentEvents->count(),
-                    'tone' => $recentEvents->contains(fn (array $event): bool => in_array($event['severity'], ['critical', 'high'], true))
+                    'tone' => $recentEvents->contains(fn (array $event): bool => \in_array($event['severity'], ['critical', 'high'], true))
                         ? 'high'
                         : 'info',
                 ],

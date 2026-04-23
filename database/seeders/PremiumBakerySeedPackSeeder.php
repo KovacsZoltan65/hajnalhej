@@ -18,7 +18,7 @@ class PremiumBakerySeedPackSeeder extends Seeder
                 ['slug' => 'premium-pekseg'],
                 [
                     'name' => 'Premium Pékség',
-                    'description' => 'Magasabb technológiai igényű péksütemények és artisan termékek.',
+                    'description' => 'Magasabb technológiai igényű péksütemények és kézműves termékek.',
                     'is_active' => true,
                     'sort_order' => 40,
                 ],

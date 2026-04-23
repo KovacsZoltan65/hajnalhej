@@ -126,10 +126,10 @@ class SecurityDashboardRepository
     {
         $rows = $permissionRows
             ->filter(function (array $row): bool {
-                $criticalSpread = in_array((string) $row['name'], SecurityRiskRegistry::securityCriticalPermissions(), true)
+                $criticalSpread = \in_array((string) $row['name'], SecurityRiskRegistry::securityCriticalPermissions(), true)
                     && (int) $row['roles_count'] > 1;
 
-                return in_array((string) $row['registry_state'], ['orphan_db_only', 'missing_in_db'], true)
+                return \in_array((string) $row['registry_state'], ['orphan_db_only', 'missing_in_db'], true)
                     || (int) $row['roles_count'] === 0
                     || ((bool) $row['dangerous'] && ! (bool) $row['audit_sensitive'])
                     || $criticalSpread;
@@ -169,11 +169,11 @@ class SecurityDashboardRepository
             ->select([
                 'model_has_roles.model_id as user_id',
                 DB::raw('COUNT(DISTINCT permissions.id) as effective_permissions_count'),
-                DB::raw(sprintf(
+                DB::raw(\sprintf(
                     "COUNT(DISTINCT CASE WHEN permissions.name IN ('%s') THEN permissions.id END) as dangerous_permissions_count",
                     implode("','", $this->dangerousPermissionNames())
                 )),
-                DB::raw(sprintf(
+                DB::raw(\sprintf(
                     "COUNT(DISTINCT CASE WHEN permissions.name IN ('%s') THEN permissions.id END) as security_critical_permissions_count",
                     implode("','", SecurityRiskRegistry::securityCriticalPermissions())
                 )),
@@ -462,8 +462,8 @@ class SecurityDashboardRepository
         }
 
         if ($activity->event === 'permissions.synced') {
-            $created = (int) count((array) data_get($properties, 'created_permissions', []));
-            $orphan = (int) count((array) data_get($properties, 'orphan_permissions', []));
+            $created = (int) \count((array) data_get($properties, 'created_permissions', []));
+            $orphan = (int) \count((array) data_get($properties, 'orphan_permissions', []));
 
             return "Szinkron eredmény: +{$created} létrehozva, {$orphan} árva.";
         }
