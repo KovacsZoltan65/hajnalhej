@@ -11,6 +11,7 @@ use App\Repositories\InventoryMovementRepository;
 use App\Services\IngredientService;
 use App\Services\InventoryDashboardService;
 use App\Services\InventoryService;
+use App\Services\ProductService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -22,6 +23,7 @@ class InventoryController extends Controller
         private readonly InventoryDashboardService $dashboardService,
         private readonly IngredientService $ingredientService,
         private readonly InventoryService $inventoryService,
+        private readonly ProductService $productService,
     ) {
     }
 
@@ -64,6 +66,7 @@ class InventoryController extends Controller
             ],
             'movement_types' => InventoryMovement::movementTypes(),
             'ingredient_options' => $this->ingredientService->listSelectableActive()->values()->all(),
+            'product_options' => $this->productService->listSelectableActiveProducts()->values()->all(),
             'waste_reasons' => ['lejárt', 'sérült', 'gyártási hiba', 'romlott', 'ismeretlen'],
         ]);
     }
@@ -82,4 +85,3 @@ class InventoryController extends Controller
         return back()->with('success', 'Készletkorrekció könyvelve.');
     }
 }
-

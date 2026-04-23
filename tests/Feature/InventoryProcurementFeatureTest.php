@@ -117,6 +117,7 @@ it('waste entry deducts stock and creates waste movement', function (): void {
     ]);
 
     $this->actingAs($admin)->post('/admin/inventory/waste', [
+        'waste_type' => 'ingredient',
         'ingredient_id' => $ingredient->id,
         'quantity' => 2,
         'reason' => 'sérült',
@@ -131,6 +132,71 @@ it('waste entry deducts stock and creates waste movement', function (): void {
 
     $ingredient->refresh();
     expect((float) $ingredient->current_stock)->toBe(10.0);
+});
+
+it('product waste deducts ingredient stock by bom quantities', function (): void {
+    $admin = User::factory()->admin()->create();
+
+    $flour = Ingredient::factory()->create([
+        'name' => 'Liszt',
+        'unit' => 'kg',
+        'current_stock' => 10,
+        'average_unit_cost' => 400,
+        'stock_value' => 4000,
+    ]);
+    $butter = Ingredient::factory()->create([
+        'name' => 'Vaj',
+        'unit' => 'kg',
+        'current_stock' => 5,
+        'average_unit_cost' => 1200,
+        'stock_value' => 6000,
+    ]);
+
+    $product = Product::factory()->create([
+        'name' => 'Croissant',
+        'is_active' => true,
+    ]);
+    $product->productIngredients()->createMany([
+        [
+            'ingredient_id' => $flour->id,
+            'quantity' => 0.20,
+            'sort_order' => 1,
+        ],
+        [
+            'ingredient_id' => $butter->id,
+            'quantity' => 0.05,
+            'sort_order' => 2,
+        ],
+    ]);
+
+    $this->actingAs($admin)->post('/admin/inventory/waste', [
+        'waste_type' => 'product',
+        'product_id' => $product->id,
+        'quantity' => 3,
+        'reason' => 'gyártási hiba',
+        'occurred_at' => now()->toDateString(),
+    ])->assertRedirect();
+
+    $this->assertDatabaseHas('inventory_movements', [
+        'ingredient_id' => $flour->id,
+        'movement_type' => 'waste_out',
+        'direction' => 'out',
+        'reference_type' => 'product_waste',
+        'reference_id' => $product->id,
+    ]);
+    $this->assertDatabaseHas('inventory_movements', [
+        'ingredient_id' => $butter->id,
+        'movement_type' => 'waste_out',
+        'direction' => 'out',
+        'reference_type' => 'product_waste',
+        'reference_id' => $product->id,
+    ]);
+
+    $flour->refresh();
+    $butter->refresh();
+
+    expect((float) $flour->current_stock)->toBe(9.4)
+        ->and((float) $butter->current_stock)->toBe(4.85);
 });
 
 it('stock count close creates correction movement', function (): void {
@@ -172,4 +238,3 @@ it('customer cannot access inventory and procurement admin routes', function ():
     $this->actingAs($customer)->get('/admin/purchases')->assertForbidden();
     $this->actingAs($customer)->get('/admin/inventory')->assertForbidden();
 });
-

@@ -20,11 +20,12 @@ class StoreWasteEntryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ingredient_id' => ['required', 'integer', 'exists:ingredients,id'],
+            'waste_type' => ['required', Rule::in(['ingredient', 'product'])],
+            'ingredient_id' => ['nullable', 'integer', 'exists:ingredients,id', 'required_if:waste_type,ingredient'],
+            'product_id' => ['nullable', 'integer', 'exists:products,id', 'required_if:waste_type,product'],
             'quantity' => ['required', 'numeric', 'min:0.001', 'max:999999999.999'],
             'reason' => ['required', Rule::in(['lejárt', 'sérült', 'gyártási hiba', 'romlott', 'ismeretlen'])],
             'occurred_at' => ['nullable', 'date'],
         ];
     }
 }
-

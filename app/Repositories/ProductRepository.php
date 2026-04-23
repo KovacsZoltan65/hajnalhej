@@ -44,6 +44,24 @@ class ProductRepository
     }
 
     /**
+     * @return Collection<int, array{id:int,name:string,slug:string}>
+     */
+    public function listSelectableActiveProducts(): Collection
+    {
+        return Product::query()
+            ->where('is_active', true)
+            ->whereHas('productIngredients')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug'])
+            ->map(fn (Product $product): array => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+            ]);
+    }
+
+    /**
      * @param array<string, mixed> $data
      */
     public function create(array $data): Product

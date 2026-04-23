@@ -4,11 +4,15 @@ namespace App\Services;
 
 use App\Models\Ingredient;
 use App\Models\InventoryMovement;
+use App\Models\Product;
+use App\Models\ProductIngredient;
 use App\Models\User;
 use App\Repositories\InventoryMovementRepository;
 use App\Services\Audit\InventoryAuditService;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 class InventoryService
 {
@@ -87,6 +91,11 @@ class InventoryService
      */
     public function recordWaste(array $payload, ?User $actor = null): InventoryMovement
     {
+        $wasteType = (string) ($payload['waste_type'] ?? 'ingredient');
+        if ($wasteType === 'product') {
+            return $this->recordProductWaste($payload, $actor);
+        }
+
         $movement = $this->createMovement([
             'ingredient_id' => $payload['ingredient_id'],
             'movement_type' => InventoryMovement::TYPE_WASTE_OUT,
@@ -101,6 +110,72 @@ class InventoryService
         $this->auditService->logWasteRecorded($movement, $actor);
 
         return $movement;
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     */
+    private function recordProductWaste(array $payload, ?User $actor = null): InventoryMovement
+    {
+        $productId = (int) ($payload['product_id'] ?? 0);
+        $wastedProductQuantity = $this->toQuantity($payload['quantity'] ?? 0);
+
+        /** @var Product $product */
+        $product = Product::query()
+            ->with([
+                'productIngredients' => static fn ($query) => $query
+                    ->select(['id', 'product_id', 'ingredient_id', 'quantity', 'sort_order'])
+                    ->orderBy('sort_order')
+                    ->orderBy('id'),
+                'productIngredients.ingredient:id,name,unit',
+            ])
+            ->findOrFail($productId);
+
+        /** @var EloquentCollection<int, ProductIngredient> $bomItems */
+        $bomItems = $product->productIngredients;
+        if ($bomItems->isEmpty()) {
+            throw new RuntimeException('A kiválasztott termékhez nincs recept/BOM tétel, ezért nem selejtezhető.');
+        }
+
+        $notesPrefix = sprintf(
+            'Termék selejt: %s (%s db), ok: %s',
+            $product->name,
+            number_format($wastedProductQuantity, 3, '.', ''),
+            (string) ($payload['reason'] ?? '-'),
+        );
+
+        $firstMovement = null;
+
+        foreach ($bomItems as $bomItem) {
+            $ingredientWasteQuantity = $wastedProductQuantity * (float) $bomItem->quantity;
+            if ($ingredientWasteQuantity <= 0) {
+                continue;
+            }
+
+            $movement = $this->createMovement([
+                'ingredient_id' => $bomItem->ingredient_id,
+                'movement_type' => InventoryMovement::TYPE_WASTE_OUT,
+                'direction' => InventoryMovement::DIRECTION_OUT,
+                'quantity' => $ingredientWasteQuantity,
+                'occurred_at' => $payload['occurred_at'] ?? now(),
+                'reference_type' => 'product_waste',
+                'reference_id' => $product->id,
+                'notes' => sprintf(
+                    '%s; alapanyag: %s',
+                    $notesPrefix,
+                    $bomItem->ingredient?->name ?? ('#'.$bomItem->ingredient_id),
+                ),
+            ], $actor);
+
+            $this->auditService->logWasteRecorded($movement, $actor);
+            $firstMovement ??= $movement;
+        }
+
+        if (! $firstMovement instanceof InventoryMovement) {
+            throw new RuntimeException('A termék selejt könyvelése nem hozott létre készletmozgást.');
+        }
+
+        return $firstMovement;
     }
 
     /**
@@ -134,4 +209,3 @@ class InventoryService
         return max((float) $value, 0.0);
     }
 }
-
