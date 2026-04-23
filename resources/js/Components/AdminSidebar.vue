@@ -35,6 +35,10 @@ const links = computed(() => {
         dynamicLinks.push({ label: 'Biztonsági irányítópult', href: '/admin/security-dashboard', icon: 'pi pi-shield' });
     }
 
+    if (can.view_conversion_analytics) {
+        dynamicLinks.push({ label: 'Konverziós analitika', href: '/admin/conversion-analytics', icon: 'pi pi-chart-line' });
+    }
+
     return dynamicLinks;
 });
 

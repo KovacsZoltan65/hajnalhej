@@ -3,6 +3,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
 import PublicLayout from '../../Layouts/PublicLayout.vue';
+import { useConversionTracking } from '@/composables/useConversionTracking';
 
 defineOptions({ layout: PublicLayout });
 
@@ -12,6 +13,8 @@ const props = defineProps({
         required: true,
     },
 });
+
+const { trackCtaClick } = useConversionTracking();
 
 const updateQuantity = (item, quantity) => {
     router.patch(`/cart/items/${item.product_id}`, {
@@ -46,7 +49,11 @@ const clearCart = () => {
         <section v-if="cart.summary.is_empty" class="rounded-2xl border border-dashed border-bakery-brown/30 bg-[#fcf7ef] p-10 text-center">
             <h2 class="font-heading text-3xl text-bakery-dark">A kosarad jelenleg ures</h2>
             <p class="mt-3 text-sm text-bakery-dark/75">Válassz a heti kínálatból, és tedd be a kedvenceidet.</p>
-            <Link href="/weekly-menu" class="mt-6 inline-flex rounded-full bg-bakery-brown px-6 py-3 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark">
+            <Link
+                href="/weekly-menu"
+                class="mt-6 inline-flex rounded-full bg-bakery-brown px-6 py-3 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
+                @click="trackCtaClick('cart.empty_state_weekly_menu', { funnel: 'cart', step: 'empty_state' })"
+            >
                 Heti menu megtekintese
             </Link>
         </section>
@@ -96,7 +103,11 @@ const clearCart = () => {
                 </dl>
 
                 <div class="mt-5 space-y-2">
-                    <Link href="/checkout" class="block w-full rounded-full bg-bakery-brown px-4 py-2 text-center text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark">
+                    <Link
+                        href="/checkout"
+                        class="block w-full rounded-full bg-bakery-brown px-4 py-2 text-center text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
+                        @click="trackCtaClick('cart.proceed_to_checkout', { funnel: 'cart', step: 'proceed_checkout' })"
+                    >
                         Tovabb a penztarhoz
                     </Link>
                     <Button type="button" label="Kosar uritese" severity="secondary" outlined class="w-full" @click="clearCart" />

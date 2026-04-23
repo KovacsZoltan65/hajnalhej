@@ -55,6 +55,7 @@ class PermissionRegistry
     public const PERMISSIONS_VIEW_USAGE = 'permissions.view-usage';
     public const AUDIT_LOGS_VIEW = 'audit-logs.view';
     public const SECURITY_DASHBOARD_VIEW = 'security-dashboard.view';
+    public const CONVERSION_ANALYTICS_VIEW = 'conversion-analytics.view';
 
     /**
      * @return array<int, string>
@@ -110,6 +111,7 @@ class PermissionRegistry
             self::PERMISSIONS_SYNC,
             self::AUDIT_LOGS_VIEW,
             self::SECURITY_DASHBOARD_VIEW,
+            self::CONVERSION_ANALYTICS_VIEW,
         ];
     }
 
@@ -479,6 +481,16 @@ class PermissionRegistry
                 'sort' => 350,
                 'system' => true,
                 'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::CONVERSION_ANALYTICS_VIEW,
+                'module' => 'Analytics',
+                'label' => 'Konverziós analitika megtekintése',
+                'description' => 'CTA, kosár, checkout és regisztráció funnel statisztikák megtekintése.',
+                'dangerous' => false,
+                'sort' => 360,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
 
         ];

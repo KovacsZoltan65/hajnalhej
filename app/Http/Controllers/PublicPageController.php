@@ -2,23 +2,54 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ConversionTrackingService;
+use App\Services\HeroExperimentService;
 use App\Services\WeeklyMenuService;
+use App\Support\ConversionEventRegistry;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PublicPageController extends Controller
 {
-    public function __construct(private readonly WeeklyMenuService $weeklyMenuService)
-    {
-    }
+    public function __construct(
+        private readonly WeeklyMenuService $weeklyMenuService,
+        private readonly HeroExperimentService $heroExperimentService,
+        private readonly ConversionTrackingService $conversionTrackingService,
+    ) {}
 
     /**
      * Summary of home
      * @return \Inertia\Response
      */
-    public function home(): Response
+    public function home(Request $request): Response
     {
-        return Inertia::render('Home');
+        $experiment = $this->heroExperimentService->resolveVariant($request);
+        $variant = $experiment['variant'];
+
+        if ($experiment['is_new_assignment']) {
+            $this->conversionTrackingService->trackBackendEvent(
+                eventKey: ConversionEventRegistry::HERO_ASSIGNED,
+                request: $request,
+                funnel: 'landing',
+                step: 'assigned',
+                heroVariant: $variant,
+            );
+        }
+
+        $this->conversionTrackingService->trackBackendEvent(
+            eventKey: ConversionEventRegistry::HERO_VIEWED,
+            request: $request,
+            funnel: 'landing',
+            step: 'hero_view',
+            heroVariant: $variant,
+        );
+
+        return Inertia::render('Home', [
+            'heroExperiment' => [
+                'variant' => $variant,
+            ],
+        ]);
     }
 
     public function weeklyMenu(): Response

@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Repositories\OrderRepository;
 use App\Services\Audit\OrderAuditService;
+use App\Support\ConversionEventRegistry;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -19,13 +20,14 @@ class CheckoutService
         private readonly OrderRepository $orderRepository,
         private readonly OrderService $orderService,
         private readonly OrderAuditService $orderAuditService,
+        private readonly ConversionTrackingService $conversionTrackingService,
     ) {
     }
 
     /**
      * @param array<string, mixed> $payload
      */
-    public function placeOrder(array $payload, ?User $user): Order
+    public function placeOrder(array $payload, ?User $user, ?string $sessionId = null): Order
     {
         $lines = $this->cartService->getCheckoutLines();
 
@@ -68,6 +70,21 @@ class CheckoutService
             context: [
                 'operation' => 'checkout.place_order',
                 'source' => 'public.checkout',
+                'is_guest_checkout' => $user === null,
+            ],
+        );
+
+        $this->conversionTrackingService->trackSystemEvent(
+            eventKey: ConversionEventRegistry::CHECKOUT_COMPLETED,
+            user: $user,
+            sessionId: $sessionId,
+            funnel: 'checkout',
+            step: 'complete',
+            metadata: [
+                'order_id' => $placedOrder->id,
+                'order_number' => $placedOrder->order_number,
+                'total' => (float) $placedOrder->total,
+                'items_count' => $placedOrder->items->count(),
                 'is_guest_checkout' => $user === null,
             ],
         );

@@ -6,6 +6,7 @@ import InputMask from 'primevue/inputmask';
 import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
 import PublicLayout from '../../Layouts/PublicLayout.vue';
+import { useConversionTracking } from '@/composables/useConversionTracking';
 
 defineOptions({ layout: PublicLayout });
 
@@ -20,6 +21,8 @@ const props = defineProps({
     },
 });
 
+const { trackCtaClick, trackFunnel } = useConversionTracking();
+
 const form = useForm({
     customer_name: props.prefill.customer_name,
     customer_email: props.prefill.customer_email,
@@ -32,6 +35,16 @@ const form = useForm({
 });
 
 const submit = () => {
+    trackFunnel('checkout.submitted', {
+        funnel: 'checkout',
+        step: 'submit',
+        metadata: {
+            total: props.cart.summary?.total ?? null,
+            items_count: props.cart.summary?.items_count ?? null,
+            has_notes: form.notes.trim().length > 0,
+        },
+    });
+
     form.post('/checkout');
 };
 </script>
@@ -135,7 +148,11 @@ const submit = () => {
                     </div>
                 </div>
 
-                <Link href="/cart" class="mt-4 inline-flex text-sm font-semibold text-bakery-brown hover:underline">
+                <Link
+                    href="/cart"
+                    class="mt-4 inline-flex text-sm font-semibold text-bakery-brown hover:underline"
+                    @click="trackCtaClick('checkout.back_to_cart', { funnel: 'checkout', step: 'back_to_cart' })"
+                >
                     Vissza a kosárhoz
                 </Link>
             </aside>

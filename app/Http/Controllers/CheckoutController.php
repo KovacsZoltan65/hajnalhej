@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Checkout\PlaceOrderRequest;
 use App\Services\CartService;
 use App\Services\CheckoutService;
+use App\Services\ConversionTrackingService;
+use App\Support\ConversionEventRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use RuntimeException;
@@ -16,8 +18,8 @@ class CheckoutController extends Controller
     public function __construct(
         private readonly CartService $cartService,
         private readonly CheckoutService $checkoutService,
-    ) {
-    }
+        private readonly ConversionTrackingService $conversionTrackingService,
+    ) {}
 
     public function index(Request $request): Response|RedirectResponse
     {
@@ -26,6 +28,16 @@ class CheckoutController extends Controller
         }
 
         $user = $request->user();
+
+        $this->conversionTrackingService->trackBackendEvent(
+            eventKey: ConversionEventRegistry::CHECKOUT_VIEWED,
+            request: $request,
+            funnel: 'checkout',
+            step: 'view',
+            metadata: [
+                'cart_total' => (float) ($this->cartService->getCartPayload()['summary']['total'] ?? 0),
+            ],
+        );
 
         return Inertia::render('Checkout/Index', [
             'cart' => $this->cartService->getCartPayload(),
@@ -42,8 +54,22 @@ class CheckoutController extends Controller
 
     public function store(PlaceOrderRequest $request): RedirectResponse
     {
+        $payload = $request->validated();
+
+        $this->conversionTrackingService->trackBackendEvent(
+            eventKey: ConversionEventRegistry::CHECKOUT_SUBMITTED,
+            request: $request,
+            funnel: 'checkout',
+            step: 'submit',
+            metadata: [
+                'has_notes' => ! empty($payload['notes']),
+                'pickup_date' => $payload['pickup_date'] ?? null,
+                'pickup_time_slot' => $payload['pickup_time_slot'] ?? null,
+            ],
+        );
+
         try {
-            $order = $this->checkoutService->placeOrder($request->validated(), $request->user());
+            $order = $this->checkoutService->placeOrder($payload, $request->user(), $request->session()->getId());
         } catch (RuntimeException $exception) {
             return redirect()
                 ->route('cart.index')

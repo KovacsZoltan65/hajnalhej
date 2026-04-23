@@ -5,11 +5,13 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import PublicLayout from '../../Layouts/PublicLayout.vue';
+import { useConversionTracking } from '@/composables/useConversionTracking';
 
 defineOptions({ layout: PublicLayout });
 
 const page = usePage();
 const ui = computed(() => page.props.ui ?? {});
+const { trackCtaClick, trackFunnel } = useConversionTracking();
 
 const form = useForm({
     name: '',
@@ -19,6 +21,15 @@ const form = useForm({
 });
 
 const submit = () => {
+    trackFunnel('registration.submitted', {
+        funnel: 'registration',
+        step: 'submit',
+        metadata: {
+            has_name: form.name.trim().length > 0,
+            has_email: form.email.trim().length > 0,
+        },
+    });
+
     form.post('/register', {
         onFinish: () => {
             form.reset('password', 'password_confirmation');
@@ -102,7 +113,11 @@ const submit = () => {
         </form>
 
         <p class="mt-6 text-center text-xs text-bakery-dark/70">
-            <Link href="/login" class="font-semibold text-bakery-brown hover:underline">{{ ui.register?.login_link ?? 'Mar van fiokod? Lepj be.' }}</Link>
+            <Link
+                href="/login"
+                class="font-semibold text-bakery-brown hover:underline"
+                @click="trackCtaClick('register.login_link', { funnel: 'registration', step: 'redirect_login' })"
+            >{{ ui.register?.login_link ?? 'Mar van fiokod? Lepj be.' }}</Link>
         </p>
     </div>
 </template>

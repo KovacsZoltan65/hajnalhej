@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\Admin\UserRoleController as AdminUserRoleController;
 use App\Http\Controllers\Admin\PermissionController as AdminPermissionController;
 use App\Http\Controllers\Admin\SecurityDashboardController as AdminSecurityDashboardController;
+use App\Http\Controllers\Admin\ConversionAnalyticsController as AdminConversionAnalyticsController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\RecipeController;
 use App\Http\Controllers\Admin\RecipeStepController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ConversionTrackingController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PublicPageController;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +54,9 @@ Route::prefix('cart')->name('cart.')->controller(CartController::class)->group(f
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::get('/orders/success/{order}', [OrderController::class, 'success'])->name('orders.success');
+Route::post('/conversion-events', [ConversionTrackingController::class, 'store'])
+    ->middleware('throttle:120,1')
+    ->name('conversion-events.store');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
@@ -174,5 +179,9 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/security-dashboard/events/{activity}', [AdminSecurityDashboardController::class, 'showEvent'])
             ->middleware('permission:security-dashboard.view')
             ->name('security-dashboard.events.show');
+
+        Route::get('/conversion-analytics', [AdminConversionAnalyticsController::class, 'index'])
+            ->middleware('permission:conversion-analytics.view')
+            ->name('conversion-analytics.index');
     });
 });

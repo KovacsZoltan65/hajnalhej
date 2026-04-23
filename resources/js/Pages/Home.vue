@@ -1,9 +1,46 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import SectionTitle from '@/Components/SectionTitle.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
+import { useConversionTracking } from '@/composables/useConversionTracking';
 
 defineOptions({ layout: PublicLayout });
+
+const props = defineProps({
+    heroExperiment: {
+        type: Object,
+        default: () => ({ variant: 'artisan_story' }),
+    },
+});
+
+const page = usePage();
+const { trackCtaClick } = useConversionTracking();
+
+const heroVariant = computed(() => props.heroExperiment?.variant ?? 'artisan_story');
+
+const heroTitle = computed(() => (
+    heroVariant.value === 'speed_checkout'
+        ? 'Prémium artisan pékáru, gyors és kiszámítható átvétellel.'
+        : 'Prémium artisan pékáru előrendeléssel.'
+));
+
+const heroSubtitle = computed(() => (
+    heroVariant.value === 'speed_checkout'
+        ? 'Rendelj pár kattintással, és pontos idősávban vedd át a frissen sült kedvenceidet.'
+        : 'Lassú kelesztés, kis szériás sütés, pontos átvétel. A Hajnalhéjnál a minőség nem kompromisszum, hanem rendszer.'
+));
+
+const trackLandingCta = (ctaId, href) => {
+    trackCtaClick(ctaId, {
+        funnel: 'landing',
+        heroVariant: heroVariant.value,
+        metadata: {
+            path: page.url,
+            href,
+        },
+    });
+};
 
 const heroHighlights = [
     {
@@ -112,28 +149,30 @@ const faqs = [
                     </p>
                     <h1 class="font-heading text-[2.1rem] leading-tight text-bakery-dark sm:text-5xl">
                         Ropogós reggelek.
-                        <span class="block text-bakery-brown">Prémium artisan pékáru előrendeléssel.</span>
+                        <span class="block text-bakery-brown">{{ heroTitle }}</span>
                     </h1>
                     <p class="max-w-2xl text-base leading-relaxed text-bakery-dark/78 sm:text-lg">
-                        Lassú kelesztés, kis szériás sütés, pontos átvétel. A Hajnalhéjnál a minőség nem kompromisszum,
-                        hanem rendszer.
+                        {{ heroSubtitle }}
                     </p>
                     <div class="flex flex-wrap gap-3">
                         <Link
                             href="/weekly-menu"
                             class="inline-flex min-h-11 items-center rounded-full bg-bakery-brown px-6 py-3 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
+                            @click="trackLandingCta('hero.weekly_menu_primary', '/weekly-menu')"
                         >
                             Heti menü megtekintése
                         </Link>
                         <Link
                             href="/register"
                             class="inline-flex min-h-11 items-center rounded-full bg-bakery-gold px-6 py-3 text-sm font-semibold text-bakery-dark transition hover:bg-[#edbb5a]"
+                            @click="trackLandingCta('hero.register_primary', '/register')"
                         >
                             Fiók létrehozása
                         </Link>
                         <Link
                             href="/cart"
                             class="inline-flex min-h-11 items-center rounded-full border border-bakery-brown/30 px-6 py-3 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
+                            @click="trackLandingCta('hero.cart_secondary', '/cart')"
                         >
                             Kosár megnyitása
                         </Link>
@@ -169,6 +208,7 @@ const faqs = [
                     <Link
                         href="/about"
                         class="inline-flex min-h-11 items-center rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
+                        @click="trackLandingCta('hero.about_story', '/about')"
                     >
                         Ismerd meg a történetünket
                     </Link>
@@ -197,6 +237,7 @@ const faqs = [
                     <Link
                         href="/weekly-menu"
                         class="mt-4 inline-flex min-h-11 items-center rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
+                        @click="trackLandingCta(`bestseller.${item.title}`, '/weekly-menu')"
                     >
                         Érdekel, lefoglalom
                     </Link>
@@ -254,12 +295,14 @@ const faqs = [
                 <Link
                     href="/weekly-menu"
                     class="inline-flex min-h-11 items-center rounded-full bg-bakery-gold px-6 py-3 text-sm font-semibold text-bakery-dark transition hover:bg-[#edbb5a]"
+                    @click="trackLandingCta('urgency.weekly_menu', '/weekly-menu')"
                 >
                     Heti menü megnyitása
                 </Link>
                 <Link
                     href="/checkout"
                     class="inline-flex min-h-11 items-center rounded-full border border-bakery-cream/35 px-6 py-3 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-cream/10"
+                    @click="trackLandingCta('urgency.checkout', '/checkout')"
                 >
                     Ugrás a pénztárhoz
                 </Link>
@@ -296,12 +339,14 @@ const faqs = [
                 <Link
                     href="/register"
                     class="inline-flex min-h-11 items-center rounded-full bg-bakery-brown px-6 py-3 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
+                    @click="trackLandingCta('final.register', '/register')"
                 >
                     Regisztráció
                 </Link>
                 <Link
                     href="/login"
                     class="inline-flex min-h-11 items-center rounded-full border border-bakery-brown/30 px-6 py-3 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
+                    @click="trackLandingCta('final.login', '/login')"
                 >
                     Belépés
                 </Link>

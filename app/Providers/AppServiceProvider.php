@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Category;
+use App\Models\ConversionEvent;
 use App\Models\Ingredient;
 use App\Models\Order;
 use App\Models\Product;
@@ -10,6 +11,7 @@ use App\Models\ProductionPlan;
 use App\Models\User;
 use App\Models\WeeklyMenu;
 use App\Policies\CategoryPolicy;
+use App\Policies\ConversionAnalyticsPolicy;
 use App\Policies\IngredientPolicy;
 use App\Policies\OrderPolicy;
 use App\Policies\PermissionPolicy;
@@ -62,6 +64,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::policy(Category::class, CategoryPolicy::class);
+        Gate::policy(ConversionEvent::class, ConversionAnalyticsPolicy::class);
         Gate::policy(Ingredient::class, IngredientPolicy::class);
         Gate::policy(Order::class, OrderPolicy::class);
         Gate::policy(Permission::class, PermissionPolicy::class);
