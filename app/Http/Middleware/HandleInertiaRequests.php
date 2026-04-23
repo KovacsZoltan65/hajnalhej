@@ -54,6 +54,7 @@ class HandleInertiaRequests extends Middleware
                     'view_security_dashboard' => $user?->can(PermissionRegistry::SECURITY_DASHBOARD_VIEW) ?? false,
                     'view_conversion_analytics' => $user?->can(PermissionRegistry::CONVERSION_ANALYTICS_VIEW) ?? false,
                     'view_profit_dashboard' => $user?->can(PermissionRegistry::PROFIT_DASHBOARD_VIEW) ?? false,
+                    'view_ceo_dashboard' => $user?->can(PermissionRegistry::CEO_DASHBOARD_VIEW) ?? false,
                 ],
             ],
             'flash' => [

@@ -43,6 +43,10 @@ const links = computed(() => {
         dynamicLinks.push({ label: 'Profit irányítópult', href: '/admin/profit-dashboard', icon: 'pi pi-wallet' });
     }
 
+    if (can.view_ceo_dashboard) {
+        dynamicLinks.push({ label: 'CEO irányítópult', href: '/admin/ceo-dashboard', icon: 'pi pi-briefcase' });
+    }
+
     return dynamicLinks;
 });
 

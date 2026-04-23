@@ -57,6 +57,7 @@ class PermissionRegistry
     public const SECURITY_DASHBOARD_VIEW = 'security-dashboard.view';
     public const CONVERSION_ANALYTICS_VIEW = 'conversion-analytics.view';
     public const PROFIT_DASHBOARD_VIEW = 'profit-dashboard.view';
+    public const CEO_DASHBOARD_VIEW = 'ceo-dashboard.view';
 
     /**
      * @return array<int, string>
@@ -114,6 +115,7 @@ class PermissionRegistry
             self::SECURITY_DASHBOARD_VIEW,
             self::CONVERSION_ANALYTICS_VIEW,
             self::PROFIT_DASHBOARD_VIEW,
+            self::CEO_DASHBOARD_VIEW,
         ];
     }
 
@@ -503,6 +505,16 @@ class PermissionRegistry
                 'sort' => 370,
                 'system' => true,
                 'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::CEO_DASHBOARD_VIEW,
+                'module' => 'Analytics',
+                'label' => 'CEO irányítópult megtekintése',
+                'description' => 'Revenue, profit, konverzió, repeat customer és audit összkép megtekintése.',
+                'dangerous' => true,
+                'sort' => 380,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
 
         ];
