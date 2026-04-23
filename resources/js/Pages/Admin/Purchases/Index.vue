@@ -1,27 +1,82 @@
 <script setup>
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import Button from 'primevue/button';
+import Column from 'primevue/column';
+import ConfirmDialog from 'primevue/confirmdialog';
+import DataTable from 'primevue/datatable';
 import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
+import { useConfirm } from 'primevue/useconfirm';
+
+import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
+import CreateModal from '@/Components/Admin/Purchases/CreateModal.vue';
 import SectionTitle from '@/Components/SectionTitle.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps({
-    purchases: { type: Object, required: true },
-    suppliers: { type: Array, required: true },
-    ingredient_options: { type: Array, required: true },
-    statuses: { type: Array, required: true },
-    filters: { type: Object, required: true },
+    purchases: {
+        type: Object,
+        required: true,
+    },
+    suppliers: {
+        type: Array,
+        required: true,
+    },
+    ingredient_options: {
+        type: Array,
+        required: true,
+    },
+    statuses: {
+        type: Array,
+        required: true,
+    },
+    filters: {
+        type: Object,
+        required: true,
+    },
 });
 
-const search = ref(props.filters.search ?? '');
-const status = ref(props.filters.status ?? '');
-const supplierId = ref(props.filters.supplier_id ?? '');
+const confirm = useConfirm();
+const loading = ref(false);
+const createModalVisible = ref(false);
+
+const filterState = reactive({
+    search: props.filters.search ?? '',
+    status: props.filters.status ?? '',
+    supplier_id: props.filters.supplier_id || null,
+    sort_field: props.filters.sort_field ?? 'purchase_date',
+    sort_direction: props.filters.sort_direction ?? 'desc',
+    per_page: props.filters.per_page ?? 10,
+});
+
+const perPageOptions = [
+    { label: '10 / oldal', value: 10 },
+    { label: '20 / oldal', value: 20 },
+    { label: '50 / oldal', value: 50 },
+];
+
+const statusOptions = computed(() => [
+    { label: 'Mind', value: '' },
+    ...props.statuses.map((status) => ({
+        label: statusLabel(status),
+        value: status,
+    })),
+]);
+
+const supplierOptions = computed(() => [{ id: null, name: 'Mind' }, ...props.suppliers]);
+const ingredientOptions = computed(() =>
+    props.ingredient_options.map((ingredient) => ({
+        label: `${ingredient.name} (${ingredient.unit})`,
+        value: ingredient.id,
+        unit: ingredient.unit,
+    })),
+);
 
 const newItem = () => ({ ingredient_id: null, quantity: 1, unit: 'db', unit_cost: 0 });
+
 const form = useForm({
     supplier_id: null,
     reference_number: '',
@@ -30,39 +85,131 @@ const form = useForm({
     items: [newItem()],
 });
 
-const supplierOptions = computed(() => [{ label: 'Mind', value: '' }, ...props.suppliers.map((s) => ({ label: s.name, value: s.id }))]);
-const statusOptions = computed(() => [{ label: 'Mind', value: '' }, ...props.statuses.map((s) => ({ label: s, value: s }))]);
-const ingredientOptions = computed(() => props.ingredient_options.map((i) => ({ label: `${i.name} (${i.unit})`, value: i.id, unit: i.unit })));
+const sortOrder = computed(() => (filterState.sort_direction === 'asc' ? 1 : -1));
+const currentPage = computed(() => props.purchases.current_page ?? 1);
+const first = computed(() => (currentPage.value - 1) * (props.purchases.per_page ?? 10));
 
-const load = () => {
-    router.get('/admin/purchases', {
-        search: search.value || undefined,
-        status: status.value || undefined,
-        supplier_id: supplierId.value || undefined,
-    }, { preserveState: true, replace: true, preserveScroll: true });
+const load = (extra = {}) => {
+    loading.value = true;
+
+    router.get(
+        '/admin/purchases',
+        {
+            search: filterState.search || undefined,
+            status: filterState.status || undefined,
+            supplier_id: filterState.supplier_id || undefined,
+            sort_field: filterState.sort_field,
+            sort_direction: filterState.sort_direction,
+            per_page: filterState.per_page,
+            ...extra,
+        },
+        {
+            preserveState: true,
+            replace: true,
+            preserveScroll: true,
+            onFinish: () => {
+                loading.value = false;
+            },
+        },
+    );
 };
 
-const addItem = () => form.items.push(newItem());
-const removeItem = (idx) => form.items.splice(idx, 1);
-
-const onIngredientChange = (idx) => {
-    const selected = ingredientOptions.value.find((o) => o.value === form.items[idx].ingredient_id);
-    if (selected) {
-        form.items[idx].unit = selected.unit;
-    }
+const submitFilters = () => load({ page: 1 });
+const clearFilters = () => {
+    filterState.search = '';
+    filterState.status = '';
+    filterState.supplier_id = null;
+    filterState.sort_field = 'purchase_date';
+    filterState.sort_direction = 'desc';
+    filterState.per_page = 10;
+    submitFilters();
 };
 
-const total = computed(() => form.items.reduce((sum, item) => sum + (Number(item.quantity || 0) * Number(item.unit_cost || 0)), 0));
+const onSort = (event) => {
+    filterState.sort_field = event.sortField;
+    filterState.sort_direction = event.sortOrder === 1 ? 'asc' : 'desc';
+    load({ page: 1 });
+};
 
-const postPurchase = () => {
+const onPage = (event) => {
+    filterState.per_page = event.rows;
+    load({ page: event.page + 1, per_page: event.rows });
+};
+
+const openCreate = () => {
+    form.reset();
+    form.clearErrors();
+    form.supplier_id = null;
+    form.reference_number = '';
+    form.purchase_date = new Date().toISOString().slice(0, 10);
+    form.notes = '';
+    form.items = [newItem()];
+    createModalVisible.value = true;
+};
+
+const closeCreateModal = () => {
+    createModalVisible.value = false;
+};
+
+const submitCreate = () => {
     form.post('/admin/purchases', {
         preserveScroll: true,
-        onSuccess: () => form.reset(),
+        onSuccess: () => {
+            closeCreateModal();
+            form.reset();
+        },
     });
 };
 
-const postNow = (id) => router.post(`/admin/purchases/${id}/post`, {}, { preserveScroll: true });
-const cancelPurchase = (id) => router.post(`/admin/purchases/${id}/cancel`, {}, { preserveScroll: true });
+const postNow = (purchase) => {
+    confirm.require({
+        header: 'Beszerzés könyvelése',
+        message: `Könyvelés után a készlet azonnal frissül. Folytatod? (${purchase.reference_number || `#${purchase.id}`})`,
+        rejectLabel: 'Mégse',
+        acceptLabel: 'Könyvelés',
+        accept: () => {
+            router.post(`/admin/purchases/${purchase.id}/post`, {}, { preserveScroll: true });
+        },
+    });
+};
+
+const cancelPurchase = (purchase) => {
+    confirm.require({
+        header: 'Beszerzés stornózása',
+        message: `Biztosan stornózod ezt a beszerzést? (${purchase.reference_number || `#${purchase.id}`})`,
+        rejectLabel: 'Mégse',
+        acceptLabel: 'Stornó',
+        acceptClass: 'p-button-danger',
+        accept: () => {
+            router.post(`/admin/purchases/${purchase.id}/cancel`, {}, { preserveScroll: true });
+        },
+    });
+};
+
+const formatCurrency = (value) =>
+    `${new Intl.NumberFormat('hu-HU', {
+        maximumFractionDigits: 0,
+    }).format(Number(value || 0))} Ft`;
+
+const statusLabel = (status) => {
+    const map = {
+        draft: 'Piszkozat',
+        posted: 'Könyvelt',
+        cancelled: 'Stornózott',
+    };
+
+    return map[status] ?? status;
+};
+
+const statusClass = (status) => {
+    const map = {
+        draft: 'bg-amber-100 text-amber-800',
+        posted: 'bg-emerald-100 text-emerald-800',
+        cancelled: 'bg-rose-100 text-rose-800',
+    };
+
+    return map[status] ?? 'bg-stone-100 text-stone-700';
+};
 </script>
 
 <template>
@@ -72,78 +219,167 @@ const cancelPurchase = (id) => router.post(`/admin/purchases/${id}/cancel`, {}, 
         <SectionTitle
             eyebrow="Admin / Beszerzések"
             title="Beszerzések"
-            description="Bevételezésre kész beszerzési dokumentumok valós készletkönyveléssel."
+            description="Termékek mintájára egységes táblás, szűrhető és modal alapú beszerzéskezelés."
         />
 
-        <section class="ui-card p-4 sm:p-5 space-y-4">
-            <div class="grid gap-3 md:grid-cols-4">
-                <InputText v-model="search" placeholder="Keresés referencia / megjegyzés" @keyup.enter="load" />
-                <Select v-model="status" :options="statusOptions" option-label="label" option-value="value" />
-                <Select v-model="supplierId" :options="supplierOptions" option-label="label" option-value="value" />
-                <Button label="Szűrés" class="!min-h-11" @click="load" />
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-sm">
-                    <thead class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
-                        <tr>
-                            <th class="px-2 py-2">Dátum</th>
-                            <th class="px-2 py-2">Referencia</th>
-                            <th class="px-2 py-2">Beszállító</th>
-                            <th class="px-2 py-2">Státusz</th>
-                            <th class="px-2 py-2 text-right">Összesen</th>
-                            <th class="px-2 py-2 text-right">Művelet</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="purchase in purchases.data" :key="purchase.id" class="border-b border-bakery-brown/10">
-                            <td class="px-2 py-2">{{ purchase.purchase_date }}</td>
-                            <td class="px-2 py-2 font-medium">{{ purchase.reference_number || '-' }}</td>
-                            <td class="px-2 py-2">{{ purchase.supplier_name || '-' }}</td>
-                            <td class="px-2 py-2">
-                                <span class="rounded-full px-2 py-1 text-xs bg-bakery-brown/10 text-bakery-brown">{{ purchase.status }}</span>
-                            </td>
-                            <td class="px-2 py-2 text-right">{{ new Intl.NumberFormat('hu-HU').format(purchase.total) }} Ft</td>
-                            <td class="px-2 py-2">
-                                <div class="flex justify-end gap-2">
-                                    <Link :href="`/admin/purchases/${purchase.id}`" class="text-sm underline">Részletek</Link>
-                                    <Button v-if="purchase.status === 'draft'" label="Könyvelés" size="small" class="!min-h-11" @click="postNow(purchase.id)" />
-                                    <Button v-if="purchase.status === 'draft'" label="Stornó" size="small" severity="danger" text class="!min-h-11" @click="cancelPurchase(purchase.id)" />
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section class="ui-card p-4 sm:p-5 space-y-4">
-            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">Új beszerzés</h2>
-            <div class="grid gap-3 md:grid-cols-2">
-                <Select v-model="form.supplier_id" :options="props.suppliers" option-label="name" option-value="id" placeholder="Beszállító" />
-                <InputText v-model="form.reference_number" placeholder="Referencia szám" />
-                <InputText v-model="form.purchase_date" type="date" />
-                <InputText v-model="form.notes" placeholder="Megjegyzés" />
-            </div>
-
-            <div class="space-y-2">
-                <div v-for="(item, idx) in form.items" :key="idx" class="grid gap-2 md:grid-cols-5 items-center">
-                    <Select v-model="item.ingredient_id" :options="ingredientOptions" option-label="label" option-value="value" placeholder="Alapanyag" @update:model-value="onIngredientChange(idx)" />
-                    <InputText v-model="item.quantity" type="number" min="0.001" step="0.001" placeholder="Mennyiség" />
-                    <InputText v-model="item.unit" placeholder="Egység" />
-                    <InputText v-model="item.unit_cost" type="number" min="0" step="0.0001" placeholder="Egységár" />
-                    <div class="flex justify-end">
-                        <Button label="Sor törlés" text severity="danger" class="!min-h-11" @click="removeItem(idx)" />
+        <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
+            <AdminTableToolbar>
+                <template #filters>
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
+                        <InputText
+                            v-model="filterState.search"
+                            class="w-full"
+                            placeholder="Referencia vagy megjegyzés"
+                            @keyup.enter="submitFilters"
+                        />
                     </div>
-                </div>
-                <Button label="Tétel hozzáadása" outlined class="!min-h-11" @click="addItem" />
-            </div>
 
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-bakery-dark/80">Összesen: <strong>{{ new Intl.NumberFormat('hu-HU').format(total) }} Ft</strong></p>
-                <Button label="Beszerzés mentése (draft)" class="!min-h-11" :disabled="form.processing" @click="postPurchase" />
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Státusz</label>
+                        <Select
+                            v-model="filterState.status"
+                            :options="statusOptions"
+                            option-label="label"
+                            option-value="value"
+                            class="w-full"
+                            @change="submitFilters"
+                        />
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Beszállító</label>
+                        <Select
+                            v-model="filterState.supplier_id"
+                            :options="supplierOptions"
+                            option-label="name"
+                            option-value="id"
+                            class="w-full"
+                            filter
+                            @change="submitFilters"
+                        />
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
+                        <Select
+                            v-model="filterState.per_page"
+                            :options="perPageOptions"
+                            option-label="label"
+                            option-value="value"
+                            class="w-full"
+                            @change="submitFilters"
+                        />
+                    </div>
+                </template>
+
+                <template #actions>
+                    <Button icon="pi pi-filter-slash" label="Szűrők törlése" severity="secondary" outlined @click="clearFilters" />
+                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
+                    <Button icon="pi pi-plus" label="Új beszerzés" @click="openCreate" />
+                </template>
+            </AdminTableToolbar>
+
+            <div class="mt-4 overflow-x-auto">
+                <DataTable
+                    :value="purchases.data"
+                    lazy
+                    paginator
+                    scrollable
+                    :rows="purchases.per_page"
+                    :first="first"
+                    :total-records="purchases.total"
+                    :loading="loading"
+                    data-key="id"
+                    sort-mode="single"
+                    :sort-field="filterState.sort_field"
+                    :sort-order="sortOrder"
+                    @sort="onSort"
+                    @page="onPage"
+                >
+                    <template #empty>
+                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                            <p>Nincs megjeleníthető beszerzés.</p>
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                                <Button label="Új beszerzés" size="small" @click="openCreate" />
+                            </div>
+                        </div>
+                    </template>
+
+                    <Column field="purchase_date" header="Dátum" sortable>
+                        <template #body="{ data }">
+                            <span class="text-sm text-bakery-dark">{{ data.purchase_date || '-' }}</span>
+                        </template>
+                    </Column>
+                    <Column field="reference_number" header="Referencia" sortable>
+                        <template #body="{ data }">
+                            <span class="font-medium text-bakery-dark">{{ data.reference_number || `#${data.id}` }}</span>
+                        </template>
+                    </Column>
+                    <Column field="supplier_name" header="Beszállító">
+                        <template #body="{ data }">
+                            <span>{{ data.supplier_name || 'Nincs megadva' }}</span>
+                        </template>
+                    </Column>
+                    <Column field="items_count" header="Tételek" />
+                    <Column field="total" header="Összesen" sortable>
+                        <template #body="{ data }">
+                            <span class="font-medium">{{ formatCurrency(data.total) }}</span>
+                        </template>
+                    </Column>
+                    <Column field="status" header="Státusz" sortable>
+                        <template #body="{ data }">
+                            <span
+                                class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
+                                :class="statusClass(data.status)"
+                            >
+                                {{ statusLabel(data.status) }}
+                            </span>
+                        </template>
+                    </Column>
+                    <Column header="Műveletek" :exportable="false">
+                        <template #body="{ data }">
+                            <div class="flex items-center gap-2">
+                                <Link
+                                    :href="`/admin/purchases/${data.id}`"
+                                    class="inline-flex min-h-11 items-center rounded-md border border-bakery-brown/20 px-3 py-2 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10"
+                                >
+                                    Részletek
+                                </Link>
+                                <Button
+                                    v-if="data.status === 'draft'"
+                                    icon="pi pi-check"
+                                    text
+                                    rounded
+                                    class="!h-11 !w-11"
+                                    aria-label="Beszerzés könyvelése"
+                                    @click="postNow(data)"
+                                />
+                                <Button
+                                    v-if="data.status === 'draft'"
+                                    icon="pi pi-times"
+                                    text
+                                    rounded
+                                    severity="danger"
+                                    class="!h-11 !w-11"
+                                    aria-label="Beszerzés stornózása"
+                                    @click="cancelPurchase(data)"
+                                />
+                            </div>
+                        </template>
+                    </Column>
+                </DataTable>
             </div>
-        </section>
+        </div>
+
+        <CreateModal
+            v-model:visible="createModalVisible"
+            :form="form"
+            :suppliers="suppliers"
+            :ingredient-options="ingredientOptions"
+            @submit="submitCreate"
+        />
+        <ConfirmDialog />
     </div>
 </template>
-
