@@ -126,7 +126,7 @@ class CacheService
             return;
         }
 
-        if (config('app.debug') && env('CACHE_TAG_DEBUG', false)) {
+        if( config('app.debug') && config('cache.tag_debug', false) ) {
             static $warned = false;
             if (! $warned) {
                 logger()->debug('Pattern-based cache deletion is not supported by this store', [

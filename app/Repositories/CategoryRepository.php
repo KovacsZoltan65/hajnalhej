@@ -23,6 +23,7 @@ class CategoryRepository
     }
 
     /**
+     * Admin oldalon megjelenítendő adatokat szolgáltatja
      * @param array<string, mixed> $filters
      * @return LengthAwarePaginator
      */
@@ -37,6 +38,7 @@ class CategoryRepository
     }
 
     /**
+     * A kiválasztható (is_active = 1) kategóriák listája
      * @return Collection<int, array{id:int,name:string}>
      */
     public function listSelectable(): Collection
@@ -53,6 +55,7 @@ class CategoryRepository
     }
 
     /**
+     * Új kategória elkészítése
      * @param array<string, mixed> $data
      * @return Category
      */
@@ -75,7 +78,7 @@ class CategoryRepository
     }
 
     /**
-     * Summary of delete
+     * Kategória törlése
      * @param Category $category
      * @return void
      */
@@ -85,7 +88,7 @@ class CategoryRepository
     }
 
     /**
-     * Summary of slugExists
+     * A slug létezésétnek vizsgálata
      * @param string $slug
      * @param int $ignoreId
      * @return bool

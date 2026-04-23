@@ -124,8 +124,9 @@ return [
     | cache to prevent gadget chain attacks if your APP_KEY is leaked.
     |
     */
-
     'serializable_classes' => false,
+
+    'tag_debug' => env('CACHE_TAG_DEBUG', false),
 
     'enable_category' => false,
 ];
