@@ -21,8 +21,8 @@ const heroVariant = computed(() => props.heroExperiment?.variant ?? "artisan_sto
 
 const heroTitle = computed(() =>
     heroVariant.value === "speed_checkout"
-        ? "Prémium artisan pékáru, gyors és kiszámítható átvétellel."
-        : "Prémium artisan pékáru előrendeléssel."
+        ? "Prémium kézműves pékáru, gyors és kiszámítható átvétellel."
+        : "Prémium kézműves pékáru előrendeléssel."
 );
 
 const heroSubtitle = computed(() =>
