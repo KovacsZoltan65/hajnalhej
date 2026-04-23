@@ -67,6 +67,7 @@ const form = useForm({
     slug: '',
     sku: '',
     unit: 'db',
+    estimated_unit_cost: 0,
     current_stock: 0,
     minimum_stock: 0,
     is_active: true,
@@ -133,6 +134,7 @@ const openCreate = () => {
     form.slug = '';
     form.sku = '';
     form.unit = props.units[0] ?? 'db';
+    form.estimated_unit_cost = 0;
     form.current_stock = 0;
     form.minimum_stock = 0;
     form.is_active = true;
@@ -148,6 +150,7 @@ const openEdit = (ingredient) => {
     form.slug = ingredient.slug;
     form.sku = ingredient.sku ?? '';
     form.unit = ingredient.unit;
+    form.estimated_unit_cost = ingredient.estimated_unit_cost ?? 0;
     form.current_stock = ingredient.current_stock;
     form.minimum_stock = ingredient.minimum_stock;
     form.is_active = ingredient.is_active;
@@ -284,6 +287,11 @@ const confirmDelete = (ingredient) => {
                     </template>
                 </Column>
                 <Column field="unit" header="Mértékegység" sortable />
+                <Column field="estimated_unit_cost" header="Becsült egységköltség" sortable>
+                    <template #body="{ data }">
+                        <span class="font-medium text-bakery-dark">{{ new Intl.NumberFormat('hu-HU').format(data.estimated_unit_cost) }} Ft</span>
+                    </template>
+                </Column>
                 <Column field="current_stock" header="Készlet" sortable>
                     <template #body="{ data }">
                         <IngredientStockBadge

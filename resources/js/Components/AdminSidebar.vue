@@ -39,6 +39,10 @@ const links = computed(() => {
         dynamicLinks.push({ label: 'Konverziós analitika', href: '/admin/conversion-analytics', icon: 'pi pi-chart-line' });
     }
 
+    if (can.view_profit_dashboard) {
+        dynamicLinks.push({ label: 'Profit irányítópult', href: '/admin/profit-dashboard', icon: 'pi pi-wallet' });
+    }
+
     return dynamicLinks;
 });
 

@@ -10,6 +10,8 @@ let mockPage = {
                 view_user_permissions: false,
                 manage_permissions: false,
                 view_security_dashboard: false,
+                view_conversion_analytics: false,
+                view_profit_dashboard: false,
             },
         },
     },
@@ -34,6 +36,8 @@ describe('AdminSidebar', () => {
                         view_user_permissions: false,
                         manage_permissions: true,
                         view_security_dashboard: false,
+                        view_conversion_analytics: false,
+                        view_profit_dashboard: false,
                     },
                 },
             },
@@ -54,6 +58,8 @@ describe('AdminSidebar', () => {
                         view_user_permissions: false,
                         manage_permissions: false,
                         view_security_dashboard: true,
+                        view_conversion_analytics: false,
+                        view_profit_dashboard: false,
                     },
                 },
             },
@@ -61,6 +67,28 @@ describe('AdminSidebar', () => {
 
         const wrapper = mount(AdminSidebar);
         expect(wrapper.text()).toContain('Biztonsági irányítópult');
+    });
+
+    it('shows profit dashboard menu item when allowed', () => {
+        mockPage = {
+            ...mockPage,
+            props: {
+                auth: {
+                    can: {
+                        manage_roles: false,
+                        assign_user_roles: false,
+                        view_user_permissions: false,
+                        manage_permissions: false,
+                        view_security_dashboard: false,
+                        view_conversion_analytics: false,
+                        view_profit_dashboard: true,
+                    },
+                },
+            },
+        };
+
+        const wrapper = mount(AdminSidebar);
+        expect(wrapper.text()).toContain('Profit irányítópult');
     });
 });
 

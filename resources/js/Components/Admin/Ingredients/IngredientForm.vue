@@ -75,6 +75,20 @@ watch(
         </div>
 
         <div class="space-y-2">
+            <label for="ingredient-estimated-unit-cost" class="text-sm font-medium text-bakery-dark">Becsult egysegkoltseg (Ft)</label>
+            <InputNumber
+                id="ingredient-estimated-unit-cost"
+                v-model="form.estimated_unit_cost"
+                mode="decimal"
+                :min="0"
+                :min-fraction-digits="2"
+                :max-fraction-digits="4"
+                fluid
+            />
+            <p v-if="form.errors.estimated_unit_cost" class="text-xs text-red-700">{{ form.errors.estimated_unit_cost }}</p>
+        </div>
+
+        <div class="space-y-2">
             <label for="ingredient-minimum-stock" class="text-sm font-medium text-bakery-dark">Minimum keszlet</label>
             <InputNumber
                 id="ingredient-minimum-stock"

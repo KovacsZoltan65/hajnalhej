@@ -11,5 +11,9 @@ class ConversionAnalyticsPolicy
     {
         return $user->can(PermissionRegistry::CONVERSION_ANALYTICS_VIEW);
     }
-}
 
+    public function viewProfitDashboard(User $user): bool
+    {
+        return $user->can(PermissionRegistry::PROFIT_DASHBOARD_VIEW);
+    }
+}

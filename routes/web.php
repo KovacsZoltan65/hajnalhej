@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserRoleController as AdminUserRoleController;
 use App\Http\Controllers\Admin\PermissionController as AdminPermissionController;
 use App\Http\Controllers\Admin\SecurityDashboardController as AdminSecurityDashboardController;
 use App\Http\Controllers\Admin\ConversionAnalyticsController as AdminConversionAnalyticsController;
+use App\Http\Controllers\Admin\ProfitDashboardController as AdminProfitDashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\RecipeController;
 use App\Http\Controllers\Admin\RecipeStepController;
@@ -183,5 +184,8 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/conversion-analytics', [AdminConversionAnalyticsController::class, 'index'])
             ->middleware('permission:conversion-analytics.view')
             ->name('conversion-analytics.index');
+        Route::get('/profit-dashboard', [AdminProfitDashboardController::class, 'index'])
+            ->middleware('permission:profit-dashboard.view')
+            ->name('profit-dashboard.index');
     });
 });

@@ -44,6 +44,7 @@ class IngredientController extends Controller
                 'slug' => $ingredient->slug,
                 'sku' => $ingredient->sku,
                 'unit' => $ingredient->unit,
+                'estimated_unit_cost' => (float) $ingredient->estimated_unit_cost,
                 'current_stock' => (float) $ingredient->current_stock,
                 'minimum_stock' => (float) $ingredient->minimum_stock,
                 'is_low_stock' => $ingredient->isLowStock(),

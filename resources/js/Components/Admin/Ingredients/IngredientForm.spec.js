@@ -36,6 +36,7 @@ describe('IngredientForm', () => {
         slug: '',
         sku: '',
         unit: 'kg',
+        estimated_unit_cost: 0,
         current_stock: 0,
         minimum_stock: 0,
         is_active: true,
@@ -55,6 +56,7 @@ describe('IngredientForm', () => {
 
         expect(wrapper.text()).toContain('Név');
         expect(wrapper.text()).toContain('Mertekegyseg');
+        expect(wrapper.text()).toContain('Becsult egysegkoltseg');
         expect(wrapper.text()).toContain('Aktualis keszlet');
         expect(wrapper.text()).toContain('Slug');
     });

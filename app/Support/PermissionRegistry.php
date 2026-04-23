@@ -56,6 +56,7 @@ class PermissionRegistry
     public const AUDIT_LOGS_VIEW = 'audit-logs.view';
     public const SECURITY_DASHBOARD_VIEW = 'security-dashboard.view';
     public const CONVERSION_ANALYTICS_VIEW = 'conversion-analytics.view';
+    public const PROFIT_DASHBOARD_VIEW = 'profit-dashboard.view';
 
     /**
      * @return array<int, string>
@@ -112,6 +113,7 @@ class PermissionRegistry
             self::AUDIT_LOGS_VIEW,
             self::SECURITY_DASHBOARD_VIEW,
             self::CONVERSION_ANALYTICS_VIEW,
+            self::PROFIT_DASHBOARD_VIEW,
         ];
     }
 
@@ -489,6 +491,16 @@ class PermissionRegistry
                 'description' => 'CTA, kosár, checkout és regisztráció funnel statisztikák megtekintése.',
                 'dangerous' => false,
                 'sort' => 360,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::PROFIT_DASHBOARD_VIEW,
+                'module' => 'Analytics',
+                'label' => 'Profit irányítópult megtekintése',
+                'description' => 'Becsült önköltség, margin és profit trend elemzések megtekintése.',
+                'dangerous' => false,
+                'sort' => 370,
                 'system' => true,
                 'audit_sensitive' => false,
             ],

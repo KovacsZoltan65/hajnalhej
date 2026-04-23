@@ -89,6 +89,7 @@ class IngredientService
             'slug' => $slugInput,
             'sku' => $sku !== '' ? $sku : null,
             'unit' => (string) ($payload['unit'] ?? 'db'),
+            'estimated_unit_cost' => number_format((float) ($payload['estimated_unit_cost'] ?? 0), 4, '.', ''),
             'current_stock' => number_format((float) ($payload['current_stock'] ?? 0), 3, '.', ''),
             'minimum_stock' => number_format((float) ($payload['minimum_stock'] ?? 0), 3, '.', ''),
             'is_active' => (bool) ($payload['is_active'] ?? true),

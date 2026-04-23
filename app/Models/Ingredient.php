@@ -23,6 +23,7 @@ class Ingredient extends Model
         'slug',
         'sku',
         'unit',
+        'estimated_unit_cost',
         'current_stock',
         'minimum_stock',
         'is_active',
@@ -35,6 +36,7 @@ class Ingredient extends Model
     protected function casts(): array
     {
         return [
+            'estimated_unit_cost' => 'decimal:4',
             'current_stock' => 'decimal:3',
             'minimum_stock' => 'decimal:3',
             'is_active' => 'boolean',
