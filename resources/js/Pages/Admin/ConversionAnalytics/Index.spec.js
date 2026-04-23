@@ -34,6 +34,28 @@ describe('Admin Conversion Analytics page', () => {
                     conversion_rates: [
                         { id: 'hero_to_register', label: 'Hero -> regisztráció kattintás', rate: 20, numerator: 20, denominator: 100 },
                     ],
+                    commerce: {
+                        revenue_total: 15000,
+                        orders_count: 3,
+                        unique_customers: 2,
+                        average_cart_value: 5000,
+                        repeat_customers: 1,
+                        repeat_customer_rate: 50,
+                        ltv: 7500,
+                    },
+                    commerce_trend: {
+                        points: [
+                            {
+                                date: '2026-04-23',
+                                revenue: 6000,
+                                orders_count: 2,
+                                average_cart_value: 3000,
+                            },
+                        ],
+                    },
+                    top_product_revenue: [
+                        { product_name: 'Kovászos cipó', revenue: 12000, quantity: 4, orders: 2 },
+                    ],
                     trend: {
                         points: [
                             {
@@ -68,10 +90,13 @@ describe('Admin Conversion Analytics page', () => {
         });
 
         expect(wrapper.text()).toContain('Valódi konverziós arányok');
+        expect(wrapper.text()).toContain('Üzleti mutatók');
+        expect(wrapper.text()).toContain('Bevétel és kosárérték trend');
+        expect(wrapper.text()).toContain('Top termék revenue');
+        expect(wrapper.text()).toContain('LTV (időszaki)');
         expect(wrapper.text()).toContain('Idősoros trendek');
         expect(wrapper.text()).toContain('Hero variáns összehasonlítás');
         expect(wrapper.text()).toContain('Top funnel drop-off pontok');
         expect(wrapper.text()).toContain('20.00%');
     });
 });
-

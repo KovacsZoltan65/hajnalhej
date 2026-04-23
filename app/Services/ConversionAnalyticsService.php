@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\ConversionEventRepository;
+use App\Repositories\OrderRepository;
 use App\Support\ConversionEventRegistry;
 use Illuminate\Support\Carbon;
 
@@ -10,6 +11,7 @@ class ConversionAnalyticsService
 {
     public function __construct(
         private readonly ConversionEventRepository $repository,
+        private readonly OrderRepository $orderRepository,
         private readonly HeroExperimentService $heroExperimentService,
     ) {}
 
@@ -23,6 +25,9 @@ class ConversionAnalyticsService
         $dropOff = $this->buildDropOffRanking($funnelStats);
         $heroComparison = $this->buildHeroComparison($days);
         $trend = $this->buildDailyTrend($days);
+        $commerceOverview = $this->orderRepository->commerceOverview($days);
+        $commerceTrend = $this->buildCommerceTrend($days);
+        $topProductRevenue = $this->orderRepository->topProductRevenue($days, 10);
 
         $ctaTop = $this->repository->topCtaClicks($days);
         $latest = $this->repository->latestEvents($days)->map(function ($event): array {
@@ -85,6 +90,8 @@ class ConversionAnalyticsService
                 ),
                 'checkout_completions' => $checkoutCompleted,
                 'registration_completions' => $registrationCompleted,
+                'revenue_total' => $commerceOverview['revenue_total'],
+                'average_cart_value' => $commerceOverview['average_cart_value'],
             ],
             'conversion_rates' => [
                 [
@@ -132,6 +139,11 @@ class ConversionAnalyticsService
                 ],
             ],
             'trend' => $trend,
+            'commerce' => $commerceOverview,
+            'commerce_trend' => [
+                'points' => $commerceTrend,
+            ],
+            'top_product_revenue' => $topProductRevenue,
             'funnel_stats' => $funnelStats,
             'drop_off_top' => $dropOff,
             'hero_comparison' => $heroComparison,
@@ -293,6 +305,30 @@ class ConversionAnalyticsService
     }
 
     /**
+     * @return array<int, array{date:string,revenue:float,orders_count:int,average_cart_value:float}>
+     */
+    private function buildCommerceTrend(int $days): array
+    {
+        $rowsByDate = [];
+        foreach ($this->orderRepository->dailyCommerceMetrics($days) as $row) {
+            $rowsByDate[$row['date']] = $row;
+        }
+
+        $result = [];
+        foreach ($this->dateRangeKeys($days) as $date) {
+            $row = $rowsByDate[$date] ?? null;
+            $result[] = [
+                'date' => $date,
+                'revenue' => (float) ($row['revenue'] ?? 0.0),
+                'orders_count' => (int) ($row['orders_count'] ?? 0),
+                'average_cart_value' => (float) ($row['average_cart_value'] ?? 0.0),
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
      * @return array<int, array<string, mixed>>
      */
     private function buildHeroComparison(int $days): array
@@ -394,4 +430,3 @@ class ConversionAnalyticsService
         return round(($numerator / $denominator) * 100, 2);
     }
 }
-

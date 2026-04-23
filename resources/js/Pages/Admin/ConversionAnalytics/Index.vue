@@ -39,11 +39,20 @@ const updateDays = (value) => {
 
 const rateCards = computed(() => props.analytics.conversion_rates ?? []);
 const trendPoints = computed(() => props.analytics.trend?.points ?? []);
+const commerce = computed(() => props.analytics.commerce ?? {});
+const commerceTrendPoints = computed(() => props.analytics.commerce_trend?.points ?? []);
+const topProductRevenueRows = computed(() => props.analytics.top_product_revenue ?? []);
 const funnelStats = computed(() => props.analytics.funnel_stats ?? []);
 const heroComparison = computed(() => props.analytics.hero_comparison ?? []);
 const dropOffRows = computed(() => props.analytics.drop_off_top ?? []);
 
 const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
+const formatCurrency = (value) =>
+    new Intl.NumberFormat("hu-HU", {
+        style: "currency",
+        currency: "HUF",
+        maximumFractionDigits: 0,
+    }).format(Number(value ?? 0));
 </script>
 
 <template>
@@ -76,7 +85,7 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
             </div>
         </header>
 
-        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
             <!-- Összes esemény -->
             <article class="ui-card p-4">
                 <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">
@@ -113,7 +122,69 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
                     {{ analytics.summary.registration_completions }}
                 </p>
             </article>
+            <article class="ui-card p-4">
+                <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">
+                    Bevétel
+                </p>
+                <p class="mt-2 font-heading text-3xl text-bakery-dark">
+                    {{ formatCurrency(analytics.summary.revenue_total) }}
+                </p>
+            </article>
+            <article class="ui-card p-4">
+                <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">
+                    Átlag kosárérték
+                </p>
+                <p class="mt-2 font-heading text-3xl text-bakery-dark">
+                    {{ formatCurrency(analytics.summary.average_cart_value) }}
+                </p>
+            </article>
         </div>
+
+        <section class="ui-card p-4 sm:p-5">
+            <h2
+                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
+            >
+                Üzleti mutatók
+            </h2>
+            <div class="mt-4 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
+                <article class="ui-card-soft p-4">
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Bevétel</p>
+                    <p class="mt-2 font-heading text-2xl text-bakery-dark">
+                        {{ formatCurrency(commerce.revenue_total) }}
+                    </p>
+                </article>
+                <article class="ui-card-soft p-4">
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Rendelésszám</p>
+                    <p class="mt-2 font-heading text-2xl text-bakery-dark">
+                        {{ commerce.orders_count ?? 0 }}
+                    </p>
+                </article>
+                <article class="ui-card-soft p-4">
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Egyedi vásárlók</p>
+                    <p class="mt-2 font-heading text-2xl text-bakery-dark">
+                        {{ commerce.unique_customers ?? 0 }}
+                    </p>
+                </article>
+                <article class="ui-card-soft p-4">
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Visszatérő vásárlói arány</p>
+                    <p class="mt-2 font-heading text-2xl text-bakery-dark">
+                        {{ formatPercent(commerce.repeat_customer_rate) }}
+                    </p>
+                </article>
+                <article class="ui-card-soft p-4">
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Átlag kosárérték</p>
+                    <p class="mt-2 font-heading text-2xl text-bakery-dark">
+                        {{ formatCurrency(commerce.average_cart_value) }}
+                    </p>
+                </article>
+                <article class="ui-card-soft p-4">
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">LTV (időszaki)</p>
+                    <p class="mt-2 font-heading text-2xl text-bakery-dark">
+                        {{ formatCurrency(commerce.ltv) }}
+                    </p>
+                </article>
+            </div>
+        </section>
 
         <!-- Konverziós arányok -->
         <section class="ui-card p-4 sm:p-5">
@@ -138,6 +209,86 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
                         {{ card.numerator }} / {{ card.denominator }}
                     </p>
                 </article>
+            </div>
+        </section>
+
+        <section class="ui-card p-4 sm:p-5">
+            <h2
+                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
+            >
+                Bevétel és kosárérték trend
+            </h2>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead
+                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
+                    >
+                        <tr>
+                            <th class="px-2 py-2">Dátum</th>
+                            <th class="px-2 py-2 text-right">Bevétel</th>
+                            <th class="px-2 py-2 text-right">Rendelés</th>
+                            <th class="px-2 py-2 text-right">Átlag kosárérték</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="point in commerceTrendPoints"
+                            :key="`commerce-${point.date}`"
+                            class="border-b border-bakery-brown/10"
+                        >
+                            <td class="px-2 py-2 font-medium text-bakery-dark">{{ point.date }}</td>
+                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
+                                {{ formatCurrency(point.revenue) }}
+                            </td>
+                            <td class="px-2 py-2 text-right text-bakery-dark">{{ point.orders_count }}</td>
+                            <td class="px-2 py-2 text-right text-bakery-dark">
+                                {{ formatCurrency(point.average_cart_value) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="ui-card p-4 sm:p-5">
+            <h2
+                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
+            >
+                Top termék revenue
+            </h2>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead
+                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
+                    >
+                        <tr>
+                            <th class="px-2 py-2">Termék</th>
+                            <th class="px-2 py-2 text-right">Bevétel</th>
+                            <th class="px-2 py-2 text-right">Darab</th>
+                            <th class="px-2 py-2 text-right">Rendelés</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="row in topProductRevenueRows"
+                            :key="`product-revenue-${row.product_name}`"
+                            class="border-b border-bakery-brown/10"
+                        >
+                            <td class="px-2 py-2 font-medium text-bakery-dark">
+                                {{ row.product_name }}
+                            </td>
+                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
+                                {{ formatCurrency(row.revenue) }}
+                            </td>
+                            <td class="px-2 py-2 text-right text-bakery-dark">
+                                {{ row.quantity }}
+                            </td>
+                            <td class="px-2 py-2 text-right text-bakery-dark">
+                                {{ row.orders }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
