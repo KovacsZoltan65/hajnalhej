@@ -58,6 +58,15 @@ class PermissionRegistry
     public const CONVERSION_ANALYTICS_VIEW = 'conversion-analytics.view';
     public const PROFIT_DASHBOARD_VIEW = 'profit-dashboard.view';
     public const CEO_DASHBOARD_VIEW = 'ceo-dashboard.view';
+    public const SUPPLIERS_VIEW = 'suppliers.view';
+    public const SUPPLIERS_MANAGE = 'suppliers.manage';
+    public const PURCHASES_VIEW = 'purchases.view';
+    public const PURCHASES_MANAGE = 'purchases.manage';
+    public const INVENTORY_VIEW = 'inventory.view';
+    public const INVENTORY_ADJUST = 'inventory.adjust';
+    public const WASTE_MANAGE = 'waste.manage';
+    public const STOCK_COUNTS_MANAGE = 'stock-counts.manage';
+    public const INVENTORY_DASHBOARD_VIEW = 'inventory-dashboard.view';
 
     /**
      * @return array<int, string>
@@ -116,6 +125,7 @@ class PermissionRegistry
             self::CONVERSION_ANALYTICS_VIEW,
             self::PROFIT_DASHBOARD_VIEW,
             self::CEO_DASHBOARD_VIEW,
+            self::INVENTORY_DASHBOARD_VIEW,
         ];
     }
 
@@ -515,6 +525,96 @@ class PermissionRegistry
                 'sort' => 380,
                 'system' => true,
                 'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::SUPPLIERS_VIEW,
+                'module' => 'Beszerzés',
+                'label' => 'Beszállítók megtekintése',
+                'description' => 'Beszállító lista és adatok megtekintése.',
+                'dangerous' => false,
+                'sort' => 390,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::SUPPLIERS_MANAGE,
+                'module' => 'Beszerzés',
+                'label' => 'Beszállítók kezelése',
+                'description' => 'Beszállítók létrehozása, szerkesztése, törlése.',
+                'dangerous' => true,
+                'sort' => 400,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::PURCHASES_VIEW,
+                'module' => 'Beszerzés',
+                'label' => 'Beszerzések megtekintése',
+                'description' => 'Beszerzési listák és részletek megtekintése.',
+                'dangerous' => false,
+                'sort' => 410,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::PURCHASES_MANAGE,
+                'module' => 'Beszerzés',
+                'label' => 'Beszerzések kezelése',
+                'description' => 'Beszerzések létrehozása, könyvelése és stornózása.',
+                'dangerous' => true,
+                'sort' => 420,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::INVENTORY_VIEW,
+                'module' => 'Készlet',
+                'label' => 'Készletmozgások megtekintése',
+                'description' => 'Készlet főkönyv és részletes mozgásnapló megtekintése.',
+                'dangerous' => false,
+                'sort' => 430,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::INVENTORY_ADJUST,
+                'module' => 'Készlet',
+                'label' => 'Készletkorrekció kezelése',
+                'description' => 'Készlet korrekciós mozgások rögzítése.',
+                'dangerous' => true,
+                'sort' => 440,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::WASTE_MANAGE,
+                'module' => 'Készlet',
+                'label' => 'Selejt kezelése',
+                'description' => 'Selejt és veszteség mozgások rögzítése.',
+                'dangerous' => true,
+                'sort' => 450,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::STOCK_COUNTS_MANAGE,
+                'module' => 'Készlet',
+                'label' => 'Leltár kezelése',
+                'description' => 'Leltár indítása, módosítása és lezárása.',
+                'dangerous' => true,
+                'sort' => 460,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::INVENTORY_DASHBOARD_VIEW,
+                'module' => 'Készlet',
+                'label' => 'Készlet dashboard megtekintése',
+                'description' => 'Készletérték, alacsony készlet és selejt metrikák megtekintése.',
+                'dangerous' => false,
+                'sort' => 470,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
 
         ];

@@ -12,11 +12,15 @@ use App\Http\Controllers\Admin\ConversionAnalyticsController as AdminConversionA
 use App\Http\Controllers\Admin\ProfitDashboardController as AdminProfitDashboardController;
 use App\Http\Controllers\Admin\CeoDashboardController as AdminCeoDashboardController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\RecipeController;
 use App\Http\Controllers\Admin\RecipeStepController;
 use App\Http\Controllers\Admin\ProductIngredientController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\PurchaseController as AdminPurchaseController;
 use App\Http\Controllers\Admin\ProductionPlanController;
+use App\Http\Controllers\Admin\StockCountController as AdminStockCountController;
+use App\Http\Controllers\Admin\SupplierController as AdminSupplierController;
 use App\Http\Controllers\Admin\WeeklyMenuController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -191,5 +195,35 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/ceo-dashboard', [AdminCeoDashboardController::class, 'index'])
             ->middleware('permission:ceo-dashboard.view')
             ->name('ceo-dashboard.index');
+
+        Route::name('suppliers.')->prefix('suppliers')->controller(AdminSupplierController::class)->group(function (): void {
+            Route::get('/', 'index')->middleware('permission:suppliers.view')->name('index');
+            Route::post('/', 'store')->middleware('permission:suppliers.manage')->name('store');
+            Route::put('/{supplier}', 'update')->middleware('permission:suppliers.manage')->name('update');
+            Route::delete('/{supplier}', 'destroy')->middleware('permission:suppliers.manage')->name('destroy');
+        });
+
+        Route::name('purchases.')->prefix('purchases')->controller(AdminPurchaseController::class)->group(function (): void {
+            Route::get('/', 'index')->middleware('permission:purchases.view')->name('index');
+            Route::get('/{purchase}', 'show')->middleware('permission:purchases.view')->name('show');
+            Route::post('/', 'store')->middleware('permission:purchases.manage')->name('store');
+            Route::put('/{purchase}', 'update')->middleware('permission:purchases.manage')->name('update');
+            Route::post('/{purchase}/post', 'post')->middleware('permission:purchases.manage')->name('post');
+            Route::post('/{purchase}/cancel', 'cancel')->middleware('permission:purchases.manage')->name('cancel');
+        });
+
+        Route::name('inventory.')->prefix('inventory')->controller(InventoryController::class)->group(function (): void {
+            Route::get('/', 'index')->middleware('permission:inventory-dashboard.view')->name('index');
+            Route::post('/waste', 'storeWaste')->middleware('permission:waste.manage')->name('waste.store');
+            Route::post('/adjustments', 'storeAdjustment')->middleware('permission:inventory.adjust')->name('adjustments.store');
+        });
+
+        Route::name('stock-counts.')->prefix('stock-counts')->controller(AdminStockCountController::class)->group(function (): void {
+            Route::get('/', 'index')->middleware('permission:inventory.view')->name('index');
+            Route::get('/{stockCount}', 'show')->middleware('permission:inventory.view')->name('show');
+            Route::post('/', 'store')->middleware('permission:stock-counts.manage')->name('store');
+            Route::put('/{stockCount}', 'update')->middleware('permission:stock-counts.manage')->name('update');
+            Route::post('/{stockCount}/close', 'close')->middleware('permission:stock-counts.manage')->name('close');
+        });
     });
 });

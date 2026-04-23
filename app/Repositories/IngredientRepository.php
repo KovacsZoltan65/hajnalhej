@@ -23,18 +23,20 @@ class IngredientRepository
     }
 
     /**
-     * @return Collection<int, array{id:int,name:string,unit:string,is_low_stock:bool}>
+     * @return Collection<int, array{id:int,name:string,unit:string,current_stock:float,reorder_level:float,is_low_stock:bool}>
      */
     public function listSelectableActive(): Collection
     {
         return Ingredient::query()
             ->where('is_active', true)
             ->orderBy('name')
-            ->get(['id', 'name', 'unit', 'current_stock', 'minimum_stock'])
+            ->get(['id', 'name', 'unit', 'current_stock', 'minimum_stock', 'reorder_level'])
             ->map(fn (Ingredient $ingredient): array => [
                 'id' => $ingredient->id,
                 'name' => $ingredient->name,
                 'unit' => $ingredient->unit,
+                'current_stock' => (float) $ingredient->current_stock,
+                'reorder_level' => (float) ($ingredient->reorder_level ?? $ingredient->minimum_stock),
                 'is_low_stock' => $ingredient->isLowStock(),
             ]);
     }

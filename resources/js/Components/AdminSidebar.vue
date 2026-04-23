@@ -47,6 +47,22 @@ const links = computed(() => {
         dynamicLinks.push({ label: 'CEO irányítópult', href: '/admin/ceo-dashboard', icon: 'pi pi-briefcase' });
     }
 
+    if (can.view_suppliers || can.manage_suppliers) {
+        dynamicLinks.push({ label: 'Beszállítók', href: '/admin/suppliers', icon: 'pi pi-truck' });
+    }
+
+    if (can.view_purchases || can.manage_purchases) {
+        dynamicLinks.push({ label: 'Beszerzések', href: '/admin/purchases', icon: 'pi pi-file-import' });
+    }
+
+    if (can.view_inventory_dashboard || can.view_inventory) {
+        dynamicLinks.push({ label: 'Készletmozgások', href: '/admin/inventory', icon: 'pi pi-chart-scatter' });
+    }
+
+    if (can.manage_stock_counts) {
+        dynamicLinks.push({ label: 'Leltár', href: '/admin/stock-counts', icon: 'pi pi-clipboard' });
+    }
+
     return dynamicLinks;
 });
 

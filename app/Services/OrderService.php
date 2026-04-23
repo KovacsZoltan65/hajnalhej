@@ -15,6 +15,7 @@ class OrderService
     public function __construct(
         private readonly OrderRepository $repository,
         private readonly OrderAuditService $auditService,
+        private readonly ProductionInventoryService $productionInventoryService,
     ) {
     }
 
@@ -80,6 +81,11 @@ class OrderService
         }
 
         $updated = $this->repository->update($order, $updatePayload);
+
+        if ($targetStatus === Order::STATUS_COMPLETED) {
+            $this->productionInventoryService->consumeForOrder($updated, $actor);
+            $updated = $updated->refresh();
+        }
 
         if ($actor !== null) {
             $this->auditService->logOrderStatusUpdated(

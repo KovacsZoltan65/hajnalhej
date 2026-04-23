@@ -29,7 +29,11 @@ class ProfitDashboardService
                 'period_revenue' => $period['revenue'],
                 'period_estimated_cost' => $period['estimated_cost'],
                 'period_estimated_profit' => $period['estimated_profit'],
+                'period_actual_material_cost' => $period['actual_material_cost'],
+                'period_waste_cost' => $period['waste_cost'],
+                'period_gross_profit' => $period['gross_profit'],
                 'period_margin_rate' => $period['margin_rate'],
+                'estimated_vs_actual_delta' => $period['estimated_vs_actual_delta'],
             ],
             'product_margins' => $this->repository->productMargins(30),
             'top_profit_products' => $this->repository->topProfitProducts($days, 10),
@@ -40,8 +44,8 @@ class ProfitDashboardService
     }
 
     /**
-     * @param array<int, array{date:string,revenue:float,estimated_cost:float,estimated_profit:float,margin_rate:float,orders_count:int}> $rows
-     * @return array<int, array{date:string,revenue:float,estimated_cost:float,estimated_profit:float,margin_rate:float,orders_count:int}>
+     * @param array<int, array{date:string,revenue:float,estimated_cost:float,actual_material_cost:float,gross_profit:float,estimated_profit:float,margin_rate:float,orders_count:int}> $rows
+     * @return array<int, array{date:string,revenue:float,estimated_cost:float,actual_material_cost:float,gross_profit:float,estimated_profit:float,margin_rate:float,orders_count:int}>
      */
     private function fillTrendDates(int $days, array $rows): array
     {
@@ -59,6 +63,8 @@ class ProfitDashboardService
                 'date' => $date,
                 'revenue' => (float) ($row['revenue'] ?? 0.0),
                 'estimated_cost' => (float) ($row['estimated_cost'] ?? 0.0),
+                'actual_material_cost' => (float) ($row['actual_material_cost'] ?? 0.0),
+                'gross_profit' => (float) ($row['gross_profit'] ?? 0.0),
                 'estimated_profit' => (float) ($row['estimated_profit'] ?? 0.0),
                 'margin_rate' => (float) ($row['margin_rate'] ?? 0.0),
                 'orders_count' => (int) ($row['orders_count'] ?? 0),
@@ -68,4 +74,3 @@ class ProfitDashboardService
         return $result;
     }
 }
-
