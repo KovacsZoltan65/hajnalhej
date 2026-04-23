@@ -127,4 +127,5 @@ return [
 
     'serializable_classes' => false,
 
+    'enable_category' => false,
 ];

@@ -1,14 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Models\Category;
+use App\Services\CacheService;
+use App\Traits\Functions;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use JsonException;
 
 class CategoryRepository
 {
+    use Functions;
+
+    protected $tag = 'category';
+
+    public function __construct(private readonly CacheService $cacheService)
+    {
+    }
+
     /**
      * @param array<string, mixed> $filters
      * @return LengthAwarePaginator
