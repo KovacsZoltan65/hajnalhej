@@ -16,9 +16,9 @@ class RecipeStepSeeder extends Seeder
         $recipes = [
             'klasszikus-kovaszos-kenyer' => [
                 [
-                    'title' => 'Alapanyagok elokeszitese',
+                    'title' => 'Alapanyagok előkészítése',
                     'step_type' => RecipeStep::TYPE_PREPARATION,
-                    'description' => 'A liszt, so es viz kimereve, kovasz felfrissitve.',
+                    'description' => 'A liszt, só és víz kimeréve, kovász felfrissítve.',
                     'duration_minutes' => 20,
                     'wait_minutes' => 0,
                     'temperature_celsius' => null,
@@ -26,9 +26,9 @@ class RecipeStepSeeder extends Seeder
                     'is_active' => true,
                 ],
                 [
-                    'title' => 'Autolizis es dagasztas',
+                    'title' => 'Autolízis és dagasztás',
                     'step_type' => RecipeStep::TYPE_MIXING,
-                    'description' => 'Rovid autolizis utan fokozatos dagasztas.',
+                    'description' => 'Rövid autolízis után fokozatos dagasztás.',
                     'duration_minutes' => 25,
                     'wait_minutes' => 30,
                     'temperature_celsius' => 24.0,
@@ -36,9 +36,9 @@ class RecipeStepSeeder extends Seeder
                     'is_active' => true,
                 ],
                 [
-                    'title' => 'Kelesztes es sutes',
+                    'title' => 'Kelesztés és sütés',
                     'step_type' => RecipeStep::TYPE_BAKING,
-                    'description' => 'Hosszu kelesztes, majd gozos sutes.',
+                    'description' => 'Hosszú kelesztés, majd gőzös sütés.',
                     'duration_minutes' => 45,
                     'wait_minutes' => 180,
                     'temperature_celsius' => 245.0,
@@ -48,9 +48,9 @@ class RecipeStepSeeder extends Seeder
             ],
             'magvas-vekni' => [
                 [
-                    'title' => 'Magok beaztatasa',
+                    'title' => 'Magok beáztatása',
                     'step_type' => RecipeStep::TYPE_PREPARATION,
-                    'description' => 'Napraforgo es lenmag elokeszitese.',
+                    'description' => 'Napraforgó és lenmag előkészítése.',
                     'duration_minutes' => 10,
                     'wait_minutes' => 60,
                     'temperature_celsius' => null,
@@ -58,7 +58,7 @@ class RecipeStepSeeder extends Seeder
                     'is_active' => true,
                 ],
                 [
-                    'title' => 'Dagasztas es pihentetes',
+                    'title' => 'Dagasztás és pihentetés',
                     'step_type' => RecipeStep::TYPE_RESTING,
                     'description' => null,
                     'duration_minutes' => 30,
