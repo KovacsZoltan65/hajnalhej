@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Ingredient;
+use App\Models\IngredientSupplierTerm;
 use App\Models\InventoryMovement;
 use App\Models\Product;
 use App\Models\Purchase;
@@ -68,6 +69,7 @@ it('calculates supplier price trend from posted purchase items', function (): vo
 });
 
 it('calculates minimum stock recommendation from stock and production consumption', function (): void {
+    $supplier = Supplier::factory()->create(['name' => 'Malom Kft.', 'lead_time_days' => 11]);
     $ingredient = Ingredient::factory()->create([
         'name' => 'Vaj',
         'unit' => 'kg',
@@ -75,6 +77,11 @@ it('calculates minimum stock recommendation from stock and production consumptio
         'minimum_stock' => 3,
         'estimated_unit_cost' => 1200,
         'is_active' => true,
+    ]);
+    IngredientSupplierTerm::query()->create([
+        'ingredient_id' => $ingredient->id,
+        'supplier_id' => $supplier->id,
+        'preferred' => true,
     ]);
 
     InventoryMovement::query()->create([
@@ -90,8 +97,49 @@ it('calculates minimum stock recommendation from stock and production consumptio
 
     expect($recommendation['weekly_average_consumption'])->toBe(7.0)
         ->and($recommendation['days_on_hand'])->toBe(2.0)
+        ->and($recommendation['lead_time_days'])->toBe(11)
         ->and($recommendation['suggested_order_quantity'])->toBe(12.0)
+        ->and($recommendation['recommended_supplier_name'])->toBe('Malom Kft.')
         ->and($recommendation['urgency'])->toBe('critical');
+});
+
+it('rounds reorder recommendations by preferred supplier pack size and minimum order quantity', function (): void {
+    $supplier = Supplier::factory()->create(['name' => 'Zsákos Malom', 'lead_time_days' => 2]);
+    $ingredient = Ingredient::factory()->create([
+        'name' => 'Kenyérliszt',
+        'unit' => 'kg',
+        'current_stock' => 5,
+        'minimum_stock' => 6,
+        'estimated_unit_cost' => 300,
+        'is_active' => true,
+    ]);
+    IngredientSupplierTerm::query()->create([
+        'ingredient_id' => $ingredient->id,
+        'supplier_id' => $supplier->id,
+        'lead_time_days' => 2,
+        'minimum_order_quantity' => 50,
+        'pack_size' => 25,
+        'preferred' => true,
+        'unit_cost_override' => 280,
+    ]);
+
+    InventoryMovement::query()->create([
+        'ingredient_id' => $ingredient->id,
+        'movement_type' => InventoryMovement::TYPE_PRODUCTION_OUT,
+        'direction' => InventoryMovement::DIRECTION_OUT,
+        'quantity' => 28,
+        'occurred_at' => now()->subDays(2),
+    ]);
+
+    $dashboard = app(ProcurementIntelligenceService::class)->buildDashboard(['days' => 30]);
+    $recommendation = collect($dashboard['minimum_stock_recommendations'])->firstWhere('ingredient_id', $ingredient->id);
+
+    expect($recommendation['raw_suggested_order_quantity'])->toBe(1.0)
+        ->and($recommendation['suggested_order_quantity'])->toBe(50.0)
+        ->and($recommendation['pack_size'])->toBe(25.0)
+        ->and($recommendation['minimum_order_quantity'])->toBe(50.0)
+        ->and($recommendation['unit_cost'])->toBe(280.0)
+        ->and($recommendation['supplier_source'])->toBe('preferred_supplier');
 });
 
 it('calculates weekly consumption forecast from four week average', function (): void {
@@ -191,9 +239,9 @@ it('creates bom no stock alert for ingredients used by recipes', function (): vo
 
 it('generates purchase drafts from minimum stock recommendations grouped by supplier', function (): void {
     $admin = User::factory()->admin()->create();
-    $recentSupplier = Supplier::factory()->create(['name' => 'Friss Malom']);
-    $cheapSupplier = Supplier::factory()->create(['name' => 'Olcsó Malom']);
-    $butterSupplier = Supplier::factory()->create(['name' => 'Vaj Beszállító']);
+    $recentSupplier = Supplier::factory()->create(['name' => 'Friss Malom', 'lead_time_days' => 11]);
+    $cheapSupplier = Supplier::factory()->create(['name' => 'Olcsó Malom', 'lead_time_days' => 11]);
+    $butterSupplier = Supplier::factory()->create(['name' => 'Vaj Beszállító', 'lead_time_days' => 11]);
     $flour = Ingredient::factory()->create([
         'name' => 'BL80 liszt',
         'unit' => 'kg',
@@ -264,7 +312,7 @@ it('generates purchase drafts from minimum stock recommendations grouped by supp
 
 it('uses cheapest fresh supplier when latest purchase has no supplier', function (): void {
     $admin = User::factory()->admin()->create();
-    $supplier = Supplier::factory()->create();
+    $supplier = Supplier::factory()->create(['lead_time_days' => 11]);
     $ingredient = Ingredient::factory()->create([
         'unit' => 'kg',
         'current_stock' => 0,
@@ -310,7 +358,7 @@ it('uses cheapest fresh supplier when latest purchase has no supplier', function
     ]);
     $this->assertDatabaseHas('purchase_items', [
         'ingredient_id' => $ingredient->id,
-        'unit_cost' => 500,
+        'unit_cost' => 300,
     ]);
 });
 

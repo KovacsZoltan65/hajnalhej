@@ -24,8 +24,8 @@ class StoreSupplierRequest extends FormRequest
             'email' => ['nullable', 'email', 'max:190'],
             'phone' => ['nullable', 'string', 'max:64'],
             'tax_number' => ['nullable', 'string', 'max:64'],
+            'lead_time_days' => ['nullable', 'integer', 'min:0', 'max:365'],
             'notes' => ['nullable', 'string', 'max:4000'],
         ];
     }
 }
-

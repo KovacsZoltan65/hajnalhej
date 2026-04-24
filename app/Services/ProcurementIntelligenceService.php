@@ -12,6 +12,7 @@ class ProcurementIntelligenceService
     private const PRICE_INCREASE_ALERT_PERCENT = 10.0;
     private const STOCKOUT_WARNING_DAYS = 7.0;
     private const MINIMUM_STOCK_TARGET_DAYS = 14.0;
+    private const SAFETY_STOCK_DAYS = 3.0;
     private const STALE_PURCHASE_DAYS = 90;
 
     public function __construct(
@@ -42,6 +43,7 @@ class ProcurementIntelligenceService
                 'price_increase_alert_percent' => self::PRICE_INCREASE_ALERT_PERCENT,
                 'stockout_warning_days' => self::STOCKOUT_WARNING_DAYS,
                 'minimum_stock_target_days' => self::MINIMUM_STOCK_TARGET_DAYS,
+                'safety_stock_days' => self::SAFETY_STOCK_DAYS,
             ],
             'summary' => [
                 'alerts_count' => count($alerts),
@@ -64,10 +66,14 @@ class ProcurementIntelligenceService
      */
     public function minimumStockRecommendationsForFilters(array $filters): array
     {
+        $stockRows = $this->repository->ingredientStockRows();
+        $ingredientIds = $stockRows->pluck('id')->map(static fn (mixed $id): int => (int) $id)->all();
+
         return $this->filterByUrgency(
             $this->minimumStockRecommendations(
-                $this->repository->ingredientStockRows(),
+                $stockRows,
                 $this->consumptionMap(self::CONSUMPTION_WINDOW_DAYS),
+                $this->supplierContextMap($ingredientIds, (int) ($filters['days'] ?? 30)),
             ),
             (string) ($filters['urgency'] ?? ''),
         );
@@ -201,29 +207,52 @@ class ProcurementIntelligenceService
     /**
      * @param Collection<int, object> $stockRows
      * @param array<int, float> $consumption28
+     * @param array<int, array<string, mixed>> $supplierContexts
      * @return array<int, array<string, mixed>>
      */
-    private function minimumStockRecommendations(Collection $stockRows, array $consumption28): array
+    private function minimumStockRecommendations(Collection $stockRows, array $consumption28, array $supplierContexts): array
     {
         return $stockRows
-            ->map(function (object $row) use ($consumption28): array {
+            ->map(function (object $row) use ($consumption28, $supplierContexts): array {
+                $ingredientId = (int) $row->id;
                 $weeklyAverage = (($consumption28[(int) $row->id] ?? 0.0) / self::CONSUMPTION_WINDOW_DAYS) * 7;
                 $dailyAverage = $weeklyAverage / 7;
                 $currentStock = (float) $row->current_stock;
                 $minimumStock = (float) $row->minimum_stock;
                 $daysOnHand = $dailyAverage > 0 ? $currentStock / $dailyAverage : null;
-                $targetStock = max($minimumStock, $dailyAverage * self::MINIMUM_STOCK_TARGET_DAYS);
-                $suggestedQuantity = max(0.0, $targetStock - $currentStock);
+                $supplierContext = $supplierContexts[$ingredientId] ?? $this->emptySupplierContext();
+                $leadTimeDays = (float) ($supplierContext['lead_time_days'] ?? 0);
+                $leadTimeDemand = $dailyAverage * $leadTimeDays;
+                $safetyStock = $dailyAverage * self::SAFETY_STOCK_DAYS;
+                $targetStock = max($minimumStock, $leadTimeDemand + $safetyStock);
+                $rawSuggestedQuantity = max(0.0, $targetStock - $currentStock);
+                $suggestedQuantity = $this->applyOrderConstraints(
+                    $rawSuggestedQuantity,
+                    (float) ($supplierContext['minimum_order_quantity'] ?? 0),
+                    (float) ($supplierContext['pack_size'] ?? 0),
+                );
 
                 return [
-                    'ingredient_id' => (int) $row->id,
+                    'ingredient_id' => $ingredientId,
                     'ingredient_name' => (string) $row->name,
                     'unit' => (string) $row->unit,
                     'current_stock' => round($currentStock, 3),
                     'minimum_stock' => round($minimumStock, 3),
                     'weekly_average_consumption' => round($weeklyAverage, 3),
+                    'daily_average_consumption' => round($dailyAverage, 3),
+                    'lead_time_days' => $leadTimeDays > 0 ? (int) $leadTimeDays : null,
+                    'lead_time_demand' => round($leadTimeDemand, 3),
+                    'safety_stock' => round($safetyStock, 3),
+                    'target_stock' => round($targetStock, 3),
                     'days_on_hand' => $daysOnHand !== null ? round($daysOnHand, 1) : null,
+                    'raw_suggested_order_quantity' => round($rawSuggestedQuantity, 3),
                     'suggested_order_quantity' => round($suggestedQuantity, 3),
+                    'recommended_supplier_id' => $supplierContext['supplier_id'],
+                    'recommended_supplier_name' => $supplierContext['supplier_name'],
+                    'supplier_source' => $supplierContext['source'],
+                    'pack_size' => $supplierContext['pack_size'],
+                    'minimum_order_quantity' => $supplierContext['minimum_order_quantity'],
+                    'unit_cost' => $supplierContext['unit_cost'],
                     'urgency' => $this->stockUrgency($currentStock, $minimumStock, $daysOnHand),
                 ];
             })
@@ -231,6 +260,123 @@ class ProcurementIntelligenceService
             ->sortBy(fn (array $row): int => ['critical' => 1, 'high' => 2, 'medium' => 3, 'low' => 4][$row['urgency']])
             ->values()
             ->all();
+    }
+
+    /**
+     * @param array<int, int> $ingredientIds
+     * @return array<int, array<string, mixed>>
+     */
+    private function supplierContextMap(array $ingredientIds, int $days): array
+    {
+        $termRows = $this->repository->supplierTermRowsForIngredients($ingredientIds)->groupBy('ingredient_id');
+        $latestPurchases = $this->repository->latestPurchaseRowsForIngredients($ingredientIds)->keyBy('ingredient_id');
+        $cheapestFreshPurchases = $this->repository->cheapestFreshSupplierRows($ingredientIds, $days)->keyBy('ingredient_id');
+        $contexts = [];
+
+        foreach ($ingredientIds as $ingredientId) {
+            $terms = $termRows->get($ingredientId, collect());
+            $preferredTerm = $terms->first(static fn (object $row): bool => (bool) $row->preferred);
+            $latestPurchase = $latestPurchases->get($ingredientId);
+            $cheapestFreshPurchase = $cheapestFreshPurchases->get($ingredientId);
+
+            if ($preferredTerm !== null) {
+                $context = $this->contextFromTerm($preferredTerm, 'preferred_supplier');
+                if ($context['unit_cost'] === null && $latestPurchase?->supplier_id !== null && (int) $latestPurchase->supplier_id === (int) $preferredTerm->supplier_id) {
+                    $context['unit_cost'] = (float) $latestPurchase->unit_cost;
+                } elseif ($context['unit_cost'] === null && $cheapestFreshPurchase?->supplier_id !== null && (int) $cheapestFreshPurchase->supplier_id === (int) $preferredTerm->supplier_id) {
+                    $context['unit_cost'] = (float) $cheapestFreshPurchase->unit_cost;
+                }
+
+                $contexts[$ingredientId] = $context;
+                continue;
+            }
+
+            if ($latestPurchase?->supplier_id !== null) {
+                $matchingTerm = $terms->first(static fn (object $row): bool => (int) $row->supplier_id === (int) $latestPurchase->supplier_id);
+                $contexts[$ingredientId] = $this->contextFromPurchase($latestPurchase, $matchingTerm, 'latest_supplier');
+                continue;
+            }
+
+            if ($cheapestFreshPurchase?->supplier_id !== null) {
+                $matchingTerm = $terms->first(static fn (object $row): bool => (int) $row->supplier_id === (int) $cheapestFreshPurchase->supplier_id);
+                $contexts[$ingredientId] = $this->contextFromPurchase($cheapestFreshPurchase, $matchingTerm, 'cheapest_fresh_supplier');
+                continue;
+            }
+
+            $contexts[$ingredientId] = $this->emptySupplierContext();
+        }
+
+        return $contexts;
+    }
+
+    /**
+     * @return array{supplier_id:int|null,supplier_name:string|null,source:string,lead_time_days:int|null,minimum_order_quantity:float|null,pack_size:float|null,unit_cost:float|null}
+     */
+    private function contextFromTerm(object $term, string $source): array
+    {
+        return [
+            'supplier_id' => (int) $term->supplier_id,
+            'supplier_name' => (string) $term->supplier_name,
+            'source' => $source,
+            'lead_time_days' => $term->lead_time_days !== null ? (int) $term->lead_time_days : ($term->supplier_lead_time_days !== null ? (int) $term->supplier_lead_time_days : null),
+            'minimum_order_quantity' => $term->minimum_order_quantity !== null ? (float) $term->minimum_order_quantity : null,
+            'pack_size' => $term->pack_size !== null ? (float) $term->pack_size : null,
+            'unit_cost' => $term->unit_cost_override !== null ? (float) $term->unit_cost_override : ($term->latest_unit_cost !== null ? (float) $term->latest_unit_cost : null),
+        ];
+    }
+
+    /**
+     * @return array{supplier_id:int|null,supplier_name:string|null,source:string,lead_time_days:int|null,minimum_order_quantity:float|null,pack_size:float|null,unit_cost:float|null}
+     */
+    private function contextFromPurchase(object $purchase, ?object $term, string $source): array
+    {
+        if ($term !== null) {
+            $context = $this->contextFromTerm($term, $source);
+            $context['unit_cost'] = $context['unit_cost'] ?? (float) $purchase->unit_cost;
+
+            return $context;
+        }
+
+        return [
+            'supplier_id' => (int) $purchase->supplier_id,
+            'supplier_name' => (string) $purchase->supplier_name,
+            'source' => $source,
+            'lead_time_days' => $purchase->supplier_lead_time_days !== null ? (int) $purchase->supplier_lead_time_days : null,
+            'minimum_order_quantity' => null,
+            'pack_size' => null,
+            'unit_cost' => (float) $purchase->unit_cost,
+        ];
+    }
+
+    /**
+     * @return array{supplier_id:null,supplier_name:null,source:string,lead_time_days:null,minimum_order_quantity:null,pack_size:null,unit_cost:null}
+     */
+    private function emptySupplierContext(): array
+    {
+        return [
+            'supplier_id' => null,
+            'supplier_name' => null,
+            'source' => 'none',
+            'lead_time_days' => null,
+            'minimum_order_quantity' => null,
+            'pack_size' => null,
+            'unit_cost' => null,
+        ];
+    }
+
+    private function applyOrderConstraints(float $quantity, float $minimumOrderQuantity, float $packSize): float
+    {
+        if ($quantity <= 0) {
+            return 0.0;
+        }
+
+        $constrained = $minimumOrderQuantity > 0 ? max($quantity, $minimumOrderQuantity) : $quantity;
+
+        if ($packSize > 0) {
+            $constrained = ceil($constrained / $packSize) * $packSize;
+        }
+
+        return $constrained;
     }
 
     /**

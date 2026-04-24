@@ -22,6 +22,7 @@ class SupplierFactory extends Factory
             'email' => fake()->optional()->safeEmail(),
             'phone' => fake()->optional()->phoneNumber(),
             'tax_number' => fake()->optional()->numerify('########-#-##'),
+            'lead_time_days' => fake()->optional()->numberBetween(1, 7),
             'notes' => fake()->optional()->sentence(),
         ];
     }

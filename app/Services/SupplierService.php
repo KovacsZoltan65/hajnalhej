@@ -64,6 +64,7 @@ class SupplierService
             'email' => $this->emptyToNull($payload['email'] ?? null),
             'phone' => $this->emptyToNull($payload['phone'] ?? null),
             'tax_number' => $this->emptyToNull($payload['tax_number'] ?? null),
+            'lead_time_days' => $this->nullableInteger($payload['lead_time_days'] ?? null),
             'notes' => $this->emptyToNull($payload['notes'] ?? null),
         ];
     }
@@ -74,5 +75,13 @@ class SupplierService
 
         return $normalized === '' ? null : $normalized;
     }
-}
 
+    private function nullableInteger(mixed $value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return (int) $value;
+    }
+}

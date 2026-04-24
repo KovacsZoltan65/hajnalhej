@@ -4,6 +4,8 @@
 
 A Beszállítók modulban a pékség partnerei tarthatók karban. Beszállító megadása nem minden beszerzésnél kötelező, de riportokhoz és ártrendekhez erősen ajánlott.
 
+Beszállítónál megadható az alap lead time is, vagyis hogy általában hány nap alatt szállít. Ez fallback érték, ha egy konkrét alapanyag-beszállító kapcsolatnál nincs külön lead time.
+
 ## Beszerzés rögzítése
 
 1. Nyisd meg a Beszerzések modult.
@@ -32,12 +34,22 @@ A Beszállítók modulban a pékség partnerei tarthatók karban. Beszállító 
 
 A rendszer automatikusan próbál beszállítót választani:
 
-1. legutóbbi beszállító az alapanyaghoz,
-2. legolcsóbb friss beszállító az időablakban,
-3. ha nincs adat, beszállító nélkül marad.
+1. preferált alapanyag-beszállító kapcsolat,
+2. legutóbbi beszállító az alapanyaghoz,
+3. legolcsóbb friss beszállító az időablakban,
+4. ha nincs adat, beszállító nélkül marad.
+
+## Csomagolási egység és minimum rendelés
+
+Egyes beszállítók csak csomagolási egységben rendelhetők. Példa:
+
+- liszt: 25 kg-os zsák,
+- vaj: 10 kg-os karton,
+- mag: 5 kg-os zsák.
+
+Ha van pack size vagy minimum rendelési mennyiség, a rendszer a javasolt rendelést felfelé kerekíti. Példa: 7 kg lisztigény, 25 kg pack size és 50 kg minimum rendelés esetén a draftban 50 kg szerepel.
 
 ## Hibás beszerzés javítása
 
 - Ha draft: szerkeszd vagy stornózd.
 - Ha posted: ne töröld kézzel. Készletkorrekcióval vagy új kompenzáló mozgással javítsd a hibát.
-

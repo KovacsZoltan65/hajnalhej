@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Ingredient;
+use App\Models\IngredientSupplierTerm;
 use App\Models\InventoryMovement;
 use App\Models\Purchase;
 use App\Models\Supplier;
@@ -33,17 +34,19 @@ class InventoryProcurementSeeder extends Seeder
         $suppliers = [
             Supplier::query()->updateOrCreate(
                 ['name' => 'Malom Kft.'],
-                ['email' => 'rendeles@malomkft.hu', 'phone' => '+36 1 555 0101', 'tax_number' => '12345678-2-41', 'notes' => 'Liszt és gabona alapanyagok'],
+                ['email' => 'rendeles@malomkft.hu', 'phone' => '+36 1 555 0101', 'tax_number' => '12345678-2-41', 'lead_time_days' => 2, 'notes' => 'Liszt és gabona alapanyagok'],
             ),
             Supplier::query()->updateOrCreate(
                 ['name' => 'Tejtermék Partner Zrt.'],
-                ['email' => 'info@tejpartner.hu', 'phone' => '+36 1 555 0202', 'tax_number' => '87654321-2-41', 'notes' => 'Vaj, tej, tojás'],
+                ['email' => 'info@tejpartner.hu', 'phone' => '+36 1 555 0202', 'tax_number' => '87654321-2-41', 'lead_time_days' => 5, 'notes' => 'Vaj, tej, tojás'],
             ),
             Supplier::query()->updateOrCreate(
                 ['name' => 'Fűszer Nagyker'],
-                ['email' => 'sales@fuszernagyker.hu', 'phone' => '+36 1 555 0303', 'tax_number' => '13572468-2-41', 'notes' => 'Só, cukor, fűszerek'],
+                ['email' => 'sales@fuszernagyker.hu', 'phone' => '+36 1 555 0303', 'tax_number' => '13572468-2-41', 'lead_time_days' => 7, 'notes' => 'Só, cukor, fűszerek'],
             ),
         ];
+
+        $this->seedSupplierTerms($suppliers, $ingredients);
 
         $purchaseService = app(PurchaseService::class);
         $inventoryService = app(InventoryService::class);
@@ -117,6 +120,34 @@ class InventoryProcurementSeeder extends Seeder
     }
 
     /**
+     * @param array<int, Supplier> $suppliers
+     * @param \Illuminate\Support\Collection<int, Ingredient> $ingredients
+     */
+    private function seedSupplierTerms(array $suppliers, \Illuminate\Support\Collection $ingredients): void
+    {
+        $terms = [
+            ['supplier' => $suppliers[0], 'ingredient' => $ingredients[0], 'lead_time_days' => 2, 'minimum_order_quantity' => 50, 'pack_size' => 25, 'preferred' => true],
+            ['supplier' => $suppliers[0], 'ingredient' => $ingredients[1], 'lead_time_days' => 2, 'minimum_order_quantity' => 25, 'pack_size' => 25, 'preferred' => true],
+            ['supplier' => $suppliers[1], 'ingredient' => $ingredients[2], 'lead_time_days' => 5, 'minimum_order_quantity' => 10, 'pack_size' => 10, 'preferred' => true],
+        ];
+
+        foreach ($terms as $term) {
+            IngredientSupplierTerm::query()->updateOrCreate(
+                [
+                    'supplier_id' => $term['supplier']->id,
+                    'ingredient_id' => $term['ingredient']->id,
+                ],
+                [
+                    'lead_time_days' => $term['lead_time_days'],
+                    'minimum_order_quantity' => $term['minimum_order_quantity'],
+                    'pack_size' => $term['pack_size'],
+                    'preferred' => $term['preferred'],
+                ],
+            );
+        }
+    }
+
+    /**
      * @param array<int, array{ingredient:Ingredient,quantity:float,unit_cost:float}> $ingredients
      */
     private function upsertPurchase(
@@ -164,4 +195,3 @@ class InventoryProcurementSeeder extends Seeder
         return $purchase->refresh();
     }
 }
-

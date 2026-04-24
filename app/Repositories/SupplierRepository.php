@@ -54,7 +54,7 @@ class SupplierRepository
         $sortField = (string) ($filters['sort_field'] ?? 'name');
         $sortDirection = (string) ($filters['sort_direction'] ?? 'asc');
 
-        $allowedSorts = ['name', 'created_at'];
+        $allowedSorts = ['name', 'lead_time_days', 'created_at'];
         if (! \in_array($sortField, $allowedSorts, true)) {
             $sortField = 'name';
         }
@@ -82,4 +82,3 @@ class SupplierRepository
             return $query;
     }
 }
-

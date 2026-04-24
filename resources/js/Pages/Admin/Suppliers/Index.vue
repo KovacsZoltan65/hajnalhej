@@ -51,6 +51,7 @@ const form = useForm({
     email: '',
     phone: '',
     tax_number: '',
+    lead_time_days: null,
     notes: '',
 });
 
@@ -110,6 +111,7 @@ const openCreate = () => {
     form.email = '';
     form.phone = '';
     form.tax_number = '';
+    form.lead_time_days = null;
     form.notes = '';
     createModalVisible.value = true;
 };
@@ -122,6 +124,7 @@ const openEdit = (supplier) => {
     form.email = supplier.email ?? '';
     form.phone = supplier.phone ?? '';
     form.tax_number = supplier.tax_number ?? '';
+    form.lead_time_days = supplier.lead_time_days ?? null;
     form.notes = supplier.notes ?? '';
     editModalVisible.value = true;
 };
@@ -261,6 +264,11 @@ const formatDateTime = (value) => {
                         </template>
                     </Column>
                     <Column field="purchases_count" header="Beszerzések" />
+                    <Column field="lead_time_days" header="Lead time" sortable>
+                        <template #body="{ data }">
+                            <span class="text-sm text-bakery-dark">{{ data.lead_time_days !== null ? `${data.lead_time_days} nap` : '-' }}</span>
+                        </template>
+                    </Column>
                     <Column field="created_at" header="Létrehozva" sortable>
                         <template #body="{ data }">
                             <span class="text-xs text-bakery-dark/70">{{ formatDateTime(data.created_at) }}</span>
@@ -283,4 +291,3 @@ const formatDateTime = (value) => {
         <ConfirmDialog />
     </div>
 </template>
-

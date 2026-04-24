@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Ingredient;
 use App\Models\Purchase;
 use App\Models\User;
-use App\Repositories\ProcurementIntelligenceRepository;
 use RuntimeException;
 
 class PurchaseDraftGenerationService
@@ -14,7 +13,6 @@ class PurchaseDraftGenerationService
 
     public function __construct(
         private readonly ProcurementIntelligenceService $intelligenceService,
-        private readonly ProcurementIntelligenceRepository $intelligenceRepository,
         private readonly PurchaseService $purchaseService,
     ) {
     }
@@ -54,27 +52,17 @@ class PurchaseDraftGenerationService
             ->whereIn('id', $ingredientIds)
             ->get(['id', 'unit', 'estimated_unit_cost'])
             ->keyBy('id');
-        $latestPurchases = $this->intelligenceRepository->latestPurchaseRowsForIngredients($ingredientIds)->keyBy('ingredient_id');
-        $cheapestFreshPurchases = $this->intelligenceRepository
-            ->cheapestFreshSupplierRows($ingredientIds, (int) ($payload['days'] ?? 30))
-            ->keyBy('ingredient_id');
 
         $draftItemsBySupplier = $recommendations
-            ->map(function (array $recommendation) use ($ingredients, $latestPurchases, $cheapestFreshPurchases): array {
+            ->map(function (array $recommendation) use ($ingredients): array {
                 $ingredientId = (int) $recommendation['ingredient_id'];
                 $ingredient = $ingredients->get($ingredientId);
                 if ($ingredient === null) {
                     return [];
                 }
 
-                $latestPurchase = $latestPurchases->get($ingredientId);
-                $cheapestFreshPurchase = $cheapestFreshPurchases->get($ingredientId);
-                $supplierId = $latestPurchase?->supplier_id !== null
-                    ? (int) $latestPurchase->supplier_id
-                    : ($cheapestFreshPurchase?->supplier_id !== null ? (int) $cheapestFreshPurchase->supplier_id : null);
-                $unitCost = $latestPurchase?->unit_cost !== null
-                    ? (float) $latestPurchase->unit_cost
-                    : ($cheapestFreshPurchase?->unit_cost !== null ? (float) $cheapestFreshPurchase->unit_cost : (float) ($ingredient->estimated_unit_cost ?? 0));
+                $supplierId = $recommendation['recommended_supplier_id'] !== null ? (int) $recommendation['recommended_supplier_id'] : null;
+                $unitCost = $recommendation['unit_cost'] !== null ? (float) $recommendation['unit_cost'] : (float) ($ingredient->estimated_unit_cost ?? 0);
 
                 return [
                     'supplier_key' => $supplierId !== null ? (string) $supplierId : 'none',

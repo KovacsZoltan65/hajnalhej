@@ -213,7 +213,7 @@ const generatePurchaseDrafts = () => {
                 <p>Fogyási ablak: {{ dashboard.defaults.consumption_window_days }} nap production_out átlag.</p>
                 <p>Áremelkedés jelzés: {{ dashboard.defaults.price_increase_alert_percent }}% felett.</p>
                 <p>Elfogyási kockázat: {{ dashboard.defaults.stockout_warning_days }} napon belül.</p>
-                <p>Utánrendelési cél: legalább {{ dashboard.defaults.minimum_stock_target_days }} napnyi várható fogyás.</p>
+                <p>Utánrendelési cél: minimum készlet, lead time igény és {{ dashboard.defaults.safety_stock_days }} nap biztonsági puffer maximuma.</p>
             </div>
         </section>
     </section>

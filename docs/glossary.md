@@ -44,6 +44,22 @@ Készletmozgás. Minden készletváltozás naplózott eseménye: beszerzés, gy�
 
 Beszerzési intelligencia. Ártrendeket, fogyási előrejelzést, minimum készlet alapú javaslatokat és figyelmeztetéseket mutató admin modul.
 
+## Lead Time
+
+Beszállítási átfutási idő napokban. A reorder javaslat figyelembe veszi, hogy a várható fogyás alatt mennyi készlet fogy el, amíg a beszállító szállít.
+
+## Pack Size
+
+Csomagolási vagy rendelési egység. Példa: 25 kg-os lisztes zsák. A rendszer a javasolt rendelést felfelé kerekíti erre az egységre.
+
+## Minimum Order Quantity
+
+Minimum rendelési mennyiség. Ha a beszállító legalább 50 kg rendelést kér, a rendszer ennél kisebb javaslatot nem ad az adott supplier term alapján.
+
+## Preferred Supplier
+
+Preferált beszállító egy adott alapanyaghoz. Reorder és purchase draft generáláskor elsőbbséget élvez.
+
 ## Purchase Draft
 
 Beszerzési tervezet. Szerkeszthető, még nem könyvelt beszerzés.
@@ -51,4 +67,3 @@ Beszerzési tervezet. Szerkeszthető, még nem könyvelt beszerzés.
 ## Stock Count
 
 Leltár. A tényleges készlet felvétele, majd eltérés esetén készletkorrekció létrehozása.
-
