@@ -182,6 +182,65 @@ class ProcurementIntelligenceRepository
     }
 
     /**
+     * @param array<int, int> $ingredientIds
+     * @return Collection<int, object>
+     */
+    public function latestPurchaseRowsForIngredients(array $ingredientIds): Collection
+    {
+        if ($ingredientIds === []) {
+            return collect();
+        }
+
+        $rankedRows = DB::table('purchase_items')
+            ->join('purchases', 'purchases.id', '=', 'purchase_items.purchase_id')
+            ->select([
+                'purchase_items.ingredient_id',
+                'purchases.supplier_id',
+                'purchase_items.unit_cost',
+                'purchases.purchase_date',
+                DB::raw('ROW_NUMBER() OVER (PARTITION BY purchase_items.ingredient_id ORDER BY purchases.purchase_date DESC, purchase_items.id DESC) as row_number'),
+            ])
+            ->where('purchases.status', Purchase::STATUS_POSTED)
+            ->whereIn('purchase_items.ingredient_id', $ingredientIds);
+
+        return DB::query()
+            ->fromSub($rankedRows, 'latest_purchase_rows')
+            ->where('row_number', 1)
+            ->get();
+    }
+
+    /**
+     * @param array<int, int> $ingredientIds
+     * @return Collection<int, object>
+     */
+    public function cheapestFreshSupplierRows(array $ingredientIds, int $days): Collection
+    {
+        if ($ingredientIds === []) {
+            return collect();
+        }
+
+        $since = Carbon::today()->subDays($days - 1)->toDateString();
+        $rankedRows = DB::table('purchase_items')
+            ->join('purchases', 'purchases.id', '=', 'purchase_items.purchase_id')
+            ->select([
+                'purchase_items.ingredient_id',
+                'purchases.supplier_id',
+                'purchase_items.unit_cost',
+                'purchases.purchase_date',
+                DB::raw('ROW_NUMBER() OVER (PARTITION BY purchase_items.ingredient_id ORDER BY purchase_items.unit_cost ASC, purchases.purchase_date DESC, purchase_items.id DESC) as row_number'),
+            ])
+            ->where('purchases.status', Purchase::STATUS_POSTED)
+            ->whereNotNull('purchases.supplier_id')
+            ->whereDate('purchases.purchase_date', '>=', $since)
+            ->whereIn('purchase_items.ingredient_id', $ingredientIds);
+
+        return DB::query()
+            ->fromSub($rankedRows, 'cheapest_fresh_supplier_rows')
+            ->where('row_number', 1)
+            ->get();
+    }
+
+    /**
      * @return Collection<int, array{label:string,value:int}>
      */
     public function ingredientOptions(): Collection

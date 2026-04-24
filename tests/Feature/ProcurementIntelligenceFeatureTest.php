@@ -188,3 +188,136 @@ it('creates bom no stock alert for ingredients used by recipes', function (): vo
 
     expect($alerts)->toContain('bom_no_stock');
 });
+
+it('generates purchase drafts from minimum stock recommendations grouped by supplier', function (): void {
+    $admin = User::factory()->admin()->create();
+    $recentSupplier = Supplier::factory()->create(['name' => 'Friss Malom']);
+    $cheapSupplier = Supplier::factory()->create(['name' => 'Olcsó Malom']);
+    $butterSupplier = Supplier::factory()->create(['name' => 'Vaj Beszállító']);
+    $flour = Ingredient::factory()->create([
+        'name' => 'BL80 liszt',
+        'unit' => 'kg',
+        'current_stock' => 2,
+        'minimum_stock' => 3,
+        'estimated_unit_cost' => 280,
+        'is_active' => true,
+    ]);
+    $butter = Ingredient::factory()->create([
+        'name' => 'Vaj',
+        'unit' => 'kg',
+        'current_stock' => 1,
+        'minimum_stock' => 2,
+        'estimated_unit_cost' => 1200,
+        'is_active' => true,
+    ]);
+
+    postedPurchase($cheapSupplier, $flour, 10, 250, now()->subDays(4)->toDateString());
+    postedPurchase($recentSupplier, $flour, 10, 320, now()->subDay()->toDateString());
+    postedPurchase($butterSupplier, $butter, 5, 1300, now()->subDays(2)->toDateString());
+
+    InventoryMovement::query()->create([
+        'ingredient_id' => $flour->id,
+        'movement_type' => InventoryMovement::TYPE_PRODUCTION_OUT,
+        'direction' => InventoryMovement::DIRECTION_OUT,
+        'quantity' => 28,
+        'occurred_at' => now()->subDays(3),
+    ]);
+    InventoryMovement::query()->create([
+        'ingredient_id' => $butter->id,
+        'movement_type' => InventoryMovement::TYPE_PRODUCTION_OUT,
+        'direction' => InventoryMovement::DIRECTION_OUT,
+        'quantity' => 14,
+        'occurred_at' => now()->subDays(3),
+    ]);
+
+    $this->actingAs($admin)
+        ->post('/admin/procurement-intelligence/purchase-drafts', [
+            'days' => 30,
+            'ingredient_ids' => [$flour->id, $butter->id],
+        ])
+        ->assertRedirect('/admin/purchases?status=draft');
+
+    $this->assertDatabaseHas('purchases', [
+        'supplier_id' => $recentSupplier->id,
+        'status' => Purchase::STATUS_DRAFT,
+        'notes' => 'Automatikusan generált tervezet utánrendelési javaslatból.',
+        'created_by' => $admin->id,
+    ]);
+    $this->assertDatabaseHas('purchases', [
+        'supplier_id' => $butterSupplier->id,
+        'status' => Purchase::STATUS_DRAFT,
+        'created_by' => $admin->id,
+    ]);
+    $this->assertDatabaseHas('purchase_items', [
+        'ingredient_id' => $flour->id,
+        'quantity' => 12,
+        'unit' => 'kg',
+        'unit_cost' => 320,
+    ]);
+    $this->assertDatabaseHas('purchase_items', [
+        'ingredient_id' => $butter->id,
+        'quantity' => 6,
+        'unit' => 'kg',
+        'unit_cost' => 1300,
+    ]);
+});
+
+it('uses cheapest fresh supplier when latest purchase has no supplier', function (): void {
+    $admin = User::factory()->admin()->create();
+    $supplier = Supplier::factory()->create();
+    $ingredient = Ingredient::factory()->create([
+        'unit' => 'kg',
+        'current_stock' => 0,
+        'minimum_stock' => 1,
+        'estimated_unit_cost' => 420,
+        'is_active' => true,
+    ]);
+
+    postedPurchase($supplier, $ingredient, 10, 300, now()->subDays(3)->toDateString());
+    $purchaseWithoutSupplier = Purchase::query()->create([
+        'supplier_id' => null,
+        'purchase_date' => now()->toDateString(),
+        'status' => Purchase::STATUS_POSTED,
+        'subtotal' => 5000,
+        'total' => 5000,
+    ]);
+    $purchaseWithoutSupplier->items()->create([
+        'ingredient_id' => $ingredient->id,
+        'quantity' => 10,
+        'unit' => 'kg',
+        'unit_cost' => 500,
+        'line_total' => 5000,
+    ]);
+
+    InventoryMovement::query()->create([
+        'ingredient_id' => $ingredient->id,
+        'movement_type' => InventoryMovement::TYPE_PRODUCTION_OUT,
+        'direction' => InventoryMovement::DIRECTION_OUT,
+        'quantity' => 14,
+        'occurred_at' => now()->subDay(),
+    ]);
+
+    $this->actingAs($admin)
+        ->post('/admin/procurement-intelligence/purchase-drafts', [
+            'days' => 30,
+            'ingredient_ids' => [$ingredient->id],
+        ])
+        ->assertRedirect('/admin/purchases?status=draft');
+
+    $this->assertDatabaseHas('purchases', [
+        'supplier_id' => $supplier->id,
+        'status' => Purchase::STATUS_DRAFT,
+    ]);
+    $this->assertDatabaseHas('purchase_items', [
+        'ingredient_id' => $ingredient->id,
+        'unit_cost' => 500,
+    ]);
+});
+
+it('customer cannot generate purchase drafts from procurement intelligence', function (): void {
+    $customer = User::factory()->customer()->create();
+
+    $this->actingAs($customer)
+        ->post('/admin/procurement-intelligence/purchase-drafts', ['days' => 30])
+        ->assertForbidden();
+});

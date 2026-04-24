@@ -75,6 +75,7 @@ class PurchaseController extends Controller
         return Inertia::render('Admin/Purchases/Show', [
             'purchase' => [
                 'id' => $purchase->id,
+                'supplier_id' => $purchase->supplier_id,
                 'supplier_name' => $purchase->supplier?->name,
                 'reference_number' => $purchase->reference_number,
                 'purchase_date' => $purchase->purchase_date?->toDateString(),
@@ -85,6 +86,7 @@ class PurchaseController extends Controller
                 'posted_at' => $purchase->posted_at?->toDateTimeString(),
                 'items' => $purchase->items->map(static fn ($item): array => [
                     'id' => $item->id,
+                    'ingredient_id' => $item->ingredient_id,
                     'ingredient_name' => $item->ingredient?->name,
                     'ingredient_unit' => $item->ingredient?->unit,
                     'quantity' => (float) $item->quantity,
@@ -93,6 +95,8 @@ class PurchaseController extends Controller
                     'line_total' => (float) $item->line_total,
                 ])->values()->all(),
             ],
+            'suppliers' => Supplier::query()->orderBy('name')->get(['id', 'name']),
+            'ingredient_options' => $this->ingredientService->listSelectableActive()->values()->all(),
         ]);
     }
 
@@ -161,4 +165,3 @@ class PurchaseController extends Controller
         return back()->with('success', 'Beszerzés stornózva.');
     }
 }
-

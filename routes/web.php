@@ -216,6 +216,9 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/procurement-intelligence', [AdminProcurementIntelligenceController::class, 'index'])
             ->middleware('permission:procurement-intelligence.view')
             ->name('procurement-intelligence.index');
+        Route::post('/procurement-intelligence/purchase-drafts', [AdminProcurementIntelligenceController::class, 'generatePurchaseDrafts'])
+            ->middleware('permission:purchases.manage')
+            ->name('procurement-intelligence.purchase-drafts.store');
 
         Route::name('inventory.')->prefix('inventory')->controller(InventoryController::class)->group(function (): void {
             Route::get('/', 'index')->middleware('permission:inventory-dashboard.view')->name('index');

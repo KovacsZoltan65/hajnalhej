@@ -1,5 +1,7 @@
 <script setup>
 import { Head, router } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import Button from 'primevue/button';
 import Select from 'primevue/select';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import ProcurementSummaryCard from '@/Components/Admin/ProcurementIntelligence/ProcurementSummaryCard.vue';
@@ -26,7 +28,15 @@ const props = defineProps({
     },
 });
 
+const selectedRecommendationIds = ref([]);
+const draftGenerationProcessing = ref(false);
+
+const selectedCount = computed(() => selectedRecommendationIds.value.length);
+const generatableCount = computed(() => props.dashboard.minimum_stock_recommendations.length);
+
 const updateFilter = (key, value) => {
+    selectedRecommendationIds.value = [];
+
     router.get(
         '/admin/procurement-intelligence',
         {
@@ -42,7 +52,30 @@ const updateFilter = (key, value) => {
 };
 
 const resetFilters = () => {
+    selectedRecommendationIds.value = [];
+
     router.get('/admin/procurement-intelligence', { days: 30 }, { preserveScroll: true, replace: true });
+};
+
+const generatePurchaseDrafts = () => {
+    draftGenerationProcessing.value = true;
+
+    router.post(
+        '/admin/procurement-intelligence/purchase-drafts',
+        {
+            days: props.filters.days,
+            ingredient_id: props.filters.ingredient_id,
+            supplier_id: props.filters.supplier_id,
+            urgency: props.filters.urgency,
+            ingredient_ids: selectedRecommendationIds.value,
+        },
+        {
+            preserveScroll: true,
+            onFinish: () => {
+                draftGenerationProcessing.value = false;
+            },
+        },
+    );
 };
 </script>
 
@@ -111,7 +144,7 @@ const resetFilters = () => {
                 </div>
             </div>
 
-            <div class="mt-4 max-w-md">
+            <div class="mt-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                 <Select
                     :model-value="filters.alert_type"
                     :options="filter_options.alert_types"
@@ -119,9 +152,22 @@ const resetFilters = () => {
                     option-value="value"
                     placeholder="Figyelmeztetés típusa"
                     show-clear
-                    class="min-h-11 w-full"
+                    class="min-h-11 w-full lg:max-w-md"
                     @update:model-value="updateFilter('alert_type', $event)"
                 />
+                <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                    <span class="text-xs text-bakery-dark/60">
+                        {{ selectedCount > 0 ? `${selectedCount} kijelölt javaslat` : `${generatableCount} generálható javaslat` }}
+                    </span>
+                    <Button
+                        icon="pi pi-file-plus"
+                        label="Beszerzési tervezet készítése"
+                        class="!min-h-11"
+                        :disabled="generatableCount === 0 || draftGenerationProcessing"
+                        :loading="draftGenerationProcessing"
+                        @click="generatePurchaseDrafts"
+                    />
+                </div>
             </div>
         </header>
 
@@ -153,7 +199,10 @@ const resetFilters = () => {
         </div>
 
         <ProcurementAlertsPanel :alerts="dashboard.alerts" />
-        <MinimumStockRecommendationsTable :rows="dashboard.minimum_stock_recommendations" />
+        <MinimumStockRecommendationsTable
+            :rows="dashboard.minimum_stock_recommendations"
+            v-model:selected-ids="selectedRecommendationIds"
+        />
         <SupplierPriceTrendTable :rows="dashboard.supplier_price_trends" />
         <IngredientCostTrendTable :rows="dashboard.ingredient_cost_trends" :recent-purchases="dashboard.recent_purchases" />
         <WeeklyConsumptionForecastTable :rows="dashboard.weekly_consumption_forecast" />

@@ -32,7 +32,7 @@ class ProcurementIntelligenceService
         $lastPurchaseDates = $this->lastPurchaseDateMap();
 
         $supplierPriceTrends = $this->supplierPriceTrends($priceRows);
-        $minimumStockRecommendations = $this->filterByUrgency($this->minimumStockRecommendations($stockRows, $consumption28), (string) ($filters['urgency'] ?? ''));
+        $minimumStockRecommendations = $this->minimumStockRecommendationsForFilters($filters);
         $weeklyForecast = $this->weeklyConsumptionForecast($stockRows, $consumption28, $consumption7);
         $alerts = $this->filterByAlertType($this->procurementAlerts($stockRows, $supplierPriceTrends, $consumption28, $lastPurchaseDates), (string) ($filters['alert_type'] ?? ''));
 
@@ -56,6 +56,21 @@ class ProcurementIntelligenceService
             'weekly_consumption_forecast' => $weeklyForecast,
             'alerts' => $alerts,
         ];
+    }
+
+    /**
+     * @param array<string, mixed> $filters
+     * @return array<int, array<string, mixed>>
+     */
+    public function minimumStockRecommendationsForFilters(array $filters): array
+    {
+        return $this->filterByUrgency(
+            $this->minimumStockRecommendations(
+                $this->repository->ingredientStockRows(),
+                $this->consumptionMap(self::CONSUMPTION_WINDOW_DAYS),
+            ),
+            (string) ($filters['urgency'] ?? ''),
+        );
     }
 
     /**

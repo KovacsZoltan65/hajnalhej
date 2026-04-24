@@ -1,12 +1,44 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import Button from 'primevue/button';
+import PurchaseForm from '@/Components/Admin/Purchases/PurchaseForm.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 defineOptions({ layout: AdminLayout });
 
-defineProps({
+const props = defineProps({
     purchase: { type: Object, required: true },
+    suppliers: { type: Array, required: true },
+    ingredient_options: { type: Array, required: true },
 });
+
+const ingredientOptions = computed(() =>
+    props.ingredient_options.map((ingredient) => ({
+        label: `${ingredient.name} (${ingredient.unit})`,
+        value: ingredient.id,
+        unit: ingredient.unit,
+    })),
+);
+
+const form = useForm({
+    supplier_id: props.purchase.supplier_id,
+    reference_number: props.purchase.reference_number || '',
+    purchase_date: props.purchase.purchase_date,
+    notes: props.purchase.notes || '',
+    items: props.purchase.items.map((item) => ({
+        ingredient_id: item.ingredient_id,
+        quantity: item.quantity,
+        unit: item.unit,
+        unit_cost: item.unit_cost,
+    })),
+});
+
+const submitUpdate = () => {
+    form.put(`/admin/purchases/${props.purchase.id}`, {
+        preserveScroll: true,
+    });
+};
 </script>
 
 <template>
@@ -27,6 +59,23 @@ defineProps({
                 <p><strong>Összesen:</strong> {{ new Intl.NumberFormat('hu-HU').format(purchase.total) }} Ft</p>
             </div>
             <p v-if="purchase.notes" class="mt-3 text-sm text-bakery-dark/75">{{ purchase.notes }}</p>
+        </div>
+
+        <div v-if="purchase.status === 'draft'" class="ui-card p-4 sm:p-5">
+            <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">Tervezet szerkesztése</h2>
+                    <p class="mt-1 text-sm text-bakery-dark/65">A generált tételek könyvelés előtt módosíthatók.</p>
+                </div>
+                <Button
+                    label="Tervezet mentése"
+                    icon="pi pi-save"
+                    class="!min-h-11"
+                    :loading="form.processing"
+                    @click="submitUpdate"
+                />
+            </div>
+            <PurchaseForm :form="form" :suppliers="suppliers" :ingredient-options="ingredientOptions" />
         </div>
 
         <div class="ui-card p-4 sm:p-5 overflow-x-auto">
@@ -51,4 +100,3 @@ defineProps({
         </div>
     </section>
 </template>
-

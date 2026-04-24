@@ -1,9 +1,19 @@
 import { mount } from '@vue/test-utils';
+import { router } from '@inertiajs/vue3';
 import IndexPage from './Index.vue';
 
 vi.mock('@inertiajs/vue3', () => ({
     Head: { name: 'Head', template: '<span />' },
-    router: { get: vi.fn() },
+    router: { get: vi.fn(), post: vi.fn() },
+}));
+
+vi.mock('primevue/button', () => ({
+    default: {
+        name: 'Button',
+        props: ['label', 'icon', 'loading', 'disabled'],
+        emits: ['click'],
+        template: '<button :disabled="disabled" @click="$emit(\'click\')">{{ label }}</button>',
+    },
 }));
 
 vi.mock('@/Layouts/AdminLayout.vue', () => ({
@@ -163,5 +173,21 @@ describe('Admin Procurement Intelligence page', () => {
         expect(wrapper.text()).toContain('Nincs utánrendelési javaslat');
         expect(wrapper.text()).toContain('Nincs beszerzési figyelmeztetés');
         expect(wrapper.text()).toContain('Nincs production_out fogyási adat');
+    });
+
+    it('posts selected recommendations for purchase draft generation', async () => {
+        const wrapper = mountPage();
+
+        await wrapper.find('tbody input[type="checkbox"]').setValue(true);
+        await wrapper.findAll('button').find((button) => button.text() === 'Beszerzési tervezet készítése').trigger('click');
+
+        expect(router.post).toHaveBeenCalledWith(
+            '/admin/procurement-intelligence/purchase-drafts',
+            expect.objectContaining({
+                days: 30,
+                ingredient_ids: [1],
+            }),
+            expect.any(Object),
+        );
     });
 });
