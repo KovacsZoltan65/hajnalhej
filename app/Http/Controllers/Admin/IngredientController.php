@@ -19,7 +19,6 @@ class IngredientController extends Controller
     }
 
     /**
-     * Summary of index
      * @param Request $request
      * @return \Inertia\Response
      */
@@ -31,7 +30,7 @@ class IngredientController extends Controller
             'search' => ['nullable', 'string', 'max:160'],
             'is_active' => ['nullable', 'in:0,1'],
             'unit' => ['nullable', 'string', 'in:g,kg,ml,l,db'],
-            'sort_field' => ['nullable', 'in:name,unit,current_stock,minimum_stock,is_active'],
+            'sort_field' => ['nullable', 'in:name,unit,estimated_unit_cost,current_stock,minimum_stock,is_active'],
             'sort_direction' => ['nullable', 'in:asc,desc'],
             'per_page' => ['nullable', 'integer', 'min:5', 'max:50'],
         ]);
@@ -68,7 +67,6 @@ class IngredientController extends Controller
     }
 
     /**
-     * Summary of store
      * @param StoreIngredientRequest $request
      * @return RedirectResponse
      */
@@ -82,7 +80,6 @@ class IngredientController extends Controller
     }
 
     /**
-     * Summary of update
      * @param UpdateIngredientRequest $request
      * @param Ingredient $ingredient
      * @return RedirectResponse
@@ -97,7 +94,6 @@ class IngredientController extends Controller
     }
 
     /**
-     * Summary of destroy
      * @param Ingredient $ingredient
      * @return RedirectResponse
      */

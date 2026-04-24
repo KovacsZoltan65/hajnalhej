@@ -57,6 +57,10 @@ class AuthorizationAuditRepository
             ->withQueryString();
     }
 
+    /**
+     * @param int $id
+     * @return Activity
+     */
     public function findAuthorizationLogById(int $id): Activity
     {
         return Activity::query()

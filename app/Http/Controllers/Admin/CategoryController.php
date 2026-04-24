@@ -19,7 +19,6 @@ class CategoryController extends Controller
     }
 
     /**
-     * Summary of index
      * @param Request $request
      * @return \Inertia\Response
      */
@@ -59,7 +58,6 @@ class CategoryController extends Controller
     }
 
     /**
-     * Summary of store
      * @param StoreCategoryRequest $request
      * @return RedirectResponse
      */
@@ -73,7 +71,6 @@ class CategoryController extends Controller
     }
 
     /**
-     * Summary of update
      * @param UpdateCategoryRequest $request
      * @param Category $category
      * @return RedirectResponse
@@ -88,7 +85,6 @@ class CategoryController extends Controller
     }
 
     /**
-     * Summary of destroy
      * @param Category $category
      * @return RedirectResponse
      */

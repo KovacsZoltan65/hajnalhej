@@ -21,6 +21,10 @@ class ProductController extends Controller
         private readonly ProductIngredientService $productIngredientService,
     ) {}
 
+    /**
+     * @param Request $request
+     * @return \Inertia\Response
+     */
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Product::class);
@@ -87,6 +91,10 @@ class ProductController extends Controller
         ]);
     }
 
+    /**
+     * @param StoreProductRequest $request
+     * @return RedirectResponse
+     */
     public function store(StoreProductRequest $request): RedirectResponse
     {
         $this->service->create($request->validated());
@@ -96,6 +104,11 @@ class ProductController extends Controller
             ->with('success', 'Termék létrehozva.');
     }
 
+    /**
+     * @param UpdateProductRequest $request
+     * @param Product $product
+     * @return RedirectResponse
+     */
     public function update(UpdateProductRequest $request, Product $product): RedirectResponse
     {
         $this->service->update($product, $request->validated());
@@ -105,6 +118,10 @@ class ProductController extends Controller
             ->with('success', 'Termék frissítve.');
     }
 
+    /**
+     * @param Product $product
+     * @return RedirectResponse
+     */
     public function destroy(Product $product): RedirectResponse
     {
         $this->authorize('delete', $product);

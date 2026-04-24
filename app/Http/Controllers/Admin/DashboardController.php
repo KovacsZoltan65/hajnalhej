@@ -8,6 +8,9 @@ use Inertia\Response;
 
 class DashboardController extends Controller
 {
+    /**
+     * @return \Inertia\Response
+     */
     public function index(): Response
     {
         return Inertia::render('Admin/Dashboard', [

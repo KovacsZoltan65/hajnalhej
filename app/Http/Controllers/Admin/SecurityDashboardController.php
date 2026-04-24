@@ -16,6 +16,10 @@ class SecurityDashboardController extends Controller
     ) {
     }
 
+    /**
+     * @param SecurityDashboardRequest $request
+     * @return \Inertia\Response
+     */
     public function index(SecurityDashboardRequest $request): Response
     {
         $this->authorize('viewAny', Activity::class);
@@ -30,6 +34,10 @@ class SecurityDashboardController extends Controller
         ]);
     }
 
+    /**
+     * @param Activity $activity
+     * @return \Inertia\Response
+     */
     public function showEvent(Activity $activity): Response
     {
         $this->authorize('view', Activity::class);

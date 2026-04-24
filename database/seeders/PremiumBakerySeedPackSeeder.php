@@ -3,14 +3,16 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\Ingredient;
 use App\Models\Product;
 use App\Models\ProductIngredient;
 use App\Models\RecipeStep;
+use Database\Seeders\Concerns\UsesSeededIngredients;
 use Illuminate\Database\Seeder;
 
 class PremiumBakerySeedPackSeeder extends Seeder
 {
+    use UsesSeededIngredients;
+
     public function run(): void
     {
         $categories = [
@@ -18,7 +20,7 @@ class PremiumBakerySeedPackSeeder extends Seeder
                 ['slug' => 'premium-pekseg'],
                 [
                     'name' => 'Premium Pékség',
-                    'description' => 'Magasabb technológiai igényű péksütemények és artisan termékek.',
+                    'description' => 'Magasabb technológiai igényű péksütemények és kézműves termékek.',
                     'is_active' => true,
                     'sort_order' => 40,
                 ],
@@ -34,14 +36,14 @@ class PremiumBakerySeedPackSeeder extends Seeder
             ),
         ];
 
-        $ingredients = $this->seedIngredients();
+        $ingredients = $this->loadIngredients();
 
         $this->seedBagel($categories['premium-pekseg'], $ingredients);
         $this->seedCroissant($categories['premium-pekseg'], $ingredients);
         $this->seedCinnamonRoll($categories['edes-pekseg'], $ingredients);
     }
 
-    private function seedIngredients(): array
+    private function loadIngredients(): array
     {
         $definitions = [
             'liszt' => [
@@ -172,13 +174,7 @@ class PremiumBakerySeedPackSeeder extends Seeder
             ],
         ];
 
-        $models = [];
-
-        foreach ($definitions as $slug => $data) {
-            $models[$slug] = $this->upsertIngredient($slug, $data);
-        }
-
-        return $models;
+        return $this->seededIngredients(array_keys($definitions));
     }
 
     private function seedBagel(Category $category, array $ingredients): void
@@ -631,47 +627,6 @@ class PremiumBakerySeedPackSeeder extends Seeder
                 ],
             );
         }
-    }
-
-    /**
-     * @param array<string, mixed> $payload
-     */
-    private function upsertIngredient(string $seedSlug, array $payload): Ingredient
-    {
-        $name = (string) $payload['name'];
-
-        $ingredient = Ingredient::query()
-            ->where('name', $name)
-            ->first();
-
-        if (! $ingredient instanceof Ingredient) {
-            $ingredient = Ingredient::query()
-                ->where('slug', $seedSlug)
-                ->first();
-        }
-
-        $data = [
-            ...$payload,
-            'slug' => $seedSlug,
-            'sku' => $payload['sku'] ?? ('ING-' . strtoupper($seedSlug)),
-            'is_active' => $payload['is_active'] ?? true,
-        ];
-
-        if (! $ingredient instanceof Ingredient) {
-            return Ingredient::query()->create($data);
-        }
-
-        $ingredient->update([
-            'name' => $name,
-            'sku' => $ingredient->sku ?: (string) $data['sku'],
-            'unit' => (string) ($payload['unit'] ?? $ingredient->unit),
-            'current_stock' => max((float) $ingredient->current_stock, (float) ($payload['current_stock'] ?? 0)),
-            'minimum_stock' => max((float) $ingredient->minimum_stock, (float) ($payload['minimum_stock'] ?? 0)),
-            'is_active' => true,
-            'notes' => $payload['notes'] ?? $ingredient->notes,
-        ]);
-
-        return $ingredient->refresh();
     }
 
     private function normalizeStepType(string $stepType): string

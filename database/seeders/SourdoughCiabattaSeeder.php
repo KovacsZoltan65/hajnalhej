@@ -3,14 +3,16 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\Ingredient;
 use App\Models\Product;
 use App\Models\ProductIngredient;
 use App\Models\RecipeStep;
+use Database\Seeders\Concerns\UsesSeededIngredients;
 use Illuminate\Database\Seeder;
 
 class SourdoughCiabattaSeeder extends Seeder
 {
+    use UsesSeededIngredients;
+
     public function run(): void
     {
         $category = Category::query()->updateOrCreate(
@@ -31,11 +33,7 @@ class SourdoughCiabattaSeeder extends Seeder
             'olivaolaj' => ['name' => 'Olívaolaj', 'unit' => 'g'],
         ];
 
-        $models = [];
-
-        foreach ($ingredients as $slug => $row) {
-            $models[$slug] = $this->upsertIngredient($slug, $row['name'], $row['unit']);
-        }
+        $models = $this->seededIngredients(array_keys($ingredients));
 
         $product = Product::query()->updateOrCreate(
             ['slug' => 'kovaszos-ciabatta'],
@@ -151,42 +149,6 @@ class SourdoughCiabattaSeeder extends Seeder
                 ]
             );
         }
-    }
-
-    private function upsertIngredient(string $seedSlug, string $name, string $unit): Ingredient
-    {
-        $ingredient = Ingredient::query()
-            ->where('name', $name)
-            ->first();
-
-        if (! $ingredient instanceof Ingredient) {
-            $ingredient = Ingredient::query()
-                ->where('slug', $seedSlug)
-                ->first();
-        }
-
-        if (! $ingredient instanceof Ingredient) {
-            return Ingredient::query()->create([
-                'slug' => $seedSlug,
-                'name' => $name,
-                'sku' => 'ING-' . strtoupper($seedSlug),
-                'unit' => $unit,
-                'current_stock' => 50000,
-                'minimum_stock' => 5000,
-                'is_active' => true,
-            ]);
-        }
-
-        $ingredient->update([
-            'name' => $name,
-            'sku' => $ingredient->sku ?: 'ING-' . strtoupper($seedSlug),
-            'unit' => $unit,
-            'current_stock' => max((float) $ingredient->current_stock, 50000),
-            'minimum_stock' => max((float) $ingredient->minimum_stock, 5000),
-            'is_active' => true,
-        ]);
-
-        return $ingredient->refresh();
     }
 
     private function normalizeStepType(string $stepType): string

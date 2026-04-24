@@ -1,20 +1,20 @@
 <script setup>
-import { Head, router, useForm } from '@inertiajs/vue3';
-import { computed, reactive, ref } from 'vue';
-import Button from 'primevue/button';
-import Column from 'primevue/column';
-import ConfirmDialog from 'primevue/confirmdialog';
-import DataTable from 'primevue/datatable';
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
-import { useConfirm } from 'primevue/useconfirm';
-import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
-import CreateModal from '@/Components/Admin/Ingredients/CreateModal.vue';
-import EditModal from '@/Components/Admin/Ingredients/EditModal.vue';
-import IngredientStatusBadge from '../../../Components/Admin/Ingredients/IngredientStatusBadge.vue';
-import IngredientStockBadge from '../../../Components/Admin/Ingredients/IngredientStockBadge.vue';
-import SectionTitle from '../../../Components/SectionTitle.vue';
-import AdminLayout from '../../../Layouts/AdminLayout.vue';
+import { Head, router, useForm } from "@inertiajs/vue3";
+import { computed, reactive, ref } from "vue";
+import Button from "primevue/button";
+import Column from "primevue/column";
+import ConfirmDialog from "primevue/confirmdialog";
+import DataTable from "primevue/datatable";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
+import { useConfirm } from "primevue/useconfirm";
+import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import CreateModal from "@/Components/Admin/Ingredients/CreateModal.vue";
+import EditModal from "@/Components/Admin/Ingredients/EditModal.vue";
+import IngredientStatusBadge from "../../../Components/Admin/Ingredients/IngredientStatusBadge.vue";
+import IngredientStockBadge from "../../../Components/Admin/Ingredients/IngredientStockBadge.vue";
+import SectionTitle from "../../../Components/SectionTitle.vue";
+import AdminLayout from "../../../Layouts/AdminLayout.vue";
 
 defineOptions({ layout: AdminLayout });
 
@@ -40,49 +40,66 @@ const editModalVisible = ref(false);
 const editingId = ref(null);
 
 const filterState = reactive({
-    search: props.filters.search ?? '',
-    is_active: props.filters.is_active ?? '',
-    unit: props.filters.unit ?? '',
-    sort_field: props.filters.sort_field ?? 'name',
-    sort_direction: props.filters.sort_direction ?? 'asc',
+    search: props.filters.search ?? "",
+    is_active: props.filters.is_active ?? "",
+    unit: props.filters.unit ?? "",
+    sort_field: props.filters.sort_field ?? "name",
+    sort_direction: props.filters.sort_direction ?? "asc",
     per_page: props.filters.per_page ?? 10,
 });
 
 const perPageOptions = [
-    { label: '10 / oldal', value: 10 },
-    { label: '20 / oldal', value: 20 },
-    { label: '50 / oldal', value: 50 },
+    { label: "10 / oldal", value: 10 },
+    { label: "20 / oldal", value: 20 },
+    { label: "50 / oldal", value: 50 },
 ];
 
 const activeOptions = [
-    { label: 'Mind', value: '' },
-    { label: 'Aktív', value: '1' },
-    { label: 'Inaktív', value: '0' },
+    { label: "Mind", value: "" },
+    { label: "Aktív", value: "1" },
+    { label: "Inaktív", value: "0" },
 ];
 
-const unitOptions = computed(() => [{ label: 'Mind', value: '' }, ...props.units.map((unit) => ({ label: unit, value: unit }))]);
+const unitOptions = computed(() => [
+    { label: "Mind", value: "" },
+    ...props.units.map((unit) => ({ label: unit, value: unit })),
+]);
+
+const formatCurrency = (value) => {
+    if (value === null || value === undefined || value === "") {
+        return "-";
+    }
+
+    return new Intl.NumberFormat("hu-HU", {
+        style: "currency",
+        currency: "HUF",
+        maximumFractionDigits: 0,
+    }).format(Number(value));
+};
 
 const form = useForm({
-    name: '',
-    slug: '',
-    sku: '',
-    unit: 'db',
+    name: "",
+    slug: "",
+    sku: "",
+    unit: "db",
     estimated_unit_cost: 0,
     current_stock: 0,
     minimum_stock: 0,
     is_active: true,
-    notes: '',
+    notes: "",
 });
 
-const sortOrder = computed(() => (filterState.sort_direction === 'asc' ? 1 : -1));
+const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 const currentPage = computed(() => props.ingredients.current_page ?? 1);
-const first = computed(() => (currentPage.value - 1) * (props.ingredients.per_page ?? 10));
+const first = computed(
+    () => (currentPage.value - 1) * (props.ingredients.per_page ?? 10)
+);
 
 const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        '/admin/ingredients',
+        "/admin/ingredients",
         {
             search: filterState.search || undefined,
             is_active: filterState.is_active,
@@ -99,24 +116,24 @@ const load = (extra = {}) => {
             onFinish: () => {
                 loading.value = false;
             },
-        },
+        }
     );
 };
 
 const submitFilters = () => load({ page: 1 });
 const clearFilters = () => {
-    filterState.search = '';
-    filterState.is_active = '';
-    filterState.unit = '';
-    filterState.sort_field = 'name';
-    filterState.sort_direction = 'asc';
+    filterState.search = "";
+    filterState.is_active = "";
+    filterState.unit = "";
+    filterState.sort_field = "name";
+    filterState.sort_direction = "asc";
     filterState.per_page = 10;
     submitFilters();
 };
 
 const onSort = (event) => {
     filterState.sort_field = event.sortField;
-    filterState.sort_direction = event.sortOrder === 1 ? 'asc' : 'desc';
+    filterState.sort_direction = event.sortOrder === 1 ? "asc" : "desc";
     load({ page: 1 });
 };
 
@@ -130,15 +147,15 @@ const openCreate = () => {
     editingId.value = null;
     form.reset();
     form.clearErrors();
-    form.name = '';
-    form.slug = '';
-    form.sku = '';
-    form.unit = props.units[0] ?? 'db';
+    form.name = "";
+    form.slug = "";
+    form.sku = "";
+    form.unit = props.units[0] ?? "db";
     form.estimated_unit_cost = 0;
     form.current_stock = 0;
     form.minimum_stock = 0;
     form.is_active = true;
-    form.notes = '';
+    form.notes = "";
     createModalVisible.value = true;
 };
 
@@ -148,13 +165,13 @@ const openEdit = (ingredient) => {
     form.clearErrors();
     form.name = ingredient.name;
     form.slug = ingredient.slug;
-    form.sku = ingredient.sku ?? '';
+    form.sku = ingredient.sku ?? "";
     form.unit = ingredient.unit;
     form.estimated_unit_cost = ingredient.estimated_unit_cost ?? 0;
     form.current_stock = ingredient.current_stock;
     form.minimum_stock = ingredient.minimum_stock;
     form.is_active = ingredient.is_active;
-    form.notes = ingredient.notes ?? '';
+    form.notes = ingredient.notes ?? "";
     editModalVisible.value = true;
 };
 
@@ -175,7 +192,7 @@ const submitCreate = () => {
         },
     };
 
-    form.post('/admin/ingredients', options);
+    form.post("/admin/ingredients", options);
 };
 
 const submitEdit = () => {
@@ -197,11 +214,11 @@ const submitEdit = () => {
 
 const confirmDelete = (ingredient) => {
     confirm.require({
-        header: 'Alapanyag törlése',
+        header: "Alapanyag törlése",
         message: `Biztosan törlöd ezt az alapanyagot: ${ingredient.name}?`,
-        rejectLabel: 'Mégse',
-        acceptLabel: 'Törlés',
-        acceptClass: 'p-button-danger',
+        rejectLabel: "Mégse",
+        acceptLabel: "Törlés",
+        acceptClass: "p-button-danger",
         accept: () => {
             router.delete(`/admin/ingredients/${ingredient.id}`, {
                 preserveScroll: true,
@@ -225,23 +242,61 @@ const confirmDelete = (ingredient) => {
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
-                        <InputText v-model="filterState.search" class="w-full" placeholder="Név, slug vagy SKU" @keyup.enter="submitFilters" />
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >Keresés</label
+                        >
+                        <InputText
+                            v-model="filterState.search"
+                            class="w-full"
+                            placeholder="Név, slug vagy SKU"
+                            @keyup.enter="submitFilters"
+                        />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Státusz</label>
-                        <Select v-model="filterState.is_active" :options="activeOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >Státusz</label
+                        >
+                        <Select
+                            v-model="filterState.is_active"
+                            :options="activeOptions"
+                            option-label="label"
+                            option-value="value"
+                            class="w-full"
+                            @change="submitFilters"
+                        />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Mértékegység</label>
-                        <Select v-model="filterState.unit" :options="unitOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >Mértékegység</label
+                        >
+                        <Select
+                            v-model="filterState.unit"
+                            :options="unitOptions"
+                            option-label="label"
+                            option-value="value"
+                            class="w-full"
+                            @change="submitFilters"
+                        />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
-                        <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >Találat / oldal</label
+                        >
+                        <Select
+                            v-model="filterState.per_page"
+                            :options="perPageOptions"
+                            option-label="label"
+                            option-value="value"
+                            class="w-full"
+                            @change="submitFilters"
+                        />
                     </div>
                 </template>
 
@@ -269,59 +324,106 @@ const confirmDelete = (ingredient) => {
                     @page="onPage"
                 >
                     <template #empty>
-                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                        <div
+                            class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
+                        >
                             <p>Nincs megjeleníthető alapanyag.</p>
-                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
-                                <Button label="Új alapanyag" size="small" @click="openCreate" />
+                            <div
+                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
+                            >
+                                <Button
+                                    label="Szűrők törlése"
+                                    outlined
+                                    size="small"
+                                    @click="clearFilters"
+                                />
+                                <Button
+                                    label="Új alapanyag"
+                                    size="small"
+                                    @click="openCreate"
+                                />
                             </div>
                         </div>
                     </template>
 
-                <Column field="name" header="Alapanyag" sortable>
-                    <template #body="{ data }">
-                        <div>
-                            <p class="font-semibold text-bakery-dark">{{ data.name }}</p>
-                            <p class="text-xs text-bakery-dark/60">/{{ data.slug }} <span v-if="data.sku">| {{ data.sku }}</span></p>
-                        </div>
-                    </template>
-                </Column>
-                <Column field="unit" header="Mértékegység" sortable />
-                <Column field="estimated_unit_cost" header="Becsült egységköltség" sortable>
-                    <template #body="{ data }">
-                        <span class="font-medium text-bakery-dark">{{ new Intl.NumberFormat('hu-HU').format(data.estimated_unit_cost) }} Ft</span>
-                    </template>
-                </Column>
-                <Column field="current_stock" header="Készlet" sortable>
-                    <template #body="{ data }">
-                        <IngredientStockBadge
-                            :current-stock="data.current_stock"
-                            :minimum-stock="data.minimum_stock"
-                            :unit="data.unit"
-                        />
-                    </template>
-                </Column>
-                <Column field="is_active" header="Státusz" sortable>
-                    <template #body="{ data }">
-                        <IngredientStatusBadge :active="data.is_active" />
-                    </template>
-                </Column>
-                <Column header="Műveletek" :exportable="false">
-                    <template #body="{ data }">
-                        <div class="flex items-center gap-2">
-                            <Button icon="pi pi-pencil" text rounded class="!h-11 !w-11" aria-label="Alapanyag szerkesztése" @click="openEdit(data)" />
-                            <Button icon="pi pi-trash" text rounded severity="danger" class="!h-11 !w-11" aria-label="Alapanyag törlése" @click="confirmDelete(data)" />
-                        </div>
-                    </template>
-                </Column>
+                    <Column field="name" header="Alapanyag" sortable>
+                        <template #body="{ data }">
+                            <div>
+                                <p class="font-semibold text-bakery-dark">
+                                    {{ data.name }}
+                                </p>
+                                <p class="text-xs text-bakery-dark/60">
+                                    /{{ data.slug }}
+                                    <span v-if="data.sku">| {{ data.sku }}</span>
+                                </p>
+                            </div>
+                        </template>
+                    </Column>
+                    <Column field="unit" header="Mértékegység" sortable />
+                    <Column
+                        field="estimated_unit_cost"
+                        header="Becsült egységköltség"
+                        sortable
+                    >
+                        <template #body="{ data }">
+                            <span class="font-medium text-bakery-dark">{{
+                                formatCurrency(data.estimated_unit_cost)
+                            }}</span>
+                        </template>
+                    </Column>
+                    <Column field="current_stock" header="Készlet" sortable>
+                        <template #body="{ data }">
+                            <IngredientStockBadge
+                                :current-stock="data.current_stock"
+                                :minimum-stock="data.minimum_stock"
+                                :unit="data.unit"
+                            />
+                        </template>
+                    </Column>
+                    <Column field="is_active" header="Státusz" sortable>
+                        <template #body="{ data }">
+                            <IngredientStatusBadge :active="data.is_active" />
+                        </template>
+                    </Column>
+                    <Column header="Műveletek" :exportable="false">
+                        <template #body="{ data }">
+                            <div class="flex items-center gap-2">
+                                <Button
+                                    icon="pi pi-pencil"
+                                    text
+                                    rounded
+                                    class="!h-11 !w-11"
+                                    aria-label="Alapanyag szerkesztése"
+                                    @click="openEdit(data)"
+                                />
+                                <Button
+                                    icon="pi pi-trash"
+                                    text
+                                    rounded
+                                    severity="danger"
+                                    class="!h-11 !w-11"
+                                    aria-label="Alapanyag törlése"
+                                    @click="confirmDelete(data)"
+                                />
+                            </div>
+                        </template>
+                    </Column>
                 </DataTable>
             </div>
         </div>
 
-        <CreateModal v-model:visible="createModalVisible" :form="form" :units="units" @submit="submitCreate" />
-        <EditModal v-model:visible="editModalVisible" :form="form" :units="units" @submit="submitEdit" />
+        <CreateModal
+            v-model:visible="createModalVisible"
+            :form="form"
+            :units="units"
+            @submit="submitCreate"
+        />
+        <EditModal
+            v-model:visible="editModalVisible"
+            :form="form"
+            :units="units"
+            @submit="submitEdit"
+        />
         <ConfirmDialog />
     </div>
 </template>
-
-

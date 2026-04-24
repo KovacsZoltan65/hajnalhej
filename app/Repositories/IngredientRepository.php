@@ -23,7 +23,7 @@ class IngredientRepository
     }
 
     /**
-     * @return Collection<int, array{id:int,name:string,unit:string,is_low_stock:bool}>
+     * @return Collection<int, array{id:int,name:string,unit:string,current_stock:float,minimum_stock:float,is_low_stock:bool}>
      */
     public function listSelectableActive(): Collection
     {
@@ -35,6 +35,9 @@ class IngredientRepository
                 'id' => $ingredient->id,
                 'name' => $ingredient->name,
                 'unit' => $ingredient->unit,
+                'estimated_unit_cost' => $ingredient->estimated_unit_cost,
+                'current_stock' => (float) $ingredient->current_stock,
+                'minimum_stock' => (float) $ingredient->minimum_stock,
                 'is_low_stock' => $ingredient->isLowStock(),
             ]);
     }
@@ -95,7 +98,7 @@ class IngredientRepository
         $sortField = (string) ($filters['sort_field'] ?? 'name');
         $sortDirection = (string) ($filters['sort_direction'] ?? 'asc');
 
-        $sortableFields = ['name', 'unit', 'current_stock', 'minimum_stock', 'is_active'];
+        $sortableFields = ['name', 'unit', 'estimated_unit_cost', 'current_stock', 'minimum_stock', 'is_active'];
 
         if (! \in_array($sortField, $sortableFields, true)) {
             $sortField = 'name';

@@ -66,7 +66,7 @@ class PermissionManagementService
 
         $direction = $sortDirection === 'desc' ? 'desc' : 'asc';
         $allowedSortFields = ['name', 'module', 'roles_count', 'users_count', 'registry_state'];
-        if (! in_array($sortField, $allowedSortFields, true)) {
+        if (! \in_array($sortField, $allowedSortFields, true)) {
             $sortField = 'name';
         }
 
@@ -165,7 +165,7 @@ class PermissionManagementService
     {
         return $this->collectPermissionRows()
             ->pluck('module')
-            ->filter(fn (mixed $module): bool => is_string($module) && $module !== '')
+            ->filter(fn (mixed $module): bool => \is_string($module) && $module !== '')
             ->unique()
             ->sort()
             ->values()

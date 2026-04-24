@@ -12,6 +12,10 @@ class ConversionTrackingController extends Controller
     {
     }
 
+    /**
+     * @param StoreConversionEventRequest $request
+     * @return JsonResponse
+     */
     public function store(StoreConversionEventRequest $request): JsonResponse
     {
         $this->service->trackFromRequest($request->validated(), $request);

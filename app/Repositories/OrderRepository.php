@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Models\Order;
 use Carbon\CarbonInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -147,7 +147,7 @@ class OrderRepository
     /**
      * @param array<string, mixed> $filters
      */
-    private function adminQuery(array $filters): Builder
+    private function adminQuery(array $filters): EloquentBuilder
     {
         $search = trim((string) ($filters['search'] ?? ''));
         $status = trim((string) ($filters['status'] ?? ''));
@@ -165,8 +165,8 @@ class OrderRepository
         }
 
         return Order::query()
-            ->when($search !== '', function (Builder $query) use ($search): void {
-                $query->where(function (Builder $inner) use ($search): void {
+            ->when($search !== '', function (EloquentBuilder $query) use ($search): void {
+                $query->where(function (EloquentBuilder $inner) use ($search): void {
                     $inner
                         ->where('order_number', 'like', "%{$search}%")
                         ->orWhere('customer_name', 'like', "%{$search}%")
@@ -174,15 +174,18 @@ class OrderRepository
                         ->orWhere('customer_phone', 'like', "%{$search}%");
                 });
             })
-            ->when($status !== '', fn (Builder $query): Builder => $query->where('status', $status))
+            ->when($status !== '', fn (EloquentBuilder $query): EloquentBuilder => $query->where('status', $status))
             ->with('user:id,name,email')
             ->orderBy($sortField, $sortDirection)
             ->orderByDesc('id');
     }
 
-    private function analyticsBaseQuery(int $days): Builder
+    private function analyticsBaseQuery(int $days): EloquentBuilder
     {
-        return Order::query()
+        /** @var EloquentBuilder $query */
+        $query = Order::query();
+
+        return $query
             ->whereNotNull('placed_at')
             ->where('placed_at', '>=', now()->subDays($days))
             ->where('status', '!=', Order::STATUS_CANCELLED);
@@ -196,7 +199,7 @@ class OrderRepository
     {
         return $orders->groupBy(static function (Order $order): string {
             if ($order->user_id !== null) {
-                return 'u:'.$order->user_id;
+                return "u:{$order->user_id}";
             }
 
             return 'e:'.mb_strtolower(trim((string) $order->customer_email));

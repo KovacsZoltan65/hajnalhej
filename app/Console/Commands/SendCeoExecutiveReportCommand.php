@@ -31,7 +31,7 @@ class SendCeoExecutiveReportCommand extends Command
         /** @var array<int, string> $configuredRecipients */
         $configuredRecipients = config('analytics.executive_report.recipients', []);
         $recipients = collect($configuredRecipients)
-            ->filter(static fn (mixed $email): bool => is_string($email) && $email !== '')
+            ->filter(static fn (mixed $email): bool => \is_string($email) && $email !== '')
             ->values();
 
         if ($recipients->isEmpty()) {

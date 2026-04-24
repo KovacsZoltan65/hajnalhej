@@ -34,7 +34,7 @@ class SecurityRiskRegistry
         $auditSensitive = (bool) ($permissionRow['audit_sensitive'] ?? false);
         $rolesCount = (int) ($permissionRow['roles_count'] ?? 0);
         $usersCount = (int) ($permissionRow['users_count'] ?? 0);
-        $isSecurityCritical = in_array($name, self::securityCriticalPermissions(), true);
+        $isSecurityCritical = \in_array($name, self::securityCriticalPermissions(), true);
 
         if ($registryState !== 'synced') {
             return 'high';

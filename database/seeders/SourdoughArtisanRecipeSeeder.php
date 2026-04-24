@@ -3,14 +3,16 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\Ingredient;
 use App\Models\Product;
 use App\Models\ProductIngredient;
 use App\Models\RecipeStep;
+use Database\Seeders\Concerns\UsesSeededIngredients;
 use Illuminate\Database\Seeder;
 
 class SourdoughArtisanRecipeSeeder extends Seeder
 {
+    use UsesSeededIngredients;
+
     public function run(): void
     {
         $category = Category::query()->updateOrCreate(
@@ -79,22 +81,7 @@ class SourdoughArtisanRecipeSeeder extends Seeder
             ],
         ];
 
-        $ingredientModels = [];
-
-        foreach ($ingredients as $slug => $data) {
-            $ingredientModels[$slug] = Ingredient::query()->updateOrCreate(
-                ['slug' => $slug],
-                [
-                    'name' => $data['name'],
-                    'sku' => $data['sku'],
-                    'unit' => $data['unit'],
-                    'current_stock' => $data['current_stock'],
-                    'minimum_stock' => $data['minimum_stock'],
-                    'is_active' => true,
-                    'notes' => $data['notes'],
-                ],
-            );
-        }
+        $ingredientModels = $this->seededIngredients(array_keys($ingredients));
 
         $recipeItems = [
             [

@@ -18,6 +18,10 @@ class ProductionPlanController extends Controller
     {
     }
 
+    /**
+     * @param Request $request
+     * @return \Inertia\Response
+     */
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', ProductionPlan::class);
@@ -77,6 +81,10 @@ class ProductionPlanController extends Controller
         ]);
     }
 
+    /**
+     * @param StoreProductionPlanRequest $request
+     * @return RedirectResponse
+     */
     public function store(StoreProductionPlanRequest $request): RedirectResponse
     {
         $this->authorize('create', ProductionPlan::class);
@@ -88,6 +96,11 @@ class ProductionPlanController extends Controller
             ->with('success', 'Gyártási terv létrehozva.');
     }
 
+    /**
+     * @param UpdateProductionPlanRequest $request
+     * @param ProductionPlan $productionPlan
+     * @return RedirectResponse
+     */
     public function update(UpdateProductionPlanRequest $request, ProductionPlan $productionPlan): RedirectResponse
     {
         $this->authorize('update', $productionPlan);
@@ -99,6 +112,11 @@ class ProductionPlanController extends Controller
             ->with('success', 'Gyártási terv frissítve.');
     }
 
+    /**
+     * @param Request $request
+     * @param ProductionPlan $productionPlan
+     * @return RedirectResponse
+     */
     public function destroy(Request $request, ProductionPlan $productionPlan): RedirectResponse
     {
         $this->authorize('delete', $productionPlan);

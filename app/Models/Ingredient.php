@@ -24,6 +24,8 @@ class Ingredient extends Model
         'sku',
         'unit',
         'estimated_unit_cost',
+        'average_unit_cost',
+        'stock_value',
         'current_stock',
         'minimum_stock',
         'is_active',
@@ -37,6 +39,8 @@ class Ingredient extends Model
     {
         return [
             'estimated_unit_cost' => 'decimal:4',
+            'average_unit_cost' => 'decimal:4',
+            'stock_value' => 'decimal:2',
             'current_stock' => 'decimal:3',
             'minimum_stock' => 'decimal:3',
             'is_active' => 'boolean',
@@ -54,6 +58,16 @@ class Ingredient extends Model
     public function productIngredients(): HasMany
     {
         return $this->hasMany(ProductIngredient::class);
+    }
+
+    public function inventoryMovements(): HasMany
+    {
+        return $this->hasMany(InventoryMovement::class);
+    }
+
+    public function purchaseItems(): HasMany
+    {
+        return $this->hasMany(PurchaseItem::class);
     }
 
     public function isLowStock(): bool

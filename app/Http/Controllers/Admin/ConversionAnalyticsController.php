@@ -15,6 +15,10 @@ class ConversionAnalyticsController extends Controller
     {
     }
 
+    /**
+     * @param ConversionAnalyticsIndexRequest $request
+     * @return \Inertia\Response
+     */
     public function index(ConversionAnalyticsIndexRequest $request): Response
     {
         $this->authorize('viewAny', ConversionEvent::class);

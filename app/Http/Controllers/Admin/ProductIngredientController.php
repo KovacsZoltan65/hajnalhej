@@ -18,6 +18,11 @@ class ProductIngredientController extends Controller
     {
     }
 
+    /**
+     * @param StoreProductIngredientRequest $request
+     * @param Product $product
+     * @return RedirectResponse
+     */
     public function store(StoreProductIngredientRequest $request, Product $product): RedirectResponse
     {
         try {
@@ -29,6 +34,12 @@ class ProductIngredientController extends Controller
         return $this->redirectToOrigin($request)->with('success', 'Recept tétel hozzáadva.');
     }
 
+    /**
+     * @param UpdateProductIngredientRequest $request
+     * @param Product $product
+     * @param ProductIngredient $productIngredient
+     * @return RedirectResponse
+     */
     public function update(UpdateProductIngredientRequest $request, Product $product, ProductIngredient $productIngredient): RedirectResponse
     {
         if ($productIngredient->product_id !== $product->id) {
@@ -44,6 +55,12 @@ class ProductIngredientController extends Controller
         return $this->redirectToOrigin($request)->with('success', 'Recept tétel frissítve.');
     }
 
+    /**
+     * @param Request $request
+     * @param Product $product
+     * @param ProductIngredient $productIngredient
+     * @return RedirectResponse
+     */
     public function destroy(Request $request, Product $product, ProductIngredient $productIngredient): RedirectResponse
     {
         $this->authorize('update', $product);
@@ -57,6 +74,10 @@ class ProductIngredientController extends Controller
         return $this->redirectToOrigin($request)->with('success', 'Recept tétel törölve.');
     }
 
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
     private function redirectToOrigin(Request $request): RedirectResponse
     {
         $fallback = route('admin.products.index');

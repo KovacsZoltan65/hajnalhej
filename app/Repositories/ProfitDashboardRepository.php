@@ -3,8 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Order;
-use App\Models\Product;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\DB;
 
@@ -96,7 +94,7 @@ class ProfitDashboardRepository
     }
 
     /**
-     * @return array<int, array{date:string,revenue:float,estimated_cost:float,estimated_profit:float,margin_rate:float,orders_count:int}>
+     * @return array<int, array{date:string,revenue:float,estimated_cost:float,actual_material_cost:float,gross_profit:float,estimated_profit:float,margin_rate:float,orders_count:int}>
      */
     public function orderProfitTrend(int $days): array
     {
@@ -113,24 +111,37 @@ class ProfitDashboardRepository
             ->orderByRaw('DATE(orders.placed_at)')
             ->get();
 
-        return collect($rows)->map(static function (object $row): array {
+        $actualRows = DB::table('orders')
+            ->whereNotNull('placed_at')
+            ->where('placed_at', '>=', now()->subDays($days))
+            ->where('status', '!=', Order::STATUS_CANCELLED)
+            ->selectRaw('DATE(placed_at) as metric_date, SUM(COALESCE(material_cost_total, 0)) as actual_material_cost_total')
+            ->groupByRaw('DATE(placed_at)')
+            ->get()
+            ->keyBy('metric_date');
+
+        return collect($rows)->map(static function (object $row) use ($actualRows): array {
             $revenue = round((float) $row->revenue_total, 2);
             $estimatedCost = round((float) $row->estimated_cost_total, 2);
             $estimatedProfit = round($revenue - $estimatedCost, 2);
+            $actualMaterialCost = round((float) ($actualRows[(string) $row->metric_date]->actual_material_cost_total ?? 0), 2);
+            $grossProfit = round($revenue - $actualMaterialCost, 2);
 
             return [
                 'date' => (string) $row->metric_date,
                 'revenue' => $revenue,
                 'estimated_cost' => $estimatedCost,
+                'actual_material_cost' => $actualMaterialCost,
+                'gross_profit' => $grossProfit,
                 'estimated_profit' => $estimatedProfit,
-                'margin_rate' => $revenue > 0 ? round(($estimatedProfit / $revenue) * 100, 2) : 0.0,
+                'margin_rate' => $revenue > 0 ? round(($grossProfit / $revenue) * 100, 2) : 0.0,
                 'orders_count' => (int) $row->orders_count,
             ];
         })->all();
     }
 
     /**
-     * @return array{revenue:float,estimated_cost:float,estimated_profit:float,margin_rate:float}
+     * @return array{revenue:float,estimated_cost:float,estimated_profit:float,actual_material_cost:float,waste_cost:float,gross_profit:float,margin_rate:float,estimated_vs_actual_delta:float}
      */
     public function periodSummary(int $days): array
     {
@@ -138,12 +149,26 @@ class ProfitDashboardRepository
         $revenue = round(collect($rows)->sum('revenue'), 2);
         $estimatedCost = round(collect($rows)->sum('estimated_cost'), 2);
         $estimatedProfit = round($revenue - $estimatedCost, 2);
+        $actualMaterialCost = round((float) DB::table('orders')
+            ->whereNotNull('placed_at')
+            ->where('placed_at', '>=', now()->subDays($days))
+            ->where('status', '!=', Order::STATUS_CANCELLED)
+            ->sum(DB::raw('COALESCE(material_cost_total, 0)')), 2);
+        $wasteCost = round((float) DB::table('inventory_movements')
+            ->where('movement_type', 'waste_out')
+            ->where('occurred_at', '>=', now()->subDays($days))
+            ->sum(DB::raw('COALESCE(total_cost, 0)')), 2);
+        $grossProfit = round($revenue - $actualMaterialCost, 2);
 
         return [
             'revenue' => $revenue,
             'estimated_cost' => $estimatedCost,
             'estimated_profit' => $estimatedProfit,
-            'margin_rate' => $revenue > 0 ? round(($estimatedProfit / $revenue) * 100, 2) : 0.0,
+            'actual_material_cost' => $actualMaterialCost,
+            'waste_cost' => $wasteCost,
+            'gross_profit' => $grossProfit,
+            'margin_rate' => $revenue > 0 ? round(($grossProfit / $revenue) * 100, 2) : 0.0,
+            'estimated_vs_actual_delta' => round($estimatedCost - $actualMaterialCost, 2),
         ];
     }
 
@@ -156,9 +181,9 @@ class ProfitDashboardRepository
             ->groupBy('products.id');
     }
 
-    private function productMarginRowsQuery(): EloquentBuilder
+    private function productMarginRowsQuery(): QueryBuilder
     {
-        return Product::query()
+        return DB::table('products')
             ->leftJoin('product_ingredients', 'product_ingredients.product_id', '=', 'products.id')
             ->leftJoin('ingredients', 'ingredients.id', '=', 'product_ingredients.ingredient_id')
             ->where('products.is_active', true)

@@ -17,6 +17,10 @@ class RecipeController extends Controller
     {
     }
 
+    /**
+     * @param Request $request
+     * @return \Inertia\Response
+     */
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Product::class);

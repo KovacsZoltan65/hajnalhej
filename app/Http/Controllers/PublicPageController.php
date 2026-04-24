@@ -19,7 +19,6 @@ class PublicPageController extends Controller
     ) {}
 
     /**
-     * Summary of home
      * @return \Inertia\Response
      */
     public function home(Request $request): Response
@@ -52,6 +51,9 @@ class PublicPageController extends Controller
         ]);
     }
 
+    /**
+     * @return \Inertia\Response
+     */
     public function weeklyMenu(): Response
     {
         return Inertia::render('WeeklyMenu', $this->weeklyMenuService->getPublicWeeklyMenuPayload());

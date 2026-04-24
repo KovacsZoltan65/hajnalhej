@@ -14,7 +14,7 @@ const logout = () => {
 </script>
 
 <template>
-    <div class="ui-shell min-h-screen bg-[#f7efe5] text-bakery-dark">
+    <div class="ui-shell flex h-screen flex-col overflow-hidden bg-[#f7efe5] text-bakery-dark">
         <FlashToast />
         <AppHeader container-class="max-w-none">
             <template #actions>
@@ -34,8 +34,8 @@ const logout = () => {
             </template>
         </AppHeader>
 
-        <div class="ui-main grid w-full gap-6 px-4 sm:px-6 lg:grid-cols-[16rem_1fr]">
-            <div class="ui-card ui-card-elevated glass-bakery p-4">
+        <div class="ui-main grid min-h-0 flex-1 w-full gap-6 px-4 sm:px-6 lg:grid-cols-[16rem_1fr]">
+            <div class="ui-card ui-card-elevated glass-bakery min-h-0 overflow-y-auto p-4">
                 <div class="mb-4 border-b border-bakery-brown/10 pb-4">
                     <Link href="/admin/dashboard">
                         <AppLogo />
@@ -44,7 +44,7 @@ const logout = () => {
                 <AdminSidebar />
             </div>
 
-            <main class="ui-card ui-card-elevated p-6 sm:p-8">
+            <main class="ui-card ui-card-elevated min-h-0 overflow-y-auto p-6 sm:p-8">
                 <slot />
             </main>
         </div>

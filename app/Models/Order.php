@@ -33,6 +33,7 @@ class Order extends Model
         'currency',
         'subtotal',
         'total',
+        'material_cost_total',
         'notes',
         'pickup_date',
         'pickup_time_slot',
@@ -52,6 +53,7 @@ class Order extends Model
         return [
             'subtotal' => 'decimal:2',
             'total' => 'decimal:2',
+            'material_cost_total' => 'decimal:2',
             'pickup_date' => 'date',
             'placed_at' => 'datetime',
             'confirmed_at' => 'datetime',

@@ -3,14 +3,16 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\Ingredient;
 use App\Models\Product;
 use App\Models\ProductIngredient;
 use App\Models\RecipeStep;
+use Database\Seeders\Concerns\UsesSeededIngredients;
 use Illuminate\Database\Seeder;
 
 class SourdoughNapoliPizzaSeeder extends Seeder
 {
+    use UsesSeededIngredients;
+
     public function run(): void
     {
         $category = Category::query()->updateOrCreate(
@@ -62,11 +64,7 @@ class SourdoughNapoliPizzaSeeder extends Seeder
             ],
         ];
 
-        $ingredientModels = [];
-
-        foreach ($ingredients as $slug => $data) {
-            $ingredientModels[$slug] = $this->upsertIngredient($slug, $data);
-        }
+        $ingredientModels = $this->seededIngredients(array_keys($ingredients));
 
         $product = Product::query()->updateOrCreate(
             ['slug' => 'kovaszos-pizza-napolyi-stilus'],
@@ -194,47 +192,6 @@ class SourdoughNapoliPizzaSeeder extends Seeder
                 ],
             );
         }
-    }
-
-    /**
-     * @param array<string, mixed> $payload
-     */
-    private function upsertIngredient(string $seedSlug, array $payload): Ingredient
-    {
-        $name = (string) $payload['name'];
-
-        $ingredient = Ingredient::query()
-            ->where('name', $name)
-            ->first();
-
-        if (! $ingredient instanceof Ingredient) {
-            $ingredient = Ingredient::query()
-                ->where('slug', $seedSlug)
-                ->first();
-        }
-
-        $data = [
-            ...$payload,
-            'slug' => $seedSlug,
-            'sku' => $payload['sku'] ?? ('ING-' . strtoupper($seedSlug)),
-            'is_active' => $payload['is_active'] ?? true,
-        ];
-
-        if (! $ingredient instanceof Ingredient) {
-            return Ingredient::query()->create($data);
-        }
-
-        $ingredient->update([
-            'name' => $name,
-            'sku' => $ingredient->sku ?: (string) $data['sku'],
-            'unit' => (string) ($payload['unit'] ?? $ingredient->unit),
-            'current_stock' => max((float) $ingredient->current_stock, (float) ($payload['current_stock'] ?? 0)),
-            'minimum_stock' => max((float) $ingredient->minimum_stock, (float) ($payload['minimum_stock'] ?? 0)),
-            'is_active' => true,
-            'notes' => $payload['notes'] ?? $ingredient->notes,
-        ]);
-
-        return $ingredient->refresh();
     }
 
     private function normalizeStepType(string $stepType): string

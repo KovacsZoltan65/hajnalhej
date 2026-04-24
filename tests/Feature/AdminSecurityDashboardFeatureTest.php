@@ -54,7 +54,7 @@ it('orphan permission panel surfaces orphan and missing states', function (): vo
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->where('orphan_permissions', fn ($rows): bool => collect($rows)->contains(
-                fn (array $row): bool => in_array($row['registry_state'], ['orphan_db_only', 'missing_in_db'], true)
+                fn (array $row): bool => \in_array($row['registry_state'], ['orphan_db_only', 'missing_in_db'], true)
             )));
 });
 

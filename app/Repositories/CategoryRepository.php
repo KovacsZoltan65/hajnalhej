@@ -65,7 +65,6 @@ class CategoryRepository
     }
 
     /**
-     * Summary of update
      * @param Category $category
      * @param array $data
      * @return Category

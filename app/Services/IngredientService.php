@@ -24,7 +24,7 @@ class IngredientService
     }
 
     /**
-     * @return Collection<int, array{id:int,name:string,unit:string,is_low_stock:bool}>
+     * @return Collection<int, array{id:int,name:string,unit:string,current_stock:float,minimum_stock:float,is_low_stock:bool}>
      */
     public function listSelectableActive(): Collection
     {

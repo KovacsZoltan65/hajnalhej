@@ -63,6 +63,7 @@ class DatabaseSeeder extends Seeder
             PremiumBakerySeedPackSeeder::class,
 
             ProductionPlanSeeder::class,
+            InventoryProcurementSeeder::class,
         ]);
     }
 }

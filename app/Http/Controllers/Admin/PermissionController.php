@@ -18,6 +18,10 @@ class PermissionController extends Controller
     {
     }
 
+    /**
+     * @param PermissionIndexRequest $request
+     * @return \Inertia\Response
+     */
     public function index(PermissionIndexRequest $request): Response
     {
         $this->authorize('viewAny', Permission::class);
@@ -58,6 +62,11 @@ class PermissionController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param string $permissionName
+     * @return \Inertia\Response
+     */
     public function show(Request $request, string $permissionName): Response
     {
         $this->authorize('viewAny', Permission::class);
@@ -78,6 +87,10 @@ class PermissionController extends Controller
         ]);
     }
 
+    /**
+     * @param SyncPermissionsRequest $request
+     * @return RedirectResponse
+     */
     public function sync(SyncPermissionsRequest $request): RedirectResponse
     {
         $this->authorize('sync', Permission::class);

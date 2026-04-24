@@ -32,6 +32,14 @@ class ProductService
     }
 
     /**
+     * @return Collection<int, array{id:int,name:string,slug:string}>
+     */
+    public function listSelectableActiveProducts(): Collection
+    {
+        return $this->repository->listSelectableActiveProducts();
+    }
+
+    /**
      * @param array<string, mixed> $payload
      */
     public function create(array $payload): Product

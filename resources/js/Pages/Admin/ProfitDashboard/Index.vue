@@ -91,8 +91,24 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
                 <p class="mt-2 font-heading text-3xl text-bakery-dark">{{ formatCurrency(dashboard.summary.period_estimated_profit) }}</p>
             </article>
             <article class="ui-card p-4">
-                <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">Profit margin (időszak)</p>
+                <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">Valós anyagköltség (időszak)</p>
+                <p class="mt-2 font-heading text-3xl text-bakery-dark">{{ formatCurrency(dashboard.summary.period_actual_material_cost) }}</p>
+            </article>
+            <article class="ui-card p-4">
+                <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">Selejt költség (időszak)</p>
+                <p class="mt-2 font-heading text-3xl text-bakery-dark">{{ formatCurrency(dashboard.summary.period_waste_cost) }}</p>
+            </article>
+            <article class="ui-card p-4">
+                <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">Bruttó profit (valós)</p>
+                <p class="mt-2 font-heading text-3xl text-bakery-dark">{{ formatCurrency(dashboard.summary.period_gross_profit) }}</p>
+            </article>
+            <article class="ui-card p-4">
+                <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">Margin % (valós)</p>
                 <p class="mt-2 font-heading text-3xl text-bakery-dark">{{ formatPercent(dashboard.summary.period_margin_rate) }}</p>
+            </article>
+            <article class="ui-card p-4 md:col-span-2 xl:col-span-2">
+                <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">Estimated vs Actual delta</p>
+                <p class="mt-2 font-heading text-3xl text-bakery-dark">{{ formatCurrency(dashboard.summary.estimated_vs_actual_delta) }}</p>
             </article>
         </div>
 
@@ -169,6 +185,8 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
                             <th class="px-2 py-2">Dátum</th>
                             <th class="px-2 py-2 text-right">Bevétel</th>
                             <th class="px-2 py-2 text-right">Becsült költség</th>
+                            <th class="px-2 py-2 text-right">Valós anyagköltség</th>
+                            <th class="px-2 py-2 text-right">Bruttó profit</th>
                             <th class="px-2 py-2 text-right">Becsült profit</th>
                             <th class="px-2 py-2 text-right">Margin %</th>
                             <th class="px-2 py-2 text-right">Rendelés</th>
@@ -183,6 +201,8 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
                             <td class="px-2 py-2 font-medium text-bakery-dark">{{ row.date }}</td>
                             <td class="px-2 py-2 text-right text-bakery-dark">{{ formatCurrency(row.revenue) }}</td>
                             <td class="px-2 py-2 text-right text-bakery-dark">{{ formatCurrency(row.estimated_cost) }}</td>
+                            <td class="px-2 py-2 text-right text-bakery-dark">{{ formatCurrency(row.actual_material_cost) }}</td>
+                            <td class="px-2 py-2 text-right text-bakery-dark">{{ formatCurrency(row.gross_profit) }}</td>
                             <td class="px-2 py-2 text-right font-semibold text-bakery-dark">{{ formatCurrency(row.estimated_profit) }}</td>
                             <td class="px-2 py-2 text-right text-bakery-dark">{{ formatPercent(row.margin_rate) }}</td>
                             <td class="px-2 py-2 text-right text-bakery-dark">{{ row.orders_count }}</td>

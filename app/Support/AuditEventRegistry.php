@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Services\Audit\AuthorizationAuditService;
+use App\Services\Audit\InventoryAuditService;
 use App\Services\Audit\OrderAuditService;
 use App\Services\Audit\UserActivityAuditService;
 
@@ -15,6 +16,7 @@ class AuditEventRegistry
     {
         return array_values(array_unique(array_merge(
             AuthorizationAuditService::eventKeys(),
+            InventoryAuditService::eventKeys(),
             OrderAuditService::eventKeys(),
             UserActivityAuditService::eventKeys(),
         )));
@@ -47,6 +49,17 @@ class AuditEventRegistry
             OrderAuditService::ORDER_INTERNAL_NOTE_CREATED => 'Belso jegyzet létrehozva',
             OrderAuditService::ORDER_INTERNAL_NOTE_UPDATED => 'Belso jegyzet frissítve',
             OrderAuditService::ORDER_PICKUP_UPDATED => 'Átvételi adatok frissítve',
+
+            InventoryAuditService::SUPPLIER_CREATED => 'Beszállító létrehozva',
+            InventoryAuditService::SUPPLIER_UPDATED => 'Beszállító frissítve',
+            InventoryAuditService::SUPPLIER_DELETED => 'Beszállító törölve',
+            InventoryAuditService::PURCHASE_CREATED => 'Beszerzés létrehozva',
+            InventoryAuditService::PURCHASE_POSTED => 'Beszerzés könyvelve',
+            InventoryAuditService::PURCHASE_CANCELLED => 'Beszerzés stornózva',
+            InventoryAuditService::INVENTORY_ADJUSTED => 'Készlet korrekció rögzítve',
+            InventoryAuditService::WASTE_RECORDED => 'Selejt rögzítve',
+            InventoryAuditService::STOCK_COUNT_CLOSED => 'Leltár lezárva',
+            InventoryAuditService::INVENTORY_SHORTAGE_DETECTED => 'Készlethiány észlelve',
         ];
     }
 
@@ -57,6 +70,7 @@ class AuditEventRegistry
     {
         return [
             AuthorizationAuditService::LOG_NAME => 'Jogosultságkezelés',
+            InventoryAuditService::LOG_NAME => 'Készlet és beszerzés',
             UserActivityAuditService::LOG_NAME => 'Felhasználói aktivitás',
             OrderAuditService::LOG_NAME => 'Rendelések',
         ];

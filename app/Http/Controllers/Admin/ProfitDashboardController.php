@@ -15,6 +15,10 @@ class ProfitDashboardController extends Controller
         private readonly ProfitDashboardService $service,
     ) {}
 
+    /**
+     * @param ProfitDashboardIndexRequest $request
+     * @return \Inertia\Response
+     */
     public function index(ProfitDashboardIndexRequest $request): Response
     {
         $this->authorize('viewProfitDashboard', ConversionEvent::class);
