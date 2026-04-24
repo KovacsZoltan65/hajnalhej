@@ -16,10 +16,6 @@ return new class extends Migration
             if (! Schema::hasColumn('ingredients', 'stock_value')) {
                 $table->decimal('stock_value', 14, 2)->nullable()->after('average_unit_cost');
             }
-
-            if (! Schema::hasColumn('ingredients', 'reorder_level')) {
-                $table->decimal('reorder_level', 12, 3)->nullable()->after('minimum_stock');
-            }
         });
     }
 
@@ -27,7 +23,7 @@ return new class extends Migration
     {
         Schema::table('ingredients', function (Blueprint $table): void {
             $drops = [];
-            foreach (['average_unit_cost', 'stock_value', 'reorder_level'] as $column) {
+            foreach (['average_unit_cost', 'stock_value'] as $column) {
                 if (Schema::hasColumn('ingredients', $column)) {
                     $drops[] = $column;
                 }
@@ -39,4 +35,3 @@ return new class extends Migration
         });
     }
 };
-

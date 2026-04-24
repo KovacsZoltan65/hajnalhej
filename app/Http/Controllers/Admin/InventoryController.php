@@ -27,6 +27,10 @@ class InventoryController extends Controller
     ) {
     }
 
+    /**
+     * @param InventoryLedgerIndexRequest $request
+     * @return \Inertia\Response
+     */
     public function index(InventoryLedgerIndexRequest $request): Response
     {
         $this->authorize('viewAny', InventoryMovement::class);
@@ -71,6 +75,10 @@ class InventoryController extends Controller
         ]);
     }
 
+    /**
+     * @param StoreWasteEntryRequest $request
+     * @return RedirectResponse
+     */
     public function storeWaste(StoreWasteEntryRequest $request): RedirectResponse
     {
         $this->inventoryService->recordWaste($request->validated(), $request->user());
@@ -78,6 +86,10 @@ class InventoryController extends Controller
         return back()->with('success', 'Selejt könyvelve.');
     }
 
+    /**
+     * @param StoreInventoryAdjustmentRequest $request
+     * @return RedirectResponse
+     */
     public function storeAdjustment(StoreInventoryAdjustmentRequest $request): RedirectResponse
     {
         $this->inventoryService->recordAdjustment($request->validated(), $request->user());

@@ -22,6 +22,10 @@ class WeeklyMenuController extends Controller
     {
     }
 
+    /**
+     * @param Request $request
+     * @return \Inertia\Response
+     */
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', WeeklyMenu::class);
@@ -85,6 +89,10 @@ class WeeklyMenuController extends Controller
         ]);
     }
 
+    /**
+     * @param StoreWeeklyMenuRequest $request
+     * @return RedirectResponse
+     */
     public function store(StoreWeeklyMenuRequest $request): RedirectResponse
     {
         $this->service->create($request->validated());
@@ -92,6 +100,11 @@ class WeeklyMenuController extends Controller
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü létrehozva.');
     }
 
+    /**
+     * @param UpdateWeeklyMenuRequest $request
+     * @param WeeklyMenu $weeklyMenu
+     * @return RedirectResponse
+     */
     public function update(UpdateWeeklyMenuRequest $request, WeeklyMenu $weeklyMenu): RedirectResponse
     {
         $this->service->update($weeklyMenu, $request->validated());
@@ -99,6 +112,10 @@ class WeeklyMenuController extends Controller
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü frissítve.');
     }
 
+    /**
+     * @param WeeklyMenu $weeklyMenu
+     * @return RedirectResponse
+     */
     public function destroy(WeeklyMenu $weeklyMenu): RedirectResponse
     {
         $this->authorize('delete', $weeklyMenu);
@@ -108,6 +125,10 @@ class WeeklyMenuController extends Controller
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü törölve.');
     }
 
+    /**
+     * @param WeeklyMenu $weeklyMenu
+     * @return RedirectResponse
+     */
     public function publish(WeeklyMenu $weeklyMenu): RedirectResponse
     {
         $this->authorize('update', $weeklyMenu);
@@ -121,6 +142,10 @@ class WeeklyMenuController extends Controller
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü publikálva.');
     }
 
+    /**
+     * @param WeeklyMenu $weeklyMenu
+     * @return RedirectResponse
+     */
     public function unpublish(WeeklyMenu $weeklyMenu): RedirectResponse
     {
         $this->authorize('update', $weeklyMenu);
@@ -130,6 +155,11 @@ class WeeklyMenuController extends Controller
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü visszaállítva piszkozat állapotba.');
     }
 
+    /**
+     * @param StoreWeeklyMenuItemRequest $request
+     * @param WeeklyMenu $weeklyMenu
+     * @return RedirectResponse
+     */
     public function storeItem(StoreWeeklyMenuItemRequest $request, WeeklyMenu $weeklyMenu): RedirectResponse
     {
         try {
@@ -141,6 +171,12 @@ class WeeklyMenuController extends Controller
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü tétel létrehozva.');
     }
 
+    /**
+     * @param UpdateWeeklyMenuItemRequest $request
+     * @param WeeklyMenu $weeklyMenu
+     * @param WeeklyMenuItem $item
+     * @return RedirectResponse
+     */
     public function updateItem(UpdateWeeklyMenuItemRequest $request, WeeklyMenu $weeklyMenu, WeeklyMenuItem $item): RedirectResponse
     {
         if ($item->weekly_menu_id !== $weeklyMenu->id) {
@@ -156,6 +192,11 @@ class WeeklyMenuController extends Controller
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü tétel frissítve.');
     }
 
+    /**
+     * @param WeeklyMenu $weeklyMenu
+     * @param WeeklyMenuItem $item
+     * @return RedirectResponse
+     */
     public function destroyItem(WeeklyMenu $weeklyMenu, WeeklyMenuItem $item): RedirectResponse
     {
         $this->authorize('update', $weeklyMenu);

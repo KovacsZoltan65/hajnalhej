@@ -21,6 +21,10 @@ class CheckoutController extends Controller
         private readonly ConversionTrackingService $conversionTrackingService,
     ) {}
 
+    /**
+     * @param Request $request
+     * @return RedirectResponse|\Inertia\Response
+     */
     public function index(Request $request): Response|RedirectResponse
     {
         if ($this->cartService->isEmpty()) {
@@ -52,6 +56,10 @@ class CheckoutController extends Controller
         ]);
     }
 
+    /**
+     * @param PlaceOrderRequest $request
+     * @return RedirectResponse
+     */
     public function store(PlaceOrderRequest $request): RedirectResponse
     {
         $payload = $request->validated();

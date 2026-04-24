@@ -89,7 +89,7 @@ watch(
         </div>
 
         <div class="space-y-2">
-            <label for="ingredient-minimum-stock" class="text-sm font-medium text-bakery-dark">Minimum keszlet</label>
+            <label for="ingredient-minimum-stock" class="text-sm font-medium text-bakery-dark">Minimum készlet / utánrendelési szint</label>
             <InputNumber
                 id="ingredient-minimum-stock"
                 v-model="form.minimum_stock"

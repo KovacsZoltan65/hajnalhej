@@ -3,14 +3,16 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\Ingredient;
 use App\Models\Product;
 use App\Models\ProductIngredient;
 use App\Models\RecipeStep;
+use Database\Seeders\Concerns\UsesSeededIngredients;
 use Illuminate\Database\Seeder;
 
 class MotherStarterRecipeSeeder extends Seeder
 {
+    use UsesSeededIngredients;
+
     public function run(): void
     {
         $category = Category::query()->updateOrCreate(
@@ -66,14 +68,7 @@ class MotherStarterRecipeSeeder extends Seeder
             ],
         ];
 
-        $ingredientModels = [];
-
-        foreach ($ingredients as $slug => $data) {
-            $ingredientModels[$slug] = Ingredient::query()->updateOrCreate(
-                ['slug' => $slug],
-                $data,
-            );
-        }
+        $ingredientModels = $this->seededIngredients(array_keys($ingredients));
 
         /*
          * A BOM itt a "napi összes felhasználás" logikát követi.

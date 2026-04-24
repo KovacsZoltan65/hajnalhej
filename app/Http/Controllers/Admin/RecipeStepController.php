@@ -17,6 +17,11 @@ class RecipeStepController extends Controller
     {
     }
 
+    /**
+     * @param StoreRecipeStepRequest $request
+     * @param Product $product
+     * @return RedirectResponse
+     */
     public function store(StoreRecipeStepRequest $request, Product $product): RedirectResponse
     {
         $this->service->create($product, $request->validated());
@@ -24,6 +29,12 @@ class RecipeStepController extends Controller
         return $this->redirectToOrigin($request)->with('success', 'Receptlépés hozzáadva.');
     }
 
+    /**
+     * @param UpdateRecipeStepRequest $request
+     * @param Product $product
+     * @param RecipeStep $recipeStep
+     * @return RedirectResponse
+     */
     public function update(UpdateRecipeStepRequest $request, Product $product, RecipeStep $recipeStep): RedirectResponse
     {
         $this->service->update($product, $recipeStep, $request->validated());
@@ -31,6 +42,12 @@ class RecipeStepController extends Controller
         return $this->redirectToOrigin($request)->with('success', 'Receptlépés frissítve.');
     }
 
+    /**
+     * @param Request $request
+     * @param Product $product
+     * @param RecipeStep $recipeStep
+     * @return RedirectResponse
+     */
     public function destroy(Request $request, Product $product, RecipeStep $recipeStep): RedirectResponse
     {
         $this->authorize('update', $product);
@@ -40,6 +57,10 @@ class RecipeStepController extends Controller
         return $this->redirectToOrigin($request)->with('success', 'Receptlépés törölve.');
     }
 
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
     private function redirectToOrigin(Request $request): RedirectResponse
     {
         $fallback = route('admin.recipes.index');

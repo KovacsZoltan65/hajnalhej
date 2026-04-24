@@ -16,6 +16,10 @@ class CeoDashboardController extends Controller
     ) {
     }
 
+    /**
+     * @param CeoDashboardIndexRequest $request
+     * @return \Inertia\Response
+     */
     public function index(CeoDashboardIndexRequest $request): Response
     {
         $this->authorize('viewCeoDashboard', ConversionEvent::class);

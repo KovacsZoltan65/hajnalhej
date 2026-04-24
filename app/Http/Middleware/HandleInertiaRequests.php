@@ -59,6 +59,7 @@ class HandleInertiaRequests extends Middleware
                     'manage_suppliers' => $user?->can(PermissionRegistry::SUPPLIERS_MANAGE) ?? false,
                     'view_purchases' => $user?->can(PermissionRegistry::PURCHASES_VIEW) ?? false,
                     'manage_purchases' => $user?->can(PermissionRegistry::PURCHASES_MANAGE) ?? false,
+                    'view_procurement_intelligence' => $user?->can(PermissionRegistry::PROCUREMENT_INTELLIGENCE_VIEW) ?? false,
                     'view_inventory' => $user?->can(PermissionRegistry::INVENTORY_VIEW) ?? false,
                     'adjust_inventory' => $user?->can(PermissionRegistry::INVENTORY_ADJUST) ?? false,
                     'manage_waste' => $user?->can(PermissionRegistry::WASTE_MANAGE) ?? false,

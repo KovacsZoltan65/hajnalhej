@@ -19,7 +19,6 @@ class OrderController extends Controller
     }
 
     /**
-     * Summary of index
      * @param OrderIndexRequest $request
      * @return \Inertia\Response
      */
@@ -60,7 +59,6 @@ class OrderController extends Controller
     }
 
     /**
-     * Summary of show
      * @param Order $order
      * @return \Inertia\Response
      */
@@ -103,7 +101,6 @@ class OrderController extends Controller
     }
 
     /**
-     * Summary of updateStatus
      * @param UpdateOrderStatusRequest $request
      * @param Order $order
      * @return RedirectResponse

@@ -108,6 +108,22 @@ it('ingredient kereses mukodik', function (): void {
         ->where('ingredients.data.0.name', 'Buzaliszt premium'));
 });
 
+it('ingredient index payload tartalmazza a becsult egysegkoltseget', function (): void {
+    $user = User::factory()->create();
+
+    Ingredient::factory()->create([
+        'name' => 'Mandulaliszt',
+        'slug' => 'mandulaliszt',
+        'estimated_unit_cost' => 1850.5,
+    ]);
+
+    $response = $this->actingAs($user)->get('/admin/ingredients?search=mandulaliszt');
+
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Admin/Ingredients/Index')
+        ->where('ingredients.data.0.estimated_unit_cost', 1850.5));
+});
+
 it('ingredient pagination mukodik', function (): void {
     $user = User::factory()->create();
 

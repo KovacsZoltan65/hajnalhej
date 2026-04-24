@@ -10,6 +10,11 @@ use Inertia\Response;
 
 class OrderController extends Controller
 {
+    /**
+     * @param Request $request
+     * @param Order $order
+     * @return \Inertia\Response
+     */
     public function success(Request $request, Order $order): Response
     {
         $user = $request->user();

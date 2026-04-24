@@ -62,6 +62,7 @@ class PermissionRegistry
     public const SUPPLIERS_MANAGE = 'suppliers.manage';
     public const PURCHASES_VIEW = 'purchases.view';
     public const PURCHASES_MANAGE = 'purchases.manage';
+    public const PROCUREMENT_INTELLIGENCE_VIEW = 'procurement-intelligence.view';
     public const INVENTORY_VIEW = 'inventory.view';
     public const INVENTORY_ADJUST = 'inventory.adjust';
     public const WASTE_MANAGE = 'waste.manage';
@@ -565,6 +566,16 @@ class PermissionRegistry
                 'sort' => 420,
                 'system' => true,
                 'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::PROCUREMENT_INTELLIGENCE_VIEW,
+                'module' => 'Beszerzés',
+                'label' => 'Beszerzési intelligencia megtekintése',
+                'description' => 'Beszállítói ártrendek, minimum készlet alapú utánrendelési javaslatok és beszerzési figyelmeztetések megtekintése.',
+                'dangerous' => false,
+                'sort' => 425,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::INVENTORY_VIEW,

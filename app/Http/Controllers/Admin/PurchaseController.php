@@ -23,6 +23,10 @@ class PurchaseController extends Controller
     ) {
     }
 
+    /**
+     * @param PurchaseIndexRequest $request
+     * @return \Inertia\Response
+     */
     public function index(PurchaseIndexRequest $request): Response
     {
         $this->authorize('viewAny', Purchase::class);
@@ -59,6 +63,10 @@ class PurchaseController extends Controller
         ]);
     }
 
+    /**
+     * @param Purchase $purchase
+     * @return \Inertia\Response
+     */
     public function show(Purchase $purchase): Response
     {
         $this->authorize('view', $purchase);
@@ -88,6 +96,10 @@ class PurchaseController extends Controller
         ]);
     }
 
+    /**
+     * @param StorePurchaseRequest $request
+     * @return RedirectResponse
+     */
     public function store(StorePurchaseRequest $request): RedirectResponse
     {
         try {
@@ -99,6 +111,11 @@ class PurchaseController extends Controller
         return back()->with('success', 'Beszerzés létrehozva.');
     }
 
+    /**
+     * @param UpdatePurchaseRequest $request
+     * @param Purchase $purchase
+     * @return RedirectResponse
+     */
     public function update(UpdatePurchaseRequest $request, Purchase $purchase): RedirectResponse
     {
         try {
@@ -110,6 +127,10 @@ class PurchaseController extends Controller
         return back()->with('success', 'Beszerzés frissítve.');
     }
 
+    /**
+     * @param Purchase $purchase
+     * @return RedirectResponse
+     */
     public function post(Purchase $purchase): RedirectResponse
     {
         $this->authorize('update', $purchase);
@@ -123,6 +144,10 @@ class PurchaseController extends Controller
         return back()->with('success', 'Beszerzés könyvelve, készlet frissítve.');
     }
 
+    /**
+     * @param Purchase $purchase
+     * @return RedirectResponse
+     */
     public function cancel(Purchase $purchase): RedirectResponse
     {
         $this->authorize('update', $purchase);

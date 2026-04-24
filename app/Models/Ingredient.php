@@ -28,7 +28,6 @@ class Ingredient extends Model
         'stock_value',
         'current_stock',
         'minimum_stock',
-        'reorder_level',
         'is_active',
         'notes',
     ];
@@ -44,7 +43,6 @@ class Ingredient extends Model
             'stock_value' => 'decimal:2',
             'current_stock' => 'decimal:3',
             'minimum_stock' => 'decimal:3',
-            'reorder_level' => 'decimal:3',
             'is_active' => 'boolean',
         ];
     }
@@ -74,8 +72,6 @@ class Ingredient extends Model
 
     public function isLowStock(): bool
     {
-        $threshold = $this->reorder_level ?? $this->minimum_stock;
-
-        return (float) $this->current_stock <= (float) $threshold;
+        return (float) $this->current_stock <= (float) $this->minimum_stock;
     }
 }

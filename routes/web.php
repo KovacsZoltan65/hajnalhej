@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PermissionController as AdminPermissionController
 use App\Http\Controllers\Admin\SecurityDashboardController as AdminSecurityDashboardController;
 use App\Http\Controllers\Admin\ConversionAnalyticsController as AdminConversionAnalyticsController;
 use App\Http\Controllers\Admin\ProfitDashboardController as AdminProfitDashboardController;
+use App\Http\Controllers\Admin\ProcurementIntelligenceController as AdminProcurementIntelligenceController;
 use App\Http\Controllers\Admin\CeoDashboardController as AdminCeoDashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\InventoryController;
@@ -211,6 +212,10 @@ Route::middleware('auth')->group(function (): void {
             Route::post('/{purchase}/post', 'post')->middleware('permission:purchases.manage')->name('post');
             Route::post('/{purchase}/cancel', 'cancel')->middleware('permission:purchases.manage')->name('cancel');
         });
+
+        Route::get('/procurement-intelligence', [AdminProcurementIntelligenceController::class, 'index'])
+            ->middleware('permission:procurement-intelligence.view')
+            ->name('procurement-intelligence.index');
 
         Route::name('inventory.')->prefix('inventory')->controller(InventoryController::class)->group(function (): void {
             Route::get('/', 'index')->middleware('permission:inventory-dashboard.view')->name('index');

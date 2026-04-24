@@ -55,6 +55,10 @@ const links = computed(() => {
         dynamicLinks.push({ label: 'Beszerzések', href: '/admin/purchases', icon: 'pi pi-file-import' });
     }
 
+    if (can.view_procurement_intelligence) {
+        dynamicLinks.push({ label: 'Beszerzési intelligencia', href: '/admin/procurement-intelligence', icon: 'pi pi-sparkles' });
+    }
+
     if (can.view_inventory_dashboard || can.view_inventory) {
         dynamicLinks.push({ label: 'Készletmozgások', href: '/admin/inventory', icon: 'pi pi-chart-scatter' });
     }

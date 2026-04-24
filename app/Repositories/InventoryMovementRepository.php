@@ -46,7 +46,7 @@ class InventoryMovementRepository
     {
         $totalStockValue = (float) DB::table('ingredients')->sum(DB::raw('COALESCE(stock_value, 0)'));
         $lowStockCount = (int) DB::table('ingredients')
-            ->whereRaw('current_stock <= COALESCE(reorder_level, minimum_stock)')
+            ->whereColumn('current_stock', '<=', 'minimum_stock')
             ->count();
         $outOfStockCount = (int) DB::table('ingredients')
             ->where('current_stock', '<=', 0)
@@ -74,7 +74,7 @@ class InventoryMovementRepository
     }
 
     /**
-     * @return Collection<int, array{id:int,name:string,unit:string,current_stock:float,reorder_level:float,is_low_stock:bool}>
+     * @return Collection<int, array{id:int,name:string,unit:string,current_stock:float,minimum_stock:float,is_low_stock:bool}>
      */
     public function lowStockIngredients(int $limit = 12): Collection
     {
@@ -84,9 +84,9 @@ class InventoryMovementRepository
                 'name',
                 'unit',
                 DB::raw('current_stock as current_stock'),
-                DB::raw('COALESCE(reorder_level, minimum_stock) as reorder_level'),
+                DB::raw('minimum_stock as minimum_stock'),
             ])
-            ->whereRaw('current_stock <= COALESCE(reorder_level, minimum_stock)')
+            ->whereColumn('current_stock', '<=', 'minimum_stock')
             ->orderBy('current_stock')
             ->limit($limit)
             ->get()
@@ -95,8 +95,8 @@ class InventoryMovementRepository
                 'name' => (string) $row->name,
                 'unit' => (string) $row->unit,
                 'current_stock' => round((float) $row->current_stock, 3),
-                'reorder_level' => round((float) $row->reorder_level, 3),
-                'is_low_stock' => (float) $row->current_stock <= (float) $row->reorder_level,
+                'minimum_stock' => round((float) $row->minimum_stock, 3),
+                'is_low_stock' => (float) $row->current_stock <= (float) $row->minimum_stock,
             ]);
     }
 
@@ -128,4 +128,3 @@ class InventoryMovementRepository
             ->orderByDesc('id');
     }
 }
-

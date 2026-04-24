@@ -22,6 +22,10 @@ class StockCountController extends Controller
     ) {
     }
 
+    /**
+     * @param StockCountIndexRequest $request
+     * @return \Inertia\Response
+     */
     public function index(StockCountIndexRequest $request): Response
     {
         $this->authorize('viewAny', StockCount::class);
@@ -50,6 +54,10 @@ class StockCountController extends Controller
         ]);
     }
 
+    /**
+     * @param StockCount $stockCount
+     * @return \Inertia\Response
+     */
     public function show(StockCount $stockCount): Response
     {
         $this->authorize('view', $stockCount);
@@ -76,6 +84,10 @@ class StockCountController extends Controller
         ]);
     }
 
+    /**
+     * @param StoreStockCountRequest $request
+     * @return RedirectResponse
+     */
     public function store(StoreStockCountRequest $request): RedirectResponse
     {
         try {
@@ -87,6 +99,11 @@ class StockCountController extends Controller
         return back()->with('success', 'Leltár létrehozva.');
     }
 
+    /**
+     * @param UpdateStockCountRequest $request
+     * @param StockCount $stockCount
+     * @return RedirectResponse
+     */
     public function update(UpdateStockCountRequest $request, StockCount $stockCount): RedirectResponse
     {
         try {
@@ -98,6 +115,10 @@ class StockCountController extends Controller
         return back()->with('success', 'Leltár frissítve.');
     }
 
+    /**
+     * @param StockCount $stockCount
+     * @return RedirectResponse
+     */
     public function close(StockCount $stockCount): RedirectResponse
     {
         $this->authorize('update', $stockCount);

@@ -23,6 +23,7 @@ use App\Policies\PermissionPolicy;
 use App\Policies\PurchasePolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ProductionPlanPolicy;
+use App\Policies\ProcurementIntelligencePolicy;
 use App\Policies\AuthorizationAuditPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\SecurityDashboardPolicy;
@@ -70,6 +71,11 @@ class AppServiceProvider extends ServiceProvider
 
             return null;
         });
+
+        Gate::define(
+            'viewProcurementIntelligence',
+            static fn (User $user): bool => app(ProcurementIntelligencePolicy::class)->viewAny($user),
+        );
 
         Gate::policy(Category::class, CategoryPolicy::class);
         Gate::policy(ConversionEvent::class, ConversionAnalyticsPolicy::class);

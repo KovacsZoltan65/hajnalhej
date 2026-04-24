@@ -19,6 +19,9 @@ class CartController extends Controller
         private readonly ConversionTrackingService $conversionTrackingService,
     ) {}
 
+    /**
+     * @return \Inertia\Response
+     */
     public function index(): Response
     {
         $this->conversionTrackingService->trackBackendEvent(
@@ -33,6 +36,10 @@ class CartController extends Controller
         ]);
     }
 
+    /**
+     * @param StoreCartItemRequest $request
+     * @return RedirectResponse
+     */
     public function store(StoreCartItemRequest $request): RedirectResponse
     {
         $payload = $request->validated();
@@ -60,6 +67,11 @@ class CartController extends Controller
         return back()->with('success', __('commerce.cart.added'));
     }
 
+    /**
+     * @param UpdateCartItemRequest $request
+     * @param int $productId
+     * @return RedirectResponse
+     */
     public function update(UpdateCartItemRequest $request, int $productId): RedirectResponse
     {
         try {
@@ -82,6 +94,10 @@ class CartController extends Controller
         return back()->with('success', __('commerce.cart.updated'));
     }
 
+    /**
+     * @param int $productId
+     * @return RedirectResponse
+     */
     public function destroy(int $productId): RedirectResponse
     {
         $this->cartService->removeProduct($productId);
@@ -99,6 +115,9 @@ class CartController extends Controller
         return back()->with('info', __('commerce.cart.removed'));
     }
 
+    /**
+     * @return RedirectResponse
+     */
     public function clear(): RedirectResponse
     {
         $this->cartService->clear();
