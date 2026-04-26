@@ -200,7 +200,7 @@ class ProcurementIntelligenceRepository
                 'suppliers.lead_time_days as supplier_lead_time_days',
                 'purchase_items.unit_cost',
                 'purchases.purchase_date',
-                DB::raw('ROW_NUMBER() OVER (PARTITION BY purchase_items.ingredient_id ORDER BY purchases.purchase_date DESC, purchase_items.id DESC) as row_number'),
+                DB::raw('ROW_NUMBER() OVER (PARTITION BY purchase_items.ingredient_id ORDER BY purchases.purchase_date DESC, purchase_items.id DESC) as purchase_rank'),
             ])
             ->leftJoin('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')
             ->where('purchases.status', Purchase::STATUS_POSTED)
@@ -208,7 +208,7 @@ class ProcurementIntelligenceRepository
 
         return DB::query()
             ->fromSub($rankedRows, 'latest_purchase_rows')
-            ->where('row_number', 1)
+            ->where('purchase_rank', 1)
             ->get();
     }
 
@@ -232,7 +232,7 @@ class ProcurementIntelligenceRepository
                 'suppliers.lead_time_days as supplier_lead_time_days',
                 'purchase_items.unit_cost',
                 'purchases.purchase_date',
-                DB::raw('ROW_NUMBER() OVER (PARTITION BY purchase_items.ingredient_id ORDER BY purchase_items.unit_cost ASC, purchases.purchase_date DESC, purchase_items.id DESC) as row_number'),
+                DB::raw('ROW_NUMBER() OVER (PARTITION BY purchase_items.ingredient_id ORDER BY purchase_items.unit_cost ASC, purchases.purchase_date DESC, purchase_items.id DESC) as purchase_rank'),
             ])
             ->join('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')
             ->where('purchases.status', Purchase::STATUS_POSTED)
@@ -242,7 +242,7 @@ class ProcurementIntelligenceRepository
 
         return DB::query()
             ->fromSub($rankedRows, 'cheapest_fresh_supplier_rows')
-            ->where('row_number', 1)
+            ->where('purchase_rank', 1)
             ->get();
     }
 
@@ -262,7 +262,7 @@ class ProcurementIntelligenceRepository
                 'purchase_items.ingredient_id',
                 'purchases.supplier_id',
                 'purchase_items.unit_cost',
-                DB::raw('ROW_NUMBER() OVER (PARTITION BY purchase_items.ingredient_id, purchases.supplier_id ORDER BY purchases.purchase_date DESC, purchase_items.id DESC) as row_number'),
+                DB::raw('ROW_NUMBER() OVER (PARTITION BY purchase_items.ingredient_id, purchases.supplier_id ORDER BY purchases.purchase_date DESC, purchase_items.id DESC) as purchase_rank'),
             ])
             ->where('purchases.status', Purchase::STATUS_POSTED)
             ->whereNotNull('purchases.supplier_id')
@@ -270,7 +270,7 @@ class ProcurementIntelligenceRepository
 
         $latestSupplierCosts = DB::query()
             ->fromSub($rankedSupplierCosts, 'ranked_supplier_costs')
-            ->where('row_number', 1);
+            ->where('purchase_rank', 1);
 
         return DB::table('ingredient_supplier_terms')
             ->join('suppliers', 'suppliers.id', '=', 'ingredient_supplier_terms.supplier_id')
