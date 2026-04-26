@@ -22,6 +22,8 @@ Beszállítónál megadható az alap lead time is, vagyis hogy általában hány
 
 ## Purchase draft generálás utánrendelési javaslatból
 
+A részletes, közérthető leírás külön oldalon található: [Beszerzési intelligencia](10-beszerzesi-intelligencia.md).
+
 1. Nyisd meg a Beszerzési intelligencia oldalt.
 2. Ellenőrizd az utánrendelési javaslatokat.
 3. Jelöld ki a szükséges sorokat, vagy hagyd kijelölés nélkül az összes javasolt tételhez.
