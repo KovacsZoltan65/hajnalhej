@@ -196,16 +196,19 @@ class ProcurementIntelligenceRepository
             ->select([
                 'purchase_items.ingredient_id',
                 'purchases.supplier_id',
+                'suppliers.name as supplier_name',
+                'suppliers.lead_time_days as supplier_lead_time_days',
                 'purchase_items.unit_cost',
                 'purchases.purchase_date',
-                DB::raw('ROW_NUMBER() OVER (PARTITION BY purchase_items.ingredient_id ORDER BY purchases.purchase_date DESC, purchase_items.id DESC) as row_number'),
+                DB::raw('ROW_NUMBER() OVER (PARTITION BY purchase_items.ingredient_id ORDER BY purchases.purchase_date DESC, purchase_items.id DESC) as purchase_rank'),
             ])
+            ->leftJoin('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')
             ->where('purchases.status', Purchase::STATUS_POSTED)
             ->whereIn('purchase_items.ingredient_id', $ingredientIds);
 
         return DB::query()
             ->fromSub($rankedRows, 'latest_purchase_rows')
-            ->where('row_number', 1)
+            ->where('purchase_rank', 1)
             ->get();
     }
 
@@ -225,10 +228,13 @@ class ProcurementIntelligenceRepository
             ->select([
                 'purchase_items.ingredient_id',
                 'purchases.supplier_id',
+                'suppliers.name as supplier_name',
+                'suppliers.lead_time_days as supplier_lead_time_days',
                 'purchase_items.unit_cost',
                 'purchases.purchase_date',
-                DB::raw('ROW_NUMBER() OVER (PARTITION BY purchase_items.ingredient_id ORDER BY purchase_items.unit_cost ASC, purchases.purchase_date DESC, purchase_items.id DESC) as row_number'),
+                DB::raw('ROW_NUMBER() OVER (PARTITION BY purchase_items.ingredient_id ORDER BY purchase_items.unit_cost ASC, purchases.purchase_date DESC, purchase_items.id DESC) as purchase_rank'),
             ])
+            ->join('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')
             ->where('purchases.status', Purchase::STATUS_POSTED)
             ->whereNotNull('purchases.supplier_id')
             ->whereDate('purchases.purchase_date', '>=', $since)
@@ -236,7 +242,57 @@ class ProcurementIntelligenceRepository
 
         return DB::query()
             ->fromSub($rankedRows, 'cheapest_fresh_supplier_rows')
-            ->where('row_number', 1)
+            ->where('purchase_rank', 1)
+            ->get();
+    }
+
+    /**
+     * @param array<int, int> $ingredientIds
+     * @return Collection<int, object>
+     */
+    public function supplierTermRowsForIngredients(array $ingredientIds): Collection
+    {
+        if ($ingredientIds === []) {
+            return collect();
+        }
+
+        $rankedSupplierCosts = DB::table('purchase_items')
+            ->join('purchases', 'purchases.id', '=', 'purchase_items.purchase_id')
+            ->select([
+                'purchase_items.ingredient_id',
+                'purchases.supplier_id',
+                'purchase_items.unit_cost',
+                DB::raw('ROW_NUMBER() OVER (PARTITION BY purchase_items.ingredient_id, purchases.supplier_id ORDER BY purchases.purchase_date DESC, purchase_items.id DESC) as purchase_rank'),
+            ])
+            ->where('purchases.status', Purchase::STATUS_POSTED)
+            ->whereNotNull('purchases.supplier_id')
+            ->whereIn('purchase_items.ingredient_id', $ingredientIds);
+
+        $latestSupplierCosts = DB::query()
+            ->fromSub($rankedSupplierCosts, 'ranked_supplier_costs')
+            ->where('purchase_rank', 1);
+
+        return DB::table('ingredient_supplier_terms')
+            ->join('suppliers', 'suppliers.id', '=', 'ingredient_supplier_terms.supplier_id')
+            ->leftJoinSub($latestSupplierCosts, 'latest_supplier_costs', function ($join): void {
+                $join->on('latest_supplier_costs.ingredient_id', '=', 'ingredient_supplier_terms.ingredient_id')
+                    ->on('latest_supplier_costs.supplier_id', '=', 'ingredient_supplier_terms.supplier_id');
+            })
+            ->select([
+                'ingredient_supplier_terms.ingredient_id',
+                'ingredient_supplier_terms.supplier_id',
+                'suppliers.name as supplier_name',
+                'suppliers.lead_time_days as supplier_lead_time_days',
+                'ingredient_supplier_terms.lead_time_days',
+                'ingredient_supplier_terms.minimum_order_quantity',
+                'ingredient_supplier_terms.pack_size',
+                'ingredient_supplier_terms.preferred',
+                'ingredient_supplier_terms.unit_cost_override',
+                'latest_supplier_costs.unit_cost as latest_unit_cost',
+            ])
+            ->whereIn('ingredient_supplier_terms.ingredient_id', $ingredientIds)
+            ->orderByDesc('ingredient_supplier_terms.preferred')
+            ->orderBy('suppliers.name')
             ->get();
     }
 

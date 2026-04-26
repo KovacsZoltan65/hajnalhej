@@ -36,6 +36,12 @@ defineProps({
             <p v-if="form.errors.tax_number" class="text-xs text-red-700">{{ form.errors.tax_number }}</p>
         </div>
 
+        <div class="space-y-2">
+            <label for="supplier-lead-time" class="text-sm font-medium text-bakery-dark">Alap lead time (nap)</label>
+            <InputText id="supplier-lead-time" v-model="form.lead_time_days" type="number" min="0" max="365" class="w-full" />
+            <p v-if="form.errors.lead_time_days" class="text-xs text-red-700">{{ form.errors.lead_time_days }}</p>
+        </div>
+
         <div class="space-y-2 md:col-span-2">
             <label for="supplier-notes" class="text-sm font-medium text-bakery-dark">Megjegyzés</label>
             <Textarea id="supplier-notes" v-model="form.notes" rows="4" class="w-full" auto-resize />
@@ -43,4 +49,3 @@ defineProps({
         </div>
     </div>
 </template>
-

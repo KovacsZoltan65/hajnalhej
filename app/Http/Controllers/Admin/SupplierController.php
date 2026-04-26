@@ -33,6 +33,7 @@ class SupplierController extends Controller
             'email' => $supplier->email,
             'phone' => $supplier->phone,
             'tax_number' => $supplier->tax_number,
+            'lead_time_days' => $supplier->lead_time_days,
             'notes' => $supplier->notes,
             'purchases_count' => (int) ($supplier->purchases_count ?? 0),
             'created_at' => $supplier->created_at?->toDateTimeString(),
@@ -86,4 +87,3 @@ class SupplierController extends Controller
         return back()->with('success', 'Beszállító törölve.');
     }
 }
-

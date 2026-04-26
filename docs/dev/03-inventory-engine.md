@@ -26,6 +26,36 @@ current_stock <= minimum_stock
 
 Nem használunk párhuzamos `reorder_level` üzleti fogalmat.
 
+## Supplier terms és reorder 2.0
+
+Az alapanyag-beszállító beszerzési feltételeket az `ingredient_supplier_terms` tábla tárolja:
+
+- `supplier_id`
+- `ingredient_id`
+- `lead_time_days`
+- `minimum_order_quantity`
+- `pack_size`
+- `preferred`
+- `unit_cost_override`
+
+Reorder formula:
+
+```text
+daily_consumption = 28_day_consumption / 28
+lead_time_demand = daily_consumption * lead_time_days
+safety_stock = daily_consumption * 3
+target_stock = max(minimum_stock, lead_time_demand + safety_stock)
+raw_suggested_quantity = target_stock - current_stock
+suggested_quantity = raw_suggested_quantity rounded up by minimum_order_quantity and pack_size
+```
+
+Supplier választás:
+
+1. preferred supplier term,
+2. latest supplier,
+3. cheapest fresh supplier,
+4. no supplier.
+
 ## Movement típusok
 
 ### purchase_in
@@ -55,4 +85,3 @@ Leltár zárásakor keletkező eltérés korrekció.
 - Negatív készlet üzleti jelzés: okát inventory ledgerben kell vizsgálni.
 - Hiányzó egységköltség esetén profit és készletérték pontatlan lehet.
 - Posted adatot közvetlenül módosítani veszélyes; korrekciós mozgás ajánlott.
-

@@ -70,6 +70,11 @@ class Ingredient extends Model
         return $this->hasMany(PurchaseItem::class);
     }
 
+    public function supplierTerms(): HasMany
+    {
+        return $this->hasMany(IngredientSupplierTerm::class);
+    }
+
     public function isLowStock(): bool
     {
         return (float) $this->current_stock <= (float) $this->minimum_stock;

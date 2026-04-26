@@ -33,6 +33,13 @@ const toggleAll = () => {
 
     emit('update:selectedIds', props.rows.map((row) => row.ingredient_id));
 };
+
+const sourceLabel = (source) => ({
+    preferred_supplier: 'Preferált',
+    latest_supplier: 'Legutóbbi',
+    cheapest_fresh_supplier: 'Legolcsóbb friss',
+    none: 'Nincs adat',
+}[source] ?? 'Nincs adat');
 </script>
 
 <template>
@@ -42,7 +49,7 @@ const toggleAll = () => {
             <span class="text-xs text-bakery-dark/60">{{ rows.length }} alapanyag</span>
         </div>
         <div v-if="rows.length" class="mt-4 overflow-x-auto">
-            <table class="min-w-[920px] w-full text-sm">
+            <table class="min-w-[1260px] w-full text-sm">
                 <thead class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
                     <tr>
                         <th class="px-2 py-2">
@@ -58,6 +65,10 @@ const toggleAll = () => {
                         <th class="px-2 py-2 text-right">Aktuális készlet</th>
                         <th class="px-2 py-2 text-right">Minimum készlet</th>
                         <th class="px-2 py-2 text-right">Heti átlagfogyás</th>
+                        <th class="px-2 py-2">Ajánlott beszállító</th>
+                        <th class="px-2 py-2 text-right">Lead time</th>
+                        <th class="px-2 py-2 text-right">Csomag</th>
+                        <th class="px-2 py-2 text-right">Minimum rendelés</th>
                         <th class="px-2 py-2 text-right">Készlet nap</th>
                         <th class="px-2 py-2 text-right">Javasolt rendelés</th>
                         <th class="px-2 py-2">Sürgősség</th>
@@ -78,6 +89,15 @@ const toggleAll = () => {
                         <td class="px-2 py-3 text-right text-bakery-dark">{{ row.current_stock }} {{ row.unit }}</td>
                         <td class="px-2 py-3 text-right text-bakery-dark">{{ row.minimum_stock }} {{ row.unit }}</td>
                         <td class="px-2 py-3 text-right text-bakery-dark">{{ row.weekly_average_consumption }} {{ row.unit }}</td>
+                        <td class="px-2 py-3 text-bakery-dark">
+                            <div>
+                                <p>{{ row.recommended_supplier_name || 'Nincs beszállító' }}</p>
+                                <p class="text-xs text-bakery-dark/55">{{ sourceLabel(row.supplier_source) }}</p>
+                            </div>
+                        </td>
+                        <td class="px-2 py-3 text-right text-bakery-dark">{{ row.lead_time_days !== null ? `${row.lead_time_days} nap` : '-' }}</td>
+                        <td class="px-2 py-3 text-right text-bakery-dark">{{ row.pack_size ? `${row.pack_size} ${row.unit}` : '-' }}</td>
+                        <td class="px-2 py-3 text-right text-bakery-dark">{{ row.minimum_order_quantity ? `${row.minimum_order_quantity} ${row.unit}` : '-' }}</td>
                         <td class="px-2 py-3 text-right text-bakery-dark">{{ row.days_on_hand ?? '-' }}</td>
                         <td class="px-2 py-3 text-right font-semibold text-bakery-dark">{{ row.suggested_order_quantity }} {{ row.unit }}</td>
                         <td class="px-2 py-3"><ProcurementUrgencyBadge :value="row.urgency" /></td>

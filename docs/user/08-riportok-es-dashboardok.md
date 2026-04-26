@@ -30,6 +30,7 @@ Beszerzési döntéstámogató nézet:
 - beszállítói ártrend,
 - ingredient költség-idősor,
 - minimum készlet alapú utánrendelési javaslat,
+- supplier lead time, csomagolási egység és minimum rendelési mennyiség alapján kerekített javaslat,
 - heti várható fogyás,
 - beszerzési figyelmeztetések.
 
@@ -45,4 +46,3 @@ Biztonsági és jogosultsági kockázatokat mutat:
 ## Hogyan értelmezd?
 
 Dashboard adatot mindig üzleti kontextussal együtt nézz. Egy profit változás oka lehet ár, alapanyagköltség, selejt, rendelési mix vagy készletkönyvelési eltérés is.
-
