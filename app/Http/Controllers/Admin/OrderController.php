@@ -14,6 +14,9 @@ use RuntimeException;
 
 class OrderController extends Controller
 {
+    /**
+     * @param OrderService $service
+     */
     public function __construct(private readonly OrderService $service)
     {
     }

@@ -11,6 +11,9 @@ use Inertia\Response;
 
 class CeoDashboardController extends Controller
 {
+    /**
+     * @param CeoDashboardService $service
+     */
     public function __construct(
         private readonly CeoDashboardService $service,
     ) {

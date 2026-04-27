@@ -11,6 +11,9 @@ use Spatie\Activitylog\Models\Activity;
 
 class SecurityDashboardController extends Controller
 {
+    /**
+     * @param SecurityDashboardService $service
+     */
     public function __construct(
         private readonly SecurityDashboardService $service,
     ) {

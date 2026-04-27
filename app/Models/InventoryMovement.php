@@ -6,6 +6,42 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $ingredient_id
+ * @property string $movement_type
+ * @property string $direction
+ * @property numeric $quantity
+ * @property numeric|null $unit_cost
+ * @property numeric|null $total_cost
+ * @property \Illuminate\Support\Carbon $occurred_at
+ * @property string|null $reference_type
+ * @property int|null $reference_id
+ * @property string|null $notes
+ * @property int|null $created_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $creator
+ * @property-read \App\Models\Ingredient|null $ingredient
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereDirection($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereIngredientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereMovementType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereOccurredAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereReferenceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereReferenceType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereTotalCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereUnitCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class InventoryMovement extends Model
 {
     public const TYPE_PURCHASE_IN = 'purchase_in';

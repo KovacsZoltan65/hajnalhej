@@ -13,6 +13,9 @@ use Inertia\Response;
 
 class RecipeController extends Controller
 {
+    /**
+     * @param RecipeService $service
+     */
     public function __construct(private readonly RecipeService $service)
     {
     }

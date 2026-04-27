@@ -11,6 +11,9 @@ use Inertia\Response;
 
 class ProfitDashboardController extends Controller
 {
+    /**
+     * @param ProfitDashboardService $service
+     */
     public function __construct(
         private readonly ProfitDashboardService $service,
     ) {}

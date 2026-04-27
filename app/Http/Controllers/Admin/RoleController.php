@@ -15,6 +15,9 @@ use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
+    /**
+     * @param RoleManagementService $service
+     */
     public function __construct(private readonly RoleManagementService $service)
     {
     }

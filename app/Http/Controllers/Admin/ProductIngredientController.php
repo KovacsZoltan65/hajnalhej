@@ -14,6 +14,9 @@ use RuntimeException;
 
 class ProductIngredientController extends Controller
 {
+    /**
+     * @param ProductIngredientService $service
+     */
     public function __construct(private readonly ProductIngredientService $service)
     {
     }

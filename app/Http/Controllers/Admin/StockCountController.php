@@ -16,6 +16,10 @@ use RuntimeException;
 
 class StockCountController extends Controller
 {
+    /**
+     * @param StockCountService $service
+     * @param IngredientService $ingredientService
+     */
     public function __construct(
         private readonly StockCountService $service,
         private readonly IngredientService $ingredientService,

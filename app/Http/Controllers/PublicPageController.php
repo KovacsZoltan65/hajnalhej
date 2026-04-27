@@ -12,6 +12,11 @@ use Inertia\Response;
 
 class PublicPageController extends Controller
 {
+    /**
+     * @param WeeklyMenuService $weeklyMenuService
+     * @param HeroExperimentService $heroExperimentService
+     * @param ConversionTrackingService $conversionTrackingService
+     */
     public function __construct(
         private readonly WeeklyMenuService $weeklyMenuService,
         private readonly HeroExperimentService $heroExperimentService,

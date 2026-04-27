@@ -14,11 +14,19 @@ use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
+    /**
+     * @param CustomerRegistrationService $service
+     * @param ConversionTrackingService $conversionTrackingService
+     */
     public function __construct(
         private readonly CustomerRegistrationService $service,
         private readonly ConversionTrackingService $conversionTrackingService,
     ) {}
 
+    /**
+     * @param Request $request
+     * @return \Inertia\Response
+     */
     public function create(Request $request): Response
     {
         $this->conversionTrackingService->trackBackendEvent(
@@ -31,6 +39,10 @@ class RegisteredUserController extends Controller
         return Inertia::render('Auth/Register');
     }
 
+    /**
+     * @param RegisterCustomerRequest $request
+     * @return RedirectResponse
+     */
     public function store(RegisterCustomerRequest $request): RedirectResponse
     {
         $user = $this->service->register($request->validated(), $request->session()->getId());

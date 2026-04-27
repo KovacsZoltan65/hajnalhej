@@ -14,6 +14,9 @@ use Inertia\Response;
 
 class SupplierController extends Controller
 {
+    /**
+     * @param SupplierService $service
+     */
     public function __construct(private readonly SupplierService $service)
     {
     }

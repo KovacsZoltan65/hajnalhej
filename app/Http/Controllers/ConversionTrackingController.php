@@ -8,6 +8,9 @@ use Illuminate\Http\JsonResponse;
 
 class ConversionTrackingController extends Controller
 {
+    /**
+     * @param ConversionTrackingService $service
+     */
     public function __construct(private readonly ConversionTrackingService $service)
     {
     }

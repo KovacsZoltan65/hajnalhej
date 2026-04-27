@@ -11,6 +11,9 @@ use Inertia\Response;
 
 class ConversionAnalyticsController extends Controller
 {
+    /**
+     * @param ConversionAnalyticsService $service
+     */
     public function __construct(private readonly ConversionAnalyticsService $service)
     {
     }

@@ -9,6 +9,10 @@ use App\Support\PermissionRegistry;
 
 class AccountController extends Controller
 {
+    /**
+     * @param Request $request
+     * @return \Inertia\Response
+     */
     public function __invoke(Request $request): Response
     {
         abort_unless($request->user()?->can(PermissionRegistry::ACCOUNT_VIEW), 403);

@@ -8,17 +8,40 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
+ * @property int $id Rekord azonosító
  * @property int $weekly_menu_id
  * @property int $product_id
- * @property int $category_id
- * @property string $override_name
- * @property string $override_short_description
- * @property number $override_price
- * @property int $sort_order
- * @property bool $is_active
- * @property string $badge_text
- * @property string $stock_note
+ * @property int|null $category_id
+ * @property string|null $override_name Heti menüben felülírt terméknév
+ * @property string|null $override_short_description Heti menüben felülírt rövid leírás
+ * @property numeric|null $override_price Heti menüben felülírt ár
+ * @property int $sort_order Heti menün belüli sorrend
+ * @property bool $is_active Aktív megjelenés a heti menüben
+ * @property string|null $badge_text Termékkártya badge felirat
+ * @property string|null $stock_note Készlettel kapcsolatos rövid megjegyzés
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Category|null $category
+ * @property-read \App\Models\Product|null $product
+ * @property-read \App\Models\WeeklyMenu|null $weeklyMenu
+ * @method static \Database\Factories\WeeklyMenuItemFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem whereBadgeText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem whereOverrideName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem whereOverridePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem whereOverrideShortDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem whereSortOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem whereStockNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenuItem whereWeeklyMenuId($value)
+ * @mixin \Eloquent
  */
 class WeeklyMenuItem extends Model
 {

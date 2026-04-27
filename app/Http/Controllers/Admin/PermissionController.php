@@ -14,6 +14,9 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
+    /**
+     * @param PermissionManagementService $service
+     */
     public function __construct(private readonly PermissionManagementService $service)
     {
     }

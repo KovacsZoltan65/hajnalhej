@@ -17,6 +17,10 @@ use RuntimeException;
 
 class PurchaseController extends Controller
 {
+    /**
+     * @param PurchaseService $service
+     * @param IngredientService $ingredientService
+     */
     public function __construct(
         private readonly PurchaseService $service,
         private readonly IngredientService $ingredientService,

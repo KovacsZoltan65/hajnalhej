@@ -16,10 +16,17 @@ use Inertia\Response;
 
 class IngredientSupplierTermController extends Controller
 {
+    /**
+     * @param IngredientSupplierTermService $service
+     */
     public function __construct(private readonly IngredientSupplierTermService $service)
     {
     }
 
+    /**
+     * @param IngredientSupplierTermIndexRequest $request
+     * @return \Inertia\Response
+     */
     public function index(IngredientSupplierTermIndexRequest $request): Response
     {
         $filters = $request->validated();
@@ -61,6 +68,10 @@ class IngredientSupplierTermController extends Controller
         ]);
     }
 
+    /**
+     * @param StoreIngredientSupplierTermRequest $request
+     * @return RedirectResponse
+     */
     public function store(StoreIngredientSupplierTermRequest $request): RedirectResponse
     {
         $this->service->create($request->validated());
@@ -68,6 +79,11 @@ class IngredientSupplierTermController extends Controller
         return back()->with('success', 'Beszállítói feltétel létrehozva.');
     }
 
+    /**
+     * @param UpdateIngredientSupplierTermRequest $request
+     * @param IngredientSupplierTerm $ingredientSupplierTerm
+     * @return RedirectResponse
+     */
     public function update(UpdateIngredientSupplierTermRequest $request, IngredientSupplierTerm $ingredientSupplierTerm): RedirectResponse
     {
         $this->service->update($ingredientSupplierTerm, $request->validated());
@@ -75,6 +91,10 @@ class IngredientSupplierTermController extends Controller
         return back()->with('success', 'Beszállítói feltétel frissítve.');
     }
 
+    /**
+     * @param IngredientSupplierTerm $ingredientSupplierTerm
+     * @return RedirectResponse
+     */
     public function destroy(IngredientSupplierTerm $ingredientSupplierTerm): RedirectResponse
     {
         $this->authorize('delete', $ingredientSupplierTerm);

@@ -18,6 +18,9 @@ use RuntimeException;
 
 class WeeklyMenuController extends Controller
 {
+    /**
+     * @param WeeklyMenuService $service
+     */
     public function __construct(private readonly WeeklyMenuService $service)
     {
     }

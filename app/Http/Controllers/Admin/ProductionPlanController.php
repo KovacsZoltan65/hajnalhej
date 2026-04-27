@@ -14,6 +14,9 @@ use Inertia\Response;
 
 class ProductionPlanController extends Controller
 {
+    /**
+     * @param ProductionPlanService $service
+     */
     public function __construct(private readonly ProductionPlanService $service)
     {
     }

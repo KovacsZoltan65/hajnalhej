@@ -13,6 +13,9 @@ use Inertia\Response;
 
 class UserRoleController extends Controller
 {
+    /**
+     * @param UserRoleAssignmentService $service
+     */
     public function __construct(private readonly UserRoleAssignmentService $service)
     {
     }

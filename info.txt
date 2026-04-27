@@ -1,3 +1,13 @@
 php artisan optimize:clear
 php artisan cache:clear
 php artisan migrate:fresh --seed
+
+Futtassa ezt a parancsot a Facades automatikus kiegészítésének létrehozásához. Ez létrehozza az _ide_helper.php fájlt.
+    php artisan ide-helper:generate
+
+Futtassa ezt a parancsot phpdocs hozzáadásához a modellekhez. Adja hozzá az -RW kapcsolót a meglévő phpdocs visszaállításához és a modellekbe való közvetlen íráshoz.
+    php artisan ide-helper:models -RW
+
+php artisan ide-helper:generate - PHPDoc generálás Laravel Facades-hez
+php artisan ide-helper:models - PHPDocs modellekhez
+php artisan ide-helper:meta - PhpStorm metafájl

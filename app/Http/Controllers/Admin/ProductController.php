@@ -16,6 +16,10 @@ use Inertia\Response;
 
 class ProductController extends Controller
 {
+    /**
+     * @param ProductService $service
+     * @param ProductIngredientService $productIngredientService
+     */
     public function __construct(
         private readonly ProductService $service,
         private readonly ProductIngredientService $productIngredientService,

@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 
 class RecipeStepController extends Controller
 {
+    /**
+     * @param RecipeStepService $service
+     */
     public function __construct(private readonly RecipeStepService $service)
     {
     }

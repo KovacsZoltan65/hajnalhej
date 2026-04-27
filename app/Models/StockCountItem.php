@@ -6,6 +6,30 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $stock_count_id
+ * @property int $ingredient_id
+ * @property numeric $expected_quantity
+ * @property numeric $counted_quantity
+ * @property numeric $difference
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Ingredient|null $ingredient
+ * @property-read \App\Models\StockCount $stockCount
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockCountItem newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockCountItem newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockCountItem query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockCountItem whereCountedQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockCountItem whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockCountItem whereDifference($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockCountItem whereExpectedQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockCountItem whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockCountItem whereIngredientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockCountItem whereStockCountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockCountItem whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class StockCountItem extends Model
 {
     use HasFactory;

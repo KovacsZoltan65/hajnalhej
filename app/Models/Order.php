@@ -8,6 +8,60 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property string $order_number
+ * @property int|null $user_id
+ * @property string $customer_name
+ * @property string $customer_email
+ * @property string $customer_phone
+ * @property string $status
+ * @property string $currency
+ * @property numeric $subtotal
+ * @property numeric $total
+ * @property numeric $material_cost_total
+ * @property string|null $notes
+ * @property \Illuminate\Support\Carbon|null $pickup_date
+ * @property string|null $pickup_time_slot
+ * @property \Illuminate\Support\Carbon|null $placed_at
+ * @property \Illuminate\Support\Carbon|null $confirmed_at
+ * @property \Illuminate\Support\Carbon|null $completed_at
+ * @property \Illuminate\Support\Carbon|null $cancelled_at
+ * @property string|null $internal_notes
+ * @property array<array-key, mixed>|null $metadata
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderItem> $items
+ * @property-read int|null $items_count
+ * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\OrderFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCancelledAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCompletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereConfirmedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCurrency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCustomerEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCustomerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCustomerPhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereInternalNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereMaterialCostTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereMetadata($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereOrderNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order wherePickupDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order wherePickupTimeSlot($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order wherePlacedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereSubtotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUserId($value)
+ * @mixin \Eloquent
+ */
 class Order extends Model
 {
     public const STATUS_PENDING = 'pending';

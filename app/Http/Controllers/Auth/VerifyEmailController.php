@@ -9,10 +9,17 @@ use Illuminate\Http\RedirectResponse;
 
 class VerifyEmailController extends Controller
 {
+    /**
+     * @param UserActivityAuditService $auditService
+     */
     public function __construct(private readonly UserActivityAuditService $auditService)
     {
     }
 
+    /**
+     * @param EmailVerificationRequest $request
+     * @return RedirectResponse
+     */
     public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {
         if (! $request->user()?->hasVerifiedEmail()) {

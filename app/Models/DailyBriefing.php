@@ -6,6 +6,44 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property \Illuminate\Support\Carbon $briefing_date
+ * @property string $status
+ * @property numeric $cash_needed_today
+ * @property numeric $projected_procurement_total
+ * @property int $open_alerts_count
+ * @property int $critical_alerts_count
+ * @property array<array-key, mixed>|null $summary
+ * @property array<array-key, mixed>|null $recommended_actions
+ * @property \Illuminate\Support\Carbon|null $generated_at
+ * @property int|null $generated_by
+ * @property \Illuminate\Support\Carbon|null $acknowledged_at
+ * @property int|null $acknowledged_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $acknowledger
+ * @property-read \App\Models\User|null $generator
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereAcknowledgedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereAcknowledgedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereBriefingDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereCashNeededToday($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereCriticalAlertsCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereGeneratedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereGeneratedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereOpenAlertsCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereProjectedProcurementTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereRecommendedActions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereSummary($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyBriefing whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class DailyBriefing extends Model
 {
     use HasFactory;

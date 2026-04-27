@@ -11,6 +11,9 @@ use Spatie\Activitylog\Models\Activity;
 
 class AuthorizationAuditController extends Controller
 {
+    /**
+     * @param AuthorizationAuditLogService $service
+     */
     public function __construct(private readonly AuthorizationAuditLogService $service)
     {
     }

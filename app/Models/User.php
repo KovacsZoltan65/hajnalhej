@@ -13,6 +13,61 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use App\Support\PermissionRegistry;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property string $password
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DailyBriefing> $acknowledgedDailyBriefings
+ * @property-read int|null $acknowledged_daily_briefings_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BranchTransfer> $completedBranchTransfers
+ * @property-read int|null $completed_branch_transfers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Purchase> $createdPurchases
+ * @property-read int|null $created_purchases_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ForecastRun> $forecastRuns
+ * @property-read int|null $forecast_runs_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DailyBriefing> $generatedDailyBriefings
+ * @property-read int|null $generated_daily_briefings_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
+ * @property-read int|null $orders_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseRecommendation> $purchaseRecommendations
+ * @property-read int|null $purchase_recommendations_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseReceipt> $receivedPurchaseReceipts
+ * @property-read int|null $received_purchase_receipts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BranchTransfer> $requestedBranchTransfers
+ * @property-read int|null $requested_branch_transfers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProcurementAlert> $resolvedProcurementAlerts
+ * @property-read int|null $resolved_procurement_alerts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
+ * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SupplierNegotiation> $supplierNegotiations
+ * @property-read int|null $supplier_negotiations_count
+ * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User permission($permissions, bool $without = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User role($roles, ?string $guard = null, bool $without = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutPermission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, ?string $guard = null)
+ * @mixin \Eloquent
+ */
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail

@@ -15,6 +15,11 @@ use Inertia\Response;
 
 class CheckoutController extends Controller
 {
+    /**
+     * @param CartService $cartService
+     * @param CheckoutService $checkoutService
+     * @param ConversionTrackingService $conversionTrackingService
+     */
     public function __construct(
         private readonly CartService $cartService,
         private readonly CheckoutService $checkoutService,

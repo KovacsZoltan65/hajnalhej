@@ -6,6 +6,49 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $purchase_recommendation_id
+ * @property int $ingredient_id
+ * @property int|null $supplier_id
+ * @property numeric $current_stock
+ * @property numeric $forecast_demand
+ * @property numeric $safety_stock
+ * @property numeric $recommended_quantity
+ * @property numeric|null $approved_quantity
+ * @property string $unit
+ * @property numeric|null $estimated_unit_cost
+ * @property numeric|null $estimated_line_total
+ * @property numeric|null $margin_impact
+ * @property string|null $reason_code
+ * @property array<array-key, mixed>|null $calculation_snapshot
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Ingredient|null $ingredient
+ * @property-read \App\Models\PurchaseRecommendation|null $recommendation
+ * @property-read \App\Models\Supplier|null $supplier
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereApprovedQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereCalculationSnapshot($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereCurrentStock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereEstimatedLineTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereEstimatedUnitCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereForecastDemand($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereIngredientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereMarginImpact($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem wherePurchaseRecommendationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereReasonCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereRecommendedQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereSafetyStock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereSupplierId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereUnit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class PurchaseRecommendationItem extends Model
 {
     use HasFactory;

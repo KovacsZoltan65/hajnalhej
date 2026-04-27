@@ -14,6 +14,9 @@ use Inertia\Response;
 
 class CategoryController extends Controller
 {
+    /**
+     * @param CategoryService $service
+     */
     public function __construct(private readonly CategoryService $service)
     {
     }

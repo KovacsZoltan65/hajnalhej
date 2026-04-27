@@ -18,6 +18,13 @@ use Inertia\Response;
 
 class InventoryController extends Controller
 {
+    /**
+     * @param InventoryMovementRepository $movementRepository
+     * @param InventoryDashboardService $dashboardService
+     * @param IngredientService $ingredientService
+     * @param InventoryService $inventoryService
+     * @param ProductService $productService
+     */
     public function __construct(
         private readonly InventoryMovementRepository $movementRepository,
         private readonly InventoryDashboardService $dashboardService,
