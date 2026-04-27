@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\IngredientController;
+use App\Http\Controllers\Admin\IngredientSupplierTermController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\AuthorizationAuditController as AdminAuthorizationAuditController;
 use App\Http\Controllers\Admin\RoleController as AdminRoleController;
@@ -220,6 +221,13 @@ Route::middleware('auth')->group(function (): void {
             Route::post('/', 'store')->middleware('permission:suppliers.manage')->name('store');
             Route::put('/{supplier}', 'update')->middleware('permission:suppliers.manage')->name('update');
             Route::delete('/{supplier}', 'destroy')->middleware('permission:suppliers.manage')->name('destroy');
+        });
+
+        Route::name('ingredient-supplier-terms.')->prefix('ingredient-supplier-terms')->controller(IngredientSupplierTermController::class)->group(function (): void {
+            Route::get('/', 'index')->middleware('permission:suppliers.view')->name('index');
+            Route::post('/', 'store')->middleware('permission:suppliers.manage')->name('store');
+            Route::put('/{ingredientSupplierTerm}', 'update')->middleware('permission:suppliers.manage')->name('update');
+            Route::delete('/{ingredientSupplierTerm}', 'destroy')->middleware('permission:suppliers.manage')->name('destroy');
         });
 
         Route::name('purchases.')->prefix('purchases')->controller(AdminPurchaseController::class)->group(function (): void {

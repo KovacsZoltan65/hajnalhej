@@ -49,6 +49,7 @@ const links = computed(() => {
 
     if (can.view_suppliers || can.manage_suppliers) {
         dynamicLinks.push({ label: 'Beszállítók', href: '/admin/suppliers', icon: 'pi pi-truck' });
+        dynamicLinks.push({ label: 'Beszállítói feltételek', href: '/admin/ingredient-supplier-terms', icon: 'pi pi-sliders-h' });
     }
 
     if (can.view_purchases || can.manage_purchases) {
@@ -92,4 +93,3 @@ const isActive = (href) => page.url === href || page.url.startsWith(`${href}/`);
         </Link>
     </aside>
 </template>
-

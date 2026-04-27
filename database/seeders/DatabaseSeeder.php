@@ -64,6 +64,7 @@ class DatabaseSeeder extends Seeder
 
             ProductionPlanSeeder::class,
             InventoryProcurementSeeder::class,
+            ProcurementIntelligenceSeeder::class,
         ]);
     }
 }

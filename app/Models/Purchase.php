@@ -23,11 +23,17 @@ class Purchase extends Model
         'reference_number',
         'purchase_date',
         'status',
+        'receipt_status',
         'subtotal',
         'total',
+        'received_total',
         'notes',
         'created_by',
+        'expected_delivery_date',
+        'received_date',
+        'ordered_at',
         'posted_at',
+        'cancelled_at',
     ];
 
     /**
@@ -37,9 +43,14 @@ class Purchase extends Model
     {
         return [
             'purchase_date' => 'date',
+            'expected_delivery_date' => 'date',
+            'received_date' => 'date',
             'subtotal' => 'decimal:2',
             'total' => 'decimal:2',
+            'received_total' => 'decimal:2',
+            'ordered_at' => 'datetime',
             'posted_at' => 'datetime',
+            'cancelled_at' => 'datetime',
         ];
     }
 
@@ -65,9 +76,18 @@ class Purchase extends Model
         return $this->hasMany(PurchaseItem::class);
     }
 
+    public function receipts(): HasMany
+    {
+        return $this->hasMany(PurchaseReceipt::class);
+    }
+
+    public function recommendations(): HasMany
+    {
+        return $this->hasMany(PurchaseRecommendation::class);
+    }
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 }
-

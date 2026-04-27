@@ -75,6 +75,56 @@ class Ingredient extends Model
         return $this->hasMany(IngredientSupplierTerm::class);
     }
 
+    public function purchaseReceiptItems(): HasMany
+    {
+        return $this->hasMany(PurchaseReceiptItem::class);
+    }
+
+    public function procurementAlerts(): HasMany
+    {
+        return $this->hasMany(ProcurementAlert::class);
+    }
+
+    public function forecastSnapshots(): HasMany
+    {
+        return $this->hasMany(ForecastSnapshot::class);
+    }
+
+    public function seasonalProfiles(): HasMany
+    {
+        return $this->hasMany(SeasonalProfile::class);
+    }
+
+    public function priceAlerts(): HasMany
+    {
+        return $this->hasMany(PriceAlert::class);
+    }
+
+    public function purchaseRecommendationItems(): HasMany
+    {
+        return $this->hasMany(PurchaseRecommendationItem::class);
+    }
+
+    public function riskEvents(): HasMany
+    {
+        return $this->hasMany(RiskEvent::class);
+    }
+
+    public function branchInventoryItems(): HasMany
+    {
+        return $this->hasMany(BranchInventory::class);
+    }
+
+    public function branchTransfers(): HasMany
+    {
+        return $this->hasMany(BranchTransfer::class);
+    }
+
+    public function supplierNegotiations(): HasMany
+    {
+        return $this->hasMany(SupplierNegotiation::class);
+    }
+
     public function isLowStock(): bool
     {
         return (float) $this->current_stock <= (float) $this->minimum_stock;
