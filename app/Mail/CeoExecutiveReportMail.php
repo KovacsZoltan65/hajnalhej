@@ -21,6 +21,9 @@ class CeoExecutiveReportMail extends Mailable
     ) {
     }
 
+    /**
+     * @return Envelope
+     */
     public function envelope(): Envelope
     {
         $date = now()->format('Y.m.d');
@@ -30,6 +33,9 @@ class CeoExecutiveReportMail extends Mailable
         );
     }
 
+    /**
+     * @return Content
+     */
     public function content(): Content
     {
         return new Content(

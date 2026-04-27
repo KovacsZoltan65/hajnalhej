@@ -1,0 +1,63 @@
+{
+    "nav.login": "Belépés",
+    "nav.register": "Regisztráció",
+    "nav.account": "Fiókom",
+    "nav.logout": "Kilépés",
+    "nav.admin": "Admin panel",
+    "nav.admin_only": "Ez a felület csak admin felhasználóknak érhető el.",
+    "nav.cart": "Kosár",
+
+    "fields.name": "teljes név",
+    "fields.email": "e-mail cím",
+    "fields.password": "jelszó",
+    "fields.password_confirmation": "jelszó megerősítése",
+
+    "login.title": "Belépés",
+    "login.subtitle": "Lépj be a fiókodba, és rendelj gyorsabban.",
+    "login.cta": "Belépek",
+    "login.remember": "Emlékezz rám",
+    "login.register_link": "Még nincs fiókod? Regisztrálj itt.",
+    "login.success": "Sikeres belépés.",
+    "login.logout_success": "Sikeres kilépés.",
+
+    "register.title": "Hozd létre a fiókodat",
+    "register.subtitle": "Regisztrálj, hogy gyorsabban rendelhesd kedvenceidet.",
+    "register.cta": "Fiók létrehozása",
+    "register.login_link": "Már van fiókod? Lépj be.",
+    "register.success": "Üdvözlünk a Hajnalhéjnél! A fiókod elkészült.",
+    "register.success_verify_required": "Sikeres regisztráció. Kérjük erősítsd meg az email címedet.",
+
+    "verification.title": "E-mail megerősítés",
+    "verification.subtitle": "Küldtünk egy megerősítő linket az e-mail címedre.",
+    "verification.resent": "Új megerősítő e-mailt küldtünk.",
+    "verification.success": "Az e-mail címed sikeresen megerősítve.",
+    "verification.send_again": "Megerősítő e-mail újraküldése",
+
+    "account.title": "Fiókom",
+    "account.subtitle": "Itt kezeled a profilodat és a jövőbeli gyors rendelés alapjait.",
+    "account.email_status_verified": "E-mail megerősítve",
+    "account.email_status_pending": "E-mail megerősítés folyamatban",
+    "account.future_features": "Hamarosan: rendelési előzmények, mentett címek, kedvencek és hűség beállítások.",
+
+    "cart.added": "A termék bekerült a kosárba.",
+    "cart.updated": "A kosár frissült.",
+    "cart.removed": "A tétel törölve lett a kosárból.",
+    "cart.cleared": "A kosár ürítve lett.",
+
+    "validation.empty_cart": "A kosár üres, rendeléshez előbb tegyél bele termékeket.",
+    "validation.product_not_orderable": "A választott termék jelenleg nem rendelhető.",
+
+    "orders.placed_success": "A rendelést sikeresen rögzítettük.",
+    "orders.invalid_status_transition": "A választott státusz átmenet nem engedélyezett.",
+
+    "admin.status_updated": "A rendelés státusza frissült.",
+
+    "roles.created": "A szerepkör létrehozva.",
+    "roles.updated": "A szerepkör frissítve.",
+    "roles.deleted": "A szerepkör törölve.",
+    "roles.permissions_synced": "A szerepkör jogosultságai frissítve.",
+
+    "user_roles.updated": "A felhasználó szerepkörei frissítve.",
+
+    "permissions.synced": "A jogosultság-registry szinkronizáció lefutott."
+}

@@ -1,0 +1,63 @@
+{
+    "nav.login": "Login",
+    "nav.register": "Create account",
+    "nav.account": "My account",
+    "nav.logout": "Logout",
+    "nav.admin": "Admin panel",
+    "nav.admin_only": "This section is available for admin users only.",
+    "nav.cart": "Cart",
+
+    "cart.added": "Product added to cart.",
+    "cart.updated": "Cart updated.",
+    "cart.removed": "Item removed from cart.",
+    "cart.cleared": "Cart has been cleared.",
+
+    "fields.name": "full name",
+    "fields.email": "email address",
+    "fields.password": "password",
+    "fields.password_confirmation": "password confirmation",
+
+    "login.title": "Sign in",
+    "login.subtitle": "Access your account and continue your orders faster.",
+    "login.cta": "Sign in",
+    "login.remember": "Remember me",
+    "login.register_link": "No account yet? Register here.",
+    "login.success": "Successful sign in.",
+    "login.logout_success": "Signed out successfully.",
+
+    "register.title": "Create your account",
+    "register.subtitle": "Register now and save your details for a faster checkout.",
+    "register.cta": "Create account",
+    "register.login_link": "Already have an account? Sign in.",
+    "register.success": "Welcome to Hajnalhej! Your account is ready.",
+    "register.success_verify_required": "Account created. Please verify your email address.",
+
+    "verification.title": "Verify your email",
+    "verification.subtitle": "We sent a confirmation link to your inbox.",
+    "verification.resent": "A new verification email has been sent.",
+    "verification.success": "Your email address has been verified.",
+    "verification.send_again": "Send verification email again",
+
+    "account.title": "My account",
+    "account.subtitle": "Manage your profile and prepare for faster orders.",
+    "account.email_status_verified": "Email verified",
+    "account.email_status_pending": "Email verification pending",
+    "account.future_features": "Soon: order history, saved addresses, favorites and loyalty settings.",
+
+    "validation.empty_cart": "Your cart is empty, please add products before checkout.",
+    "validation.product_not_orderable": "Selected product is currently not orderable.",
+
+    "orders.placed_success": "Your order has been submitted successfully.",
+    "orders.invalid_status_transition": "The selected status transition is not allowed.",
+
+    "admin.status_updated": "Order status has been updated.",
+
+    "roles.created": "Role created successfully.",
+    "roles.updated": "Role has been updated.",
+    "roles.deleted": "Role has been deleted.",
+    "roles.permissions_synced": "Role permissions have been synced.",
+
+    "user_roles.updated": "User roles have been updated.",
+
+    "permissions.synced": "Permission registry synchronization completed."
+}
