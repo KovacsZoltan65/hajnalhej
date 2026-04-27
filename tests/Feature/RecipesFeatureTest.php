@@ -195,7 +195,7 @@ it('recipe summary szamitas tartalmazza az idozitesi osszegeket', function (): v
         ->where('recipes.data.0.recipe_summary.total_recipe_minutes', 80));
 });
 
-it('recipe lepesek sort_order szerint rendezettek', function (): void {
+it('recipe lépések sort_order szerint rendezettek', function (): void {
     $user = User::factory()->create();
     $category = Category::factory()->create(['is_active' => true]);
     $product = Product::factory()->create(['category_id' => $category->id, 'name' => 'Rendezes teszt']);

@@ -155,7 +155,7 @@ it('production plan update mukodik', function (): void {
     ]);
 });
 
-it('production plan timeline starter dependency lepeseket general', function (): void {
+it('production plan timeline starter dependency lépéseket general', function (): void {
     $user = User::factory()->create();
     $category = Category::factory()->create(['is_active' => true]);
 

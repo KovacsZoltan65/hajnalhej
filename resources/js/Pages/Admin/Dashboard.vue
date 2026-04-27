@@ -32,7 +32,7 @@ defineProps({
         </div>
 
         <section class="rounded-2xl border border-bakery-brown/15 bg-[#fdf8f1] p-5">
-            <h3 class="font-heading text-2xl text-bakery-dark">Kovetkezo lepesek</h3>
+            <h3 class="font-heading text-2xl text-bakery-dark">Kovetkezo lépések</h3>
             <p class="mt-2 text-sm text-bakery-dark/75">
                 A következő fázisban ide csatlakoznak a valós riportok, rendelési mutatók, valamint a CRUD modulok navigációs
                 celpontjai.
