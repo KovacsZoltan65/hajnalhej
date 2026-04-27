@@ -15,7 +15,7 @@ defineProps({
         </div>
 
         <div v-if="steps.length === 0" class="rounded-lg border border-dashed border-bakery-brown/20 bg-[#fcf8f1] p-3 text-sm text-bakery-dark/70">
-            Nincs generalt timeline. Adj meg receptlepeseket a termékekhez.
+            Nincs generalt timeline. Adj meg receptlépéseket a termékekhez.
         </div>
 
         <div v-else class="max-h-72 space-y-2 overflow-y-auto pr-1">
@@ -46,7 +46,7 @@ defineProps({
                     <span class="font-semibold">Mit kell csinalni:</span> {{ step.work_instruction }}
                 </p>
                 <p v-if="step.completion_criteria" class="mt-1 text-xs text-bakery-dark/75">
-                    <span class="font-semibold">Kesz allapot:</span> {{ step.completion_criteria }}
+                    <span class="font-semibold">Kész állapot:</span> {{ step.completion_criteria }}
                 </p>
                 <p v-if="step.attention_points" class="mt-1 text-xs text-bakery-dark/75">
                     <span class="font-semibold">Mire figyelj:</span> {{ step.attention_points }}

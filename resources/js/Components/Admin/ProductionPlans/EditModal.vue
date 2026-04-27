@@ -36,7 +36,7 @@ const timelineSteps = computed(() => props.selectedPlan?.details?.timeline_steps
 
             <div v-if="summary" class="grid gap-3 rounded-xl border border-bakery-brown/15 bg-[#fcf8f1] p-4 sm:grid-cols-2 xl:grid-cols-4">
                 <div class="rounded-lg bg-white p-3">
-                    <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/70">Aktív ido</p>
+                    <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/70">Aktív idő</p>
                     <p class="mt-1 text-lg font-semibold text-bakery-dark">{{ summary.total_active_minutes }} perc</p>
                 </div>
                 <div class="rounded-lg bg-white p-3">

@@ -90,7 +90,7 @@ const clearCart = () => {
             </div>
 
             <aside class="h-fit rounded-2xl border border-bakery-brown/15 bg-[#fff9f1] p-5 shadow-sm">
-                <h2 class="font-heading text-2xl text-bakery-dark">Osszegzes</h2>
+                <h2 class="font-heading text-2xl text-bakery-dark">Összegzés</h2>
                 <dl class="mt-4 space-y-2 text-sm">
                     <div class="flex justify-between">
                         <dt>Tetelek</dt>

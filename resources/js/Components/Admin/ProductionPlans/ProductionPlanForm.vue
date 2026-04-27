@@ -57,7 +57,7 @@ const removeItemRow = (index) => {
             </div>
 
             <div class="space-y-2 md:col-span-2">
-                <label class="text-sm font-medium text-bakery-dark">Megjegyzes</label>
+                <label class="text-sm font-medium text-bakery-dark">Megjegyzés</label>
                 <Textarea v-model="form.notes" rows="3" auto-resize class="w-full" />
                 <p v-if="form.errors.notes" class="text-xs text-red-700">{{ form.errors.notes }}</p>
             </div>
@@ -81,7 +81,7 @@ const removeItemRow = (index) => {
                 </div>
 
                 <div class="space-y-1">
-                    <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Mennyiseg</label>
+                    <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Mennyiség</label>
                     <InputText v-model="item.target_quantity" type="number" min="0.001" step="0.001" class="w-full" />
                     <p v-if="form.errors[`items.${index}.target_quantity`]" class="text-xs text-red-700">{{ form.errors[`items.${index}.target_quantity`] }}</p>
                 </div>

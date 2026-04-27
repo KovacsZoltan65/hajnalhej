@@ -1,5 +1,5 @@
 <script setup>
-import Button from 'primevue/button';
+import Button from "primevue/button";
 
 const props = defineProps({
     items: {
@@ -8,10 +8,10 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['edit', 'delete']);
+const emit = defineEmits(["edit", "delete"]);
 
 const formatQuantity = (value) =>
-    new Intl.NumberFormat('hu-HU', {
+    new Intl.NumberFormat("hu-HU", {
         minimumFractionDigits: 0,
         maximumFractionDigits: 3,
     }).format(value);
@@ -26,8 +26,12 @@ const formatQuantity = (value) =>
         >
             <div>
                 <p class="font-medium text-bakery-dark">{{ item.ingredient_name }}</p>
-                <p class="text-xs text-bakery-dark/65">{{ formatQuantity(item.quantity) }} {{ item.ingredient_unit }}</p>
-                <p v-if="item.notes" class="mt-1 text-xs text-bakery-dark/70">{{ item.notes }}</p>
+                <p class="text-xs text-bakery-dark/65">
+                    {{ formatQuantity(item.quantity) }} {{ item.ingredient_unit }}
+                </p>
+                <p v-if="item.notes" class="mt-1 text-xs text-bakery-dark/70">
+                    {{ item.notes }}
+                </p>
             </div>
             <div class="flex items-center gap-2">
                 <span
@@ -36,16 +40,28 @@ const formatQuantity = (value) =>
                 >
                     Alacsony készlet
                 </span>
-                <Button icon="pi pi-pencil" text size="small" rounded @click="emit('edit', item)" />
-                <Button icon="pi pi-trash" text size="small" rounded severity="danger" @click="emit('delete', item)" />
+                <Button
+                    icon="pi pi-pencil"
+                    text
+                    size="small"
+                    rounded
+                    @click="emit('edit', item)"
+                />
+                <Button
+                    icon="pi pi-trash"
+                    text
+                    size="small"
+                    rounded
+                    severity="danger"
+                    @click="emit('delete', item)"
+                />
             </div>
         </div>
         <div
             v-if="items.length === 0"
             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-4 text-center text-sm text-bakery-dark/70"
         >
-            Ehhez a termekhez meg nincs recepttétel.
+            Ehhez a termékhez még nincs recepttétel.
         </div>
     </div>
 </template>
-

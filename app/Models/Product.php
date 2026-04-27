@@ -81,6 +81,21 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function forecastSnapshots(): HasMany
+    {
+        return $this->hasMany(ForecastSnapshot::class);
+    }
+
+    public function seasonalProfiles(): HasMany
+    {
+        return $this->hasMany(SeasonalProfile::class);
+    }
+
+    public function pricingRules(): HasMany
+    {
+        return $this->hasMany(PricingRule::class);
+    }
+
     /**
      * @return array<int, string>
      */

@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Database\Factories\SuplierFactory;
+use Database\Factories\SupplierFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Supplier extends Model
 {
-    /** @use HasFactory<SuplierFactory> */
+    /** @use HasFactory<SupplierFactory> */
     use HasFactory;
 
     /**
@@ -21,7 +21,11 @@ class Supplier extends Model
         'phone',
         'tax_number',
         'lead_time_days',
+        'minimum_order_value',
+        'active',
+        'currency',
         'notes',
+        'meta',
     ];
 
     /**
@@ -31,7 +35,15 @@ class Supplier extends Model
     {
         return [
             'lead_time_days' => 'integer',
+            'minimum_order_value' => 'decimal:2',
+            'active' => 'boolean',
+            'meta' => 'array',
         ];
+    }
+
+    public function contacts(): HasMany
+    {
+        return $this->hasMany(SupplierContact::class);
     }
 
     public function purchases(): HasMany
@@ -42,5 +54,40 @@ class Supplier extends Model
     public function ingredientTerms(): HasMany
     {
         return $this->hasMany(IngredientSupplierTerm::class);
+    }
+
+    public function procurementAlerts(): HasMany
+    {
+        return $this->hasMany(ProcurementAlert::class);
+    }
+
+    public function priceAlerts(): HasMany
+    {
+        return $this->hasMany(PriceAlert::class);
+    }
+
+    public function scores(): HasMany
+    {
+        return $this->hasMany(SupplierScore::class);
+    }
+
+    public function purchaseRecommendations(): HasMany
+    {
+        return $this->hasMany(PurchaseRecommendation::class);
+    }
+
+    public function recommendationItems(): HasMany
+    {
+        return $this->hasMany(PurchaseRecommendationItem::class);
+    }
+
+    public function riskEvents(): HasMany
+    {
+        return $this->hasMany(RiskEvent::class);
+    }
+
+    public function negotiations(): HasMany
+    {
+        return $this->hasMany(SupplierNegotiation::class);
     }
 }

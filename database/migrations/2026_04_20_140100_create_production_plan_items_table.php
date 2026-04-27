@@ -18,10 +18,10 @@ return new class extends Migration
             $table->string('product_name_snapshot')->comment('Termek nev snapshot a terv idejen');
             $table->string('product_slug_snapshot')->comment('Termek slug snapshot a terv idejen');
             $table->decimal('target_quantity', 10, 3)->comment('Gyartando mennyiseg');
-            $table->string('unit_label', 24)->default('db')->comment('Mennyisegi egyseg jeloles (pl. db)');
+            $table->string('unit_label', 24)->default('db')->comment('Mennyiségi egyseg jeloles (pl. db)');
             $table->unsignedInteger('sort_order')->default(0)->index()->comment('Tetel sorrend a terven belul');
             $table->unsignedInteger('computed_ingredient_count')->default(0)->comment('Szamitott hozzavalo sorok szama');
-            $table->unsignedInteger('computed_step_count')->default(0)->comment('Szamitott receptlepesek szama');
+            $table->unsignedInteger('computed_step_count')->default(0)->comment('Szamitott receptlépések szama');
             $table->unsignedInteger('computed_active_minutes')->default(0)->comment('Szamitott aktiv ido percben');
             $table->unsignedInteger('computed_wait_minutes')->default(0)->comment('Szamitott varakozasi ido percben');
             $table->timestamps();

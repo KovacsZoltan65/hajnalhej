@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\IngredientController;
+use App\Http\Controllers\Admin\IngredientSupplierTermController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\AuthorizationAuditController as AdminAuthorizationAuditController;
 use App\Http\Controllers\Admin\RoleController as AdminRoleController;
@@ -111,21 +112,39 @@ Route::middleware('auth')->group(function (): void {
 
         Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
 
-        Route::get('/production-plans', [ProductionPlanController::class, 'index'])->name('production-plans.index');
-        Route::post('/production-plans', [ProductionPlanController::class, 'store'])->name('production-plans.store');
-        Route::put('/production-plans/{productionPlan}', [ProductionPlanController::class, 'update'])->name('production-plans.update');
-        Route::delete('/production-plans/{productionPlan}', [ProductionPlanController::class, 'destroy'])->name('production-plans.destroy');
+        Route::name('production-plans.')->prefix('production-plans')->controller(ProductionPlanController::class)->group(function() {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::put('/{productionPlan}', 'update')->name('update');
+            Route::delete('/{productionPlan}', 'destroy')->name('destroy');
+        });
+        //Route::get('/production-plans', [ProductionPlanController::class, 'index'])->name('production-plans.index');
+        //Route::post('/production-plans', [ProductionPlanController::class, 'store'])->name('production-plans.store');
+        //Route::put('/production-plans/{productionPlan}', [ProductionPlanController::class, 'update'])->name('production-plans.update');
+        //Route::delete('/production-plans/{productionPlan}', [ProductionPlanController::class, 'destroy'])->name('production-plans.destroy');
 
-        Route::get('/weekly-menus', [WeeklyMenuController::class, 'index'])->name('weekly-menus.index');
-        Route::post('/weekly-menus', [WeeklyMenuController::class, 'store'])->name('weekly-menus.store');
-        Route::put('/weekly-menus/{weeklyMenu}', [WeeklyMenuController::class, 'update'])->name('weekly-menus.update');
-        Route::delete('/weekly-menus/{weeklyMenu}', [WeeklyMenuController::class, 'destroy'])->name('weekly-menus.destroy');
-        Route::post('/weekly-menus/{weeklyMenu}/publish', [WeeklyMenuController::class, 'publish'])->name('weekly-menus.publish');
-        Route::post('/weekly-menus/{weeklyMenu}/unpublish', [WeeklyMenuController::class, 'unpublish'])->name('weekly-menus.unpublish');
+        Route::name('weekly-menus.')->prefix('weekly-menus')->controller(WeeklyMenuController::class)->group(function() {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::put('/{weeklyMenu}', 'update')->name('update');
+            Route::delete('/{weeklyMenu}', 'destroy')->name('destroy');
+            Route::post('/{weeklyMenu}/publish', 'publish')->name('publish');
+            Route::post('/{weeklyMenu}/unpublish', 'unpublish')->name('unpublish');
 
-        Route::post('/weekly-menus/{weeklyMenu}/items', [WeeklyMenuController::class, 'storeItem'])->name('weekly-menus.items.store');
-        Route::put('/weekly-menus/{weeklyMenu}/items/{item}', [WeeklyMenuController::class, 'updateItem'])->name('weekly-menus.items.update');
-        Route::delete('/weekly-menus/{weeklyMenu}/items/{item}', [WeeklyMenuController::class, 'destroyItem'])->name('weekly-menus.items.destroy');
+            Route::post('/{weeklyMenu}/items', 'storeItem')->name('store');
+            Route::put('/{weeklyMenu}/items/{item}', 'updateItem')->name('update');
+            Route::delete('/{weeklyMenu}/items/{item}', 'destroyItem')->name('destroy');
+        });
+
+        //Route::get('/weekly-menus', [WeeklyMenuController::class, 'index'])->name('weekly-menus.index');
+        //Route::post('/weekly-menus', [WeeklyMenuController::class, 'store'])->name('weekly-menus.store');
+        //Route::put('/weekly-menus/{weeklyMenu}', [WeeklyMenuController::class, 'update'])->name('weekly-menus.update');
+        //Route::delete('/weekly-menus/{weeklyMenu}', [WeeklyMenuController::class, 'destroy'])->name('weekly-menus.destroy');
+        //Route::post('/weekly-menus/{weeklyMenu}/publish', [WeeklyMenuController::class, 'publish'])->name('weekly-menus.publish');
+        //Route::post('/weekly-menus/{weeklyMenu}/unpublish', [WeeklyMenuController::class, 'unpublish'])->name('weekly-menus.unpublish');
+        //Route::post('/weekly-menus/{weeklyMenu}/items', [WeeklyMenuController::class, 'storeItem'])->name('weekly-menus.items.store');
+        //Route::put('/weekly-menus/{weeklyMenu}/items/{item}', [WeeklyMenuController::class, 'updateItem'])->name('weekly-menus.items.update');
+        //Route::delete('/weekly-menus/{weeklyMenu}/items/{item}', [WeeklyMenuController::class, 'destroyItem'])->name('weekly-menus.items.destroy');
 
         Route::name('orders.')->prefix('orders')->controller(AdminOrderController::class)->group(function() {
             Route::get('/', 'index')->name('index');
@@ -202,6 +221,13 @@ Route::middleware('auth')->group(function (): void {
             Route::post('/', 'store')->middleware('permission:suppliers.manage')->name('store');
             Route::put('/{supplier}', 'update')->middleware('permission:suppliers.manage')->name('update');
             Route::delete('/{supplier}', 'destroy')->middleware('permission:suppliers.manage')->name('destroy');
+        });
+
+        Route::name('ingredient-supplier-terms.')->prefix('ingredient-supplier-terms')->controller(IngredientSupplierTermController::class)->group(function (): void {
+            Route::get('/', 'index')->middleware('permission:suppliers.view')->name('index');
+            Route::post('/', 'store')->middleware('permission:suppliers.manage')->name('store');
+            Route::put('/{ingredientSupplierTerm}', 'update')->middleware('permission:suppliers.manage')->name('update');
+            Route::delete('/{ingredientSupplierTerm}', 'destroy')->middleware('permission:suppliers.manage')->name('destroy');
         });
 
         Route::name('purchases.')->prefix('purchases')->controller(AdminPurchaseController::class)->group(function (): void {

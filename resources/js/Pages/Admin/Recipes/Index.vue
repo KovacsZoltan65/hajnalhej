@@ -1,19 +1,19 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3';
-import { computed, onMounted, reactive, ref, watch } from 'vue';
-import Button from 'primevue/button';
-import ConfirmDialog from 'primevue/confirmdialog';
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
-import { useConfirm } from 'primevue/useconfirm';
-import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
-import RecipeEditorModal from '../../../Components/Admin/Recipes/RecipeEditorModal.vue';
-import RecipeIngredientModal from '../../../Components/Admin/Recipes/RecipeIngredientModal.vue';
-import RecipeStepModal from '../../../Components/Admin/Recipes/RecipeStepModal.vue';
-import RecipeSummaryCard from '../../../Components/Admin/Recipes/RecipeSummaryCard.vue';
-import RecipeTable from '../../../Components/Admin/Recipes/RecipeTable.vue';
-import SectionTitle from '../../../Components/SectionTitle.vue';
-import AdminLayout from '../../../Layouts/AdminLayout.vue';
+import { Head, router } from "@inertiajs/vue3";
+import { computed, onMounted, reactive, ref, watch } from "vue";
+import Button from "primevue/button";
+import ConfirmDialog from "primevue/confirmdialog";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
+import { useConfirm } from "primevue/useconfirm";
+import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import RecipeEditorModal from "@/Components/Admin/Recipes/RecipeEditorModal.vue";
+import RecipeIngredientModal from "@/Components/Admin/Recipes/RecipeIngredientModal.vue";
+import RecipeStepModal from "@/Components/Admin/Recipes/RecipeStepModal.vue";
+import RecipeSummaryCard from "@/Components/Admin/Recipes/RecipeSummaryCard.vue";
+import RecipeTable from "@/Components/Admin/Recipes/RecipeTable.vue";
+import SectionTitle from "@/Components/SectionTitle.vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
 
 defineOptions({ layout: AdminLayout });
 
@@ -57,41 +57,41 @@ const stepErrors = ref({});
 
 const filterState = reactive({
     product_id: props.filters.product_id ?? null,
-    search: props.filters.search ?? '',
+    search: props.filters.search ?? "",
     category_id: props.filters.category_id ?? null,
-    is_active: props.filters.is_active ?? '',
-    recipe_presence: props.filters.recipe_presence ?? 'all',
-    has_low_stock_ingredient: props.filters.has_low_stock_ingredient ?? '',
-    sort_field: props.filters.sort_field ?? 'name',
-    sort_direction: props.filters.sort_direction ?? 'asc',
+    is_active: props.filters.is_active ?? "",
+    recipe_presence: props.filters.recipe_presence ?? "all",
+    has_low_stock_ingredient: props.filters.has_low_stock_ingredient ?? "",
+    sort_field: props.filters.sort_field ?? "name",
+    sort_direction: props.filters.sort_direction ?? "asc",
     per_page: props.filters.per_page ?? 10,
 });
 
 const perPageOptions = [
-    { label: '10 / oldal', value: 10 },
-    { label: '20 / oldal', value: 20 },
-    { label: '50 / oldal', value: 50 },
+    { label: "10 / oldal", value: 10 },
+    { label: "20 / oldal", value: 20 },
+    { label: "50 / oldal", value: 50 },
 ];
 
 const activeOptions = [
-    { label: 'Mind', value: '' },
-    { label: 'Aktív', value: '1' },
-    { label: 'Inaktív', value: '0' },
+    { label: "Mind", value: "" },
+    { label: "Aktív", value: "1" },
+    { label: "Inaktív", value: "0" },
 ];
 
 const recipePresenceOptions = [
-    { label: 'Mind', value: 'all' },
-    { label: 'Recepttel', value: 'with_recipe' },
-    { label: 'Recept nélkül', value: 'without_recipe' },
+    { label: "Mind", value: "all" },
+    { label: "Recepttel", value: "with_recipe" },
+    { label: "Recept nélkül", value: "without_recipe" },
 ];
 
 const lowStockOptions = [
-    { label: 'Mind', value: '' },
-    { label: 'Alacsony készlet érintett', value: '1' },
+    { label: "Mind", value: "" },
+    { label: "Alacsony készlet érintett", value: "1" },
 ];
 
-const categoryOptions = computed(() => [{ id: null, name: 'Mind' }, ...props.categories]);
-const sortOrder = computed(() => (filterState.sort_direction === 'asc' ? 1 : -1));
+const categoryOptions = computed(() => [{ id: null, name: "Mind" }, ...props.categories]);
+const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 const currentPage = computed(() => props.recipes.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.recipes.per_page ?? 10));
 
@@ -99,7 +99,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        '/admin/recipes',
+        "/admin/recipes",
         {
             product_id: filterState.product_id || undefined,
             search: filterState.search || undefined,
@@ -119,7 +119,7 @@ const load = (extra = {}) => {
             onFinish: () => {
                 loading.value = false;
             },
-        },
+        }
     );
 };
 
@@ -131,7 +131,7 @@ const clearProductFocus = () => {
 
 const onSort = (event) => {
     filterState.sort_field = event.sortField;
-    filterState.sort_direction = event.sortOrder === 1 ? 'asc' : 'desc';
+    filterState.sort_direction = event.sortOrder === 1 ? "asc" : "desc";
     load({ page: 1 });
 };
 
@@ -153,7 +153,8 @@ onMounted(() => {
         return;
     }
 
-    const recipe = props.recipes.data.find((item) => item.id === selectedProductId) ?? null;
+    const recipe =
+        props.recipes.data.find((item) => item.id === selectedProductId) ?? null;
     if (!recipe) {
         return;
     }
@@ -229,17 +230,21 @@ const deleteRecipeItem = (item) => {
     }
 
     confirm.require({
-        header: 'Recept tétel törlése',
+        header: "Recept tétel törlése",
         message: `Biztosan törlöd ezt a recept tételt: ${item.ingredient_name}?`,
-        rejectLabel: 'Mégse',
-        acceptLabel: 'Törlés',
-        acceptClass: 'p-button-danger',
+        rejectLabel: "Mégse",
+        acceptLabel: "Törlés",
+        acceptClass: "p-button-danger",
         accept: () => {
-            router.delete(`/admin/products/${editorRecipe.value.id}/ingredients/${item.id}`, {
-                preserveScroll: true,
-                preserveState: true,
-                onSuccess: () => load({ product_id: editorRecipe.value?.id ?? undefined }),
-            });
+            router.delete(
+                `/admin/products/${editorRecipe.value.id}/ingredients/${item.id}`,
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                    onSuccess: () =>
+                        load({ product_id: editorRecipe.value?.id ?? undefined }),
+                }
+            );
         },
     });
 };
@@ -250,17 +255,21 @@ const deleteRecipeStep = (step) => {
     }
 
     confirm.require({
-        header: 'Receptlépés törlése',
+        header: "Receptlépés törlése",
         message: `Biztosan törlöd ezt a receptlépést: ${step.title}?`,
-        rejectLabel: 'Mégse',
-        acceptLabel: 'Törlés',
-        acceptClass: 'p-button-danger',
+        rejectLabel: "Mégse",
+        acceptLabel: "Törlés",
+        acceptClass: "p-button-danger",
         accept: () => {
-            router.delete(`/admin/products/${editorRecipe.value.id}/recipe-steps/${step.id}`, {
-                preserveScroll: true,
-                preserveState: true,
-                onSuccess: () => load({ product_id: editorRecipe.value?.id ?? undefined }),
-            });
+            router.delete(
+                `/admin/products/${editorRecipe.value.id}/recipe-steps/${step.id}`,
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                    onSuccess: () =>
+                        load({ product_id: editorRecipe.value?.id ?? undefined }),
+                }
+            );
         },
     });
 };
@@ -296,7 +305,8 @@ watch(
             return;
         }
 
-        const fresh = recipes.find((recipe) => recipe.id === editorRecipe.value.id) ?? null;
+        const fresh =
+            recipes.find((recipe) => recipe.id === editorRecipe.value.id) ?? null;
         editorRecipe.value = fresh;
 
         if (!fresh) {
@@ -304,7 +314,7 @@ watch(
             ingredientModalVisible.value = false;
             stepModalVisible.value = false;
         }
-    },
+    }
 );
 </script>
 
@@ -321,19 +331,42 @@ watch(
         <RecipeSummaryCard :summary="summary" />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
-            <div v-if="filterState.product_id" class="mb-3 flex items-center justify-between rounded-lg border border-bakery-gold/40 bg-[#fdf8ec] px-3 py-2">
-                <p class="text-sm text-bakery-dark/80">Termékre fókuszált receptnézet aktív.</p>
-                <Button size="small" text label="Fókusz törlése" @click="clearProductFocus" />
+            <div
+                v-if="filterState.product_id"
+                class="mb-3 flex items-center justify-between rounded-lg border border-bakery-gold/40 bg-[#fdf8ec] px-3 py-2"
+            >
+                <p class="text-sm text-bakery-dark/80">
+                    Termékre fókuszált receptnézet aktív.
+                </p>
+                <Button
+                    size="small"
+                    text
+                    label="Fókusz törlése"
+                    @click="clearProductFocus"
+                />
             </div>
-            <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-5'">
+            <AdminTableToolbar
+                :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-5'"
+            >
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
-                        <InputText v-model="filterState.search" class="w-full" placeholder="Terméknév vagy slug" @keyup.enter="submitFilters" />
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >Keresés</label
+                        >
+                        <InputText
+                            v-model="filterState.search"
+                            class="w-full"
+                            placeholder="Terméknév vagy slug"
+                            @keyup.enter="submitFilters"
+                        />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Kategória</label>
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >Kategória</label
+                        >
                         <Select
                             v-model="filterState.category_id"
                             :options="categoryOptions"
@@ -345,12 +378,25 @@ watch(
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Státusz</label>
-                        <Select v-model="filterState.is_active" :options="activeOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >Státusz</label
+                        >
+                        <Select
+                            v-model="filterState.is_active"
+                            :options="activeOptions"
+                            option-label="label"
+                            option-value="value"
+                            class="w-full"
+                            @change="submitFilters"
+                        />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Receptállapot</label>
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >Receptállapot</label
+                        >
                         <Select
                             v-model="filterState.recipe_presence"
                             :options="recipePresenceOptions"
@@ -362,7 +408,10 @@ watch(
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Alacsony készlet</label>
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >Alacsony készlet</label
+                        >
                         <Select
                             v-model="filterState.has_low_stock_ingredient"
                             :options="lowStockOptions"
@@ -375,7 +424,14 @@ watch(
                 </template>
 
                 <template #actions>
-                    <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-[9rem]" @change="submitFilters" />
+                    <Select
+                        v-model="filterState.per_page"
+                        :options="perPageOptions"
+                        option-label="label"
+                        option-value="value"
+                        class="w-[9rem]"
+                        @change="submitFilters"
+                    />
                     <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
                 </template>
             </AdminTableToolbar>
@@ -421,6 +477,3 @@ watch(
         <ConfirmDialog />
     </div>
 </template>
-
-
-
