@@ -24,6 +24,10 @@ class ProductData extends Data
         public string $stock_status,
     ) {}
 
+    /**
+     * @param Product $product
+     * @return ProductData
+     */
     public static function fromModel(Product $product): self
     {
         return new self(

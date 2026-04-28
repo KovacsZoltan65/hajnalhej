@@ -19,7 +19,8 @@ class ProductIndexData extends Data
     ) {}
 
     /**
-     * @param  array<string, mixed>  $payload
+     * @param array $payload
+     * @return ProductIndexData
      */
     public static function fromArray(array $payload): self
     {
