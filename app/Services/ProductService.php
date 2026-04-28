@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Data\Products\ProductIndexData;
+use App\Data\Products\ProductStoreData;
+use App\Data\Products\ProductUpdateData;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -11,16 +14,11 @@ use Illuminate\Support\Str;
 
 class ProductService
 {
-    public function __construct(private readonly ProductRepository $repository)
-    {
-    }
+    public function __construct(private readonly ProductRepository $repository) {}
 
-    /**
-     * @param array<string, mixed> $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(ProductIndexData $filters): LengthAwarePaginator
     {
-        return $this->repository->paginateForAdmin($filters);
+        return $this->repository->paginate($filters);
     }
 
     /**
@@ -39,23 +37,17 @@ class ProductService
         return $this->repository->listSelectableActiveProducts();
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function create(array $payload): Product
+    public function store(ProductStoreData $data): Product
     {
-        $normalized = $this->normalizePayload($payload);
+        $normalized = $this->normalizePayload($data->toPayload());
         $normalized['slug'] = $this->resolveUniqueSlug((string) $normalized['slug']);
 
         return DB::transaction(fn (): Product => $this->repository->create($normalized));
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function update(Product $product, array $payload): Product
+    public function update(Product $product, ProductUpdateData $data): Product
     {
-        $normalized = $this->normalizePayload($payload, $product);
+        $normalized = $this->normalizePayload($data->toPayload(), $product);
         $normalized['slug'] = $this->resolveUniqueSlug((string) $normalized['slug'], $product->id);
 
         return DB::transaction(fn (): Product => $this->repository->update($product, $normalized));
@@ -67,7 +59,7 @@ class ProductService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      * @return array<string, mixed>
      */
     private function normalizePayload(array $payload, ?Product $product = null): array

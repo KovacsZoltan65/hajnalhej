@@ -1,5 +1,7 @@
 <?php
 
+use App\Data\Products\ProductIndexData;
+use App\Data\Products\ProductListItemData;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
@@ -43,6 +45,32 @@ it('product create valid adatokkal mukodik', function (): void {
         'name' => 'Klasszikus kovaszos kenyer',
         'slug' => 'klasszikus-kovaszos-kenyer',
         'category_id' => $category->id,
+    ]);
+});
+
+it('product create data flow decimal arat es alapertelmezett slugot kezel', function (): void {
+    $user = User::factory()->create();
+    $category = Category::factory()->create(['is_active' => true]);
+
+    $response = $this->actingAs($user)->post('/admin/products', [
+        'category_id' => $category->id,
+        'name' => 'Rozsos vekni',
+        'short_description' => null,
+        'description' => null,
+        'price' => '1234.5',
+        'is_active' => true,
+        'is_featured' => false,
+        'stock_status' => Product::STOCK_IN_STOCK,
+        'image_path' => null,
+        'sort_order' => 0,
+    ]);
+
+    $response->assertRedirect('/admin/products');
+
+    $this->assertDatabaseHas('products', [
+        'name' => 'Rozsos vekni',
+        'slug' => 'rozsos-vekni',
+        'price' => '1234.50',
     ]);
 });
 
@@ -154,6 +182,40 @@ it('product update mukodik', function (): void {
     ]);
 });
 
+it('product update data flow megtartja az aktualis termek slug egyediseget', function (): void {
+    $user = User::factory()->create();
+    $category = Category::factory()->create(['is_active' => true]);
+    $product = Product::factory()->create([
+        'category_id' => $category->id,
+        'name' => 'Eredeti nev',
+        'slug' => 'eredeti-nev',
+    ]);
+
+    $response = $this->actingAs($user)->put("/admin/products/{$product->id}", [
+        'category_id' => $category->id,
+        'name' => 'Eredeti nev',
+        'slug' => 'eredeti-nev',
+        'short_description' => '',
+        'description' => '',
+        'price' => 2190,
+        'is_active' => false,
+        'is_featured' => false,
+        'stock_status' => Product::STOCK_PREORDER,
+        'image_path' => '',
+        'sort_order' => 7,
+    ]);
+
+    $response->assertRedirect('/admin/products');
+
+    $this->assertDatabaseHas('products', [
+        'id' => $product->id,
+        'slug' => 'eredeti-nev',
+        'is_active' => false,
+        'stock_status' => Product::STOCK_PREORDER,
+        'sort_order' => 7,
+    ]);
+});
+
 it('product delete soft delete-ol', function (): void {
     $user = User::factory()->create();
     $product = Product::factory()->create();
@@ -195,6 +257,45 @@ it('product search mukodik', function (): void {
         ->where('products.data.0.name', 'Magvas vekni'));
 });
 
+it('product index data normalizalja a legacy es uj aktiv szuroket', function (): void {
+    $legacyFilters = ProductIndexData::from([
+        'is_active' => '0',
+        'per_page' => '100',
+        'sort_field' => 'nem-letezo',
+        'sort_direction' => 'sideways',
+    ]);
+
+    $newFilters = ProductIndexData::from([
+        'active' => true,
+        'category_id' => '12',
+        'search' => '  bagett  ',
+    ]);
+
+    expect($legacyFilters->active)->toBeFalse()
+        ->and($legacyFilters->per_page)->toBe(50)
+        ->and($legacyFilters->sort_field)->toBe('sort_order')
+        ->and($legacyFilters->sort_direction)->toBe('asc')
+        ->and($newFilters->active)->toBeTrue()
+        ->and($newFilters->category_id)->toBe(12)
+        ->and($newFilters->search)->toBe('bagett');
+});
+
+it('product active index filter mukodik', function (): void {
+    $user = User::factory()->create();
+    $category = Category::factory()->create(['is_active' => true]);
+
+    Product::factory()->create(['category_id' => $category->id, 'name' => 'Aktiv kenyer', 'is_active' => true]);
+    Product::factory()->create(['category_id' => $category->id, 'name' => 'Inaktiv kenyer', 'is_active' => false]);
+
+    $response = $this->actingAs($user)->get('/admin/products?active=1');
+
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Admin/Products/Index')
+        ->has('products.data', 1)
+        ->where('products.data.0.name', 'Aktiv kenyer')
+        ->where('filters.is_active', '1'));
+});
+
 it('product pagination mukodik', function (): void {
     $user = User::factory()->create();
     $category = Category::factory()->create(['is_active' => true]);
@@ -229,4 +330,29 @@ it('products index a szukseges listazo mezoket visszaadja', function (): void {
         ->where('products.data.0.slug', 'vajas-croissant')
         ->where('products.data.0.price', 890)
         ->where('products.data.0.sort_order', 9));
+});
+
+it('product list item data admin listahoz optimalizalt payloadot ad', function (): void {
+    $category = Category::factory()->create(['is_active' => true, 'name' => 'Kenyerek']);
+    $product = Product::factory()->create([
+        'category_id' => $category->id,
+        'name' => 'Parasztkenyer',
+        'slug' => 'parasztkenyer',
+        'price' => 1590,
+        'is_active' => true,
+        'sort_order' => 2,
+    ])->load('category', 'productIngredients.ingredient');
+
+    $data = ProductListItemData::from($product)->toArray();
+
+    expect($data)
+        ->toMatchArray([
+            'id' => $product->id,
+            'category_name' => 'Kenyerek',
+            'name' => 'Parasztkenyer',
+            'slug' => 'parasztkenyer',
+            'price' => 1590.0,
+            'is_active' => true,
+            'sort_order' => 2,
+        ]);
 });
