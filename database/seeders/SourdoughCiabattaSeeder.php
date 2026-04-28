@@ -42,7 +42,7 @@ class SourdoughCiabattaSeeder extends Seeder
                 'name' => 'Kovászos Ciabatta',
                 'short_description' => 'Rusztikus, lyukacsos bélzetű ciabatta.',
                 'description' => 'Magas hidratációjú kovászos ciabatta olívaolajjal.',
-                'price' => 0,
+                'price' => 150,
                 'image_path' => 'products/kovaszos-ciabatta.jpg',
                 'sort_order' => 30,
             ]

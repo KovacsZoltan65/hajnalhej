@@ -73,7 +73,7 @@ class SourdoughNapoliPizzaSeeder extends Seeder
                 'name' => 'Kovászos Pizza (nápolyi stílus)',
                 'short_description' => 'Hosszú, hideg fermentációjú kovászos pizzatészta.',
                 'description' => 'Nápolyi ihletésű kovászos pizzatészta 24 órás hűtős érleléssel, otthoni sütőre optimalizálva.',
-                'price' => 0,
+                'price' => 150,
                 'image_path' => 'products/kovaszos-pizza-napolyi.jpg',
                 'sort_order' => 40,
             ],

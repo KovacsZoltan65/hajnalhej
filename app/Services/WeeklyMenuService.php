@@ -2,7 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Product;
+use App\Data\WeeklyMenu\WeeklyMenuIndexData;
+use App\Data\WeeklyMenu\WeeklyMenuStoreData;
+use App\Data\WeeklyMenu\WeeklyMenuUpdateData;
+use App\Data\WeeklyMenuItem\WeeklyMenuItemStoreData;
+use App\Data\WeeklyMenuItem\WeeklyMenuItemUpdateData;
 use App\Models\WeeklyMenu;
 use App\Models\WeeklyMenuItem;
 use App\Repositories\WeeklyMenuRepository;
@@ -15,16 +19,19 @@ use RuntimeException;
 
 class WeeklyMenuService
 {
-    public function __construct(private readonly WeeklyMenuRepository $repository)
+    public function __construct(
+        private readonly WeeklyMenuRepository $repository,
+        private readonly WeeklyMenuItemService $itemService,
+    ) {}
+
+    public function paginate(WeeklyMenuIndexData $filters): LengthAwarePaginator
     {
+        return $this->repository->paginate($filters);
     }
 
-    /**
-     * @param array<string, mixed> $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(WeeklyMenuIndexData $filters): LengthAwarePaginator
     {
-        return $this->repository->paginateForAdmin($filters);
+        return $this->paginate($filters);
     }
 
     /**
@@ -35,26 +42,32 @@ class WeeklyMenuService
         return $this->repository->listSelectableProducts();
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function create(array $payload): WeeklyMenu
+    public function store(WeeklyMenuStoreData $data): WeeklyMenu
     {
-        $normalized = $this->normalizeMenuPayload($payload);
+        $normalized = $this->normalizeMenuPayload($data->toPayload());
         $normalized['slug'] = $this->resolveUniqueSlug((string) $normalized['slug']);
 
-        return $this->repository->create($normalized);
+        return DB::transaction(function () use ($normalized): WeeklyMenu {
+            if ($normalized['status'] === WeeklyMenu::STATUS_PUBLISHED) {
+                $this->repository->archiveOtherActiveMenus();
+            }
+
+            return $this->repository->create($normalized);
+        });
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function update(WeeklyMenu $weeklyMenu, array $payload): WeeklyMenu
+    public function update(WeeklyMenu $weeklyMenu, WeeklyMenuUpdateData $data): WeeklyMenu
     {
-        $normalized = $this->normalizeMenuPayload($payload, $weeklyMenu);
+        $normalized = $this->normalizeMenuPayload($data->toPayload(), $weeklyMenu);
         $normalized['slug'] = $this->resolveUniqueSlug((string) $normalized['slug'], $weeklyMenu->id);
 
-        return $this->repository->update($weeklyMenu, $normalized);
+        return DB::transaction(function () use ($weeklyMenu, $normalized): WeeklyMenu {
+            if ($normalized['status'] === WeeklyMenu::STATUS_PUBLISHED) {
+                $this->repository->archiveOtherActiveMenus($weeklyMenu->id);
+            }
+
+            return $this->repository->update($weeklyMenu, $normalized);
+        });
     }
 
     public function delete(WeeklyMenu $weeklyMenu): void
@@ -69,7 +82,7 @@ class WeeklyMenuService
         }
 
         return DB::transaction(function () use ($weeklyMenu): WeeklyMenu {
-            $this->repository->archiveOtherMenusForWeek($weeklyMenu);
+            $this->repository->archiveOtherActiveMenus($weeklyMenu->id);
 
             return $this->repository->publish($weeklyMenu, Carbon::now());
         });
@@ -80,37 +93,19 @@ class WeeklyMenuService
         return $this->repository->unpublish($weeklyMenu);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function createItem(WeeklyMenu $weeklyMenu, array $payload): WeeklyMenuItem
+    public function createItem(WeeklyMenu $weeklyMenu, WeeklyMenuItemStoreData $data): WeeklyMenuItem
     {
-        $normalized = $this->normalizeItemPayload($payload);
-
-        if ($this->repository->existsMenuProduct($weeklyMenu, (int) $normalized['product_id'])) {
-            throw new RuntimeException('A kivalasztott termek mar szerepel ebben a heti menuben.');
-        }
-
-        return $this->repository->createItem($weeklyMenu, $normalized);
+        return $this->itemService->addItem($weeklyMenu, $data);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function updateItem(WeeklyMenu $weeklyMenu, WeeklyMenuItem $item, array $payload): WeeklyMenuItem
+    public function updateItem(WeeklyMenu $weeklyMenu, WeeklyMenuItem $item, WeeklyMenuItemUpdateData $data): WeeklyMenuItem
     {
-        $normalized = $this->normalizeItemPayload($payload);
-
-        if ($this->repository->existsMenuProduct($weeklyMenu, (int) $normalized['product_id'], $item->id)) {
-            throw new RuntimeException('A kivalasztott termek mar szerepel ebben a heti menuben.');
-        }
-
-        return $this->repository->updateItem($item, $normalized);
+        return $this->itemService->updateItem($weeklyMenu, $item, $data);
     }
 
     public function deleteItem(WeeklyMenuItem $item): void
     {
-        $this->repository->deleteItem($item);
+        $this->itemService->removeItem($item);
     }
 
     /**
@@ -169,7 +164,7 @@ class WeeklyMenuService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      * @return array<string, mixed>
      */
     private function normalizeMenuPayload(array $payload, ?WeeklyMenu $weeklyMenu = null): array
@@ -201,27 +196,6 @@ class WeeklyMenuService
             'internal_note' => $payload['internal_note'] ?? null,
             'is_featured' => (bool) ($payload['is_featured'] ?? false),
             'published_at' => $status === WeeklyMenu::STATUS_PUBLISHED ? ($weeklyMenu?->published_at ?? Carbon::now()) : null,
-        ];
-    }
-
-    /**
-     * @param array<string, mixed> $payload
-     * @return array<string, mixed>
-     */
-    private function normalizeItemPayload(array $payload): array
-    {
-        $product = Product::query()->select('id', 'category_id')->findOrFail((int) $payload['product_id']);
-
-        return [
-            'product_id' => $product->id,
-            'category_id' => $product->category_id,
-            'override_name' => $payload['override_name'] ?? null,
-            'override_short_description' => $payload['override_short_description'] ?? null,
-            'override_price' => $payload['override_price'] !== null ? number_format((float) $payload['override_price'], 2, '.', '') : null,
-            'sort_order' => (int) ($payload['sort_order'] ?? 0),
-            'is_active' => (bool) ($payload['is_active'] ?? true),
-            'badge_text' => $payload['badge_text'] ?? null,
-            'stock_note' => $payload['stock_note'] ?? null,
         ];
     }
 

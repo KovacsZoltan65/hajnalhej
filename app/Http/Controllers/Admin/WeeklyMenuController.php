@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Data\WeeklyMenu\WeeklyMenuIndexData;
+use App\Data\WeeklyMenu\WeeklyMenuStoreData;
+use App\Data\WeeklyMenu\WeeklyMenuUpdateData;
+use App\Data\WeeklyMenuItem\WeeklyMenuItemStoreData;
+use App\Data\WeeklyMenuItem\WeeklyMenuItemUpdateData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreWeeklyMenuItemRequest;
 use App\Http\Requests\StoreWeeklyMenuRequest;
@@ -9,6 +14,7 @@ use App\Http\Requests\UpdateWeeklyMenuItemRequest;
 use App\Http\Requests\UpdateWeeklyMenuRequest;
 use App\Models\WeeklyMenu;
 use App\Models\WeeklyMenuItem;
+use App\Services\WeeklyMenuItemService;
 use App\Services\WeeklyMenuService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,71 +24,32 @@ use RuntimeException;
 
 class WeeklyMenuController extends Controller
 {
-    /**
-     * @param WeeklyMenuService $service
-     */
-    public function __construct(private readonly WeeklyMenuService $service)
-    {
-    }
+    public function __construct(
+        private readonly WeeklyMenuService $service,
+        private readonly WeeklyMenuItemService $itemService,
+    ) {}
 
-    /**
-     * @param Request $request
-     * @return \Inertia\Response
-     */
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', WeeklyMenu::class);
 
-        $filters = $request->validate([
+        $request->validate([
             'search' => ['nullable', 'string', 'max:160'],
             'status' => ['nullable', 'in:draft,published,archived'],
-            'sort_field' => ['nullable', 'in:week_start,status,title'],
+            'active' => ['nullable', 'boolean'],
+            'date_from' => ['nullable', 'date'],
+            'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
+            'sort_field' => ['nullable', 'in:week_start,week_end,status,title'],
             'sort_direction' => ['nullable', 'in:asc,desc'],
             'per_page' => ['nullable', 'integer', 'min:5', 'max:50'],
         ]);
 
-        $paginator = $this->service
-            ->paginateForAdmin($filters)
-            ->through(fn (WeeklyMenu $menu): array => [
-                'id' => $menu->id,
-                'title' => $menu->title,
-                'slug' => $menu->slug,
-                'week_start' => $menu->week_start?->toDateString(),
-                'week_end' => $menu->week_end?->toDateString(),
-                'status' => $menu->status,
-                'public_note' => $menu->public_note,
-                'internal_note' => $menu->internal_note,
-                'is_featured' => $menu->is_featured,
-                'published_at' => $menu->published_at?->toDateTimeString(),
-                'items_count' => $menu->items_count,
-                'items' => $menu->items
-                    ->map(fn (WeeklyMenuItem $item): array => [
-                        'id' => $item->id,
-                        'weekly_menu_id' => $item->weekly_menu_id,
-                        'product_id' => $item->product_id,
-                        'product_name' => $item->product?->name,
-                        'category_name' => $item->product?->category?->name,
-                        'override_name' => $item->override_name,
-                        'override_short_description' => $item->override_short_description,
-                        'override_price' => $item->override_price !== null ? (float) $item->override_price : null,
-                        'sort_order' => $item->sort_order,
-                        'is_active' => $item->is_active,
-                        'badge_text' => $item->badge_text,
-                        'stock_note' => $item->stock_note,
-                    ])
-                    ->values()
-                    ->all(),
-            ]);
+        $filters = WeeklyMenuIndexData::from($request->all());
+        $paginator = $this->service->paginate($filters);
 
         return Inertia::render('Admin/WeeklyMenus/Index', [
             'weeklyMenus' => $paginator,
-            'filters' => [
-                'search' => (string) ($filters['search'] ?? ''),
-                'status' => (string) ($filters['status'] ?? ''),
-                'sort_field' => (string) ($filters['sort_field'] ?? 'week_start'),
-                'sort_direction' => (string) ($filters['sort_direction'] ?? 'desc'),
-                'per_page' => (int) ($filters['per_page'] ?? 10),
-            ],
+            'filters' => $filters->toFrontendFilters(),
             'statuses' => [
                 ['value' => WeeklyMenu::STATUS_DRAFT, 'label' => 'Piszkozat'],
                 ['value' => WeeklyMenu::STATUS_PUBLISHED, 'label' => 'Közzétéve'],
@@ -92,33 +59,20 @@ class WeeklyMenuController extends Controller
         ]);
     }
 
-    /**
-     * @param StoreWeeklyMenuRequest $request
-     * @return RedirectResponse
-     */
     public function store(StoreWeeklyMenuRequest $request): RedirectResponse
     {
-        $this->service->create($request->validated());
+        $this->service->store(WeeklyMenuStoreData::from($request));
 
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü létrehozva.');
     }
 
-    /**
-     * @param UpdateWeeklyMenuRequest $request
-     * @param WeeklyMenu $weeklyMenu
-     * @return RedirectResponse
-     */
     public function update(UpdateWeeklyMenuRequest $request, WeeklyMenu $weeklyMenu): RedirectResponse
     {
-        $this->service->update($weeklyMenu, $request->validated());
+        $this->service->update($weeklyMenu, WeeklyMenuUpdateData::from($request));
 
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü frissítve.');
     }
 
-    /**
-     * @param WeeklyMenu $weeklyMenu
-     * @return RedirectResponse
-     */
     public function destroy(WeeklyMenu $weeklyMenu): RedirectResponse
     {
         $this->authorize('delete', $weeklyMenu);
@@ -128,10 +82,6 @@ class WeeklyMenuController extends Controller
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü törölve.');
     }
 
-    /**
-     * @param WeeklyMenu $weeklyMenu
-     * @return RedirectResponse
-     */
     public function publish(WeeklyMenu $weeklyMenu): RedirectResponse
     {
         $this->authorize('update', $weeklyMenu);
@@ -145,10 +95,6 @@ class WeeklyMenuController extends Controller
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü publikálva.');
     }
 
-    /**
-     * @param WeeklyMenu $weeklyMenu
-     * @return RedirectResponse
-     */
     public function unpublish(WeeklyMenu $weeklyMenu): RedirectResponse
     {
         $this->authorize('update', $weeklyMenu);
@@ -158,15 +104,10 @@ class WeeklyMenuController extends Controller
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü visszaállítva piszkozat állapotba.');
     }
 
-    /**
-     * @param StoreWeeklyMenuItemRequest $request
-     * @param WeeklyMenu $weeklyMenu
-     * @return RedirectResponse
-     */
     public function storeItem(StoreWeeklyMenuItemRequest $request, WeeklyMenu $weeklyMenu): RedirectResponse
     {
         try {
-            $this->service->createItem($weeklyMenu, $request->validated());
+            $this->itemService->addItem($weeklyMenu, WeeklyMenuItemStoreData::from($request));
         } catch (RuntimeException $exception) {
             return redirect()->route('admin.weekly-menus.index')->with('error', $exception->getMessage());
         }
@@ -174,12 +115,6 @@ class WeeklyMenuController extends Controller
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü tétel létrehozva.');
     }
 
-    /**
-     * @param UpdateWeeklyMenuItemRequest $request
-     * @param WeeklyMenu $weeklyMenu
-     * @param WeeklyMenuItem $item
-     * @return RedirectResponse
-     */
     public function updateItem(UpdateWeeklyMenuItemRequest $request, WeeklyMenu $weeklyMenu, WeeklyMenuItem $item): RedirectResponse
     {
         if ($item->weekly_menu_id !== $weeklyMenu->id) {
@@ -187,7 +122,7 @@ class WeeklyMenuController extends Controller
         }
 
         try {
-            $this->service->updateItem($weeklyMenu, $item, $request->validated());
+            $this->itemService->updateItem($weeklyMenu, $item, WeeklyMenuItemUpdateData::from($request));
         } catch (RuntimeException $exception) {
             return redirect()->route('admin.weekly-menus.index')->with('error', $exception->getMessage());
         }
@@ -195,11 +130,6 @@ class WeeklyMenuController extends Controller
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü tétel frissítve.');
     }
 
-    /**
-     * @param WeeklyMenu $weeklyMenu
-     * @param WeeklyMenuItem $item
-     * @return RedirectResponse
-     */
     public function destroyItem(WeeklyMenu $weeklyMenu, WeeklyMenuItem $item): RedirectResponse
     {
         $this->authorize('update', $weeklyMenu);
@@ -208,12 +138,8 @@ class WeeklyMenuController extends Controller
             abort(404);
         }
 
-        $this->service->deleteItem($item);
+        $this->itemService->removeItem($item);
 
         return redirect()->route('admin.weekly-menus.index')->with('success', 'Heti menü tétel törölve.');
     }
 }
-
-
-
-

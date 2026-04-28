@@ -48,7 +48,7 @@ class SourdoughSpecialtyRecipesSeeder extends Seeder
                 'name' => 'Kovászos Bagett',
                 'short_description' => 'Vékony roppanós héjú klasszikus bagett.',
                 'description' => 'Kovászos bagett hosszú fermentációval és gőzös sütéssel.',
-                'price' => 0,
+                'price' => 150,
                 'sort_order' => 10,
             ]
         );
@@ -114,7 +114,7 @@ class SourdoughSpecialtyRecipesSeeder extends Seeder
                 'name' => 'Kovászos Ciabatta',
                 'short_description' => 'Nyitott bélzetű, rusztikus ciabatta.',
                 'description' => 'Magas hidratációjú kovászos ciabatta olívaolajjal.',
-                'price' => 0,
+                'price' => 150,
                 'sort_order' => 20,
             ]
         );

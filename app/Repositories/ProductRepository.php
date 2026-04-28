@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Data\Products\ProductIndexData;
+use App\Data\Products\ProductListItemData;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -11,20 +13,16 @@ use Illuminate\Support\Collection;
 
 class ProductRepository
 {
-    /**
-     * @param array<string, mixed> $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginate(ProductIndexData $filters): LengthAwarePaginator
     {
-        $perPage = (int) ($filters['per_page'] ?? 10);
-
         return $this->adminQuery($filters)
             ->with([
                 'category:id,name',
                 'productIngredients.ingredient:id,name,unit,is_active,deleted_at',
             ])
-            ->paginate($perPage)
-            ->withQueryString();
+            ->paginate($filters->per_page)
+            ->withQueryString()
+            ->through(fn (Product $product): array => ProductListItemData::from($product)->toArray());
     }
 
     /**
@@ -62,7 +60,7 @@ class ProductRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function create(array $data): Product
     {
@@ -70,7 +68,7 @@ class ProductRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function update(Product $product, array $data): Product
     {
@@ -96,7 +94,7 @@ class ProductRepository
     }
 
     /**
-     * @param array<int, int> $ids
+     * @param  array<int, int>  $ids
      * @return EloquentCollection<int, Product>
      */
     public function findOrderableByIds(array $ids): EloquentCollection
@@ -111,44 +109,29 @@ class ProductRepository
             ->get();
     }
 
-    /**
-     * @param array<string, mixed> $filters
-     */
-    private function adminQuery(array $filters): Builder
+    private function adminQuery(ProductIndexData $filters): Builder
     {
-        $search = trim((string) ($filters['search'] ?? ''));
-        $categoryId = $filters['category_id'] ?? null;
-        $isActive = $filters['is_active'] ?? null;
-        $sortField = (string) ($filters['sort_field'] ?? 'sort_order');
-        $sortDirection = (string) ($filters['sort_direction'] ?? 'asc');
-
-        $sortableFields = ['name', 'slug', 'price', 'is_active', 'sort_order'];
-
-        if (! \in_array($sortField, $sortableFields, true)) {
-            $sortField = 'sort_order';
-        }
-
-        if (! \in_array($sortDirection, ['asc', 'desc'], true)) {
-            $sortDirection = 'asc';
-        }
+        $search = $filters->search;
+        $categoryId = $filters->category_id;
+        $isActive = $filters->active;
 
         $query = Product::query()
-            ->when($search !== '', function (Builder $query) use ($search): void {
+            ->when($search !== null, function (Builder $query) use ($search): void {
                 $query->where(function (Builder $innerQuery) use ($search): void {
                     $innerQuery
                         ->where('name', 'like', "%{$search}%")
                         ->orWhere('slug', 'like', "%{$search}%");
                 });
             })
-            ->when($categoryId !== null && $categoryId !== '', function (Builder $query) use ($categoryId): void {
-                $query->where('category_id', (int) $categoryId);
+            ->when($categoryId !== null, function (Builder $query) use ($categoryId): void {
+                $query->where('category_id', $categoryId);
             })
-            ->when($isActive !== null && $isActive !== '', function (Builder $query) use ($isActive): void {
-                $query->where('is_active', (bool) $isActive);
+            ->when($isActive !== null, function (Builder $query) use ($isActive): void {
+                $query->where('is_active', $isActive);
             });
 
         $query
-            ->orderBy($sortField, $sortDirection)
+            ->orderBy($filters->sort_field, $filters->sort_direction)
             ->orderBy('id');
 
         return $query;

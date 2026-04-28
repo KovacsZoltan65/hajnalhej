@@ -118,7 +118,7 @@ class SourdoughCocoaRollSeeder extends Seeder
                 'name' => 'Kakaós Csiga',
                 'short_description' => 'Kovászos, vajas kakaós csiga éjszakai hideg pihentetéssel.',
                 'description' => 'Dúsított kovászos tészta, kakaós-vajas-barna cukros töltelékkel. Kiváló teszt a plannernek, mert esti indításból reggeli sütést modellez.',
-                'price' => 0,
+                'price' => 150,
                 'image_path' => 'products/kakaos-csiga.jpg',
                 'sort_order' => 50,
             ],

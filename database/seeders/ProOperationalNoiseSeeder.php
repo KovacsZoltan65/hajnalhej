@@ -372,6 +372,10 @@ class ProOperationalNoiseSeeder extends Seeder
             if (class_exists(PurchaseReceipt::class)) {
                 $this->safeCreate(PurchaseReceipt::class, [
                     'purchase_id' => $purchase->id,
+                    'receipt_number' => sprintf('%s-RC-NOISE-%05d-%05d', $this->prefix, $purchase->id, $item->id),
+                    'received_date' => Carbon::parse($this->dateValue($purchase, ['received_at', 'created_at']) ?? now())->toDateString(),
+                    'status' => 'draft',
+                    'total_received_value' => 0,
                     'purchase_item_id' => $item->id,
                     'ingredient_id' => $item->ingredient_id ?? null,
                     'quantity' => $receivedQuantity,
