@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Data\WeeklyMenu\WeeklyMenuIndexData;
+use App\Data\WeeklyMenu\WeeklyMenuListItemData;
 use App\Models\Product;
 use App\Models\WeeklyMenu;
 use App\Models\WeeklyMenuItem;
@@ -12,18 +14,14 @@ use Illuminate\Support\Collection;
 
 class WeeklyMenuRepository
 {
-    /**
-     * @param array<string, mixed> $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginate(WeeklyMenuIndexData $filters): LengthAwarePaginator
     {
-        $perPage = (int) ($filters['per_page'] ?? 10);
-
         return $this->adminQuery($filters)
             ->with(['items.product.category'])
             ->withCount('items')
-            ->paginate($perPage)
-            ->withQueryString();
+            ->paginate($filters->per_page)
+            ->withQueryString()
+            ->through(fn (WeeklyMenu $menu): array => WeeklyMenuListItemData::from($menu)->toArray());
     }
 
     /**
@@ -45,7 +43,7 @@ class WeeklyMenuRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function create(array $data): WeeklyMenu
     {
@@ -53,7 +51,7 @@ class WeeklyMenuRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function update(WeeklyMenu $weeklyMenu, array $data): WeeklyMenu
     {
@@ -92,6 +90,17 @@ class WeeklyMenuRepository
             ]);
     }
 
+    public function archiveOtherActiveMenus(?int $ignoreId = null): void
+    {
+        WeeklyMenu::query()
+            ->when($ignoreId !== null, fn (Builder $query): Builder => $query->whereKeyNot($ignoreId))
+            ->where('status', WeeklyMenu::STATUS_PUBLISHED)
+            ->update([
+                'status' => WeeklyMenu::STATUS_ARCHIVED,
+                'published_at' => null,
+            ]);
+    }
+
     public function publish(WeeklyMenu $weeklyMenu, Carbon $publishedAt): WeeklyMenu
     {
         $weeklyMenu->update([
@@ -113,7 +122,7 @@ class WeeklyMenuRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function createItem(WeeklyMenu $weeklyMenu, array $data): WeeklyMenuItem
     {
@@ -121,7 +130,7 @@ class WeeklyMenuRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function updateItem(WeeklyMenuItem $item, array $data): WeeklyMenuItem
     {
@@ -179,40 +188,30 @@ class WeeklyMenuRepository
             ->first();
     }
 
-    /**
-     * @param array<string, mixed> $filters
-     */
-    private function adminQuery(array $filters): Builder
+    private function adminQuery(WeeklyMenuIndexData $filters): Builder
     {
-        $search = trim((string) ($filters['search'] ?? ''));
-        $status = (string) ($filters['status'] ?? '');
-        $sortField = (string) ($filters['sort_field'] ?? 'week_start');
-        $sortDirection = (string) ($filters['sort_direction'] ?? 'desc');
-
-        $sortableFields = ['week_start', 'status', 'title'];
-
-        if (! \in_array($sortField, $sortableFields, true)) {
-            $sortField = 'week_start';
-        }
-
-        if (! \in_array($sortDirection, ['asc', 'desc'], true)) {
-            $sortDirection = 'desc';
-        }
-
         $query = WeeklyMenu::query()
-            ->when($search !== '', function (Builder $query) use ($search): void {
+            ->when($filters->search !== null, function (Builder $query) use ($filters): void {
+                $search = (string) $filters->search;
+
                 $query->where(function (Builder $innerQuery) use ($search): void {
                     $innerQuery
                         ->where('title', 'like', "%{$search}%")
                         ->orWhere('slug', 'like', "%{$search}%");
                 });
             })
-            ->when($status !== '', function (Builder $query) use ($status): void {
-                $query->where('status', $status);
+            ->when($filters->status !== null, function (Builder $query) use ($filters): void {
+                $query->where('status', $filters->status);
+            })
+            ->when($filters->date_from !== null, function (Builder $query) use ($filters): void {
+                $query->whereDate('week_end', '>=', $filters->date_from);
+            })
+            ->when($filters->date_to !== null, function (Builder $query) use ($filters): void {
+                $query->whereDate('week_start', '<=', $filters->date_to);
             });
 
         $query
-            ->orderBy($sortField, $sortDirection)
+            ->orderBy($filters->sort_field, $filters->sort_direction)
             ->orderBy('id');
 
         return $query;
