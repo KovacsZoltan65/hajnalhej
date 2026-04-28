@@ -37,7 +37,7 @@ describe('RecipeIngredientList', () => {
             },
         });
 
-        expect(wrapper.text()).toContain('meg nincs recepttétel');
+        expect(wrapper.text()).toContain('még nincs recepttétel');
     });
 });
 

@@ -43,11 +43,11 @@ describe("RecipeEditorModal", () => {
             global: { stubs },
         });
 
-        expect(wrapper.text()).toContain("Kategoria: Kenyerek");
+        expect(wrapper.text()).toContain("Kategória: Kenyerek");
         expect(wrapper.text()).toContain("ingredients 1");
         expect(wrapper.text()).toContain("steps 1");
-        expect(wrapper.text()).toContain("Hozzavalok");
-        expect(wrapper.text()).toContain("Recept lépések es idozites");
+        expect(wrapper.text()).toContain("Hozzávalók");
+        expect(wrapper.text()).toContain("Recept lépések és időzítés");
         expect(wrapper.text()).toContain("Teljes idő:");
         expect(wrapper.text()).not.toContain("Mennyiség");
     });
