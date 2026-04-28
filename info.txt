@@ -11,3 +11,6 @@ Futtassa ezt a parancsot phpdocs hozzáadásához a modellekhez. Adja hozzá az 
 php artisan ide-helper:generate - PHPDoc generálás Laravel Facades-hez
 php artisan ide-helper:models - PHPDocs modellekhez
 php artisan ide-helper:meta - PhpStorm metafájl
+
+php artisan migrate:fresh --env=testing
+php artisan migrate:fresh --seed --env=testing
