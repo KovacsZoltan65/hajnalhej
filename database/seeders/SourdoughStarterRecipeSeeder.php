@@ -32,7 +32,7 @@ class SourdoughStarterRecipeSeeder extends Seeder
                 'name' => 'Aktív búzakovász (100% hidratáció)',
                 'short_description' => 'Erős, aktív kovász kenyerekhez és péksüteményekhez.',
                 'description' => 'Frissen etetett, buborékos, duplázódó búzakovász. Ideális kenyér receptekhez.',
-                'price' => 0,
+                'price' => 300,
                 'image_path' => 'products/aktiv-buzakovasz.jpg',
                 'sort_order' => 50,
             ],
