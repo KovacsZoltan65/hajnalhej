@@ -68,10 +68,13 @@ use App\Support\PermissionRegistry;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, ?string $guard = null)
  * @mixin \Eloquent
  */
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'phone', 'password', 'status'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles;
 
@@ -101,6 +104,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public static function statuses(): array
+    {
+        return [self::STATUS_ACTIVE, self::STATUS_INACTIVE];
     }
 
     public function createdPurchases(): HasMany
