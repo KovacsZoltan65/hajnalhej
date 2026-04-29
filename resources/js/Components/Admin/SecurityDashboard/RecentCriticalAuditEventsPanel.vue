@@ -14,7 +14,7 @@ defineProps({
     <section class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-5">
         <header class="mb-4">
             <h3 class="font-heading text-xl text-bakery-dark">Legutóbbi kritikus audit események</h3>
-            <p class="text-sm text-bakery-dark/70">Authorization, orders es user-activity domainek friss kritikus esemenyei.</p>
+            <p class="text-sm text-bakery-dark/70">Authorization, orders es user-activity domainek friss kritikus eseményei.</p>
         </header>
 
         <div class="space-y-3">

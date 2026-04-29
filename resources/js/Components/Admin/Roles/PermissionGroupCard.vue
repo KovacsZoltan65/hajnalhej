@@ -45,7 +45,7 @@ const groupLabel = (name) => groupLabels[name] ?? name;
         <div class="mb-3 flex items-center justify-between gap-2">
             <div>
                 <p class="text-sm font-semibold text-bakery-dark">{{ groupLabel(groupName) }}</p>
-                <p class="text-xs text-bakery-dark/70">{{ items.length }} jogosultsag</p>
+                <p class="text-xs text-bakery-dark/70">{{ items.length }} jogosultság</p>
             </div>
 
             <button
@@ -54,7 +54,7 @@ const groupLabel = (name) => groupLabels[name] ?? name;
                 :disabled="disabled"
                 @click="emit('toggle-group', { groupName, selectAll: !isAllSelected() })"
             >
-                {{ isAllSelected() ? 'Mindet torli' : 'Mindet kijeloli' }}
+                {{ isAllSelected() ? 'Mindet törli' : 'Mindet kijelöli' }}
             </button>
         </div>
 
