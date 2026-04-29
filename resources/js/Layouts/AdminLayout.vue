@@ -76,7 +76,10 @@ const menuGroups = computed(() => {
             label: 'Adminisztráció',
             items: [
                 hasAny(can, ['assign_user_roles', 'view_user_permissions'])
-                    ? { label: 'Users', route: '/admin/user-roles', icon: 'pi pi-users' }
+                    ? { label: 'User Roles', route: '/admin/user-roles', icon: 'pi pi-user-edit' }
+                    : null,
+                can.view_admin_users
+                    ? { label: 'Felhasználók', route: '/admin/users', icon: 'pi pi-users' }
                     : null,
                 can.manage_roles ? { label: 'Roles', route: '/admin/roles', icon: 'pi pi-shield' } : null,
                 can.manage_permissions ? { label: 'Permissions', route: '/admin/permissions', icon: 'pi pi-key' } : null,

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -9,6 +10,49 @@ use Spatie\Permission\Models\Role;
 
 class UserRepository
 {
+    /**
+     * @param array<string, mixed> $filters
+     */
+    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    {
+        $search = trim((string) ($filters['search'] ?? ''));
+        $status = (string) ($filters['status'] ?? '');
+        $perPage = (int) ($filters['per_page'] ?? 15);
+        $sortField = (string) ($filters['sort_field'] ?? 'created_at');
+        $sortDirection = (string) ($filters['sort_direction'] ?? 'desc');
+        $sortableFields = ['name', 'email', 'status', 'created_at'];
+
+        if (! \in_array($sortField, $sortableFields, true)) {
+            $sortField = 'created_at';
+        }
+
+        if (! \in_array($sortDirection, ['asc', 'desc'], true)) {
+            $sortDirection = 'desc';
+        }
+
+        return User::query()
+            ->when($search !== '', function (Builder $query) use ($search): void {
+                $query->where(function (Builder $inner) use ($search): void {
+                    $inner
+                        ->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
+                });
+            })
+            ->when($status !== '', fn (Builder $query): Builder => $query->where('status', $status))
+            ->with([
+                'roles:id,name',
+                'temporaryPermissions' => fn ($query) => $query->orderByDesc('created_at'),
+                'discounts' => fn ($query) => $query->orderByDesc('created_at'),
+                'orders' => fn ($query) => $query->latest()->limit(10),
+            ])
+            ->withCount('orders')
+            ->orderBy($sortField, $sortDirection)
+            ->orderBy('id')
+            ->paginate($perPage)
+            ->withQueryString();
+    }
+
     /**
      * @param array<string, mixed> $filters
      */
@@ -37,6 +81,28 @@ class UserRepository
     public function syncRoles(User $user, array $roleNames): void
     {
         $user->syncRoles($roleNames);
+    }
+
+    public function create(array $data): User
+    {
+        return User::query()->create($data);
+    }
+
+    public function update(User $user, array $data): User
+    {
+        $user->update($data);
+
+        return $user->refresh();
+    }
+
+    public function latestOrders(User $user, int $limit = 10): array
+    {
+        return Order::query()
+            ->where('user_id', $user->id)
+            ->latest()
+            ->limit($limit)
+            ->get()
+            ->all();
     }
 
     public function countUsersWithRole(string $roleName): int
