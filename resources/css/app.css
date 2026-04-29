@@ -40,6 +40,19 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+body.admin-shell-active {
+    overflow: hidden;
+}
+
+body.admin-shell-active .sidebar {
+    height: 100vh;
+    overflow-y: auto;
+}
+
+body.admin-shell-active .main-content {
+    overflow-y: auto;
+}
+
 .font-heading {
     font-family: var(--font-serif);
 }

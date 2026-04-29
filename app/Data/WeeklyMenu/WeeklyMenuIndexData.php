@@ -22,7 +22,8 @@ class WeeklyMenuIndexData extends Data
     ) {}
 
     /**
-     * @param  array<string, mixed>  $payload
+     * @param array $payload
+     * @return WeeklyMenuIndexData
      */
     public static function fromArray(array $payload): self
     {
@@ -33,7 +34,7 @@ class WeeklyMenuIndexData extends Data
             $status = $active ? WeeklyMenu::STATUS_PUBLISHED : WeeklyMenu::STATUS_DRAFT;
         }
 
-        if ($status !== null && ! in_array($status, WeeklyMenu::statuses(), true)) {
+        if ($status !== null && ! \in_array($status, WeeklyMenu::statuses(), true)) {
             $status = null;
         }
 
@@ -69,7 +70,7 @@ class WeeklyMenuIndexData extends Data
 
     private static function nullableString(mixed $value): ?string
     {
-        if (! is_string($value)) {
+        if (! \is_string($value)) {
             return null;
         }
 
@@ -92,7 +93,7 @@ class WeeklyMenuIndexData extends Data
      */
     private static function allowedString(mixed $value, array $allowed, string $default): string
     {
-        if (! is_string($value) || ! in_array($value, $allowed, true)) {
+        if (! \is_string($value) || ! \in_array($value, $allowed, true)) {
             return $default;
         }
 

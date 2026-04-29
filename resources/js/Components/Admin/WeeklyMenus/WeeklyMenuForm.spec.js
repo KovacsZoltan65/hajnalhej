@@ -23,6 +23,14 @@ const stubs = {
         emits: ['update:modelValue'],
         template: '<select @change="$emit(\'update:modelValue\', $event.target.value)"><slot /></select>',
     },
+    DatePicker: {
+        props: ['modelValue'],
+        emits: ['update:modelValue'],
+        template: '<input type="date" :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+    },
+    Message: {
+        template: '<p><slot /></p>',
+    },
 };
 
 describe('WeeklyMenuForm', () => {
@@ -48,8 +56,8 @@ describe('WeeklyMenuForm', () => {
             global: { stubs },
         });
 
-        expect(wrapper.text()).toContain('Cim');
-        expect(wrapper.text()).toContain('Het kezdete');
+        expect(wrapper.text()).toContain('Cím');
+        expect(wrapper.text()).toContain('Hét kezdete');
         expect(wrapper.text()).toContain('Státusz');
         expect(wrapper.text()).toContain('Slug');
     });

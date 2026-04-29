@@ -30,6 +30,10 @@ class WeeklyMenuData extends Data
         public array $items = [],
     ) {}
 
+    /**
+     * @param WeeklyMenu $menu
+     * @return WeeklyMenuData
+     */
     public static function fromModel(WeeklyMenu $menu): self
     {
         $weekStart = $menu->week_start?->toDateString();
