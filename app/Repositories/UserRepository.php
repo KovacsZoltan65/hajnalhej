@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -39,7 +40,13 @@ class UserRepository
                 });
             })
             ->when($status !== '', fn (Builder $query): Builder => $query->where('status', $status))
-            ->with(['roles:id,name'])
+            ->with([
+                'roles:id,name',
+                'temporaryPermissions' => fn ($query) => $query->orderByDesc('created_at'),
+                'discounts' => fn ($query) => $query->orderByDesc('created_at'),
+                'orders' => fn ($query) => $query->latest()->limit(10),
+            ])
+            ->withCount('orders')
             ->orderBy($sortField, $sortDirection)
             ->orderBy('id')
             ->paginate($perPage)
@@ -86,6 +93,16 @@ class UserRepository
         $user->update($data);
 
         return $user->refresh();
+    }
+
+    public function latestOrders(User $user, int $limit = 10): array
+    {
+        return Order::query()
+            ->where('user_id', $user->id)
+            ->latest()
+            ->limit($limit)
+            ->get()
+            ->all();
     }
 
     public function countUsersWithRole(string $roleName): int

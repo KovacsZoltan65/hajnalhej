@@ -38,6 +38,21 @@ class UserPolicy
             || $user->can(PermissionRegistry::USERS_ASSIGN_ROLES);
     }
 
+    public function manageTemporaryPermissions(User $user): bool
+    {
+        return $user->can(PermissionRegistry::ADMIN_USERS_MANAGE_TEMPORARY_PERMISSIONS);
+    }
+
+    public function manageDiscounts(User $user): bool
+    {
+        return $user->can(PermissionRegistry::ADMIN_USERS_MANAGE_DISCOUNTS);
+    }
+
+    public function viewOrders(User $user): bool
+    {
+        return $user->can(PermissionRegistry::ADMIN_USERS_VIEW_ORDERS);
+    }
+
     public function assignRoles(User $user): bool
     {
         return $user->can(PermissionRegistry::USERS_ASSIGN_ROLES);

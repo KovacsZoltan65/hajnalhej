@@ -103,6 +103,11 @@ Route::middleware('auth')->group(function (): void {
             Route::post('/', 'store')->name('store');
             Route::put('/{user}', 'update')->name('update');
             Route::delete('/{user}', 'destroy')->name('destroy');
+            Route::post('/{user}/temporary-permissions', 'storeTemporaryPermission')->name('temporary-permissions.store');
+            Route::delete('/{user}/temporary-permissions/{temporaryPermission}', 'revokeTemporaryPermission')->name('temporary-permissions.destroy');
+            Route::post('/{user}/discounts', 'storeDiscount')->name('discounts.store');
+            Route::put('/{user}/discounts/{discount}', 'updateDiscount')->name('discounts.update');
+            Route::delete('/{user}/discounts/{discount}', 'destroyDiscount')->name('discounts.destroy');
         });
 
         Route::get('/products', [ProductController::class, 'index'])->name('products.index');

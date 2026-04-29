@@ -76,7 +76,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public const STATUS_INACTIVE = 'inactive';
 
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles {
+        HasRoles::hasPermissionTo as spatieHasPermissionTo;
+    }
 
     /**
      * Get the attributes that should be cast.
@@ -101,9 +103,37 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasRole(PermissionRegistry::ROLE_CUSTOMER);
     }
 
+    public function hasPermissionTo($permission, $guardName = null): bool
+    {
+        if ($this->spatieHasPermissionTo($permission, $guardName)) {
+            return true;
+        }
+
+        $permissionName = \is_string($permission) ? $permission : ($permission->name ?? null);
+
+        if ($permissionName === null) {
+            return false;
+        }
+
+        return $this->temporaryPermissions()
+            ->currentlyValid()
+            ->where('permission_name', $permissionName)
+            ->exists();
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function temporaryPermissions(): HasMany
+    {
+        return $this->hasMany(UserTemporaryPermission::class);
+    }
+
+    public function discounts(): HasMany
+    {
+        return $this->hasMany(UserDiscount::class);
     }
 
     public static function statuses(): array

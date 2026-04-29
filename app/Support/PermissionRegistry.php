@@ -32,6 +32,9 @@ class PermissionRegistry
     public const ADMIN_USERS_UPDATE = 'admin.users.update';
     public const ADMIN_USERS_DELETE = 'admin.users.delete';
     public const ADMIN_USERS_MANAGE_ROLES = 'admin.users.manage_roles';
+    public const ADMIN_USERS_MANAGE_TEMPORARY_PERMISSIONS = 'admin.users.manage_temporary_permissions';
+    public const ADMIN_USERS_MANAGE_DISCOUNTS = 'admin.users.manage_discounts';
+    public const ADMIN_USERS_VIEW_ORDERS = 'admin.users.view_orders';
 
     public const INGREDIENTS_VIEW = 'ingredients.view';
     public const INGREDIENTS_CREATE = 'ingredients.create';
@@ -127,6 +130,8 @@ class PermissionRegistry
             self::USERS_ASSIGN_ROLES,
             self::ADMIN_USERS_VIEW,
             self::ADMIN_USERS_MANAGE_ROLES,
+            self::ADMIN_USERS_MANAGE_TEMPORARY_PERMISSIONS,
+            self::ADMIN_USERS_MANAGE_DISCOUNTS,
             self::PERMISSIONS_VIEW,
             self::PERMISSIONS_SYNC,
             self::AUDIT_LOGS_VIEW,
@@ -303,6 +308,36 @@ class PermissionRegistry
                 'sort' => 119,
                 'system' => true,
                 'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::ADMIN_USERS_MANAGE_TEMPORARY_PERMISSIONS,
+                'module' => 'Felhasználók',
+                'label' => 'Időleges jogosultságok kezelése',
+                'description' => 'Userhez kötött időleges jogosultságok létrehozása és visszavonása.',
+                'dangerous' => true,
+                'sort' => 120,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::ADMIN_USERS_MANAGE_DISCOUNTS,
+                'module' => 'Felhasználók',
+                'label' => 'Vásárlási kedvezmények kezelése',
+                'description' => 'Userhez kötött kedvezmények létrehozása és módosítása.',
+                'dangerous' => true,
+                'sort' => 121,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::ADMIN_USERS_VIEW_ORDERS,
+                'module' => 'Felhasználók',
+                'label' => 'Felhasználói rendelések megtekintése',
+                'description' => 'User szerkesztő rendelés paneljének megtekintése.',
+                'dangerous' => false,
+                'sort' => 122,
+                'system' => true,
+                'audit_sensitive' => false,
             ],
             [
                 'name' => self::INGREDIENTS_VIEW,
@@ -748,3 +783,4 @@ class PermissionRegistry
         return \in_array($roleName, self::systemRoles(), true);
     }
 }
+
