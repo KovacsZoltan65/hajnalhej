@@ -18,19 +18,7 @@ const props = defineProps({
     },
 });
 
-const moduleLabels = {
-    Admin: 'Admin',
-    Orders: 'Rendelések',
-    Products: 'Termékek',
-    Categories: 'Kategóriák',
-    Ingredients: 'Alapanyagok',
-    'Weekly Menu': 'Heti menü',
-    'Production Plans': 'Gyártási tervek',
-    Account: 'Fiók',
-    'Roles & Permissions': 'Szerepkörök és jogosultságok',
-    Security: 'Biztonság',
-};
-const moduleLabel = (moduleName) => moduleLabels[moduleName] ?? moduleName;
+const moduleLabel = (moduleName) => moduleName;
 </script>
 
 <template>

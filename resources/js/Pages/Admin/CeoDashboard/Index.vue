@@ -1,6 +1,7 @@
 <script setup>
 import { Head, router } from "@inertiajs/vue3";
 import { computed } from "vue";
+import { currentLocale, trans, transChoice } from "laravel-vue-i18n";
 import Select from "primevue/select";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 
@@ -17,12 +18,23 @@ const props = defineProps({
     },
 });
 
-const dayOptions = [
-    { label: "7 nap", value: 7 },
-    { label: "14 nap", value: 14 },
-    { label: "30 nap", value: 30 },
-    { label: "90 nap", value: 90 },
-];
+const localeCode = computed(() => currentLocale.value ?? "hu");
+const numberLocale = computed(() => {
+    const locales = {
+        hu: "hu-HU",
+        en: "en-US",
+    };
+
+    return locales[localeCode.value] ?? localeCode.value;
+});
+
+const formatDayOption = (days) =>
+    transChoice("common.day_count", days, { count: days });
+
+const dayOptions = [7, 14, 30, 90].map((days) => ({
+    label: formatDayOption(days),
+    value: days,
+}));
 
 const updateDays = (value) => {
     router.get(
@@ -43,21 +55,33 @@ const conversion = computed(() => props.dashboard.conversion ?? {});
 const kpiInsights = computed(() => props.dashboard.kpi_insights ?? {});
 
 const formatCurrency = (value) =>
-    new Intl.NumberFormat("hu-HU", {
+    new Intl.NumberFormat(numberLocale.value, {
         style: "currency",
         currency: "HUF",
         maximumFractionDigits: 0,
     }).format(Number(value ?? 0));
 
-const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
+const formatPercent = (value) =>
+    new Intl.NumberFormat(numberLocale.value, {
+        style: "percent",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(Number(value ?? 0) / 100);
+
 const formatSignedPercent = (value) =>
-    `${Number(value ?? 0) >= 0 ? "+" : ""}${Number(value ?? 0).toFixed(2)}%`;
+    new Intl.NumberFormat(numberLocale.value, {
+        style: "percent",
+        signDisplay: "exceptZero",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(Number(value ?? 0) / 100);
+
 const formatDate = (value) => {
     if (!value) {
         return "-";
     }
 
-    return new Intl.DateTimeFormat("hu-HU").format(new Date(value));
+    return new Intl.DateTimeFormat(numberLocale.value).format(new Date(value));
 };
 
 const trendIcon = (direction) => {
@@ -95,18 +119,18 @@ const ragClass = (rag) => {
 
 const ragLabel = (rag) => {
     if (rag === "green") {
-        return "Zöld";
+        return trans("common.rag_green");
     }
     if (rag === "red") {
-        return "Piros";
+        return trans("common.rag_red");
     }
 
-    return "Borostyán";
+    return trans("common.rag_amber");
 };
 </script>
 
 <template>
-    <Head :title="$t('ceo_dashboard_title')" />
+    <Head :title="$t('nav.ceo_dashboard')" />
 
     <section class="space-y-6">
         <header class="ui-card p-5 sm:p-6">
@@ -115,7 +139,7 @@ const ragLabel = (rag) => {
             >
                 <div>
                     <h1 class="font-heading text-3xl text-bakery-dark">
-                        {{ $t("ceo_dashboard_title") }}
+                        {{ $t("nav.ceo_dashboard") }}
                     </h1>
                     <p class="mt-2 text-sm text-bakery-dark/75">
                         {{ $t("ceo_dashboard.description") }}
@@ -156,10 +180,10 @@ const ragLabel = (rag) => {
                     :class="trendClass(kpiInsights.revenue?.trend)"
                 >
                     <i :class="trendIcon(kpiInsights.revenue?.trend)" />
-                    WoW: {{ formatSignedPercent(kpiInsights.revenue?.wow?.percent) }}
+                    {{ $t("common.wow") }}: {{ formatSignedPercent(kpiInsights.revenue?.wow?.percent) }}
                 </p>
                 <p class="mt-1 text-xs text-bakery-dark/70">
-                    MoM: {{ formatSignedPercent(kpiInsights.revenue?.mom?.percent) }}
+                    {{ $t("common.mom") }}: {{ formatSignedPercent(kpiInsights.revenue?.mom?.percent) }}
                 </p>
             </article>
 
@@ -184,11 +208,11 @@ const ragLabel = (rag) => {
                     :class="trendClass(kpiInsights.estimated_profit?.trend)"
                 >
                     <i :class="trendIcon(kpiInsights.estimated_profit?.trend)" />
-                    WoW:
+                    {{ $t("common.wow") }}:
                     {{ formatSignedPercent(kpiInsights.estimated_profit?.wow?.percent) }}
                 </p>
                 <p class="mt-1 text-xs text-bakery-dark/70">
-                    MoM:
+                    {{ $t("common.mom") }}:
                     {{ formatSignedPercent(kpiInsights.estimated_profit?.mom?.percent) }}
                 </p>
             </article>
@@ -224,7 +248,7 @@ const ragLabel = (rag) => {
                     :class="trendClass(kpiInsights.checkout_conversion_rate?.trend)"
                 >
                     <i :class="trendIcon(kpiInsights.checkout_conversion_rate?.trend)" />
-                    WoW:
+                    {{ $t("common.wow") }}:
                     {{
                         formatSignedPercent(
                             kpiInsights.checkout_conversion_rate?.wow?.percent
@@ -232,7 +256,7 @@ const ragLabel = (rag) => {
                     }}
                 </p>
                 <p class="mt-1 text-xs text-bakery-dark/70">
-                    MoM:
+                    {{ $t("common.mom") }}:
                     {{
                         formatSignedPercent(
                             kpiInsights.checkout_conversion_rate?.mom?.percent
@@ -262,7 +286,7 @@ const ragLabel = (rag) => {
                     :class="trendClass(kpiInsights.repeat_customer_rate?.trend)"
                 >
                     <i :class="trendIcon(kpiInsights.repeat_customer_rate?.trend)" />
-                    WoW:
+                    {{ $t("common.wow") }}:
                     {{
                         formatSignedPercent(
                             kpiInsights.repeat_customer_rate?.wow?.percent
@@ -270,7 +294,7 @@ const ragLabel = (rag) => {
                     }}
                 </p>
                 <p class="mt-1 text-xs text-bakery-dark/70">
-                    MoM:
+                    {{ $t("common.mom") }}:
                     {{
                         formatSignedPercent(
                             kpiInsights.repeat_customer_rate?.mom?.percent
@@ -300,10 +324,10 @@ const ragLabel = (rag) => {
                     :class="trendClass(kpiInsights.ltv?.trend)"
                 >
                     <i :class="trendIcon(kpiInsights.ltv?.trend)" />
-                    WoW: {{ formatSignedPercent(kpiInsights.ltv?.wow?.percent) }}
+                    {{ $t("common.wow") }}: {{ formatSignedPercent(kpiInsights.ltv?.wow?.percent) }}
                 </p>
                 <p class="mt-1 text-xs text-bakery-dark/70">
-                    MoM: {{ formatSignedPercent(kpiInsights.ltv?.mom?.percent) }}
+                    {{ $t("common.mom") }}: {{ formatSignedPercent(kpiInsights.ltv?.mom?.percent) }}
                 </p>
             </article>
         </div>
@@ -577,7 +601,7 @@ const ragLabel = (rag) => {
                         class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
                     >
                         <tr>
-                            <th class="px-2 py-2">Dátum</th>
+                            <th class="px-2 py-2">{{ $t("common.date") }}</th>
                             <th class="px-2 py-2 text-right">
                                 {{ $t("common.income") }}
                             </th>
