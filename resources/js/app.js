@@ -11,6 +11,7 @@ import ToastService from "primevue/toastservice";
 import ConfirmationService from "primevue/confirmationservice";
 
 import { i18nVue } from "laravel-vue-i18n";
+import { ZiggyVue } from "../../vendor/tightenco/ziggy";
 
 createInertiaApp({
     title: (title) => (title ? `${title} | Hajnalhej` : "Hajnalhej"),
@@ -22,6 +23,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(ZiggyVue)
             .use(i18nVue, {
                 locale:
                     props?.initialPage?.props?.preferences?.locale ||
