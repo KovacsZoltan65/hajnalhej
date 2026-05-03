@@ -1,8 +1,8 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
-import DashboardCard from '../../Components/DashboardCard.vue';
-import SectionTitle from '../../Components/SectionTitle.vue';
-import AdminLayout from '../../Layouts/AdminLayout.vue';
+import { Head, Link } from "@inertiajs/vue3";
+import DashboardCard from "../../Components/DashboardCard.vue";
+import SectionTitle from "../../Components/SectionTitle.vue";
+import AdminLayout from "../../Layouts/AdminLayout.vue";
 
 defineOptions({ layout: AdminLayout });
 
@@ -15,27 +15,44 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Admin vezérlőpult" />
+    <Head :title="$t('nav.dashboard')" />
 
     <div class="space-y-8">
         <SectionTitle
-            eyebrow="Admin"
-            title="Napi attekintes"
-            description="Első alap vezérlőpult valós admin struktúrával, készen a következő modulok fogadására."
+            :eyebrow="$t('dashboard.eyebrow')"
+            :title="$t('nav.dashboard')"
+            :description="$t('dashboard.description')"
         />
 
         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <DashboardCard title="Mai rendelések" :value="stats.ordersToday.toString()" icon="pi pi-shopping-cart" />
-            <DashboardCard title="Heti árbevétel" :value="stats.weekRevenue" icon="pi pi-wallet" />
-            <DashboardCard title="Legnépszerűbb termék" :value="stats.topProduct" icon="pi pi-star-fill" />
-            <DashboardCard title="Következő átvételi sáv" :value="stats.nextPickupSlot" icon="pi pi-clock" />
+            <DashboardCard
+                :title="$t('dashboard.card_todays_orders')"
+                :value="stats.ordersToday.toString()"
+                icon="pi pi-shopping-cart"
+            />
+            <DashboardCard
+                :title="$t('dashboard.card_weekly_revenue')"
+                :value="stats.weekRevenue"
+                icon="pi pi-wallet"
+            />
+            <DashboardCard
+                :title="$t('dashboard.card_most_popular_product')"
+                :value="stats.topProduct"
+                icon="pi pi-star-fill"
+            />
+            <DashboardCard
+                :title="$t('dashboard.card_next_pickup_lane')"
+                :value="stats.nextPickupSlot"
+                icon="pi pi-clock"
+            />
         </div>
 
         <section class="rounded-2xl border border-bakery-brown/15 bg-[#fdf8f1] p-5">
-            <h3 class="font-heading text-2xl text-bakery-dark">Kovetkezo lépések</h3>
+            <h3 class="font-heading text-2xl text-bakery-dark">
+                {{ $t("dashboard.next_steps_title") }}
+            </h3>
             <p class="mt-2 text-sm text-bakery-dark/75">
-                A következő fázisban ide csatlakoznak a valós riportok, rendelési mutatók, valamint a CRUD modulok navigációs
-                celpontjai.
+                {{ $t("dashboard.next_steps_description") }}
             </p>
             <div class="mt-4 flex flex-wrap gap-2">
                 <Link

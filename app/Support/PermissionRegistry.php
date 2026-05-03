@@ -5,9 +5,30 @@ namespace App\Support;
 class PermissionRegistry
 {
     /**
-     * @var array<string, array{name:string,module:string,label:string,description:string,dangerous:bool,sort:int,system:bool,audit_sensitive:bool}>|null
+     * @var array<string, array<string, array{name:string,module:string,label:string,description:string,dangerous:bool,sort:int,system:bool,audit_sensitive:bool}>>
      */
-    private static ?array $definitionsByNameCache = null;
+    private static array $definitionsByNameCache = [];
+
+    /**
+     * @var array<string, string>
+     */
+    private const MODULE_TRANSLATION_KEYS = [
+        'Account' => 'account',
+        'Admin' => 'admin',
+        'Analytics' => 'analytics',
+        'Beszerzés' => 'procurement',
+        'Categories' => 'categories',
+        'Felhasználók' => 'users',
+        'Ingredients' => 'ingredients',
+        'Készlet' => 'inventory',
+        'Orders' => 'orders',
+        'Products' => 'products',
+        'Production Plans' => 'production_plans',
+        'Rendelések' => 'orders',
+        'Roles & Permissions' => 'roles_permissions',
+        'Security' => 'security',
+        'Weekly Menu' => 'weekly_menu',
+    ];
 
     public const ROLE_ADMIN = 'admin';
     public const ROLE_CUSTOMER = 'customer';
@@ -148,7 +169,7 @@ class PermissionRegistry
      */
     public static function definitions(): array
     {
-        return [
+        $definitions = [
             [
                 'name' => self::ADMIN_PANEL_ACCESS,
                 'module' => 'Admin',
@@ -594,7 +615,7 @@ class PermissionRegistry
                 'name' => self::CONVERSION_ANALYTICS_VIEW,
                 'module' => 'Analytics',
                 'label' => 'Konverziós analitika megtekintése',
-                'description' => 'CTA, kosár, checkout és regisztráció funnel statisztikák megtekintése.',
+                'description' => 'CTA, kosár, checkout és regisztráció tölcsér statisztikák megtekintése.',
                 'dangerous' => false,
                 'sort' => 360,
                 'system' => true,
@@ -722,6 +743,40 @@ class PermissionRegistry
             ],
 
         ];
+
+        return array_map(
+            static fn (array $definition): array => self::localizedDefinition($definition),
+            $definitions,
+        );
+    }
+
+    /**
+     * @param array{name:string,module:string,label:string,description:string,dangerous:bool,sort:int,system:bool,audit_sensitive:bool} $definition
+     * @return array{name:string,module:string,label:string,description:string,dangerous:bool,sort:int,system:bool,audit_sensitive:bool}
+     */
+    private static function localizedDefinition(array $definition): array
+    {
+        $permissionKey = self::translationKey($definition['name']);
+        $moduleKey = self::MODULE_TRANSLATION_KEYS[$definition['module']] ?? self::translationKey($definition['module']);
+
+        return [
+            ...$definition,
+            'module' => self::translate("permissions.modules.{$moduleKey}", $definition['module']),
+            'label' => self::translate("permissions.labels.{$permissionKey}", $definition['label']),
+            'description' => self::translate("permissions.descriptions.{$permissionKey}", $definition['description']),
+        ];
+    }
+
+    private static function translate(string $key, string $fallback): string
+    {
+        $value = __($key);
+
+        return $value === $key ? $fallback : $value;
+    }
+
+    private static function translationKey(string $value): string
+    {
+        return str_replace(['.', '-', ' ', '&', '/'], '_', mb_strtolower($value));
     }
 
     /**
@@ -756,8 +811,10 @@ class PermissionRegistry
      */
     public static function definitionsByName(): array
     {
-        if (self::$definitionsByNameCache !== null) {
-            return self::$definitionsByNameCache;
+        $locale = app()->getLocale();
+
+        if (isset(self::$definitionsByNameCache[$locale])) {
+            return self::$definitionsByNameCache[$locale];
         }
 
         $map = [];
@@ -765,9 +822,9 @@ class PermissionRegistry
             $map[$definition['name']] = $definition;
         }
 
-        self::$definitionsByNameCache = $map;
+        self::$definitionsByNameCache[$locale] = $map;
 
-        return self::$definitionsByNameCache;
+        return self::$definitionsByNameCache[$locale];
     }
 
     /**
@@ -783,4 +840,3 @@ class PermissionRegistry
         return \in_array($roleName, self::systemRoles(), true);
     }
 }
-

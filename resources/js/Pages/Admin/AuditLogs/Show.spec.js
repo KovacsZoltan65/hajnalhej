@@ -6,6 +6,36 @@ vi.mock('@inertiajs/vue3', () => ({
     Link: { name: 'Link', props: ['href'], template: '<a :href="href"><slot /></a>' },
 }));
 
+const translations = {
+    'audit_logs.eyebrow': 'Admin / Auditnaplók',
+    'audit_logs.show_meta_title': 'Audit bejegyzés #:id',
+    'audit_logs.show_title': 'Audit bejegyzés #:id',
+    'audit_logs.show_description':
+        'Részletes előtte/utána, környezet és eltérés adatok jogosultsági, felhasználói és rendelési eseményekhez.',
+    'audit_logs.actions.back_to_list': 'Vissza a listára',
+    'audit_logs.columns.event': 'Esemény',
+    'audit_logs.columns.created_at': 'Időpont',
+    'audit_logs.columns.domain': 'Domain',
+    'audit_logs.columns.causer': 'Végrehajtó',
+    'audit_logs.columns.subject': 'Érintett elem',
+    'audit_logs.sections.before': 'Előtte',
+    'audit_logs.sections.after': 'Utána',
+    'audit_logs.sections.context': 'Környezet',
+    'audit_logs.sections.diff_meta': 'Eltérés / Meta',
+};
+
+vi.mock('laravel-vue-i18n', () => ({
+    trans: (key, replacements = {}) => {
+        let value = translations[key] ?? key;
+
+        Object.entries(replacements).forEach(([name, replacement]) => {
+            value = value.replace(`:${name}`, replacement);
+        });
+
+        return value;
+    },
+}));
+
 vi.mock('@/Layouts/AdminLayout.vue', () => ({
     default: { template: '<div><slot /></div>' },
 }));
@@ -40,12 +70,18 @@ describe('Admin Audit Logs Show', () => {
                 },
                 eventLabels: { 'role.permissions.synced': 'Szerepkör jogosultságok szinkronizálva' },
             },
-            global: { stubs },
+            global: {
+                stubs,
+                mocks: {
+                    $t: (key) => translations[key] ?? key,
+                },
+            },
         });
 
         expect(wrapper.text()).toContain('Szerepkör jogosultságok szinkronizálva');
         expect(wrapper.text()).toContain('Előtte');
         expect(wrapper.text()).toContain('Utána');
         expect(wrapper.text()).toContain('Környezet');
+        expect(wrapper.text()).toContain('Vissza a listára');
     });
 });

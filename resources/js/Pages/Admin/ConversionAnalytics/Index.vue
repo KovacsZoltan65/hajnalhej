@@ -1,6 +1,7 @@
 <script setup>
 import { Head, router } from "@inertiajs/vue3";
 import { computed } from "vue";
+import { currentLocale, transChoice } from "laravel-vue-i18n";
 import Select from "primevue/select";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 
@@ -17,13 +18,12 @@ const props = defineProps({
     },
 });
 
-const dayOptions = [
-    { label: "1 nap", value: 1 },
-    { label: "7 nap", value: 7 },
-    { label: "14 nap", value: 14 },
-    { label: "30 nap", value: 30 },
-    { label: "90 nap", value: 90 },
-];
+const formatDayOption = (days) => transChoice("common.day_count", days, { count: days });
+
+const dayOptions = [1, 7, 14, 30, 90].map((days) => ({
+    label: formatDayOption(days),
+    value: days,
+}));
 
 const updateDays = (value) => {
     router.get(
@@ -45,18 +45,41 @@ const topProductRevenueRows = computed(() => props.analytics.top_product_revenue
 const funnelStats = computed(() => props.analytics.funnel_stats ?? []);
 const heroComparison = computed(() => props.analytics.hero_comparison ?? []);
 const dropOffRows = computed(() => props.analytics.drop_off_top ?? []);
+const localeCode = computed(() => currentLocale.value ?? "hu");
+const numberLocale = computed(() => {
+    const locales = {
+        hu: "hu-HU",
+        en: "en-US",
+    };
 
-const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
+    return locales[localeCode.value] ?? localeCode.value;
+});
+
+const formatPercent = (value) =>
+    new Intl.NumberFormat(numberLocale.value, {
+        style: "percent",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(Number(value ?? 0) / 100);
+
 const formatCurrency = (value) =>
-    new Intl.NumberFormat("hu-HU", {
+    new Intl.NumberFormat(numberLocale.value, {
         style: "currency",
         currency: "HUF",
         maximumFractionDigits: 0,
     }).format(Number(value ?? 0));
+
+const formatDate = (value) => {
+    if (!value) {
+        return "-";
+    }
+
+    return new Intl.DateTimeFormat(numberLocale.value).format(new Date(value));
+};
 </script>
 
 <template>
-    <Head title="Konverziós analitika" />
+    <Head :title="$t('nav.conversion_analytics')" />
 
     <section class="space-y-6">
         <header class="ui-card p-5 sm:p-6">
@@ -65,11 +88,10 @@ const formatCurrency = (value) =>
             >
                 <div>
                     <h1 class="font-heading text-3xl text-bakery-dark">
-                        Konverziós analitika
+                        {{ $t("nav.conversion_analytics") }}
                     </h1>
                     <p class="mt-2 text-sm text-bakery-dark/75">
-                        Konverziós arányok, idősoros trendek, hero variáns összehasonlítás
-                        és funnel drop-off pontok.
+                        {{ $t("conversion_analytics.description") }}
                     </p>
                 </div>
                 <div class="w-full sm:w-48">
@@ -89,7 +111,7 @@ const formatCurrency = (value) =>
             <!-- Összes esemény -->
             <article class="ui-card p-4">
                 <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">
-                    Összes esemény
+                    {{ $t("common.all_events") }}
                 </p>
                 <p class="mt-2 font-heading text-3xl text-bakery-dark">
                     {{ analytics.summary.total_events }}
@@ -98,7 +120,7 @@ const formatCurrency = (value) =>
             <!-- CTA Kattintás -->
             <article class="ui-card p-4">
                 <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">
-                    CTA kattintás
+                    {{ $t("common.cta_click") }}
                 </p>
                 <p class="mt-2 font-heading text-3xl text-bakery-dark">
                     {{ analytics.summary.cta_clicks }}
@@ -107,7 +129,7 @@ const formatCurrency = (value) =>
             <!-- Checkout lezárás -->
             <article class="ui-card p-4">
                 <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">
-                    Checkout lezárás
+                    {{ $t("common.checkout_closing") }}
                 </p>
                 <p class="mt-2 font-heading text-3xl text-bakery-dark">
                     {{ analytics.summary.checkout_completions }}
@@ -116,7 +138,7 @@ const formatCurrency = (value) =>
             <!-- Regisztráció kész -->
             <article class="ui-card p-4">
                 <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">
-                    Regisztráció kész
+                    {{ $t("common.registration_complete") }}
                 </p>
                 <p class="mt-2 font-heading text-3xl text-bakery-dark">
                     {{ analytics.summary.registration_completions }}
@@ -124,7 +146,7 @@ const formatCurrency = (value) =>
             </article>
             <article class="ui-card p-4">
                 <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">
-                    Bevétel
+                    {{ $t("common.income") }}
                 </p>
                 <p class="mt-2 font-heading text-3xl text-bakery-dark">
                     {{ formatCurrency(analytics.summary.revenue_total) }}
@@ -132,7 +154,7 @@ const formatCurrency = (value) =>
             </article>
             <article class="ui-card p-4">
                 <p class="text-xs uppercase tracking-[0.12em] text-bakery-dark/60">
-                    Átlag kosárérték
+                    {{ $t("common.avg_basket_value") }}
                 </p>
                 <p class="mt-2 font-heading text-3xl text-bakery-dark">
                     {{ formatCurrency(analytics.summary.average_cart_value) }}
@@ -144,41 +166,53 @@ const formatCurrency = (value) =>
             <h2
                 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
             >
-                Üzleti mutatók
+                {{ $t("common.business_indicators") }}
             </h2>
             <div class="mt-4 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
                 <article class="ui-card-soft p-4">
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Bevétel</p>
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                        {{ $t("common.income") }}
+                    </p>
                     <p class="mt-2 font-heading text-2xl text-bakery-dark">
                         {{ formatCurrency(commerce.revenue_total) }}
                     </p>
                 </article>
                 <article class="ui-card-soft p-4">
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Rendelésszám</p>
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                        {{ $t("common.order_number") }}
+                    </p>
                     <p class="mt-2 font-heading text-2xl text-bakery-dark">
                         {{ commerce.orders_count ?? 0 }}
                     </p>
                 </article>
                 <article class="ui-card-soft p-4">
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Egyedi vásárlók</p>
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                        {{ $t("common.individual_customers") }}
+                    </p>
                     <p class="mt-2 font-heading text-2xl text-bakery-dark">
                         {{ commerce.unique_customers ?? 0 }}
                     </p>
                 </article>
                 <article class="ui-card-soft p-4">
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Visszatérő vásárlói arány</p>
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                        {{ $t("common.returning_customer_rate") }}
+                    </p>
                     <p class="mt-2 font-heading text-2xl text-bakery-dark">
                         {{ formatPercent(commerce.repeat_customer_rate) }}
                     </p>
                 </article>
                 <article class="ui-card-soft p-4">
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">Átlag kosárérték</p>
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                        {{ $t("common.avg_basket_value") }}
+                    </p>
                     <p class="mt-2 font-heading text-2xl text-bakery-dark">
                         {{ formatCurrency(commerce.average_cart_value) }}
                     </p>
                 </article>
                 <article class="ui-card-soft p-4">
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">LTV (időszaki)</p>
+                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                        {{ $t("common.ltv_periodic") }}
+                    </p>
                     <p class="mt-2 font-heading text-2xl text-bakery-dark">
                         {{ formatCurrency(commerce.ltv) }}
                     </p>
@@ -191,7 +225,7 @@ const formatCurrency = (value) =>
             <h2
                 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
             >
-                Valódi konverziós arányok
+                {{ $t("conversion_analytics.real_conversion_rates") }}
             </h2>
             <div class="mt-4 grid gap-3 md:grid-cols-3">
                 <article
@@ -216,7 +250,7 @@ const formatCurrency = (value) =>
             <h2
                 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
             >
-                Bevétel és kosárérték trend
+                {{ $t("conversion_analytics.revenue_and_basket_value_trend") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
                 <table class="min-w-full text-sm">
@@ -224,10 +258,14 @@ const formatCurrency = (value) =>
                         class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
                     >
                         <tr>
-                            <th class="px-2 py-2">Dátum</th>
-                            <th class="px-2 py-2 text-right">Bevétel</th>
-                            <th class="px-2 py-2 text-right">Rendelés</th>
-                            <th class="px-2 py-2 text-right">Átlag kosárérték</th>
+                            <th class="px-2 py-2">{{ $t("common.date") }}</th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("common.income") }}
+                            </th>
+                            <th class="px-2 py-2 text-right">{{ $t("common.order") }}</th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("common.avg_basket_value") }}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -236,11 +274,17 @@ const formatCurrency = (value) =>
                             :key="`commerce-${point.date}`"
                             class="border-b border-bakery-brown/10"
                         >
-                            <td class="px-2 py-2 font-medium text-bakery-dark">{{ point.date }}</td>
-                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
+                            <td class="px-2 py-2 font-medium text-bakery-dark">
+                                {{ formatDate(point.date) }}
+                            </td>
+                            <td
+                                class="px-2 py-2 text-right font-semibold text-bakery-dark"
+                            >
                                 {{ formatCurrency(point.revenue) }}
                             </td>
-                            <td class="px-2 py-2 text-right text-bakery-dark">{{ point.orders_count }}</td>
+                            <td class="px-2 py-2 text-right text-bakery-dark">
+                                {{ point.orders_count }}
+                            </td>
                             <td class="px-2 py-2 text-right text-bakery-dark">
                                 {{ formatCurrency(point.average_cart_value) }}
                             </td>
@@ -254,7 +298,7 @@ const formatCurrency = (value) =>
             <h2
                 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
             >
-                Top termék revenue
+                {{ $t("conversion_analytics.top_product_revenue") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
                 <table class="min-w-full text-sm">
@@ -262,10 +306,12 @@ const formatCurrency = (value) =>
                         class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
                     >
                         <tr>
-                            <th class="px-2 py-2">Termék</th>
-                            <th class="px-2 py-2 text-right">Bevétel</th>
-                            <th class="px-2 py-2 text-right">Darab</th>
-                            <th class="px-2 py-2 text-right">Rendelés</th>
+                            <th class="px-2 py-2">{{ $t("common.product") }}</th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("common.income") }}
+                            </th>
+                            <th class="px-2 py-2 text-right">{{ $t("common.piece") }}</th>
+                            <th class="px-2 py-2 text-right">{{ $t("common.order") }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -277,7 +323,9 @@ const formatCurrency = (value) =>
                             <td class="px-2 py-2 font-medium text-bakery-dark">
                                 {{ row.product_name }}
                             </td>
-                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
+                            <td
+                                class="px-2 py-2 text-right font-semibold text-bakery-dark"
+                            >
                                 {{ formatCurrency(row.revenue) }}
                             </td>
                             <td class="px-2 py-2 text-right text-bakery-dark">
@@ -296,7 +344,7 @@ const formatCurrency = (value) =>
             <h2
                 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
             >
-                Idősoros trendek
+                {{ $t("common.time_series_trends") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
                 <table class="min-w-full text-sm">
@@ -304,13 +352,23 @@ const formatCurrency = (value) =>
                         class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
                     >
                         <tr>
-                            <th class="px-2 py-2">Dátum</th>
-                            <th class="px-2 py-2 text-right">CTA</th>
-                            <th class="px-2 py-2 text-right">Kosárba</th>
-                            <th class="px-2 py-2 text-right">Checkout submit</th>
-                            <th class="px-2 py-2 text-right">Checkout completed</th>
-                            <th class="px-2 py-2 text-right">Reg. completed</th>
-                            <th class="px-2 py-2 text-right">Submit->Complete</th>
+                            <th class="px-2 py-2">{{ $t("common.date") }}</th>
+                            <th class="px-2 py-2 text-right">{{ $t("common.cta") }}</th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("common.add_to_card") }}
+                            </th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("common.checkout_submit") }}
+                            </th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("common.checkout_completed") }}
+                            </th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("common.reg_completed") }}
+                            </th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("common.submit_complete") }}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -320,7 +378,7 @@ const formatCurrency = (value) =>
                             class="border-b border-bakery-brown/10"
                         >
                             <td class="px-2 py-2 font-medium text-bakery-dark">
-                                {{ point.date }}
+                                {{ formatDate(point.date) }}
                             </td>
                             <td class="px-2 py-2 text-right text-bakery-dark">
                                 {{ point.cta_clicks }}
@@ -354,7 +412,7 @@ const formatCurrency = (value) =>
             <h2
                 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
             >
-                Hero variáns összehasonlítás
+                {{ $t("conversion_analytics.hero_variant_comparison") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
                 <table class="min-w-full text-sm">
@@ -362,13 +420,23 @@ const formatCurrency = (value) =>
                         class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
                     >
                         <tr>
-                            <th class="px-2 py-2">Variáns</th>
-                            <th class="px-2 py-2 text-right">Megtekintés</th>
-                            <th class="px-2 py-2 text-right">View share</th>
-                            <th class="px-2 py-2 text-right">CTA CTR</th>
-                            <th class="px-2 py-2 text-right">Reg CTR</th>
-                            <th class="px-2 py-2 text-right">Checkout session rate</th>
-                            <th class="px-2 py-2 text-right">Reg session rate</th>
+                            <th class="px-2 py-2">{{ $t("common.variant") }}</th>
+                            <th class="px-2 py-2 text-right">{{ $t("common.view") }}</th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("common.view_share") }}
+                            </th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("common.cta_ctr") }}
+                            </th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("common.reg_ctr") }}
+                            </th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("conversion_analytics.checkout_session_rate") }}
+                            </th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("conversion_analytics.reg_session_rate") }}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -410,7 +478,7 @@ const formatCurrency = (value) =>
             <h2
                 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
             >
-                Top funnel drop-off pontok
+                {{ $t("conversion_analytics.top_funnel_drop_off_points") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
                 <table class="min-w-full text-sm">
@@ -418,10 +486,14 @@ const formatCurrency = (value) =>
                         class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
                     >
                         <tr>
-                            <th class="px-2 py-2">Funnel</th>
-                            <th class="px-2 py-2">Lépésváltás</th>
-                            <th class="px-2 py-2 text-right">Esés (db)</th>
-                            <th class="px-2 py-2 text-right">Esés (%)</th>
+                            <th class="px-2 py-2">{{ $t("common.funnel") }}</th>
+                            <th class="px-2 py-2">{{ $t("common.step_change") }}</th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("common.fall") }} ({{ $t("common.pcs") }})
+                            </th>
+                            <th class="px-2 py-2 text-right">
+                                {{ $t("common.fall") }} ({{ $t("common.percent_code") }})
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -455,7 +527,7 @@ const formatCurrency = (value) =>
                 <h2
                     class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
                 >
-                    Funnel lépések
+                    {{ $t("conversion_analytics.funnel_steps") }}
                 </h2>
                 <div class="mt-4 space-y-4">
                     <article
@@ -489,7 +561,7 @@ const formatCurrency = (value) =>
                 <h2
                     class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
                 >
-                    Top CTA kattintások
+                    {{ $t("common.cta_top_click") }}
                 </h2>
                 <div class="mt-4 overflow-x-auto">
                     <table class="min-w-full text-sm">
@@ -497,8 +569,10 @@ const formatCurrency = (value) =>
                             class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
                         >
                             <tr>
-                                <th class="px-2 py-2">CTA azonosító</th>
-                                <th class="px-2 py-2 text-right">Kattintás</th>
+                                <th class="px-2 py-2">{{ $t("common.cta_id") }}</th>
+                                <th class="px-2 py-2 text-right">
+                                    {{ $t("common.click") }}
+                                </th>
                             </tr>
                         </thead>
                         <tbody>

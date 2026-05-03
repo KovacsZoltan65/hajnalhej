@@ -15,6 +15,7 @@ import IngredientStatusBadge from "../../../Components/Admin/Ingredients/Ingredi
 import IngredientStockBadge from "../../../Components/Admin/Ingredients/IngredientStockBadge.vue";
 import SectionTitle from "../../../Components/SectionTitle.vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
+import { trans } from "laravel-vue-i18n";
 
 defineOptions({ layout: AdminLayout });
 
@@ -49,19 +50,19 @@ const filterState = reactive({
 });
 
 const perPageOptions = [
-    { label: "10 / oldal", value: 10 },
-    { label: "20 / oldal", value: 20 },
-    { label: "50 / oldal", value: 50 },
+    { label: trans("admin_ingredients.filters.per_page_option", { count: 10 }), value: 10 },
+    { label: trans("admin_ingredients.filters.per_page_option", { count: 20 }), value: 20 },
+    { label: trans("admin_ingredients.filters.per_page_option", { count: 50 }), value: 50 },
 ];
 
 const activeOptions = [
-    { label: "Mind", value: "" },
-    { label: "Aktív", value: "1" },
-    { label: "Inaktív", value: "0" },
+    { label: trans("common.all"), value: "" },
+    { label: trans("common.active"), value: "1" },
+    { label: trans("common.inactive"), value: "0" },
 ];
 
 const unitOptions = computed(() => [
-    { label: "Mind", value: "" },
+    { label: trans("common.all"), value: "" },
     ...props.units.map((unit) => ({ label: unit, value: unit })),
 ]);
 
@@ -70,9 +71,9 @@ const formatCurrency = (value) => {
         return "-";
     }
 
-    return new Intl.NumberFormat("hu-HU", {
+    return new Intl.NumberFormat(trans("common.locale"), {
         style: "currency",
-        currency: "HUF",
+        currency: trans("common.currency"),
         maximumFractionDigits: 0,
     }).format(Number(value));
 };
@@ -214,10 +215,12 @@ const submitEdit = () => {
 
 const confirmDelete = (ingredient) => {
     confirm.require({
-        header: "Alapanyag törlése",
-        message: `Biztosan törlöd ezt az alapanyagot: ${ingredient.name}?`,
-        rejectLabel: "Mégse",
-        acceptLabel: "Törlés",
+        header: trans("admin_ingredients.confirm_delete_header"),
+        message: trans("admin_ingredients.confirm_delete_message", {
+            name: ingredient.name,
+        }),
+        rejectLabel: trans("common.cancel"),
+        acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(`/admin/ingredients/${ingredient.id}`, {
@@ -229,13 +232,13 @@ const confirmDelete = (ingredient) => {
 </script>
 
 <template>
-    <Head title="Alapanyagok" />
+    <Head :title="$t('admin_ingredients.meta_title')" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Alapanyagok"
-            title="Alapanyagok"
-            description="Alapanyag törzs alacsony készlet jelzéssel, készen a készletkezelés és gyártási kalkuláció következő lépéseihez."
+            :eyebrow="$t('admin_ingredients.eyebrow')"
+            :title="$t('admin_ingredients.title')"
+            :description="$t('admin_ingredients.description')"
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
@@ -244,12 +247,12 @@ const confirmDelete = (ingredient) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Keresés</label
+                            >{{ $t("admin_ingredients.filters.search") }}</label
                         >
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Név, slug vagy SKU"
+                            :placeholder="$t('admin_ingredients.filters.search_placeholder')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
@@ -257,7 +260,7 @@ const confirmDelete = (ingredient) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Státusz</label
+                            >{{ $t("admin_ingredients.filters.status") }}</label
                         >
                         <Select
                             v-model="filterState.is_active"
@@ -272,7 +275,7 @@ const confirmDelete = (ingredient) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Mértékegység</label
+                            >{{ $t("admin_ingredients.filters.unit") }}</label
                         >
                         <Select
                             v-model="filterState.unit"
@@ -287,7 +290,7 @@ const confirmDelete = (ingredient) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Találat / oldal</label
+                            >{{ $t("admin_ingredients.filters.per_page") }}</label
                         >
                         <Select
                             v-model="filterState.per_page"
@@ -301,8 +304,16 @@ const confirmDelete = (ingredient) => {
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Új alapanyag" @click="openCreate" />
+                    <Button
+                        icon="pi pi-search"
+                        :label="$t('admin_ingredients.actions.search')"
+                        @click="submitFilters"
+                    />
+                    <Button
+                        icon="pi pi-plus"
+                        :label="$t('admin_ingredients.actions.create')"
+                        @click="openCreate"
+                    />
                 </template>
             </AdminTableToolbar>
 
@@ -327,18 +338,18 @@ const confirmDelete = (ingredient) => {
                         <div
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
-                            <p>Nincs megjeleníthető alapanyag.</p>
+                            <p>{{ $t("admin_ingredients.empty") }}</p>
                             <div
                                 class="mt-3 flex flex-wrap items-center justify-center gap-2"
                             >
                                 <Button
-                                    label="Szűrők törlése"
+                                    :label="$t('common.clear_filters')"
                                     outlined
                                     size="small"
                                     @click="clearFilters"
                                 />
                                 <Button
-                                    label="Új alapanyag"
+                                    :label="$t('admin_ingredients.actions.create')"
                                     size="small"
                                     @click="openCreate"
                                 />
@@ -346,7 +357,7 @@ const confirmDelete = (ingredient) => {
                         </div>
                     </template>
 
-                    <Column field="name" header="Alapanyag" sortable>
+                    <Column field="name" :header="$t('admin_ingredients.columns.name')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">
@@ -359,10 +370,10 @@ const confirmDelete = (ingredient) => {
                             </div>
                         </template>
                     </Column>
-                    <Column field="unit" header="Mértékegység" sortable />
+                    <Column field="unit" :header="$t('admin_ingredients.columns.unit')" sortable />
                     <Column
                         field="estimated_unit_cost"
-                        header="Becsült egységköltség"
+                        :header="$t('admin_ingredients.columns.estimated_unit_cost')"
                         sortable
                     >
                         <template #body="{ data }">
@@ -371,7 +382,7 @@ const confirmDelete = (ingredient) => {
                             }}</span>
                         </template>
                     </Column>
-                    <Column field="current_stock" header="Készlet" sortable>
+                    <Column field="current_stock" :header="$t('admin_ingredients.columns.stock')" sortable>
                         <template #body="{ data }">
                             <IngredientStockBadge
                                 :current-stock="data.current_stock"
@@ -380,12 +391,12 @@ const confirmDelete = (ingredient) => {
                             />
                         </template>
                     </Column>
-                    <Column field="is_active" header="Státusz" sortable>
+                    <Column field="is_active" :header="$t('admin_ingredients.columns.status')" sortable>
                         <template #body="{ data }">
                             <IngredientStatusBadge :active="data.is_active" />
                         </template>
                     </Column>
-                    <Column header="Műveletek" :exportable="false">
+                    <Column :header="$t('common.actions')" :exportable="false">
                         <template #body="{ data }">
                             <div class="flex items-center gap-2">
                                 <Button
@@ -393,7 +404,7 @@ const confirmDelete = (ingredient) => {
                                     text
                                     rounded
                                     class="!h-11 !w-11"
-                                    aria-label="Alapanyag szerkesztése"
+                                    :aria-label="$t('admin_ingredients.actions.edit')"
                                     @click="openEdit(data)"
                                 />
                                 <Button
@@ -402,7 +413,7 @@ const confirmDelete = (ingredient) => {
                                     rounded
                                     severity="danger"
                                     class="!h-11 !w-11"
-                                    aria-label="Alapanyag törlése"
+                                    :aria-label="$t('admin_ingredients.actions.delete')"
                                     @click="confirmDelete(data)"
                                 />
                             </div>

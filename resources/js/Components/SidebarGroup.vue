@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue';
-import SidebarItem from './SidebarItem.vue';
+import { ref } from "vue";
+import SidebarItem from "./SidebarItem.vue";
 
 const props = defineProps({
     group: {
@@ -41,11 +41,7 @@ const toggle = () => {
         </p>
 
         <div v-show="!collapsed" class="mt-2 space-y-1">
-            <SidebarItem
-                v-for="item in group.items"
-                :key="item.route"
-                :item="item"
-            />
+            <SidebarItem v-for="item in group.items" :key="item.route" :item="item" />
         </div>
     </section>
 </template>

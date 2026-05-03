@@ -6,6 +6,55 @@ vi.mock('@inertiajs/vue3', () => ({
     router: { get: vi.fn() },
 }));
 
+const translations = {
+    'nav.ceo_dashboard': 'CEO Dashboard',
+    'nav.orders': 'Orders',
+    'ceo_dashboard.description': 'Revenue, profit, conversion, repeat customer rate, security alerts and audit highlights on one page.',
+    'ceo_dashboard.card_estimated_profit': 'Estimated profit',
+    'ceo_dashboard.card_profit_rate': 'Profit Rate',
+    'ceo_dashboard.card_checkout_conversion': 'Checkout conversion',
+    'ceo_dashboard.card_returning_customer_rate': 'Returning customer rate',
+    'ceo_dashboard.card_lifetime_value': 'Lifetime value (LTV)',
+    'ceo_dashboard.conversion_overview': 'Conversion overview',
+    'ceo_dashboard.checkout_funnel': 'Checkout funnel',
+    'ceo_dashboard.registration_funnel': 'Registration funnel',
+    'ceo_dashboard.top_products': 'Top products (based on profit)',
+    'ceo_dashboard.safety_signs': 'Safety signs',
+    'ceo_dashboard.critical_alerts': 'Critical alerts',
+    'ceo_dashboard.orphaned_permissions': 'Orphaned permissions',
+    'ceo_dashboard.dangerous_permissions': 'Dangerous permissions',
+    'ceo_dashboard.high_risk_users': 'High-risk users',
+    'ceo_dashboard.audit_highlights': 'Audit highlights',
+    'ceo_dashboard.order_profit_trend': 'Order profit trend',
+    'common.income': 'Income',
+    'common.profit': 'Profit',
+    'common.product': 'Product',
+    'common.piece': 'Piece',
+    'common.submitted': 'Submitted',
+    'common.completed': 'Completed',
+    'common.ratio': 'Ratio',
+    'common.successful': 'Successful',
+    'common.time': 'Time',
+    'common.date': 'Date',
+    'common.rag_green': 'Green',
+    'common.rag_amber': 'Amber',
+    'common.rag_red': 'Red',
+    'common.wow': 'WoW',
+    'common.mom': 'MoM',
+};
+
+vi.mock('laravel-vue-i18n', () => ({
+    currentLocale: { value: 'en' },
+    trans: (key) => translations[key] ?? key,
+    transChoice: (key, count, replacements = {}) => {
+        if (key !== 'common.day_count') {
+            return translations[key] ?? key;
+        }
+
+        return `${replacements.count ?? count} ${count === 1 ? 'day' : 'days'}`;
+    },
+}));
+
 vi.mock('@/Layouts/AdminLayout.vue', () => ({
     default: { template: '<div><slot /></div>' },
 }));
@@ -13,15 +62,20 @@ vi.mock('@/Layouts/AdminLayout.vue', () => ({
 vi.mock('primevue/select', () => ({
     default: {
         name: 'Select',
-        props: ['modelValue'],
+        props: ['modelValue', 'options'],
         emits: ['update:model-value'],
-        template: '<select><slot /></select>',
+        template: '<select><option v-for="option in options" :key="option.value">{{ option.label }}</option></select>',
     },
 }));
 
 describe('Admin CEO Dashboard page', () => {
     it('renders ceo summary, security and audit sections', () => {
         const wrapper = mount(IndexPage, {
+            global: {
+                mocks: {
+                    $t: (key) => translations[key] ?? key,
+                },
+            },
             props: {
                 filters: { days: 30 },
                 dashboard: {
@@ -119,19 +173,21 @@ describe('Admin CEO Dashboard page', () => {
             },
         });
 
-        expect(wrapper.text()).toContain('CEO irányítópult');
-        expect(wrapper.text()).toContain('Bevétel');
-        expect(wrapper.text()).toContain('Becsült profit');
-        expect(wrapper.text()).toContain('Konverziós összkép');
+        expect(wrapper.text()).toContain('CEO Dashboard');
+        expect(wrapper.text()).toContain('Income');
+        expect(wrapper.text()).toContain('Estimated profit');
+        expect(wrapper.text()).toContain('Conversion overview');
         expect(wrapper.text()).toContain('Checkout funnel');
-        expect(wrapper.text()).toContain('Regisztrációs funnel');
+        expect(wrapper.text()).toContain('Registration funnel');
         expect(wrapper.text()).toContain('WoW');
         expect(wrapper.text()).toContain('MoM');
-        expect(wrapper.text()).toContain('Zöld');
-        expect(wrapper.text()).toContain('Top termékek (profit alapján)');
-        expect(wrapper.text()).toContain('Biztonsági jelzések');
-        expect(wrapper.text()).toContain('Audit kiemelések');
-        expect(wrapper.text()).toContain('Rendelési profit trend');
+        expect(wrapper.text()).toContain('Green');
+        expect(wrapper.text()).toContain('Top products (based on profit)');
+        expect(wrapper.text()).toContain('Safety signs');
+        expect(wrapper.text()).toContain('Audit highlights');
+        expect(wrapper.text()).toContain('Order profit trend');
+        expect(wrapper.text()).toContain('7 days');
+        expect(wrapper.text()).toMatch(/HUF\s*100,000/);
         expect(wrapper.text()).toContain('Kovászos cipó');
     });
 });

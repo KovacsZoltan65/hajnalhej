@@ -1,6 +1,15 @@
 import { mount } from '@vue/test-utils';
 import CreateModal from './CreateModal.vue';
 
+vi.mock('laravel-vue-i18n', () => ({
+    trans: (key) =>
+        ({
+            'common.cancel': 'Mégse',
+            'admin_production_plans.modals.create_title': 'Új gyártási terv',
+            'admin_production_plans.actions.store': 'Létrehozás',
+        })[key] ?? key,
+}));
+
 const stubs = {
     Dialog: {
         props: ['visible'],
@@ -8,8 +17,9 @@ const stubs = {
         template: '<div><slot /><slot name="footer" /></div>',
     },
     Button: {
+        props: ['label'],
         emits: ['click'],
-        template: '<button type="button" @click="$emit(\'click\')"><slot /></button>',
+        template: '<button type="button" @click="$emit(\'click\')">{{ label }}<slot /></button>',
     },
     ProductionPlanForm: {
         template: '<div data-test="production-plan-form" />',

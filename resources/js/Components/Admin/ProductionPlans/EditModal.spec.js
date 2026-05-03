@@ -1,6 +1,38 @@
 import { mount } from '@vue/test-utils';
 import EditModal from './EditModal.vue';
 
+vi.mock('laravel-vue-i18n', () => ({
+    trans: (key, replacements = {}) => {
+        const translations = {
+            'common.cancel': 'Mégse',
+            'admin_production_plans.modals.edit_title': 'Gyártási terv szerkesztése',
+            'admin_production_plans.actions.save': 'Mentés',
+            'admin_production_plans.summary.active_minutes': 'Aktív idő',
+            'admin_production_plans.summary.wait_minutes': 'Várakozási idő',
+            'admin_production_plans.summary.recipe_minutes': 'Teljes receptidő',
+            'admin_production_plans.summary.shortage_ingredients': 'Hiányos alapanyagok',
+            'admin_production_plans.units.minutes': ':count perc',
+            'admin_production_plans.units.pieces': ':count db',
+            'admin_production_plans.timeline.title': 'Timeline',
+            'admin_production_plans.timeline.summary': ':steps lépés | dependency: :dependencies | kezdés: :start',
+            'admin_production_plans.timeline.real_timeline': 'Valós timeline',
+            'admin_production_plans.timeline.steps_count': ':count lépés',
+            'admin_production_plans.timeline.empty': 'Nincs generált timeline. Adj meg receptlépéseket a termékekhez.',
+            'admin_production_plans.timeline.starter': 'Starter',
+            'admin_production_plans.timeline.main_step': 'Fő lépés',
+            'admin_production_plans.timeline.duration_line': 'Aktív: :active perc | Várakozás: :wait perc',
+            'admin_production_plans.timeline.depends_on_product': 'Függőség céltermék: :product',
+            'admin_production_plans.requirements.title': 'Összesített alapanyag igény',
+        };
+
+        let value = translations[key] ?? key;
+        Object.entries(replacements).forEach(([name, replacement]) => {
+            value = value.replace(`:${name}`, replacement);
+        });
+        return value;
+    },
+}));
+
 const stubs = {
     Dialog: {
         props: ['visible'],
@@ -8,8 +40,9 @@ const stubs = {
         template: '<div><slot /><slot name="footer" /></div>',
     },
     Button: {
+        props: ['label'],
         emits: ['click'],
-        template: '<button type="button" @click="$emit(\'click\')"><slot /></button>',
+        template: '<button type="button" @click="$emit(\'click\')">{{ label }}<slot /></button>',
     },
     ProductionPlanForm: {
         template: '<div data-test="plan-form" />',
@@ -65,7 +98,6 @@ describe('EditModal', () => {
         });
 
         expect(wrapper.text()).toContain('Kovasz etetese');
-        expect(wrapper.text()).not.toContain('Nincs generalt timeline');
+        expect(wrapper.text()).not.toContain('Nincs generált timeline');
     });
 });
-

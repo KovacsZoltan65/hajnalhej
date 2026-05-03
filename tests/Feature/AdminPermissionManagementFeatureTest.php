@@ -41,6 +41,21 @@ it('permissions index includes registry defined data', function (): void {
             ->where('permissions.data.0.is_registry_defined', true));
 });
 
+it('permission registry metadata is localized without changing permission names', function (): void {
+    app()->setLocale('hu');
+    $hungarian = PermissionRegistry::definition(PermissionRegistry::PRODUCTS_VIEW);
+
+    app()->setLocale('en');
+    $english = PermissionRegistry::definition(PermissionRegistry::PRODUCTS_VIEW);
+
+    expect($hungarian['name'])->toBe(PermissionRegistry::PRODUCTS_VIEW)
+        ->and($english['name'])->toBe(PermissionRegistry::PRODUCTS_VIEW)
+        ->and($hungarian['module'])->toBe('Termékek')
+        ->and($hungarian['label'])->toBe('Termékek megtekintése')
+        ->and($english['module'])->toBe('Products')
+        ->and($english['label'])->toBe('View products');
+});
+
 it('sync creates missing registry permissions', function (): void {
     $admin = User::factory()->admin()->create();
 

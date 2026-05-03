@@ -1,20 +1,22 @@
 <script setup>
 import { Link, usePage } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
+import { trans } from "laravel-vue-i18n";
 
 const page = usePage();
 const isMobileOpen = ref(false);
 
-const links = [
-    { label: "Kezdőlap", href: "/" },
-    { label: "Heti menü", href: "/weekly-menu" },
-    { label: "Rólunk", href: "/about" },
-];
+const links = computed(() => [
+    { label: trans("nav.home"), href: "/" },
+    { label: trans("nav.weekly_menu"), href: "/weekly-menu" },
+    { label: trans("nav.about"), href: "/about" },
+]);
 
 const user = computed(() => page.props.auth?.user ?? null);
 const navUi = computed(() => page.props.ui?.nav ?? {});
 const cartTotalQuantity = computed(() => page.props.cart?.total_quantity ?? 0);
 
+const navLabel = (key) => navUi.value[key] ?? trans(`nav.${key}`);
 const isActive = (href) => page.url === href || page.url.startsWith(`${href}/`);
 const closeMobile = () => {
     isMobileOpen.value = false;
@@ -44,7 +46,7 @@ const closeMobile = () => {
                 href="/cart"
                 class="relative rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
             >
-                {{ navUi.cart ?? "Kosár" }}
+                {{ navLabel("cart") }}
                 <span
                     v-if="cartTotalQuantity > 0"
                     class="absolute -right-1 -top-1 rounded-full bg-bakery-gold px-1.5 py-0.5 text-[10px] font-bold text-bakery-dark"
@@ -57,13 +59,13 @@ const closeMobile = () => {
                     href="/login"
                     class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
                 >
-                    {{ navUi.login ?? "Belépés" }}
+                    {{ navLabel("login") }}
                 </Link>
                 <Link
                     href="/register"
                     class="rounded-full bg-bakery-brown px-4 py-2 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
                 >
-                    {{ navUi.register ?? "Regisztráció" }}
+                    {{ navLabel("register") }}
                 </Link>
             </template>
 
@@ -72,14 +74,14 @@ const closeMobile = () => {
                     href="/account"
                     class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
                 >
-                    {{ navUi.account ?? "Fiókom" }}
+                    {{ navLabel("account") }}
                 </Link>
                 <Link
                     v-if="user.can_access_admin_panel"
                     href="/admin/dashboard"
                     class="rounded-full bg-bakery-gold px-4 py-2 text-sm font-semibold text-bakery-dark transition hover:bg-[#edbb5a]"
                 >
-                    {{ navUi.admin ?? "Admin panel" }}
+                    {{ navLabel("admin") }}
                 </Link>
                 <Link
                     href="/logout"
@@ -88,7 +90,7 @@ const closeMobile = () => {
                     type="button"
                     class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
                 >
-                    {{ navUi.logout ?? "Kilépés" }}
+                    {{ navLabel("logout") }}
                 </Link>
             </template>
         </div>
@@ -99,7 +101,11 @@ const closeMobile = () => {
             @click="isMobileOpen = !isMobileOpen"
         >
             <span class="sr-only">
-                {{ isMobileOpen ? "Menü bezárása" : "Menü megnyitása" }}
+                {{
+                    isMobileOpen
+                        ? $t("nav.close_menu")
+                        : $t("nav.open_menu")
+                }}
             </span>
             <i :class="isMobileOpen ? 'pi pi-times' : 'pi pi-bars'" />
         </button>
@@ -126,13 +132,12 @@ const closeMobile = () => {
             </nav>
 
             <div class="mt-3 space-y-2 border-t border-bakery-brown/15 pt-3">
-                <!-- Kosár -->
                 <Link
                     href="/cart"
                     class="block rounded-xl px-3 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10"
                     @click="closeMobile"
                 >
-                    {{ navUi.cart ?? "Kosár" }}
+                    {{ navLabel("cart") }}
                     <span
                         v-if="cartTotalQuantity > 0"
                         class="ml-1 rounded-full bg-bakery-gold px-1.5 py-0.5 text-[10px] font-bold text-bakery-dark"
@@ -141,22 +146,20 @@ const closeMobile = () => {
                 </Link>
 
                 <template v-if="!user">
-                    <!-- Belépés -->
                     <Link
                         href="/login"
                         class="block rounded-xl px-3 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10"
                         @click="closeMobile"
                     >
-                        {{ navUi.login ?? "Belépés" }}
+                        {{ navLabel("login") }}
                     </Link>
 
-                    <!-- Regisztráció -->
                     <Link
                         href="/register"
                         class="block rounded-xl bg-bakery-brown px-3 py-2 text-sm font-semibold text-bakery-cream"
                         @click="closeMobile"
                     >
-                        {{ navUi.register ?? "Regisztráció" }}
+                        {{ navLabel("register") }}
                     </Link>
                 </template>
 
@@ -166,7 +169,7 @@ const closeMobile = () => {
                         class="block rounded-xl px-3 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10"
                         @click="closeMobile"
                     >
-                        {{ navUi.account ?? "Fiókom" }}
+                        {{ navLabel("account") }}
                     </Link>
                     <Link
                         v-if="user.can_access_admin_panel"
@@ -174,7 +177,7 @@ const closeMobile = () => {
                         class="block rounded-xl bg-bakery-gold px-3 py-2 text-sm font-semibold text-bakery-dark"
                         @click="closeMobile"
                     >
-                        {{ navUi.admin ?? "Admin panel" }}
+                        {{ navLabel("admin") }}
                     </Link>
                     <Link
                         href="/logout"
@@ -184,7 +187,7 @@ const closeMobile = () => {
                         class="block w-full rounded-xl px-3 py-2 text-left text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10"
                         @click="closeMobile"
                     >
-                        {{ navUi.logout ?? "Kilépés" }}
+                        {{ navLabel("logout") }}
                     </Link>
                 </template>
             </div>
