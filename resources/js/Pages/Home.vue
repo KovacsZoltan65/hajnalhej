@@ -4,6 +4,7 @@ import { Head, Link, usePage } from "@inertiajs/vue3";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import PublicLayout from "@/Layouts/PublicLayout.vue";
 import { useConversionTracking } from "@/composables/useConversionTracking";
+import { trans } from "laravel-vue-i18n";
 
 defineOptions({ layout: PublicLayout });
 
@@ -21,14 +22,14 @@ const heroVariant = computed(() => props.heroExperiment?.variant ?? "artisan_sto
 
 const heroTitle = computed(() =>
     heroVariant.value === "speed_checkout"
-        ? "Prémium kézműves pékáru, gyors és kiszámítható átvétellel."
-        : "Prémium kézműves pékáru előrendeléssel."
+        ? trans("home.hero_title_01")
+        : trans("home.hero_title_02")
 );
 
 const heroSubtitle = computed(() =>
     heroVariant.value === "speed_checkout"
-        ? "Rendelj pár kattintással, és pontos idősávban vedd át a frissen sült kedvenceidet."
-        : "Lassú kelesztés, kis szériás sütés, pontos átvétel. A Hajnalhéjnál a minőség nem kompromisszum, hanem rendszer."
+        ? trans("home.hero_title_03")
+        : trans("home.hero_title_04")
 );
 
 const trackLandingCta = (ctaId, href) => {
@@ -42,105 +43,100 @@ const trackLandingCta = (ctaId, href) => {
     });
 };
 
-const heroHighlights = [
+const heroHighlights = computed(() => [
     {
-        label: "Kovászolt tételek",
-        value: "18+ óra",
+        label: trans("home.highlight_sourdough_label"),
+        value: trans("home.highlight_sourdough_value"),
     },
     {
-        label: "Heti limitált batch",
-        value: "Hetente",
+        label: trans("home.highlight_batch_label"),
+        value: trans("home.highlight_batch_value"),
     },
     {
-        label: "Átvételi pontosság",
-        value: "15 perc",
+        label: trans("home.highlight_pickup_label"),
+        value: trans("home.highlight_pickup_value"),
     },
-];
+]);
 
-const trustPillars = [
-    "Kis szériás sütés, minden hajnalban frissítve",
-    "Átlátható összetevők, tiszta receptek",
-    "Előrendeléssel gyorsabb átvétel, sorban állás nélkül",
-    "Budapesti kézműves műhely, prémium minőség",
-];
+const trustPillars = computed(() => [
+    trans("home.trust_pillar_01"),
+    trans("home.trust_pillar_02"),
+    trans("home.trust_pillar_03"),
+    trans("home.trust_pillar_04"),
+]);
 
-const bestsellers = [
+const bestsellers = computed(() => [
     {
-        title: "Kovászos fehér vekni",
-        note: "Ropogós héj, nedves bélzet, 24 órás fermentáció.",
-        price: "2 450 Ft",
-        tag: "Legnépszerűbb",
+        title: trans("home.bestseller_01_title"),
+        note: trans("home.bestseller_01_note"),
+        price: trans("home.bestseller_01_price"),
+        tag: trans("home.bestseller_01_tag"),
     },
     {
-        title: "Vajas-foszlós kalács",
-        note: "Lágy szerkezet, aranybarna kéreg, ünnepi reggelekhez.",
-        price: "2 190 Ft",
-        tag: "Limitált",
+        title: trans("home.bestseller_02_title"),
+        note: trans("home.bestseller_02_note"),
+        price: trans("home.bestseller_02_price"),
+        tag: trans("home.bestseller_02_tag"),
     },
     {
-        title: "Rozmaringos focaccia",
-        note: "Extra szűz olívaolajjal, tengeri sópelyhekkel.",
-        price: "1 990 Ft",
-        tag: "Gyorsan fogy",
+        title: trans("home.bestseller_03_title"),
+        note: trans("home.bestseller_03_note"),
+        price: trans("home.bestseller_03_price"),
+        tag: trans("home.bestseller_03_tag"),
     },
-];
+]);
 
-const steps = [
+const steps = computed(() => [
     {
-        title: "Válassz a heti menüből",
-        text: "Minden héten friss kínálatot publikálunk, pontos készletkerettel.",
+        title: trans("home.step_01_title"),
+        text: trans("home.step_01_text"),
     },
     {
-        title: "Foglalj 1 perc alatt",
-        text: "Regisztráció után a checkout gyors, a kedvenc adataid mentve maradnak.",
+        title: trans("home.step_02_title"),
+        text: trans("home.step_02_text"),
     },
     {
-        title: "Vedd át frissen",
-        text: "A választott idősávban előkészítve vár a rendelésed, stressz nélkül.",
+        title: trans("home.step_03_title"),
+        text: trans("home.step_03_text"),
     },
-];
+]);
 
-const testimonials = [
+const testimonials = computed(() => [
     {
-        quote:
-            "“A kovászos vekni minden héten ugyanazt a magas szintet hozza. Ritka stabil minőség.”",
-        name: "Réka",
-        role: "XIII. kerület",
+        quote: trans("home.testimonial_01_quote"),
+        name: trans("home.testimonial_01_name"),
+        role: trans("home.testimonial_01_role"),
     },
     {
-        quote:
-            "“A rendelés és átvétel annyira gördülékeny, hogy hétköznap reggel is belefér.”",
-        name: "Márk",
-        role: "II. kerület",
+        quote: trans("home.testimonial_02_quote"),
+        name: trans("home.testimonial_02_name"),
+        role: trans("home.testimonial_02_role"),
     },
     {
-        quote: "“A péksütemények íze tényleg prémium, nem tömegtermék-hangulat.”",
-        name: "Nóra",
-        role: "XI. kerület",
+        quote: trans("home.testimonial_03_quote"),
+        name: trans("home.testimonial_03_name"),
+        role: trans("home.testimonial_03_role"),
     },
-];
+]);
 
-const faqs = [
+const faqs = computed(() => [
     {
-        question: "Meddig tudok rendelni az aktuális hétre?",
-        answer:
-            "A heti menüben jelzett készlet erejéig, jellemzően az átvételi napot megelőző estig.",
+        question: trans("home.faq_01_question"),
+        answer: trans("home.faq_01_answer"),
     },
     {
-        question: "Kell regisztráció a rendeléshez?",
-        answer:
-            "A gyors és kényelmes visszatérő rendeléshez erősen ajánlott, de a folyamat vendégként is indítható.",
+        question: trans("home.faq_02_question"),
+        answer: trans("home.faq_02_answer"),
     },
     {
-        question: "Mi történik, ha lekésem az átvételi sávot?",
-        answer:
-            "Az üzlet nyitvatartásán belül rövid türelmi idővel számolunk, de érdemes jelezni nekünk előre.",
+        question: trans("home.faq_03_question"),
+        answer: trans("home.faq_03_answer"),
     },
-];
+]);
 </script>
 
 <template>
-    <Head title="Prémium artisan pékség Budapesten" />
+    <Head :title="$t('home.meta_title')" />
 
     <div class="space-y-14 md:space-y-16">
         <section
@@ -163,7 +159,7 @@ const faqs = [
                     <h1
                         class="font-heading text-[2.1rem] leading-tight text-bakery-dark sm:text-5xl"
                     >
-                        Ropogós reggelek.
+                        {{ $t("home.crispy_mornings") }}.
                         <span class="block text-bakery-brown">{{ heroTitle }}</span>
                     </h1>
                     <p
@@ -182,21 +178,21 @@ const faqs = [
                                 )
                             "
                         >
-                            Heti menü megtekintése
+                            {{ $t("home.weekly_menu") }}
                         </Link>
                         <Link
-                            href="/register"
+                            :href="route('register')"
                             class="inline-flex min-h-11 items-center rounded-full bg-bakery-gold px-6 py-3 text-sm font-semibold text-bakery-dark transition hover:bg-[#edbb5a]"
                             @click="trackLandingCta('hero.register_primary', '/register')"
                         >
-                            Fiók létrehozása
+                            {{ $t("home.create_account") }}
                         </Link>
                         <Link
-                            href="/cart"
+                            :href="route('cart.index')"
                             class="inline-flex min-h-11 items-center rounded-full border border-bakery-brown/30 px-6 py-3 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
                             @click="trackLandingCta('hero.cart_secondary', '/cart')"
                         >
-                            Kosár megnyitása
+                            {{ $t("home.open_cart") }}
                         </Link>
                     </div>
                     <div class="grid gap-3 sm:grid-cols-3">
@@ -221,14 +217,13 @@ const faqs = [
                     <p
                         class="text-xs font-semibold uppercase tracking-[0.2em] text-bakery-gold"
                     >
-                        Miért működik?
+                        {{ $t("home.why_it_works") }}
                     </p>
                     <h2 class="font-heading text-3xl leading-tight text-bakery-dark">
-                        Kovász. Idő. Türelem.
+                        {{ $t("home.philosophy") }}
                     </h2>
                     <p class="text-sm leading-relaxed text-bakery-dark/75">
-                        Minden tételt úgy készítünk, hogy az íz, állag és frissesség az
-                        átvétel pillanatában a csúcson legyen.
+                        {{ $t("home.why_description") }}
                     </p>
                     <ul class="space-y-2">
                         <li
@@ -247,7 +242,7 @@ const faqs = [
                         class="inline-flex min-h-11 items-center rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
                         @click="trackLandingCta('hero.about_story', '/about')"
                     >
-                        Ismerd meg a történetünket
+                        {{ $t("home.about_story") }}
                     </Link>
                 </aside>
             </div>
@@ -255,9 +250,9 @@ const faqs = [
 
         <section class="space-y-7">
             <SectionTitle
-                eyebrow="Bestseller választék"
-                title="Gyorsan fogyó kedvencek minden héten"
-                description="A teljes kínálat dinamikusan frissül, de ez a három tétel szinte minden hétre visszatér."
+                :eyebrow="$t('home.bestsellers_eyebrow')"
+                :title="$t('home.bestsellers_title')"
+                :description="$t('home.bestsellers_description')"
             />
             <div class="grid gap-4 md:grid-cols-3">
                 <article
@@ -286,7 +281,7 @@ const faqs = [
                             trackLandingCta(`bestseller.${item.title}`, '/weekly-menu')
                         "
                     >
-                        Érdekel, lefoglalom
+                        {{ $t("home.reserve_cta") }}
                     </Link>
                 </article>
             </div>
@@ -294,9 +289,9 @@ const faqs = [
 
         <section class="ui-card p-6 sm:p-8">
             <SectionTitle
-                eyebrow="Így működik"
-                title="Egyszerű rendelés, prémium élmény"
-                description="A folyamat úgy lett kialakítva, hogy minimális időráfordítással stabilan magas minőséget kapj."
+                :eyebrow="$t('home.steps_eyebrow')"
+                :title="$t('home.steps_title')"
+                :description="$t('home.steps_description')"
             />
             <div class="mt-6 grid gap-4 md:grid-cols-3">
                 <article
@@ -315,9 +310,9 @@ const faqs = [
 
         <section class="space-y-7">
             <SectionTitle
-                eyebrow="Vásárlói visszajelzések"
-                title="A minőség nem ígéret, hanem rutin"
-                description="Valódi visszajelzések törzsvásárlóktól."
+                :eyebrow="$t('home.testimonials_eyebrow')"
+                :title="$t('home.testimonials_title')"
+                :description="$t('home.testimonials_description')"
             />
             <div class="grid gap-4 md:grid-cols-3">
                 <article
@@ -340,14 +335,13 @@ const faqs = [
             class="ui-card ui-card-elevated overflow-hidden bg-bakery-brown p-7 text-bakery-cream sm:p-10"
         >
             <p class="text-xs uppercase tracking-[0.22em] text-bakery-gold">
-                Heti menü nyitva
+                {{ $t("home.urgency_eyebrow") }}
             </p>
             <h2 class="mt-3 font-heading text-3xl sm:text-4xl">
-                Foglalj előre, hogy biztosan jusson a kedvencedből.
+                {{ $t("home.urgency_title") }}
             </h2>
             <p class="mt-3 max-w-2xl text-bakery-cream/85">
-                A mennyiség limitált, az átvétel idősávos. A legnépszerűbb tételek
-                jellemzően 24-48 órán belül elfogynak.
+                {{ $t("home.urgency_description") }}
             </p>
             <div class="mt-6 flex flex-wrap gap-3">
                 <Link
@@ -355,23 +349,23 @@ const faqs = [
                     class="inline-flex min-h-11 items-center rounded-full bg-bakery-gold px-6 py-3 text-sm font-semibold text-bakery-dark transition hover:bg-[#edbb5a]"
                     @click="trackLandingCta('urgency.weekly_menu', '/weekly-menu')"
                 >
-                    Heti menü megnyitása
+                    {{ $t("home.open_weekly_menu") }}
                 </Link>
                 <Link
                     href="/checkout"
                     class="inline-flex min-h-11 items-center rounded-full border border-bakery-cream/35 px-6 py-3 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-cream/10"
                     @click="trackLandingCta('urgency.checkout', '/checkout')"
                 >
-                    Ugrás a pénztárhoz
+                    {{ $t("home.go_to_checkout") }}
                 </Link>
             </div>
         </section>
 
         <section class="ui-card p-6 sm:p-8">
             <SectionTitle
-                eyebrow="Gyakori kérdések"
-                title="Minden fontos egy helyen"
-                description="Rendelés előtt gyors válaszok a leggyakoribb kérdésekre."
+                :eyebrow="$t('home.faq_eyebrow')"
+                :title="$t('home.faq_title')"
+                :description="$t('home.faq_description')"
             />
             <div class="mt-6 space-y-3">
                 <details
@@ -393,14 +387,13 @@ const faqs = [
 
         <section class="ui-card p-6 text-center sm:p-8">
             <p class="text-xs uppercase tracking-[0.2em] text-bakery-gold">
-                Készen állsz?
+                {{ $t("home.final_eyebrow") }}
             </p>
             <h2 class="mt-2 font-heading text-3xl text-bakery-dark sm:text-4xl">
-                Indítsd el az első rendelésed
+                {{ $t("home.final_title") }}
             </h2>
             <p class="mx-auto mt-3 max-w-2xl text-sm text-bakery-dark/75 sm:text-base">
-                Csatlakozz a visszatérő vásárlóinkhoz, és rendelj 1 perc alatt a heti
-                kínálatból.
+                {{ $t("home.final_description") }}
             </p>
             <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
                 <Link
@@ -408,14 +401,14 @@ const faqs = [
                     class="inline-flex min-h-11 items-center rounded-full bg-bakery-brown px-6 py-3 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
                     @click="trackLandingCta('final.register', '/register')"
                 >
-                    Regisztráció
+                    {{ $t("nav.register") }}
                 </Link>
                 <Link
                     href="/login"
                     class="inline-flex min-h-11 items-center rounded-full border border-bakery-brown/30 px-6 py-3 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
                     @click="trackLandingCta('final.login', '/login')"
                 >
-                    Belépés
+                    {{ $t("nav.login") }}
                 </Link>
             </div>
         </section>

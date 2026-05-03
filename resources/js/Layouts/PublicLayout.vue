@@ -1,8 +1,8 @@
 <script setup>
-import AppFooter from '../Components/AppFooter.vue';
-import AppHeader from '../Components/AppHeader.vue';
-import FlashToast from '../Components/FlashToast.vue';
-import PublicNavbar from '../Components/PublicNavbar.vue';
+import AppFooter from "../Components/AppFooter.vue";
+import AppHeader from "../Components/AppHeader.vue";
+import FlashToast from "../Components/FlashToast.vue";
+import PublicNavbar from "../Components/PublicNavbar.vue";
 </script>
 
 <template>

@@ -7,25 +7,23 @@ defineOptions({ layout: PublicLayout });
 </script>
 
 <template>
-    <Head title="Rólunk" />
+    <Head :title="$t('about.meta_title')" />
 
     <section class="space-y-8">
         <SectionTitle
-            eyebrow="Rólunk"
-            title="Hajnalhéj: modern pékség, klasszikus alapokkal."
-            description="Budapest belvárosaban sütünk, kis mennyiségben, minőségi alapanyagokkal és lassú folyamatokkal."
+            :eyebrow="$t('about.eyebrow')"
+            :title="$t('about.title')"
+            :description="$t('about.description')"
         />
 
         <div
             class="rounded-2xl border border-bakery-brown/15 bg-white/70 p-6 leading-relaxed text-bakery-dark/80"
         >
             <p>
-                A filozófiánk röviden: Kovász. Idő. Türelem. Ez határozza meg a tészta
-                állagát, az aromát és a mindennapi minőséget.
+                {{ $t("about.philosophy") }}
             </p>
             <p class="mt-4">
-                Ebben a fázisban az oldal célja a stabil alap létrehozása. A következö
-                modulokban érkezik a teljes menü-, rendelés- és admin funkcionalitás.
+                {{ $t("about.current_phase") }}
             </p>
         </div>
     </section>

@@ -1,18 +1,19 @@
 <script setup>
-import { Head, router, useForm } from '@inertiajs/vue3';
-import { computed, reactive, ref } from 'vue';
-import Button from 'primevue/button';
-import Column from 'primevue/column';
-import DataTable from 'primevue/datatable';
-import DatePicker from 'primevue/datepicker';
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
+import { Head, router, useForm } from "@inertiajs/vue3";
+import { computed, reactive, ref } from "vue";
+import Button from "primevue/button";
+import Column from "primevue/column";
+import DataTable from "primevue/datatable";
+import DatePicker from "primevue/datepicker";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
 
-import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
-import AdjustmentModal from '@/Components/Admin/Inventory/AdjustmentModal.vue';
-import WasteEntryModal from '@/Components/Admin/Inventory/WasteEntryModal.vue';
-import SectionTitle from '@/Components/SectionTitle.vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import AdjustmentModal from "@/Components/Admin/Inventory/AdjustmentModal.vue";
+import WasteEntryModal from "@/Components/Admin/Inventory/WasteEntryModal.vue";
+import SectionTitle from "@/Components/SectionTitle.vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { trans } from "laravel-vue-i18n";
 
 defineOptions({ layout: AdminLayout });
 
@@ -32,29 +33,29 @@ const adjustmentModalVisible = ref(false);
 
 const filterState = reactive({
     days: props.filters.days ?? 7,
-    date_from: props.filters.date_from ?? '',
-    date_to: props.filters.date_to ?? '',
-    search: props.filters.search ?? '',
-    movement_type: props.filters.movement_type ?? '',
+    date_from: props.filters.date_from ?? "",
+    date_to: props.filters.date_to ?? "",
+    search: props.filters.search ?? "",
+    movement_type: props.filters.movement_type ?? "",
     ingredient_id: props.filters.ingredient_id || null,
     per_page: props.filters.per_page ?? 15,
 });
 
 const dayOptions = [
-    { label: '7 nap', value: 7 },
-    { label: '14 nap', value: 14 },
-    { label: '30 nap', value: 30 },
-    { label: '90 nap', value: 90 },
+    { label: trans("common.day_count", { count: 7 }), value: 7 },
+    { label: trans("common.day_count", { count: 14 }), value: 14 },
+    { label: trans("common.day_count", { count: 30 }), value: 30 },
+    { label: trans("common.day_count", { count: 90 }), value: 90 },
 ];
 
 const perPageOptions = [
-    { label: '15 / oldal', value: 15 },
-    { label: '30 / oldal', value: 30 },
-    { label: '50 / oldal', value: 50 },
+    { label: trans("admin_inventory.filters.per_page_option", { count: 15 }), value: 15 },
+    { label: trans("admin_inventory.filters.per_page_option", { count: 30 }), value: 30 },
+    { label: trans("admin_inventory.filters.per_page_option", { count: 50 }), value: 50 },
 ];
 
 const movementTypeOptions = computed(() => [
-    { label: 'Mind', value: '' },
+    { label: trans("common.all"), value: "" },
     ...props.movement_types.map((type) => ({
         label: movementTypeLabel(type),
         value: type,
@@ -75,15 +76,15 @@ const productOptions = computed(() =>
     })),
 );
 
-const ingredientFilterOptions = computed(() => [{ label: 'Mind', value: null }, ...ingredientOptions.value]);
+const ingredientFilterOptions = computed(() => [{ label: trans("common.all"), value: null }, ...ingredientOptions.value]);
 const wasteReasonOptions = computed(() => props.waste_reasons.map((reason) => ({ label: reason, value: reason })));
 
 const wasteForm = useForm({
-    waste_type: 'ingredient',
+    waste_type: "ingredient",
     ingredient_id: null,
     product_id: null,
     quantity: 1,
-    reason: 'lejárt',
+    reason: trans("admin_inventory.default_waste_reason"),
     occurred_at: new Date().toISOString().slice(0, 10),
 });
 
@@ -92,7 +93,7 @@ const adjustmentForm = useForm({
     difference: 0,
     unit_cost: null,
     occurred_at: new Date().toISOString().slice(0, 10),
-    notes: '',
+    notes: "",
 });
 
 const currentPage = computed(() => props.ledger.current_page ?? 1);
@@ -102,7 +103,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        '/admin/inventory',
+        "/admin/inventory",
         {
             days: filterState.days,
             date_from: filterState.date_from || undefined,
@@ -120,7 +121,7 @@ const load = (extra = {}) => {
             onFinish: () => {
                 loading.value = false;
             },
-        },
+        }
     );
 };
 
@@ -128,10 +129,10 @@ const submitFilters = () => load({ page: 1 });
 
 const clearFilters = () => {
     filterState.days = 7;
-    filterState.date_from = '';
-    filterState.date_to = '';
-    filterState.search = '';
-    filterState.movement_type = '';
+    filterState.date_from = "";
+    filterState.date_to = "";
+    filterState.search = "";
+    filterState.movement_type = "";
     filterState.ingredient_id = null;
     filterState.per_page = 15;
     submitFilters();
@@ -145,11 +146,11 @@ const onPage = (event) => {
 const openWasteModal = () => {
     wasteForm.reset();
     wasteForm.clearErrors();
-    wasteForm.waste_type = 'ingredient';
+    wasteForm.waste_type = "ingredient";
     wasteForm.ingredient_id = null;
     wasteForm.product_id = null;
     wasteForm.quantity = 1;
-    wasteForm.reason = 'lejárt';
+    wasteForm.reason = trans("admin_inventory.default_waste_reason");
     wasteForm.occurred_at = new Date().toISOString().slice(0, 10);
     wasteModalVisible.value = true;
 };
@@ -161,12 +162,12 @@ const openAdjustmentModal = () => {
     adjustmentForm.difference = 0;
     adjustmentForm.unit_cost = null;
     adjustmentForm.occurred_at = new Date().toISOString().slice(0, 10);
-    adjustmentForm.notes = '';
+    adjustmentForm.notes = "";
     adjustmentModalVisible.value = true;
 };
 
 const submitWaste = () => {
-    wasteForm.post('/admin/inventory/waste', {
+    wasteForm.post("/admin/inventory/waste", {
         preserveScroll: true,
         onSuccess: () => {
             wasteModalVisible.value = false;
@@ -176,7 +177,7 @@ const submitWaste = () => {
 };
 
 const submitAdjustment = () => {
-    adjustmentForm.post('/admin/inventory/adjustments', {
+    adjustmentForm.post("/admin/inventory/adjustments", {
         preserveScroll: true,
         onSuccess: () => {
             adjustmentModalVisible.value = false;
@@ -186,20 +187,22 @@ const submitAdjustment = () => {
 };
 
 const asCurrency = (value) =>
-    `${new Intl.NumberFormat('hu-HU', {
+    new Intl.NumberFormat(trans("common.locale"), {
+        style: "currency",
+        currency: trans("common.currency"),
         maximumFractionDigits: 0,
-    }).format(Number(value ?? 0))} Ft`;
+    }).format(Number(value ?? 0));
 
 const movementTypeLabel = (type) => {
     const map = {
-        purchase_in: 'Bevételezés',
-        production_out: 'Gyártás felhasználás',
-        waste_out: 'Selejt',
-        adjustment_in: 'Korrekció be',
-        adjustment_out: 'Korrekció ki',
-        count_correction: 'Leltár korrekció',
-        return_in: 'Visszáru be',
-        return_out: 'Visszáru ki',
+        purchase_in: trans("admin_inventory.movement_types.purchase_in"),
+        production_out: trans("admin_inventory.movement_types.production_out"),
+        waste_out: trans("admin_inventory.movement_types.waste_out"),
+        adjustment_in: trans("admin_inventory.movement_types.adjustment_in"),
+        adjustment_out: trans("admin_inventory.movement_types.adjustment_out"),
+        count_correction: trans("admin_inventory.movement_types.count_correction"),
+        return_in: trans("admin_inventory.movement_types.return_in"),
+        return_out: trans("admin_inventory.movement_types.return_out"),
     };
 
     return map[type] ?? type;
@@ -222,15 +225,15 @@ const movementTypeClass = (type) => {
 
 const directionClass = (direction) =>
     direction === 'out'
-        ? 'text-rose-700'
-        : 'text-emerald-700';
+        ? "text-rose-700"
+        : "text-emerald-700";
 
 const parseDateFromYmd = (value) => {
     if (!value) {
         return null;
     }
 
-    const [year, month, day] = String(value).split('-').map(Number);
+    const [year, month, day] = String(value).split("-").map(Number);
     if (!year || !month || !day) {
         return null;
     }
@@ -240,12 +243,12 @@ const parseDateFromYmd = (value) => {
 
 const toYmd = (value) => {
     if (!(value instanceof Date) || Number.isNaN(value.getTime())) {
-        return '';
+        return "";
     }
 
     const year = value.getFullYear();
-    const month = String(value.getMonth() + 1).padStart(2, '0');
-    const day = String(value.getDate()).padStart(2, '0');
+    const month = String(value.getMonth() + 1).padStart(2, "0");
+    const day = String(value.getDate()).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
 };
@@ -266,21 +269,21 @@ const dateToPicker = computed({
 </script>
 
 <template>
-    <Head title="Készletmozgások" />
+    <Head :title="$t('admin_inventory.meta_title')" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Készletmozgások"
-            title="Készletmozgások"
-            description="Termékek mintájára egységes, szűrhető és lapozható készlet főkönyv gyors műveletekkel."
+            :eyebrow="$t('admin_inventory.eyebrow')"
+            :title="$t('admin_inventory.title')"
+            :description="$t('admin_inventory.description')"
         />
 
         <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">Készletérték</p><p class="mt-2 font-heading text-3xl">{{ asCurrency(dashboard.summary.total_stock_value) }}</p></article>
-            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">Alacsony készlet</p><p class="mt-2 font-heading text-3xl">{{ dashboard.summary.low_stock_count }}</p></article>
-            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">Kifogyott</p><p class="mt-2 font-heading text-3xl">{{ dashboard.summary.out_of_stock_count }}</p></article>
-            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">Heti selejtérték</p><p class="mt-2 font-heading text-3xl">{{ asCurrency(dashboard.summary.weekly_waste_cost) }}</p></article>
-            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">Heti bevételezés</p><p class="mt-2 font-heading text-3xl">{{ asCurrency(dashboard.summary.weekly_purchase_value) }}</p></article>
+            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">{{ $t("admin_inventory.summary.total_stock_value") }}</p><p class="mt-2 font-heading text-3xl">{{ asCurrency(dashboard.summary.total_stock_value) }}</p></article>
+            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">{{ $t("admin_inventory.summary.low_stock_count") }}</p><p class="mt-2 font-heading text-3xl">{{ dashboard.summary.low_stock_count }}</p></article>
+            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">{{ $t("admin_inventory.summary.out_of_stock_count") }}</p><p class="mt-2 font-heading text-3xl">{{ dashboard.summary.out_of_stock_count }}</p></article>
+            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">{{ $t("admin_inventory.summary.weekly_waste_cost") }}</p><p class="mt-2 font-heading text-3xl">{{ asCurrency(dashboard.summary.weekly_waste_cost) }}</p></article>
+            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">{{ $t("admin_inventory.summary.weekly_purchase_value") }}</p><p class="mt-2 font-heading text-3xl">{{ asCurrency(dashboard.summary.weekly_purchase_value) }}</p></article>
         </section>
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
@@ -291,17 +294,17 @@ const dateToPicker = computed({
             >
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.search") }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Jegyzet vagy referencia"
+                            :placeholder="$t('admin_inventory.filters.search_placeholder')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Típus</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.type") }}</label>
                         <Select
                             v-model="filterState.movement_type"
                             :options="movementTypeOptions"
@@ -313,7 +316,7 @@ const dateToPicker = computed({
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Alapanyag</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.ingredient") }}</label>
                         <Select
                             v-model="filterState.ingredient_id"
                             :options="ingredientFilterOptions"
@@ -326,7 +329,7 @@ const dateToPicker = computed({
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Nap</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.days") }}</label>
                         <Select
                             v-model="filterState.days"
                             :options="dayOptions"
@@ -340,7 +343,7 @@ const dateToPicker = computed({
 
                 <template #actions>
                     <div class="space-y-1 min-w-44">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Dátumtól</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.date_from") }}</label>
                         <DatePicker
                             v-model="dateFromPicker"
                             show-icon
@@ -350,7 +353,7 @@ const dateToPicker = computed({
                         />
                     </div>
                     <div class="space-y-1 min-w-44">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Dátumig</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.date_to") }}</label>
                         <DatePicker
                             v-model="dateToPicker"
                             show-icon
@@ -360,7 +363,7 @@ const dateToPicker = computed({
                         />
                     </div>
                     <div class="space-y-1 min-w-36">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Oldalméret</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.per_page") }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -370,10 +373,10 @@ const dateToPicker = computed({
                             @change="submitFilters"
                         />
                     </div>
-                    <Button icon="pi pi-filter-slash" label="Szűrők törlése" severity="secondary" outlined @click="clearFilters" />
-                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button icon="pi pi-exclamation-triangle" label="Selejtezés" severity="warn" @click="openWasteModal" />
-                    <Button icon="pi pi-sliders-h" label="Korrekció" @click="openAdjustmentModal" />
+                    <Button icon="pi pi-filter-slash" :label="$t('common.clear_filters')" severity="secondary" outlined @click="clearFilters" />
+                    <Button icon="pi pi-search" :label="$t('admin_inventory.actions.search')" @click="submitFilters" />
+                    <Button icon="pi pi-exclamation-triangle" :label="$t('admin_inventory.actions.waste')" severity="warn" @click="openWasteModal" />
+                    <Button icon="pi pi-sliders-h" :label="$t('admin_inventory.actions.adjustment')" @click="openAdjustmentModal" />
                 </template>
             </AdminTableToolbar>
 
@@ -392,20 +395,20 @@ const dateToPicker = computed({
                 >
                     <template #empty>
                         <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
-                            <p>Nincs megjeleníthető készletmozgás.</p>
+                            <p>{{ $t("admin_inventory.empty") }}</p>
                             <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
-                                <Button label="Selejtezés" size="small" severity="warn" @click="openWasteModal" />
+                                <Button :label="$t('common.clear_filters')" outlined size="small" @click="clearFilters" />
+                                <Button :label="$t('admin_inventory.actions.waste')" size="small" severity="warn" @click="openWasteModal" />
                             </div>
                         </div>
                     </template>
 
-                    <Column field="occurred_at" header="Dátum">
+                    <Column field="occurred_at" :header="$t('admin_inventory.columns.date')">
                         <template #body="{ data }">
                             <span class="text-sm text-bakery-dark">{{ data.occurred_at || '-' }}</span>
                         </template>
                     </Column>
-                    <Column field="ingredient_name" header="Alapanyag">
+                    <Column field="ingredient_name" :header="$t('admin_inventory.columns.ingredient')">
                         <template #body="{ data }">
                             <div>
                                 <p class="font-medium text-bakery-dark">{{ data.ingredient_name || '-' }}</p>
@@ -413,31 +416,31 @@ const dateToPicker = computed({
                             </div>
                         </template>
                     </Column>
-                    <Column field="movement_type" header="Típus">
+                    <Column field="movement_type" :header="$t('admin_inventory.columns.type')">
                         <template #body="{ data }">
                             <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold" :class="movementTypeClass(data.movement_type)">
                                 {{ movementTypeLabel(data.movement_type) }}
                             </span>
                         </template>
                     </Column>
-                    <Column field="quantity" header="Mennyiség">
+                    <Column field="quantity" :header="$t('admin_inventory.columns.quantity')">
                         <template #body="{ data }">
                             <span class="font-semibold" :class="directionClass(data.direction)">
                                 {{ data.direction === 'out' ? '-' : '+' }}{{ data.quantity }}
                             </span>
                         </template>
                     </Column>
-                    <Column field="unit_cost" header="Egységár">
+                    <Column field="unit_cost" :header="$t('admin_inventory.columns.unit_cost')">
                         <template #body="{ data }">
                             <span>{{ data.unit_cost !== null ? asCurrency(data.unit_cost) : '-' }}</span>
                         </template>
                     </Column>
-                    <Column field="total_cost" header="Érték">
+                    <Column field="total_cost" :header="$t('admin_inventory.columns.value')">
                         <template #body="{ data }">
                             <span class="font-medium">{{ data.total_cost !== null ? asCurrency(data.total_cost) : '-' }}</span>
                         </template>
                     </Column>
-                    <Column field="reference_type" header="Referencia">
+                    <Column field="reference_type" :header="$t('admin_inventory.columns.reference')">
                         <template #body="{ data }">
                             <span class="text-sm text-bakery-dark/80">{{ data.reference_type || '-' }} #{{ data.reference_id || '-' }}</span>
                         </template>

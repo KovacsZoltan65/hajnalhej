@@ -1,19 +1,20 @@
 <script setup>
-import { Head, router, useForm } from '@inertiajs/vue3';
-import { computed, reactive, ref } from 'vue';
-import Button from 'primevue/button';
-import Column from 'primevue/column';
-import ConfirmDialog from 'primevue/confirmdialog';
-import DataTable from 'primevue/datatable';
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
-import { useConfirm } from 'primevue/useconfirm';
-import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
-import CategoryStatusBadge from '@/Components/Admin/Categories/CategoryStatusBadge.vue';
-import CreateModal from '@/Components/Admin/Categories/CreateModal.vue';
-import EditModal from '@/Components/Admin/Categories/EditModal.vue';
-import SectionTitle from '@/Components/SectionTitle.vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { Head, router, useForm } from "@inertiajs/vue3";
+import { computed, reactive, ref } from "vue";
+import Button from "primevue/button";
+import Column from "primevue/column";
+import ConfirmDialog from "primevue/confirmdialog";
+import DataTable from "primevue/datatable";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
+import { useConfirm } from "primevue/useconfirm";
+import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import CategoryStatusBadge from "@/Components/Admin/Categories/CategoryStatusBadge.vue";
+import CreateModal from "@/Components/Admin/Categories/CreateModal.vue";
+import EditModal from "@/Components/Admin/Categories/EditModal.vue";
+import SectionTitle from "@/Components/SectionTitle.vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { trans } from "laravel-vue-i18n";
 
 defineOptions({ layout: AdminLayout });
 
@@ -35,27 +36,27 @@ const editModalVisible = ref(false);
 const editingId = ref(null);
 
 const filterState = reactive({
-    search: props.filters.search ?? '',
-    sort_field: props.filters.sort_field ?? 'sort_order',
-    sort_direction: props.filters.sort_direction ?? 'asc',
+    search: props.filters.search ?? "",
+    sort_field: props.filters.sort_field ?? "sort_order",
+    sort_direction: props.filters.sort_direction ?? "asc",
     per_page: props.filters.per_page ?? 10,
 });
 
 const perPageOptions = [
-    { label: '10 / oldal', value: 10 },
-    { label: '20 / oldal', value: 20 },
-    { label: '50 / oldal', value: 50 },
+    { label: trans("admin_categories.filters.per_page_option", { count: 10 }), value: 10 },
+    { label: trans("admin_categories.filters.per_page_option", { count: 20 }), value: 20 },
+    { label: trans("admin_categories.filters.per_page_option", { count: 50 }), value: 50 },
 ];
 
 const form = useForm({
-    name: '',
-    slug: '',
-    description: '',
+    name: "",
+    slug: "",
+    description: "",
     is_active: true,
     sort_order: 0,
 });
 
-const sortOrder = computed(() => (filterState.sort_direction === 'asc' ? 1 : -1));
+const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 const currentPage = computed(() => props.categories.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.categories.per_page ?? 10));
 
@@ -63,7 +64,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        '/admin/categories',
+        "/admin/categories",
         {
             search: filterState.search || undefined,
             sort_field: filterState.sort_field,
@@ -78,22 +79,22 @@ const load = (extra = {}) => {
             onFinish: () => {
                 loading.value = false;
             },
-        },
+        }
     );
 };
 
 const submitFilters = () => load({ page: 1 });
 const clearFilters = () => {
-    filterState.search = '';
+    filterState.search = "";
     filterState.per_page = 10;
-    filterState.sort_field = 'sort_order';
-    filterState.sort_direction = 'asc';
+    filterState.sort_field = "sort_order";
+    filterState.sort_direction = "asc";
     submitFilters();
 };
 
 const onSort = (event) => {
     filterState.sort_field = event.sortField;
-    filterState.sort_direction = event.sortOrder === 1 ? 'asc' : 'desc';
+    filterState.sort_direction = event.sortOrder === 1 ? "asc" : "desc";
     load({ page: 1 });
 };
 
@@ -107,9 +108,9 @@ const openCreate = () => {
     editingId.value = null;
     form.reset();
     form.clearErrors();
-    form.name = '';
-    form.slug = '';
-    form.description = '';
+    form.name = "";
+    form.slug = "";
+    form.description = "";
     form.is_active = true;
     form.sort_order = 0;
     createModalVisible.value = true;
@@ -121,7 +122,7 @@ const openEdit = (category) => {
     form.clearErrors();
     form.name = category.name;
     form.slug = category.slug;
-    form.description = category.description ?? '';
+    form.description = category.description ?? "";
     form.is_active = category.is_active;
     form.sort_order = category.sort_order;
     editModalVisible.value = true;
@@ -144,7 +145,7 @@ const submitCreate = () => {
         },
     };
 
-    form.post('/admin/categories', options);
+    form.post("/admin/categories", options);
 };
 
 const submitEdit = () => {
@@ -166,11 +167,13 @@ const submitEdit = () => {
 
 const confirmDelete = (category) => {
     confirm.require({
-        header: 'Kategória törlése',
-        message: `Biztosan törlöd ezt a kategóriát: ${category.name}?`,
-        rejectLabel: 'Mégse',
-        acceptLabel: 'Törlés',
-        acceptClass: 'p-button-danger',
+        header: trans("admin_categories.confirm_delete_header"),
+        message: trans("admin_categories.confirm_delete_message", {
+            name: category.name,
+        }),
+        rejectLabel: trans("common.cancel"),
+        acceptLabel: trans("common.delete"),
+        acceptClass: "p-button-danger",
         accept: () => {
             router.delete(`/admin/categories/${category.id}`, {
                 preserveScroll: true,
@@ -181,30 +184,34 @@ const confirmDelete = (category) => {
 </script>
 
 <template>
-    <Head title="Kategóriák" />
+    <Head :title="$t('admin_categories.meta_title')" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Kategóriák"
-            title="Kategóriák"
-            description="Referencia CRUD modul teljes repository-service-policy architektúrával."
+            :eyebrow="$t('admin_categories.eyebrow')"
+            :title="$t('admin_categories.title')"
+            :description="$t('admin_categories.description')"
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-2'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
+                            {{ $t("admin_categories.filters.search") }}
+                        </label>
                         <InputText
                             v-model="filterState.search"
-                            placeholder="Név vagy slug"
+                            :placeholder="$t('admin_categories.filters.search_placeholder')"
                             class="w-full"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
+                            {{ $t("admin_categories.filters.per_page") }}
+                        </label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -217,8 +224,16 @@ const confirmDelete = (category) => {
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Új kategória" @click="openCreate" />
+                    <Button
+                        icon="pi pi-search"
+                        :label="$t('admin_categories.actions.search')"
+                        @click="submitFilters"
+                    />
+                    <Button
+                        icon="pi pi-plus"
+                        :label="$t('admin_categories.actions.create')"
+                        @click="openCreate"
+                    />
                 </template>
             </AdminTableToolbar>
 
@@ -241,15 +256,24 @@ const confirmDelete = (category) => {
                 >
                     <template #empty>
                         <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
-                            <p>Nincs megjeleníthető kategória.</p>
+                            <p>{{ $t("admin_categories.empty") }}</p>
                             <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
-                                <Button label="Új kategória" size="small" @click="openCreate" />
+                                <Button
+                                    :label="$t('common.clear_filters')"
+                                    outlined
+                                    size="small"
+                                    @click="clearFilters"
+                                />
+                                <Button
+                                    :label="$t('admin_categories.actions.create')"
+                                    size="small"
+                                    @click="openCreate"
+                                />
                             </div>
                         </div>
                     </template>
 
-                    <Column field="name" header="Név" sortable>
+                    <Column field="name" :header="$t('admin_categories.columns.name')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">{{ data.name }}</p>
@@ -257,18 +281,33 @@ const confirmDelete = (category) => {
                             </div>
                         </template>
                     </Column>
-                    <Column field="sort_order" header="Sorrend" sortable />
-                    <Column field="products_count" header="Termékek" />
-                    <Column field="is_active" header="Státusz" sortable>
+                    <Column field="sort_order" :header="$t('admin_categories.columns.sort_order')" sortable />
+                    <Column field="products_count" :header="$t('admin_categories.columns.products')" />
+                    <Column field="is_active" :header="$t('admin_categories.columns.status')" sortable>
                         <template #body="{ data }">
                             <CategoryStatusBadge :active="data.is_active" />
                         </template>
                     </Column>
-                    <Column header="Műveletek" :exportable="false">
+                    <Column :header="$t('common.actions')" :exportable="false">
                         <template #body="{ data }">
                             <div class="flex items-center gap-2">
-                                <Button icon="pi pi-pencil" text rounded class="!h-11 !w-11" aria-label="Kategória szerkesztése" @click="openEdit(data)" />
-                                <Button icon="pi pi-trash" text rounded severity="danger" class="!h-11 !w-11" aria-label="Kategória törlése" @click="confirmDelete(data)" />
+                                <Button
+                                    icon="pi pi-pencil"
+                                    text
+                                    rounded
+                                    class="!h-11 !w-11"
+                                    :aria-label="$t('admin_categories.actions.edit')"
+                                    @click="openEdit(data)"
+                                />
+                                <Button
+                                    icon="pi pi-trash"
+                                    text
+                                    rounded
+                                    severity="danger"
+                                    class="!h-11 !w-11"
+                                    :aria-label="$t('admin_categories.actions.delete')"
+                                    @click="confirmDelete(data)"
+                                />
                             </div>
                         </template>
                     </Column>

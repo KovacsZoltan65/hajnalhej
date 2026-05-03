@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Link } from "@inertiajs/vue3";
 
 defineProps({
     item: {
@@ -20,11 +20,7 @@ defineProps({
                 : 'text-bakery-dark/75 hover:bg-bakery-brown/10 hover:text-bakery-brown'
         "
     >
-        <i
-            v-if="item.icon"
-            :class="[item.icon, 'shrink-0 text-sm']"
-            aria-hidden="true"
-        />
+        <i v-if="item.icon" :class="[item.icon, 'shrink-0 text-sm']" aria-hidden="true" />
         <span class="min-w-0 truncate">{{ item.label }}</span>
     </Link>
 </template>

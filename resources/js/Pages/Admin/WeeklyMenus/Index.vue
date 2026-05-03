@@ -15,6 +15,7 @@ import WeeklyMenuItemsModal from "../../../Components/Admin/WeeklyMenus/WeeklyMe
 import WeeklyMenuStatusBadge from "../../../Components/Admin/WeeklyMenus/WeeklyMenuStatusBadge.vue";
 import SectionTitle from "../../../Components/SectionTitle.vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
+import { trans } from "laravel-vue-i18n";
 
 defineOptions({ layout: AdminLayout });
 
@@ -52,12 +53,15 @@ const filterState = reactive({
     per_page: props.filters.per_page ?? 10,
 });
 
-const statusOptions = [{ value: "", label: "Mind" }, ...props.statuses];
-const perPageOptions = [
-    { label: "10 / oldal", value: 10 },
-    { label: "20 / oldal", value: 20 },
-    { label: "50 / oldal", value: 50 },
-];
+const statusOptions = computed(() => [
+    { value: "", label: trans("admin_weekly_menus.filters.all_statuses") },
+    ...props.statuses,
+]);
+const perPageOptions = computed(() => [
+    { label: trans("admin_weekly_menus.filters.per_page_option", { count: 10 }), value: 10 },
+    { label: trans("admin_weekly_menus.filters.per_page_option", { count: 20 }), value: 20 },
+    { label: trans("admin_weekly_menus.filters.per_page_option", { count: 50 }), value: 50 },
+]);
 
 const form = useForm({
     title: "",
@@ -191,10 +195,12 @@ const submitEdit = () => {
 
 const confirmDelete = (menu) => {
     confirm.require({
-        header: "Heti menü törlése",
-        message: `Biztosan törlöd: ${menu.title}?`,
-        rejectLabel: "Mégse",
-        acceptLabel: "Törlés",
+        header: trans("admin_weekly_menus.confirm_delete_header"),
+        message: trans("admin_weekly_menus.confirm_delete_message", {
+            title: menu.title,
+        }),
+        rejectLabel: trans("common.cancel"),
+        acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(`/admin/weekly-menus/${menu.id}`, { preserveScroll: true });
@@ -246,14 +252,18 @@ const deleteItem = (item) => {
         return;
     }
 
+    const itemName =
+        item.override_name ??
+        item.product_name ??
+        trans("admin_weekly_menus.unnamed_item");
+
     confirm.require({
-        header: "Heti menü tétel törlése",
-        message: `Biztosan törlöd ezt a tételt: ${
-            //item.product_name ?? item.override_name ?? "névtelen tétel"
-            item.override_name ?? item.product_name ?? "névtelen tétel"
-        }?`,
-        rejectLabel: "Mégse",
-        acceptLabel: "Törlés",
+        header: trans("admin_weekly_menus.confirm_delete_item_header"),
+        message: trans("admin_weekly_menus.confirm_delete_item_message", {
+            name: itemName,
+        }),
+        rejectLabel: trans("common.cancel"),
+        acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(
@@ -284,13 +294,13 @@ const refreshMenus = () => {
 </script>
 
 <template>
-    <Head title="Heti menük" />
+    <Head :title="$t('admin_weekly_menus.title')" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Heti menük"
-            title="Heti menük"
-            description="A heti kínálat kezelési modulja termék-hozzárendeléssel és publikációs folyamattal."
+            :eyebrow="$t('admin_weekly_menus.eyebrow')"
+            :title="$t('admin_weekly_menus.title')"
+            :description="$t('admin_weekly_menus.description')"
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
@@ -301,19 +311,19 @@ const refreshMenus = () => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Keresés</label
+                            >{{ $t("admin_weekly_menus.filters.search") }}</label
                         >
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Cím vagy slug"
+                            :placeholder="$t('admin_weekly_menus.filters.search_placeholder')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Státusz</label
+                            >{{ $t("admin_weekly_menus.filters.status") }}</label
                         >
                         <Select
                             v-model="filterState.status"
@@ -327,7 +337,7 @@ const refreshMenus = () => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Találat / oldal</label
+                            >{{ $t("admin_weekly_menus.filters.per_page") }}</label
                         >
                         <Select
                             v-model="filterState.per_page"
@@ -341,8 +351,16 @@ const refreshMenus = () => {
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Új heti menü" @click="openCreate" />
+                    <Button
+                        icon="pi pi-search"
+                        :label="$t('common.search')"
+                        @click="submitFilters"
+                    />
+                    <Button
+                        icon="pi pi-plus"
+                        :label="$t('admin_weekly_menus.actions.create')"
+                        @click="openCreate"
+                    />
                 </template>
             </AdminTableToolbar>
 
@@ -367,18 +385,18 @@ const refreshMenus = () => {
                         <div
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
-                            <p>Nincs heti menü.</p>
+                            <p>{{ $t("admin_weekly_menus.empty") }}</p>
                             <div
                                 class="mt-3 flex flex-wrap items-center justify-center gap-2"
                             >
                                 <Button
-                                    label="Szűrők törlése"
+                                    :label="$t('common.clear_filters')"
                                     outlined
                                     size="small"
                                     @click="clearFilters"
                                 />
                                 <Button
-                                    label="Új heti menü"
+                                    :label="$t('admin_weekly_menus.actions.create')"
                                     size="small"
                                     @click="openCreate"
                                 />
@@ -386,7 +404,7 @@ const refreshMenus = () => {
                         </div>
                     </template>
 
-                    <Column field="title" header="Cím" sortable>
+                    <Column field="title" :header="$t('admin_weekly_menus.columns.title')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">
@@ -398,18 +416,18 @@ const refreshMenus = () => {
                             </div>
                         </template>
                     </Column>
-                    <Column field="week_start" header="Hét" sortable>
+                    <Column field="week_start" :header="$t('admin_weekly_menus.columns.week')" sortable>
                         <template #body="{ data }"
                             >{{ data.week_start }} - {{ data.week_end }}</template
                         >
                     </Column>
-                    <Column field="status" header="Státusz" sortable>
+                    <Column field="status" :header="$t('admin_weekly_menus.columns.status')" sortable>
                         <template #body="{ data }">
                             <WeeklyMenuStatusBadge :status="data.status" />
                         </template>
                     </Column>
-                    <Column field="items_count" header="Tételek" />
-                    <Column header="Műveletek">
+                    <Column field="items_count" :header="$t('admin_weekly_menus.columns.items')" />
+                    <Column :header="$t('common.actions')">
                         <template #body="{ data }">
                             <div class="flex flex-wrap items-center gap-2">
                                 <Button
@@ -417,7 +435,7 @@ const refreshMenus = () => {
                                     text
                                     rounded
                                     class="!h-11 !w-11"
-                                    aria-label="Heti menü tételei"
+                                    :aria-label="$t('admin_weekly_menus.actions.items')"
                                     @click="openItems(data)"
                                 />
                                 <Button
@@ -425,7 +443,7 @@ const refreshMenus = () => {
                                     text
                                     rounded
                                     class="!h-11 !w-11"
-                                    aria-label="Heti menü szerkesztése"
+                                    :aria-label="$t('admin_weekly_menus.actions.edit')"
                                     @click="openEdit(data)"
                                 />
                                 <Button
@@ -434,12 +452,12 @@ const refreshMenus = () => {
                                     rounded
                                     severity="danger"
                                     class="!h-11 !w-11"
-                                    aria-label="Heti menü törlése"
+                                    :aria-label="$t('admin_weekly_menus.actions.delete')"
                                     @click="confirmDelete(data)"
                                 />
                                 <Button
                                     v-if="data.status !== 'published'"
-                                    label="Közzététel"
+                                    :label="$t('admin_weekly_menus.actions.publish')"
                                     size="small"
                                     text
                                     class="!min-h-11 !text-green-700"
@@ -447,7 +465,7 @@ const refreshMenus = () => {
                                 />
                                 <Button
                                     v-else
-                                    label="Közzététel visszavonása"
+                                    :label="$t('admin_weekly_menus.actions.unpublish')"
                                     size="small"
                                     text
                                     class="!min-h-11 !text-amber-700"

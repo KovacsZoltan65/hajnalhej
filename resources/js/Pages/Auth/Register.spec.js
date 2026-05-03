@@ -27,18 +27,6 @@ vi.mock("@inertiajs/vue3", () => ({
         props: ["href"],
         template: '<a :href="href"><slot /></a>',
     },
-    usePage: () => ({
-        props: {
-            ui: {
-                register: {
-                    title: "Hozd letre a fiokodat",
-                    subtitle:
-                        "Regisztralj, hogy gyorsabban rendelhesd kedvenceidet.",
-                    cta: "Fiók létrehozása",
-                },
-            },
-        },
-    }),
     useForm: () => formState,
 }));
 
@@ -75,6 +63,27 @@ vi.mock("primevue/button", () => ({
 }));
 
 describe("Register page", () => {
+    const mountRegisterPage = () =>
+        mount(RegisterPage, {
+            global: {
+                mocks: {
+                    $t: (key) =>
+                        ({
+                            "auth.account_label": "Hajnalhéj fiók",
+                            "register.title": "Hozd létre a fiókodat",
+                            "register.subtitle":
+                                "Regisztrálj, hogy gyorsabban rendelhesd kedvenceidet.",
+                            "register.cta": "Fiók létrehozása",
+                            "register.login_link": "Már van fiókod? Lépj be.",
+                            "fields.name": "teljes név",
+                            "fields.email": "e-mail cím",
+                            "fields.password": "jelszó",
+                            "fields.password_confirmation": "jelszó megerősítése",
+                        })[key] ?? key,
+                },
+            },
+        });
+
     beforeEach(() => {
         mockPost.mockReset();
         mockReset.mockReset();
@@ -92,9 +101,9 @@ describe("Register page", () => {
     });
 
     it("renders registration fields and CTA", () => {
-        const wrapper = mount(RegisterPage);
+        const wrapper = mountRegisterPage();
 
-        expect(wrapper.text()).toContain("Hozd letre a fiokodat");
+        expect(wrapper.text()).toContain("Hozd létre a fiókodat");
         expect(wrapper.text()).toContain("Fiók létrehozása");
         expect(wrapper.find("#name").exists()).toBe(true);
         expect(wrapper.find("#email").exists()).toBe(true);
@@ -105,7 +114,7 @@ describe("Register page", () => {
     it("disables submit while processing", () => {
         formState.processing = true;
 
-        const wrapper = mount(RegisterPage);
+        const wrapper = mountRegisterPage();
 
         expect(wrapper.find("button").attributes("disabled")).toBeDefined();
     });

@@ -2,6 +2,59 @@ import { mount } from '@vue/test-utils';
 import { reactive } from 'vue';
 import IngredientSupplierTermsIndex from './Index.vue';
 
+const { translate } = vi.hoisted(() => {
+    const translations = {
+        'admin_supplier_terms.filters.per_page_option': ':count / oldal',
+        'admin_supplier_terms.meta_title': 'Beszállítói feltételek',
+        'admin_supplier_terms.eyebrow': 'Admin / Beszerzés',
+        'admin_supplier_terms.title': 'Beszállítói feltételek',
+        'admin_supplier_terms.description':
+            'Alapanyag-beszállító feltételek, preferált források és rendelési paraméterek kezelése.',
+        'admin_supplier_terms.filters.search': 'Keresés',
+        'admin_supplier_terms.filters.search_placeholder': 'Alapanyag, beszállító vagy SKU',
+        'admin_supplier_terms.filters.status': 'Státusz',
+        'admin_supplier_terms.filters.per_page': 'Találat / oldal',
+        'admin_supplier_terms.columns.ingredient': 'Alapanyag',
+        'admin_supplier_terms.columns.supplier': 'Beszállító',
+        'admin_supplier_terms.columns.lead_time': 'Lead time',
+        'admin_supplier_terms.columns.minimum': 'Minimum',
+        'admin_supplier_terms.columns.pack_size': 'Kiszerelés',
+        'admin_supplier_terms.columns.unit_cost_override': 'Egyedi ár',
+        'admin_supplier_terms.columns.preferred': 'Preferált',
+        'admin_supplier_terms.columns.status': 'Státusz',
+        'admin_supplier_terms.actions.search': 'Keresés',
+        'admin_supplier_terms.actions.create': 'Új feltétel',
+        'admin_supplier_terms.actions.edit': 'Beszállítói feltétel szerkesztése',
+        'admin_supplier_terms.actions.delete': 'Beszállítói feltétel törlése',
+        'admin_supplier_terms.empty': 'Nincs megjeleníthető beszállítói feltétel.',
+        'admin_supplier_terms.confirm_delete_header': 'Beszállítói feltétel törlése',
+        'admin_supplier_terms.confirm_delete_message':
+            'Biztosan törlöd ezt a feltételt: :ingredient / :supplier?',
+        'common.all': 'Mind',
+        'common.active': 'Aktív',
+        'common.inactive': 'Inaktív',
+        'common.cancel': 'Mégse',
+        'common.delete': 'Törlés',
+        'common.clear_filters': 'Szűrők törlése',
+        'common.actions': 'Műveletek',
+        'common.locale': 'hu-HU',
+        'common.currency': 'HUF',
+        'common.day_count': ':count nap',
+    };
+
+    return {
+        translate: (key, replacements = {}) => {
+            let value = translations[key] ?? key;
+
+            Object.entries(replacements).forEach(([name, replacement]) => {
+                value = value.replace(`:${name}`, replacement);
+            });
+
+            return value;
+        },
+    };
+});
+
 vi.mock('@inertiajs/vue3', () => ({
     Head: { name: 'Head', template: '<span />' },
     router: { get: vi.fn(), delete: vi.fn() },
@@ -14,7 +67,11 @@ vi.mock('@inertiajs/vue3', () => ({
             reset: vi.fn(),
             post: vi.fn(),
             put: vi.fn(),
-        }),
+    }),
+}));
+
+vi.mock('laravel-vue-i18n', () => ({
+    trans: translate,
 }));
 
 vi.mock('primevue/useconfirm', () => ({
@@ -39,7 +96,10 @@ const stubs = {
     CreateModal: { props: ['visible'], template: '<div v-if="visible">Új beszállítói feltétel</div>' },
     EditModal: { props: ['visible'], template: '<div v-if="visible">Beszállítói feltétel szerkesztése</div>' },
     PreferredBadge: { props: ['preferred', 'active'], template: '<span>{{ preferred && active ? "Preferált" : "Normál" }}</span>' },
-    SectionTitle: { props: ['title'], template: '<h1>{{ title }}</h1>' },
+    SectionTitle: {
+        props: ['eyebrow', 'title', 'description'],
+        template: '<section>{{ eyebrow }} {{ title }} {{ description }}</section>',
+    },
 };
 
 describe('IngredientSupplierTerms Index', () => {
@@ -80,10 +140,16 @@ describe('IngredientSupplierTerms Index', () => {
     it('renders the supplier terms list and opens create modal', async () => {
         const wrapper = mount(IngredientSupplierTermsIndex, {
             props,
-            global: { stubs },
+            global: {
+                stubs,
+                mocks: {
+                    $t: translate,
+                },
+            },
         });
 
         expect(wrapper.text()).toContain('Beszállítói feltételek');
+        expect(wrapper.text()).toContain('Keresés');
         expect(wrapper.text()).toContain('Buzaliszt');
         expect(wrapper.text()).toContain('Malom Kft.');
 

@@ -1,7 +1,7 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
-import WeeklyMenuSection from '../Components/Public/WeeklyMenuSection.vue';
-import PublicLayout from '../Layouts/PublicLayout.vue';
+import { Head } from "@inertiajs/vue3";
+import WeeklyMenuSection from "../Components/Public/WeeklyMenuSection.vue";
+import PublicLayout from "../Layouts/PublicLayout.vue";
 
 defineOptions({ layout: PublicLayout });
 
@@ -22,7 +22,7 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Heti menu" />
+    <Head :title="$t('nav.weekly_menu')" />
 
     <WeeklyMenuSection :menu="menu" :groups="groups" :fallback-used="fallback_used" />
 </template>
