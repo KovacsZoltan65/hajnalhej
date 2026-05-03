@@ -1,6 +1,22 @@
 import { mount } from "@vue/test-utils";
 import ProductionPlanForm from "./ProductionPlanForm.vue";
 
+vi.mock("laravel-vue-i18n", () => ({
+    trans: (key) =>
+        ({
+            "admin_production_plans.form.target_ready_at": "Kész legyen ekkor",
+            "admin_production_plans.form.status": "Státusz",
+            "admin_production_plans.form.lock_plan": "Terv lezárása",
+            "admin_production_plans.form.notes": "Megjegyzés",
+            "admin_production_plans.form.items_title": "Termékek és mennyiségek",
+            "admin_production_plans.form.add_item": "Új tétel",
+            "admin_production_plans.form.product": "Termék",
+            "admin_production_plans.form.quantity": "Mennyiség",
+            "admin_production_plans.form.unit": "Egység",
+            "admin_production_plans.form.sort_order": "Sorrend",
+        })[key] ?? key,
+}));
+
 const stubs = {
     InputText: {
         props: ["modelValue", "type", "min", "step"],
@@ -68,9 +84,9 @@ describe("ProductionPlanForm", () => {
             global: { stubs },
         });
 
-        expect(wrapper.text()).toContain("Kesz legyen ekkor");
+        expect(wrapper.text()).toContain("Kész legyen ekkor");
         expect(wrapper.text()).toContain("Megjegyzés");
-        expect(wrapper.text()).toContain("Termekek es mennyisegek");
+        expect(wrapper.text()).toContain("Termékek és mennyiségek");
     });
 
     it("adds and removes item row", async () => {

@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import Button from 'primevue/button';
 import Select from 'primevue/select';
+import { trans } from 'laravel-vue-i18n';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import ProcurementSummaryCard from '@/Components/Admin/ProcurementIntelligence/ProcurementSummaryCard.vue';
 import SupplierPriceTrendTable from '@/Components/Admin/ProcurementIntelligence/SupplierPriceTrendTable.vue';
@@ -33,6 +34,18 @@ const draftGenerationProcessing = ref(false);
 
 const selectedCount = computed(() => selectedRecommendationIds.value.length);
 const generatableCount = computed(() => props.dashboard.minimum_stock_recommendations.length);
+
+const selectionSummary = computed(() => {
+    if (selectedCount.value > 0) {
+        return trans('admin_procurement_intelligence.selection.selected', {
+            count: selectedCount.value,
+        });
+    }
+
+    return trans('admin_procurement_intelligence.selection.generatable', {
+        count: generatableCount.value,
+    });
+});
 
 const updateFilter = (key, value) => {
     selectedRecommendationIds.value = [];
@@ -80,16 +93,20 @@ const generatePurchaseDrafts = () => {
 </script>
 
 <template>
-    <Head title="Beszerzési intelligencia" />
+    <Head :title="trans('admin_procurement_intelligence.meta_title')" />
 
     <section class="space-y-6">
         <header class="ui-card p-5 sm:p-6">
             <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
                 <div class="max-w-3xl">
-                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-bakery-brown/70">Beszerzés</p>
-                    <h1 class="mt-2 font-heading text-3xl text-bakery-dark">Beszerzési intelligencia</h1>
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-bakery-brown/70">
+                        {{ trans('admin_procurement_intelligence.eyebrow') }}
+                    </p>
+                    <h1 class="mt-2 font-heading text-3xl text-bakery-dark">
+                        {{ trans('admin_procurement_intelligence.title') }}
+                    </h1>
                     <p class="mt-2 text-sm text-bakery-dark/75">
-                        Valós beszerzési tételek, készletmozgások és BOM használat alapján számolt ártrendek, fogyási előrejelzés és minimum készlet alapú utánrendelési jelzések.
+                        {{ trans('admin_procurement_intelligence.description') }}
                     </p>
                 </div>
 
@@ -107,7 +124,7 @@ const generatePurchaseDrafts = () => {
                         :options="filter_options.ingredients"
                         option-label="label"
                         option-value="value"
-                        placeholder="Alapanyag"
+                        :placeholder="trans('admin_procurement_intelligence.filters.ingredient')"
                         show-clear
                         filter
                         class="min-h-11 w-full"
@@ -118,7 +135,7 @@ const generatePurchaseDrafts = () => {
                         :options="filter_options.suppliers"
                         option-label="label"
                         option-value="value"
-                        placeholder="Beszállító"
+                        :placeholder="trans('admin_procurement_intelligence.filters.supplier')"
                         show-clear
                         filter
                         class="min-h-11 w-full"
@@ -129,7 +146,7 @@ const generatePurchaseDrafts = () => {
                         :options="filter_options.urgencies"
                         option-label="label"
                         option-value="value"
-                        placeholder="Sürgősség"
+                        :placeholder="trans('admin_procurement_intelligence.filters.urgency')"
                         show-clear
                         class="min-h-11 w-full"
                         @update:model-value="updateFilter('urgency', $event)"
@@ -139,7 +156,7 @@ const generatePurchaseDrafts = () => {
                         class="min-h-11 rounded-lg border border-bakery-brown/25 px-4 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
                         @click="resetFilters"
                     >
-                        Szűrők törlése
+                        {{ trans('common.clear_filters') }}
                     </button>
                 </div>
             </div>
@@ -150,18 +167,18 @@ const generatePurchaseDrafts = () => {
                     :options="filter_options.alert_types"
                     option-label="label"
                     option-value="value"
-                    placeholder="Figyelmeztetés típusa"
+                    :placeholder="trans('admin_procurement_intelligence.filters.alert_type')"
                     show-clear
                     class="min-h-11 w-full lg:max-w-md"
                     @update:model-value="updateFilter('alert_type', $event)"
                 />
                 <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
                     <span class="text-xs text-bakery-dark/60">
-                        {{ selectedCount > 0 ? `${selectedCount} kijelölt javaslat` : `${generatableCount} generálható javaslat` }}
+                        {{ selectionSummary }}
                     </span>
                     <Button
                         icon="pi pi-file-plus"
-                        label="Beszerzési tervezet készítése"
+                        :label="trans('admin_procurement_intelligence.actions.generate_purchase_drafts')"
                         class="!min-h-11"
                         :disabled="generatableCount === 0 || draftGenerationProcessing"
                         :loading="draftGenerationProcessing"
@@ -173,27 +190,27 @@ const generatePurchaseDrafts = () => {
 
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <ProcurementSummaryCard
-                label="Aktív figyelmeztetés"
+                :label="trans('admin_procurement_intelligence.summary.active_alerts')"
                 :value="dashboard.summary.alerts_count"
-                hint="Szűrők után számolva"
+                :hint="trans('admin_procurement_intelligence.summary.filtered_hint')"
                 icon="pi pi-bell"
             />
             <ProcurementSummaryCard
-                label="Kritikus utánrendelés"
+                :label="trans('admin_procurement_intelligence.summary.critical_reorders')"
                 :value="dashboard.summary.critical_minimum_stock_count"
-                hint="Azonnali beszerzési figyelem"
+                :hint="trans('admin_procurement_intelligence.summary.critical_hint')"
                 icon="pi pi-exclamation-triangle"
             />
             <ProcurementSummaryCard
-                label="Áremelkedés"
+                :label="trans('admin_procurement_intelligence.summary.price_increase')"
                 :value="dashboard.summary.price_increase_count"
-                hint="10% vagy nagyobb növekedés"
+                :hint="trans('admin_procurement_intelligence.summary.price_increase_hint')"
                 icon="pi pi-arrow-up-right"
             />
             <ProcurementSummaryCard
-                label="Elfogyási kockázat"
+                :label="trans('admin_procurement_intelligence.summary.stockout_risk')"
                 :value="dashboard.summary.stockout_risk_count"
-                hint="7 napon belüli fedezet"
+                :hint="trans('admin_procurement_intelligence.summary.stockout_hint')"
                 icon="pi pi-hourglass"
             />
         </div>
@@ -208,12 +225,14 @@ const generatePurchaseDrafts = () => {
         <WeeklyConsumptionForecastTable :rows="dashboard.weekly_consumption_forecast" />
 
         <section class="ui-card p-4 text-sm text-bakery-dark/70 sm:p-5">
-            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">Számítási alapok</h2>
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
+                {{ trans('admin_procurement_intelligence.calculation.title') }}
+            </h2>
             <div class="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-4">
-                <p>Fogyási ablak: {{ dashboard.defaults.consumption_window_days }} nap production_out átlag.</p>
-                <p>Áremelkedés jelzés: {{ dashboard.defaults.price_increase_alert_percent }}% felett.</p>
-                <p>Elfogyási kockázat: {{ dashboard.defaults.stockout_warning_days }} napon belül.</p>
-                <p>Utánrendelési cél: minimum készlet, lead time igény és {{ dashboard.defaults.safety_stock_days }} nap biztonsági puffer maximuma.</p>
+                <p>{{ trans('admin_procurement_intelligence.calculation.consumption_window', { days: dashboard.defaults.consumption_window_days }) }}</p>
+                <p>{{ trans('admin_procurement_intelligence.calculation.price_increase', { percent: dashboard.defaults.price_increase_alert_percent }) }}</p>
+                <p>{{ trans('admin_procurement_intelligence.calculation.stockout_risk', { days: dashboard.defaults.stockout_warning_days }) }}</p>
+                <p>{{ trans('admin_procurement_intelligence.calculation.reorder_target', { days: dashboard.defaults.safety_stock_days }) }}</p>
             </div>
         </section>
     </section>

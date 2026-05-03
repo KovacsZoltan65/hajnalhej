@@ -1,17 +1,12 @@
 <script setup>
+import { trans } from 'laravel-vue-i18n';
+
 const props = defineProps({
     value: {
         type: String,
         required: true,
     },
 });
-
-const labels = {
-    critical: 'Kritikus',
-    high: 'Magas',
-    medium: 'Közepes',
-    low: 'Alacsony',
-};
 
 const classes = {
     critical: 'bg-red-100 text-red-800 ring-red-200',
@@ -26,6 +21,6 @@ const classes = {
         class="inline-flex min-h-7 items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1"
         :class="classes[props.value] ?? classes.low"
     >
-        {{ labels[props.value] ?? props.value }}
+        {{ trans(`admin_procurement_intelligence.urgencies.${props.value}`) }}
     </span>
 </template>

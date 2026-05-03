@@ -8,6 +8,7 @@ import DataTable from 'primevue/datatable';
 import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import { useConfirm } from 'primevue/useconfirm';
+import { trans } from 'laravel-vue-i18n';
 import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
 import CreateModal from '@/Components/Admin/ProductionPlans/CreateModal.vue';
 import EditModal from '@/Components/Admin/ProductionPlans/EditModal.vue';
@@ -40,12 +41,13 @@ const filterState = reactive({
     per_page: props.filters.per_page ?? 10,
 });
 
-const statusOptions = computed(() => [{ value: '', label: 'Mind' }, ...props.statuses]);
-const perPageOptions = [
-    { label: '10 / oldal', value: 10 },
-    { label: '20 / oldal', value: 20 },
-    { label: '50 / oldal', value: 50 },
-];
+const statusOptions = computed(() => [{ value: '', label: trans('common.all') }, ...props.statuses]);
+const perPageOptions = computed(() =>
+    [10, 20, 50].map((count) => ({
+        label: trans('admin_production_plans.filters.per_page_option', { count }),
+        value: count,
+    })),
+);
 
 const form = useForm({
     target_ready_at: '',
@@ -202,10 +204,10 @@ const submitEdit = () => {
 
 const confirmDelete = (plan) => {
     confirm.require({
-        header: 'Gyártási terv törlése',
-        message: `Biztosan törlöd ezt a tervet: ${plan.plan_number}?`,
-        rejectLabel: 'Mégse',
-        acceptLabel: 'Törlés',
+        header: trans('admin_production_plans.confirm_delete_header'),
+        message: trans('admin_production_plans.confirm_delete_message', { number: plan.plan_number }),
+        rejectLabel: trans('common.cancel'),
+        acceptLabel: trans('common.delete'),
         acceptClass: 'p-button-danger',
         accept: () => {
             router.delete(`/admin/production-plans/${plan.id}`, {
@@ -217,31 +219,31 @@ const confirmDelete = (plan) => {
 </script>
 
 <template>
-    <Head title="Gyártási tervek" />
+    <Head :title="trans('admin_production_plans.meta_title')" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Gyártástervezés"
-            title="Gyártástervező"
-            description="Célidő alapú gyártástervezés: mennyiségek, időzítés és összesített alapanyagigény egy helyen."
+            :eyebrow="trans('admin_production_plans.eyebrow')"
+            :title="trans('admin_production_plans.title')"
+            :description="trans('admin_production_plans.description')"
         />
 
         <div class="grid gap-3 rounded-2xl border border-bakery-brown/15 bg-white/85 p-4 sm:grid-cols-2 xl:grid-cols-4">
             <div class="rounded-xl bg-[#fcf8f1] p-3">
-                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">Tervek</p>
+                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">{{ trans('admin_production_plans.summary.total_plans') }}</p>
                 <p class="mt-1 text-2xl font-semibold text-bakery-dark">{{ summary.total_plans }}</p>
             </div>
             <div class="rounded-xl bg-[#fcf8f1] p-3">
-                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">Kész</p>
+                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">{{ trans('admin_production_plans.summary.ready_plans') }}</p>
                 <p class="mt-1 text-2xl font-semibold text-bakery-dark">{{ summary.ready_plans }}</p>
             </div>
             <div class="rounded-xl bg-[#fcf8f1] p-3">
-                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">Piszkozat</p>
+                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">{{ trans('admin_production_plans.summary.draft_plans') }}</p>
                 <p class="mt-1 text-2xl font-semibold text-bakery-dark">{{ summary.draft_plans }}</p>
             </div>
             <div class="rounded-xl bg-[#fcf8f1] p-3">
-                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">Össz receptidő</p>
-                <p class="mt-1 text-2xl font-semibold text-bakery-dark">{{ summary.total_recipe_minutes }} perc</p>
+                <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">{{ trans('admin_production_plans.summary.total_recipe_minutes') }}</p>
+                <p class="mt-1 text-2xl font-semibold text-bakery-dark">{{ trans('admin_production_plans.units.minutes', { count: summary.total_recipe_minutes }) }}</p>
             </div>
         </div>
 
@@ -249,34 +251,34 @@ const confirmDelete = (plan) => {
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-5'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
-                        <InputText v-model="filterState.search" class="w-full" placeholder="Tervszám vagy termék" @keyup.enter="submitFilters" />
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ trans('admin_production_plans.filters.search') }}</label>
+                        <InputText v-model="filterState.search" class="w-full" :placeholder="trans('admin_production_plans.filters.search_placeholder')" @keyup.enter="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Státusz</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ trans('admin_production_plans.filters.status') }}</label>
                         <Select v-model="filterState.status" :options="statusOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Célidő -tól</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ trans('admin_production_plans.filters.target_from') }}</label>
                         <InputText v-model="filterState.target_from" type="date" class="w-full" />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Célidő -ig</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ trans('admin_production_plans.filters.target_to') }}</label>
                         <InputText v-model="filterState.target_to" type="date" class="w-full" />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ trans('admin_production_plans.filters.per_page') }}</label>
                         <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
                     </div>
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Új gyártási terv" @click="openCreate" />
+                    <Button icon="pi pi-search" :label="trans('common.search')" @click="submitFilters" />
+                    <Button icon="pi pi-plus" :label="trans('admin_production_plans.actions.create')" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
@@ -299,25 +301,25 @@ const confirmDelete = (plan) => {
                 >
                     <template #empty>
                         <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
-                            <p>Nincs gyártási terv.</p>
+                            <p>{{ trans('admin_production_plans.empty') }}</p>
                             <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
-                                <Button label="Új gyártási terv" size="small" @click="openCreate" />
+                                <Button :label="trans('common.clear_filters')" outlined size="small" @click="clearFilters" />
+                                <Button :label="trans('admin_production_plans.actions.create')" size="small" @click="openCreate" />
                             </div>
                         </div>
                     </template>
 
-                <Column field="plan_number" header="Terv" sortable />
-                <Column field="target_at" header="Célidő" sortable />
-                <Column field="planned_start_at" header="Javasolt kezdés" sortable />
-                <Column field="status" header="Státusz" sortable />
-                <Column field="total_recipe_minutes" header="Teljes idő (perc)" sortable />
-                <Column field="items_count" header="Tétel db" sortable />
-                <Column header="Műveletek">
+                <Column field="plan_number" :header="trans('admin_production_plans.columns.plan')" sortable />
+                <Column field="target_at" :header="trans('admin_production_plans.columns.target_time')" sortable />
+                <Column field="planned_start_at" :header="trans('admin_production_plans.columns.planned_start')" sortable />
+                <Column field="status" :header="trans('admin_production_plans.columns.status')" sortable />
+                <Column field="total_recipe_minutes" :header="trans('admin_production_plans.columns.total_time_minutes')" sortable />
+                <Column field="items_count" :header="trans('admin_production_plans.columns.items_count')" sortable />
+                <Column :header="trans('common.actions')">
                     <template #body="{ data }">
                         <div class="flex items-center gap-2">
-                            <Button icon="pi pi-pencil" text rounded class="!h-11 !w-11" aria-label="Gyártási terv szerkesztése" @click="openEdit(data)" />
-                            <Button icon="pi pi-trash" text rounded severity="danger" class="!h-11 !w-11" aria-label="Gyártási terv törlése" @click="confirmDelete(data)" />
+                            <Button icon="pi pi-pencil" text rounded class="!h-11 !w-11" :aria-label="trans('admin_production_plans.actions.edit')" @click="openEdit(data)" />
+                            <Button icon="pi pi-trash" text rounded severity="danger" class="!h-11 !w-11" :aria-label="trans('admin_production_plans.actions.delete')" @click="confirmDelete(data)" />
                         </div>
                     </template>
                 </Column>
