@@ -93,7 +93,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        '/admin/purchases',
+        route('admin.purchases.index'),
         {
             search: filterState.search || undefined,
             status: filterState.status || undefined,
@@ -152,7 +152,7 @@ const closeCreateModal = () => {
 };
 
 const submitCreate = () => {
-    form.post('/admin/purchases', {
+    form.post(route('admin.purchases.store'), {
         preserveScroll: true,
         onSuccess: () => {
             closeCreateModal();
@@ -168,7 +168,7 @@ const postNow = (purchase) => {
         rejectLabel: 'Mégse',
         acceptLabel: 'Könyvelés',
         accept: () => {
-            router.post(`/admin/purchases/${purchase.id}/post`, {}, { preserveScroll: true });
+            router.post(route('admin.purchases.post', purchase.id), {}, { preserveScroll: true });
         },
     });
 };
@@ -181,7 +181,7 @@ const cancelPurchase = (purchase) => {
         acceptLabel: 'Stornó',
         acceptClass: 'p-button-danger',
         accept: () => {
-            router.post(`/admin/purchases/${purchase.id}/cancel`, {}, { preserveScroll: true });
+            router.post(route('admin.purchases.cancel', purchase.id), {}, { preserveScroll: true });
         },
     });
 };
@@ -342,7 +342,7 @@ const statusClass = (status) => {
                         <template #body="{ data }">
                             <div class="flex items-center gap-2">
                                 <Link
-                                    :href="`/admin/purchases/${data.id}`"
+                                    :href="route('admin.purchases.show', data.id)"
                                     class="inline-flex min-h-11 items-center rounded-md border border-bakery-brown/20 px-3 py-2 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10"
                                 >
                                     Részletek

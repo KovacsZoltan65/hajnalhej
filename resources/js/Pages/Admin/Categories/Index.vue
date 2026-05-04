@@ -64,7 +64,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        "/admin/categories",
+        route("admin.categories.index"),
         {
             search: filterState.search || undefined,
             sort_field: filterState.sort_field,
@@ -145,7 +145,7 @@ const submitCreate = () => {
         },
     };
 
-    form.post("/admin/categories", options);
+    form.post(route("admin.categories.store"), options);
 };
 
 const submitEdit = () => {
@@ -162,7 +162,7 @@ const submitEdit = () => {
         return;
     }
 
-    form.put(`/admin/categories/${editingId.value}`, options);
+    form.put(route("admin.categories.update", editingId.value), options);
 };
 
 const confirmDelete = (category) => {
@@ -175,7 +175,7 @@ const confirmDelete = (category) => {
         acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
-            router.delete(`/admin/categories/${category.id}`, {
+            router.delete(route("admin.categories.destroy", category.id), {
                 preserveScroll: true,
             });
         },

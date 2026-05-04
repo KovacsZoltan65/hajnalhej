@@ -9,7 +9,7 @@ const props = defineProps({
     stock_count: { type: Object, required: true },
 });
 
-const closeCount = () => router.post(`/admin/stock-counts/${props.stock_count.id}/close`, {}, { preserveScroll: true });
+const closeCount = () => router.post(route('admin.stock-counts.close', props.stock_count.id), {}, { preserveScroll: true });
 </script>
 
 <template>
@@ -19,7 +19,7 @@ const closeCount = () => router.post(`/admin/stock-counts/${props.stock_count.id
         <div class="ui-card p-4 sm:p-5">
             <div class="flex items-center justify-between">
                 <h1 class="font-heading text-2xl">Leltár #{{ stock_count.id }}</h1>
-                <Link href="/admin/stock-counts" class="text-sm underline">Vissza</Link>
+                <Link :href="route('admin.stock-counts.index')" class="text-sm underline">Vissza</Link>
             </div>
             <div class="mt-4 grid gap-3 md:grid-cols-3 text-sm">
                 <p><strong>Dátum:</strong> {{ stock_count.count_date }}</p>
@@ -32,7 +32,7 @@ const closeCount = () => router.post(`/admin/stock-counts/${props.stock_count.id
 
         <div class="ui-card p-4 sm:p-5 overflow-x-auto">
             <table class="min-w-full text-sm">
-                <thead class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                <thead class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60">
                     <tr>
                         <th class="px-2 py-2">Alapanyag</th>
                         <th class="px-2 py-2 text-right">Várt</th>

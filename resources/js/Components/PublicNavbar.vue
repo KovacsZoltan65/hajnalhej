@@ -2,14 +2,15 @@
 import { Link, usePage } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 import { trans } from "laravel-vue-i18n";
+import Button from "primevue/button";
 
 const page = usePage();
 const isMobileOpen = ref(false);
 
 const links = computed(() => [
-    { label: trans("nav.home"), href: "/" },
-    { label: trans("nav.weekly_menu"), href: "/weekly-menu" },
-    { label: trans("nav.about"), href: "/about" },
+    { label: trans("nav.home"), href: route("home") },
+    { label: trans("nav.weekly_menu"), href: route("weekly-menu") },
+    { label: trans("nav.about"), href: route("about") },
 ]);
 
 const user = computed(() => page.props.auth?.user ?? null);
@@ -17,7 +18,18 @@ const navUi = computed(() => page.props.ui?.nav ?? {});
 const cartTotalQuantity = computed(() => page.props.cart?.total_quantity ?? 0);
 
 const navLabel = (key) => navUi.value[key] ?? trans(`nav.${key}`);
-const isActive = (href) => page.url === href || page.url.startsWith(`${href}/`);
+const toPath = (href) => {
+    try {
+        return new URL(href, window.location.origin).pathname;
+    } catch {
+        return href;
+    }
+};
+const isActive = (href) => {
+    const path = toPath(href);
+
+    return page.url === path || (path !== "/" && page.url.startsWith(`${path}/`));
+};
 const closeMobile = () => {
     isMobileOpen.value = false;
 };
@@ -43,7 +55,7 @@ const closeMobile = () => {
 
         <div class="hidden items-center gap-2 md:flex">
             <Link
-                href="/cart"
+                :href="route('cart.index')"
                 class="relative rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
             >
                 {{ navLabel("cart") }}
@@ -56,13 +68,13 @@ const closeMobile = () => {
             </Link>
             <template v-if="!user">
                 <Link
-                    href="/login"
+                    :href="route('login')"
                     class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
                 >
                     {{ navLabel("login") }}
                 </Link>
                 <Link
-                    href="/register"
+                    :href="route('register')"
                     class="rounded-full bg-bakery-brown px-4 py-2 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
                 >
                     {{ navLabel("register") }}
@@ -71,20 +83,20 @@ const closeMobile = () => {
 
             <template v-else>
                 <Link
-                    href="/account"
+                    :href="route('account')"
                     class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
                 >
                     {{ navLabel("account") }}
                 </Link>
                 <Link
                     v-if="user.can_access_admin_panel"
-                    href="/admin/dashboard"
+                    :href="route('admin.dashboard')"
                     class="rounded-full bg-bakery-gold px-4 py-2 text-sm font-semibold text-bakery-dark transition hover:bg-[#edbb5a]"
                 >
                     {{ navLabel("admin") }}
                 </Link>
                 <Link
-                    href="/logout"
+                    :href="route('logout')"
                     method="post"
                     as="button"
                     type="button"
@@ -95,20 +107,15 @@ const closeMobile = () => {
             </template>
         </div>
 
-        <button
+        <Button
             type="button"
-            class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-bakery-brown/20 text-bakery-brown md:hidden"
+            :aria-label="isMobileOpen ? $t('nav.close_menu') : $t('nav.open_menu')"
+            :icon="isMobileOpen ? 'pi pi-times' : 'pi pi-bars'"
+            text
+            rounded
+            class="inline-flex! h-10! w-10! items-center! justify-center! border! border-bakery-brown/20! text-bakery-brown! md:hidden!"
             @click="isMobileOpen = !isMobileOpen"
-        >
-            <span class="sr-only">
-                {{
-                    isMobileOpen
-                        ? $t("nav.close_menu")
-                        : $t("nav.open_menu")
-                }}
-            </span>
-            <i :class="isMobileOpen ? 'pi pi-times' : 'pi pi-bars'" />
-        </button>
+        />
 
         <div
             v-if="isMobileOpen"
@@ -133,7 +140,7 @@ const closeMobile = () => {
 
             <div class="mt-3 space-y-2 border-t border-bakery-brown/15 pt-3">
                 <Link
-                    href="/cart"
+                    :href="route('cart.index')"
                     class="block rounded-xl px-3 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10"
                     @click="closeMobile"
                 >
@@ -147,7 +154,7 @@ const closeMobile = () => {
 
                 <template v-if="!user">
                     <Link
-                        href="/login"
+                        :href="route('login')"
                         class="block rounded-xl px-3 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10"
                         @click="closeMobile"
                     >
@@ -155,7 +162,7 @@ const closeMobile = () => {
                     </Link>
 
                     <Link
-                        href="/register"
+                        :href="route('register')"
                         class="block rounded-xl bg-bakery-brown px-3 py-2 text-sm font-semibold text-bakery-cream"
                         @click="closeMobile"
                     >
@@ -165,7 +172,7 @@ const closeMobile = () => {
 
                 <template v-else>
                     <Link
-                        href="/account"
+                        :href="route('account')"
                         class="block rounded-xl px-3 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10"
                         @click="closeMobile"
                     >
@@ -173,14 +180,14 @@ const closeMobile = () => {
                     </Link>
                     <Link
                         v-if="user.can_access_admin_panel"
-                        href="/admin/dashboard"
+                        :href="route('admin.dashboard')"
                         class="block rounded-xl bg-bakery-gold px-3 py-2 text-sm font-semibold text-bakery-dark"
                         @click="closeMobile"
                     >
                         {{ navLabel("admin") }}
                     </Link>
                     <Link
-                        href="/logout"
+                        :href="route('logout')"
                         method="post"
                         as="button"
                         type="button"

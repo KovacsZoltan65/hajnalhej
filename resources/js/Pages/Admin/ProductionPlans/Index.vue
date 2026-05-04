@@ -105,7 +105,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        '/admin/production-plans',
+        route('admin.production-plans.index'),
         {
             search: filterState.search || undefined,
             status: filterState.status || undefined,
@@ -179,7 +179,7 @@ const closeEditModal = () => {
 };
 
 const submitCreate = () => {
-    form.post('/admin/production-plans', {
+    form.post(route('admin.production-plans.store'), {
         preserveScroll: true,
         onSuccess: () => {
             closeCreateModal();
@@ -193,7 +193,7 @@ const submitEdit = () => {
         return;
     }
 
-    form.put(`/admin/production-plans/${editingId.value}`, {
+    form.put(route('admin.production-plans.update', editingId.value), {
         preserveScroll: true,
         onSuccess: () => {
             closeEditModal();
@@ -210,7 +210,7 @@ const confirmDelete = (plan) => {
         acceptLabel: trans('common.delete'),
         acceptClass: 'p-button-danger',
         accept: () => {
-            router.delete(`/admin/production-plans/${plan.id}`, {
+            router.delete(route('admin.production-plans.destroy', plan.id), {
                 preserveScroll: true,
             });
         },

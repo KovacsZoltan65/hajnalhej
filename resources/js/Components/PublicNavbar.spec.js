@@ -24,6 +24,11 @@ const translations = {
     'nav.close_menu': 'Menü bezárása',
 };
 
+const globalMocks = {
+    $t: (key) => translations[key] ?? key,
+    route: (name) => `/${name.replaceAll('.', '/')}`,
+};
+
 vi.mock('@inertiajs/vue3', () => ({
     Link: {
         name: 'Link',
@@ -37,13 +42,21 @@ vi.mock('laravel-vue-i18n', () => ({
     trans: (key) => translations[key] ?? key,
 }));
 
+vi.mock('primevue/button', () => ({
+    default: {
+        name: 'Button',
+        props: ['ariaLabel', 'icon'],
+        emits: ['click'],
+        template:
+            '<button type="button" :aria-label="ariaLabel" @click="$emit(\'click\', $event)"><i :class="icon" /></button>',
+    },
+}));
+
 describe('PublicNavbar', () => {
     it('renders localized public navigation labels', () => {
         const wrapper = mount(PublicNavbar, {
             global: {
-                mocks: {
-                    $t: (key) => translations[key] ?? key,
-                },
+                mocks: globalMocks,
             },
         });
 
@@ -60,14 +73,30 @@ describe('PublicNavbar', () => {
 
         const wrapper = mount(PublicNavbar, {
             global: {
-                mocks: {
-                    $t: (key) => translations[key] ?? key,
-                },
+                mocks: globalMocks,
             },
         });
 
         expect(wrapper.text()).toContain('Kosár teszt');
 
         page.props.ui.nav = {};
+    });
+
+    it('toggles the mobile menu with the PrimeVue button', async () => {
+        const wrapper = mount(PublicNavbar, {
+            global: {
+                mocks: globalMocks,
+            },
+        });
+
+        const toggle = wrapper.find('button[aria-label="Menü megnyitása"]');
+
+        expect(toggle.exists()).toBe(true);
+
+        await toggle.trigger('click');
+
+        expect(wrapper.find('button[aria-label="Menü bezárása"]').exists()).toBe(
+            true,
+        );
     });
 });

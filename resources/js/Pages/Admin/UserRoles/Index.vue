@@ -64,7 +64,7 @@ const roleSystemMap = computed(() =>
 const load = (extra = {}) => {
     loading.value = true;
 
-    router.get('/admin/user-roles', {
+    router.get(route('admin.user-roles.index'), {
         search: filterState.search || undefined,
         per_page: filterState.per_page,
         ...extra,
@@ -110,7 +110,7 @@ const saveRoles = () => {
     if (!selectedUser.value) return;
 
     form.roles = [...selectedRoles.value];
-    form.put(`/admin/users/${selectedUser.value.id}/roles`, {
+    form.put(route('admin.users.roles.update', selectedUser.value.id), {
         preserveScroll: true,
         onSuccess: () => {
             modalVisible.value = false;

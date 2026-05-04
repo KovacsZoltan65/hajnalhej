@@ -37,7 +37,7 @@ const moduleLabel = (moduleName) => moduleName;
             <table class="min-w-full text-sm">
                 <thead>
                     <tr
-                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
+                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60"
                     >
                         <th class="px-2 py-2">Jogosultság</th>
                         <th class="px-2 py-2">Allapot</th>

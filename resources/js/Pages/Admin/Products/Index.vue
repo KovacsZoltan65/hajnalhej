@@ -87,7 +87,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        "/admin/products",
+        route("admin.products.index"),
         {
             search: filterState.search || undefined,
             category_id: filterState.category_id || undefined,
@@ -184,7 +184,7 @@ const submitCreate = () => {
         },
     };
 
-    form.post("/admin/products", options);
+    form.post(route("admin.products.store"), options);
 };
 
 const submitEdit = () => {
@@ -201,7 +201,7 @@ const submitEdit = () => {
         return;
     }
 
-    form.put(`/admin/products/${editingId.value}`, options);
+    form.put(route("admin.products.update", editingId.value), options);
 };
 
 const confirmDelete = (product) => {
@@ -212,7 +212,7 @@ const confirmDelete = (product) => {
         acceptLabel: "Törlés",
         acceptClass: "p-button-danger",
         accept: () => {
-            router.delete(`/admin/products/${product.id}`, {
+            router.delete(route("admin.products.destroy", product.id), {
                 preserveScroll: true,
             });
         },
@@ -294,7 +294,7 @@ const confirmDelete = (product) => {
 
                 <template #actions>
                     <Link
-                        href="/admin/recipes"
+                        :href="route('admin.recipes.index')"
                         class="inline-flex items-center whitespace-nowrap rounded-lg border border-bakery-brown/20 px-3 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
                     >
                         Receptek oldal
@@ -354,7 +354,7 @@ const confirmDelete = (product) => {
                     <template #body="{ data }">
                         <div class="flex items-center gap-2">
                             <Link
-                                :href="`/admin/recipes?product_id=${data.id}`"
+                                :href="route('admin.recipes.index', { product_id: data.id })"
                                 class="inline-flex min-h-11 items-center rounded-md border border-bakery-brown/20 px-3 py-2 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10"
                             >
                                 Recept

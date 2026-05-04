@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 </script>
 
 <template>
@@ -30,19 +30,19 @@ import { Link } from "@inertiajs/vue3";
                 </p>
                 <div class="flex flex-wrap gap-3">
                     <Link
-                        href="/weekly-menu"
+                        :href="route('weekly-menu')"
                         class="rounded-full bg-bakery-brown px-6 py-3 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
                     >
                         {{ $t("hero_section.open_weekly_menu") }}
                     </Link>
                     <Link
-                        href="/register"
+                        :href="route('register')"
                         class="rounded-full bg-bakery-gold px-6 py-3 text-sm font-semibold text-bakery-dark transition hover:bg-[#edbb5a]"
                     >
                         {{ $t("home.create_account") }}
                     </Link>
                     <Link
-                        href="/about"
+                        :href="route('about')"
                         class="rounded-full border border-bakery-brown/35 px-6 py-3 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
                     >
                         {{ $t("common.our_history") }}

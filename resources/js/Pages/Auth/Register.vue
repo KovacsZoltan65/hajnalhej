@@ -27,7 +27,7 @@ const submit = () => {
         },
     });
 
-    form.post('/register', {
+    form.post(route('register.store'), {
         onFinish: () => {
             form.reset('password', 'password_confirmation');
         },
@@ -111,7 +111,7 @@ const submit = () => {
 
         <p class="mt-6 text-center text-xs text-bakery-dark/70">
             <Link
-                href="/login"
+                :href="route('login')"
                 class="font-semibold text-bakery-brown hover:underline"
                 @click="trackCtaClick('register.login_link', { funnel: 'registration', step: 'redirect_login' })"
             >{{ $t("register.login_link") }}</Link>

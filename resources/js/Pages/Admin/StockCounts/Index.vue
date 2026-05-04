@@ -18,7 +18,7 @@ const props = defineProps({
 
 const status = ref(props.filters.status ?? '');
 const load = () => {
-    router.get('/admin/stock-counts', { status: status.value || undefined }, { preserveState: true, replace: true, preserveScroll: true });
+    router.get(route('admin.stock-counts.index'), { status: status.value || undefined }, { preserveState: true, replace: true, preserveScroll: true });
 };
 
 const form = useForm({
@@ -50,7 +50,7 @@ const form = useForm({
 
             <div class="overflow-x-auto">
                 <table class="min-w-full text-sm">
-                    <thead class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                    <thead class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60">
                         <tr>
                             <th class="px-2 py-2">Dátum</th>
                             <th class="px-2 py-2">Státusz</th>
@@ -65,7 +65,7 @@ const form = useForm({
                             <td class="px-2 py-2">{{ row.status }}</td>
                             <td class="px-2 py-2 text-right">{{ row.items_count }}</td>
                             <td class="px-2 py-2">{{ row.created_by || '-' }}</td>
-                            <td class="px-2 py-2 text-right"><Link :href="`/admin/stock-counts/${row.id}`" class="underline">Részletek</Link></td>
+                            <td class="px-2 py-2 text-right"><Link :href="route('admin.stock-counts.show', row.id)" class="underline">Részletek</Link></td>
                         </tr>
                     </tbody>
                 </table>
@@ -83,7 +83,7 @@ const form = useForm({
                     <InputText v-model="item.counted_quantity" type="number" step="0.001" placeholder="Számolt mennyiség" />
                 </div>
             </div>
-            <Button label="Leltár mentése" class="!min-h-11" :disabled="form.processing" @click="form.post('/admin/stock-counts', { preserveScroll: true })" />
+            <Button label="Leltár mentése" class="!min-h-11" :disabled="form.processing" @click="form.post(route('admin.stock-counts.store'), { preserveScroll: true })" />
         </section>
     </div>
 </template>

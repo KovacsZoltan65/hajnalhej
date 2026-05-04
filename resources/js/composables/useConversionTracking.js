@@ -1,4 +1,4 @@
-const endpoint = '/conversion-events';
+const endpoint = route('conversion-events.store');
 
 const safeNowIso = () => new Date().toISOString();
 const resolveCsrfToken = () => document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';

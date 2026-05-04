@@ -16,3 +16,7 @@ php artisan migrate:fresh --env=testing
 php artisan migrate:fresh --seed --env=testing
 
 php artisan key:generate --env=testing
+
+
+php artisan ziggy:generate resources/js/ziggy.js
+php artisan ziggy:generate resources/js/ziggy.js --types

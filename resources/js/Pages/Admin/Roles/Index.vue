@@ -58,7 +58,7 @@ const first = computed(() => (currentPage.value - 1) * (props.roles.per_page ?? 
 const load = (extra = {}) => {
     loading.value = true;
 
-    router.get('/admin/roles', {
+    router.get(route('admin.roles.index'), {
         search: filterState.search || undefined,
         per_page: filterState.per_page,
         ...extra,
@@ -91,7 +91,7 @@ const openCreate = () => {
 };
 
 const submitCreate = () => {
-    createForm.post('/admin/roles', {
+    createForm.post(route('admin.roles.store'), {
         preserveScroll: true,
         onSuccess: () => {
             createVisible.value = false;
@@ -110,7 +110,7 @@ const openEdit = (role) => {
 const submitEdit = () => {
     if (!editingRole.value) return;
 
-    editForm.put(`/admin/roles/${editingRole.value.id}`, {
+    editForm.put(route('admin.roles.update', editingRole.value.id), {
         preserveScroll: true,
         onSuccess: () => {
             editVisible.value = false;
@@ -126,7 +126,7 @@ const destroyRole = (role) => {
         acceptLabel: 'Törlés',
         acceptClass: 'p-button-danger',
         accept: () => {
-            router.delete(`/admin/roles/${role.id}`, { preserveScroll: true });
+            router.delete(route('admin.roles.destroy', role.id), { preserveScroll: true });
         },
     });
 };
@@ -217,7 +217,7 @@ const destroyRole = (role) => {
                 <Column header="Műveletek" :style="{ width: '17rem' }">
                     <template #body="{ data }">
                         <div class="flex flex-wrap gap-2">
-                            <Link :href="`/admin/roles/${data.id}`">
+                            <Link :href="route('admin.roles.show', data.id)">
                                 <Button label="Részletek" size="small" text class="!min-h-11" />
                             </Link>
                             <Button

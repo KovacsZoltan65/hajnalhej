@@ -1,9 +1,11 @@
 <script setup>
 import { Head, router } from "@inertiajs/vue3";
 import { computed } from "vue";
-import { currentLocale, transChoice } from "laravel-vue-i18n";
+import { trans, currentLocale, transChoice } from "laravel-vue-i18n";
 import Select from "primevue/select";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
+
+import { createDayOptions } from "@/Utils/functions";
 
 defineOptions({ layout: AdminLayout });
 
@@ -20,14 +22,11 @@ const props = defineProps({
 
 const formatDayOption = (days) => transChoice("common.day_count", days, { count: days });
 
-const dayOptions = [1, 7, 14, 30, 90].map((days) => ({
-    label: formatDayOption(days),
-    value: days,
-}));
+const dayOptions = createDayOptions(trans, [1, 7, 14, 30, 90]);
 
 const updateDays = (value) => {
     router.get(
-        "/admin/conversion-analytics",
+        route("admin.conversion-analytics.index"),
         { days: value },
         {
             preserveState: true,
@@ -170,7 +169,7 @@ const formatDate = (value) => {
             </h2>
             <div class="mt-4 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
                 <article class="ui-card-soft p-4">
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                    <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                         {{ $t("common.income") }}
                     </p>
                     <p class="mt-2 font-heading text-2xl text-bakery-dark">
@@ -178,7 +177,7 @@ const formatDate = (value) => {
                     </p>
                 </article>
                 <article class="ui-card-soft p-4">
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                    <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                         {{ $t("common.order_number") }}
                     </p>
                     <p class="mt-2 font-heading text-2xl text-bakery-dark">
@@ -186,7 +185,7 @@ const formatDate = (value) => {
                     </p>
                 </article>
                 <article class="ui-card-soft p-4">
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                    <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                         {{ $t("common.individual_customers") }}
                     </p>
                     <p class="mt-2 font-heading text-2xl text-bakery-dark">
@@ -194,7 +193,7 @@ const formatDate = (value) => {
                     </p>
                 </article>
                 <article class="ui-card-soft p-4">
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                    <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                         {{ $t("common.returning_customer_rate") }}
                     </p>
                     <p class="mt-2 font-heading text-2xl text-bakery-dark">
@@ -202,7 +201,7 @@ const formatDate = (value) => {
                     </p>
                 </article>
                 <article class="ui-card-soft p-4">
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                    <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                         {{ $t("common.avg_basket_value") }}
                     </p>
                     <p class="mt-2 font-heading text-2xl text-bakery-dark">
@@ -210,7 +209,7 @@ const formatDate = (value) => {
                     </p>
                 </article>
                 <article class="ui-card-soft p-4">
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                    <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                         {{ $t("common.ltv_periodic") }}
                     </p>
                     <p class="mt-2 font-heading text-2xl text-bakery-dark">
@@ -233,7 +232,7 @@ const formatDate = (value) => {
                     :key="card.id"
                     class="ui-card-soft p-4"
                 >
-                    <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                    <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                         {{ card.label }}
                     </p>
                     <p class="mt-2 font-heading text-3xl text-bakery-dark">
@@ -255,7 +254,7 @@ const formatDate = (value) => {
             <div class="mt-4 overflow-x-auto">
                 <table class="min-w-full text-sm">
                     <thead
-                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
+                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60"
                     >
                         <tr>
                             <th class="px-2 py-2">{{ $t("common.date") }}</th>
@@ -303,7 +302,7 @@ const formatDate = (value) => {
             <div class="mt-4 overflow-x-auto">
                 <table class="min-w-full text-sm">
                     <thead
-                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
+                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60"
                     >
                         <tr>
                             <th class="px-2 py-2">{{ $t("common.product") }}</th>
@@ -349,7 +348,7 @@ const formatDate = (value) => {
             <div class="mt-4 overflow-x-auto">
                 <table class="min-w-full text-sm">
                     <thead
-                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
+                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60"
                     >
                         <tr>
                             <th class="px-2 py-2">{{ $t("common.date") }}</th>
@@ -417,7 +416,7 @@ const formatDate = (value) => {
             <div class="mt-4 overflow-x-auto">
                 <table class="min-w-full text-sm">
                     <thead
-                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
+                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60"
                     >
                         <tr>
                             <th class="px-2 py-2">{{ $t("common.variant") }}</th>
@@ -483,7 +482,7 @@ const formatDate = (value) => {
             <div class="mt-4 overflow-x-auto">
                 <table class="min-w-full text-sm">
                     <thead
-                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
+                        class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60"
                     >
                         <tr>
                             <th class="px-2 py-2">{{ $t("common.funnel") }}</th>
@@ -535,7 +534,7 @@ const formatDate = (value) => {
                         :key="funnel.id"
                         class="ui-card-soft p-4"
                     >
-                        <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                        <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                             {{ funnel.label }}
                         </p>
                         <div class="mt-3 space-y-2">
@@ -566,7 +565,7 @@ const formatDate = (value) => {
                 <div class="mt-4 overflow-x-auto">
                     <table class="min-w-full text-sm">
                         <thead
-                            class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60"
+                            class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60"
                         >
                             <tr>
                                 <th class="px-2 py-2">{{ $t("common.cta_id") }}</th>

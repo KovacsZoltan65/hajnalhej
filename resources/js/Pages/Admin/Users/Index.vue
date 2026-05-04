@@ -118,7 +118,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        "/admin/users",
+        route("admin.users.index"),
         {
             search: filterState.search || undefined,
             status: filterState.status || undefined,
@@ -186,7 +186,7 @@ const openEdit = (user) => {
 };
 
 const submitCreate = () => {
-    userForm.post("/admin/users", {
+    userForm.post(route("admin.users.store"), {
         preserveScroll: true,
         onSuccess: () => {
             createVisible.value = false;
@@ -198,7 +198,7 @@ const submitCreate = () => {
 const submitEdit = () => {
     if (!selectedUser.value) return;
 
-    userForm.put(`/admin/users/${selectedUser.value.id}`, {
+    userForm.put(route("admin.users.update", selectedUser.value.id), {
         preserveScroll: true,
         onSuccess: () => {
             editVisible.value = false;
@@ -214,7 +214,7 @@ const confirmDeactivate = (user) => {
         rejectLabel: "Mégse",
         acceptLabel: "Inaktiválás",
         acceptClass: "p-button-danger",
-        accept: () => router.delete(`/admin/users/${user.id}`, { preserveScroll: true }),
+        accept: () => router.delete(route("admin.users.destroy", user.id), { preserveScroll: true }),
     });
 };
 
@@ -231,7 +231,7 @@ const createTemporaryPermission = () => {
     if (!selectedUser.value) return;
 
     temporaryPermissionForm.post(
-        `/admin/users/${selectedUser.value.id}/temporary-permissions`,
+        route("admin.users.temporary-permissions.store", selectedUser.value.id),
         {
             preserveScroll: true,
             onSuccess: () => resetTemporaryPermissionForm(),
@@ -243,7 +243,7 @@ const revokeTemporaryPermission = (permission) => {
     if (!selectedUser.value) return;
 
     router.delete(
-        `/admin/users/${selectedUser.value.id}/temporary-permissions/${permission.id}`,
+        route("admin.users.temporary-permissions.destroy", [selectedUser.value.id, permission.id]),
         {
             preserveScroll: true,
         }
@@ -283,19 +283,19 @@ const submitDiscount = () => {
 
     if (selectedDiscountId.value) {
         discountForm.put(
-            `/admin/users/${selectedUser.value.id}/discounts/${selectedDiscountId.value}`,
+            route("admin.users.discounts.update", [selectedUser.value.id, selectedDiscountId.value]),
             options
         );
         return;
     }
 
-    discountForm.post(`/admin/users/${selectedUser.value.id}/discounts`, options);
+    discountForm.post(route("admin.users.discounts.store", selectedUser.value.id), options);
 };
 
 const deactivateDiscount = (discount) => {
     if (!selectedUser.value) return;
 
-    router.delete(`/admin/users/${selectedUser.value.id}/discounts/${discount.id}`, {
+    router.delete(route("admin.users.discounts.destroy", [selectedUser.value.id, discount.id]), {
         preserveScroll: true,
     });
 };

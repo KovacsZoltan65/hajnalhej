@@ -20,7 +20,7 @@ defineProps({
 
         <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             <div class="rounded-xl border border-bakery-brown/15 p-3">
-                <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                     Összes permission
                 </p>
                 <p class="mt-2 text-2xl font-semibold text-bakery-dark">
@@ -28,7 +28,7 @@ defineProps({
                 </p>
             </div>
             <div class="rounded-xl border border-bakery-brown/15 p-3">
-                <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                     Veszélyes jogosultságok
                 </p>
                 <p class="mt-2 text-2xl font-semibold text-bakery-dark">
@@ -36,7 +36,7 @@ defineProps({
                 </p>
             </div>
             <div class="rounded-xl border border-bakery-brown/15 p-3">
-                <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                     Auditérzékeny jogosultságok
                 </p>
                 <p class="mt-2 text-2xl font-semibold text-bakery-dark">
@@ -44,7 +44,7 @@ defineProps({
                 </p>
             </div>
             <div class="rounded-xl border border-bakery-brown/15 p-3">
-                <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                     Veszélyes szerepkör terítés
                 </p>
                 <p class="mt-2 text-2xl font-semibold text-bakery-dark">
@@ -52,7 +52,7 @@ defineProps({
                 </p>
             </div>
             <div class="rounded-xl border border-bakery-brown/15 p-3">
-                <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                     Veszélyes felhasználói terítés
                 </p>
                 <p class="mt-2 text-2xl font-semibold text-bakery-dark">
@@ -60,7 +60,7 @@ defineProps({
                 </p>
             </div>
             <div class="rounded-xl border border-bakery-brown/15 p-3">
-                <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                     Registry eltérés
                 </p>
                 <p class="mt-2 text-2xl font-semibold text-bakery-dark">
@@ -70,7 +70,7 @@ defineProps({
         </div>
 
         <div class="mt-4 rounded-xl border border-bakery-brown/15 p-3">
-            <p class="text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+            <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                 Kockázati eloszlás
             </p>
             <div class="mt-2 flex flex-wrap gap-2">

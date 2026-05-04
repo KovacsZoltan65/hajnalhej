@@ -15,7 +15,7 @@ const props = defineProps({
 const resendForm = useForm({});
 
 const resendVerification = () => {
-    resendForm.post('/email/verification-notification');
+    resendForm.post(route('verification.send'));
 };
 </script>
 
@@ -45,7 +45,7 @@ const resendVerification = () => {
                 @click="resendVerification"
             />
 
-            <Link href="/account" class="inline-flex text-sm font-semibold text-bakery-brown hover:underline">
+            <Link :href="route('account')" class="inline-flex text-sm font-semibold text-bakery-brown hover:underline">
                 {{ $t("nav.account") }}
             </Link>
         </div>

@@ -11,7 +11,7 @@ const page = usePage();
 const logoutForm = useForm({});
 
 const logout = () => {
-    logoutForm.post("/logout");
+    logoutForm.post(route("logout"));
 };
 
 const hasAny = (can, permissions) =>
@@ -219,7 +219,7 @@ onUnmounted(() => {
         >
             <div class="shrink-0 border-b border-bakery-brown/10 px-2 pb-4">
                 <Link
-                    href="/admin/dashboard"
+                    :href="route('admin.dashboard')"
                     class="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bakery-gold/70"
                 >
                     <AppLogo />
@@ -244,7 +244,7 @@ onUnmounted(() => {
                             class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bakery-gold/70"
                             @click="logout"
                         >
-                            Kijelentkezés
+                            {{ $t("common.logout") }}
                         </button>
                     </div>
                 </template>

@@ -15,7 +15,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post("/login", {
+    form.post(route("login.store"), {
         onFinish: () => {
             form.reset("password");
         },
@@ -94,7 +94,7 @@ const submit = () => {
 
         <p class="mt-6 text-center text-xs text-bakery-dark/70">
             <Link
-                href="/register"
+                :href="route('register')"
                 class="font-semibold text-bakery-brown hover:underline"
                 >{{ $t("login.register_link") }}</Link
             >

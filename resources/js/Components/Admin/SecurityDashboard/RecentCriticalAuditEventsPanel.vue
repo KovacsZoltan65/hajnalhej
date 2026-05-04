@@ -36,7 +36,7 @@ defineProps({
                     <span>Végrehajtó: {{ event.causer }}</span>
                     <span>Érintett elem: {{ event.subject }}</span>
                     <Link
-                        :href="`/admin/security-dashboard/events/${event.id}`"
+                        :href="route('admin.security-dashboard.events.show', event.id)"
                         class="rounded-full border border-bakery-brown/20 px-2.5 py-1 font-semibold text-bakery-brown hover:bg-bakery-brown/10"
                     >
                         Megnyitás audit részletben

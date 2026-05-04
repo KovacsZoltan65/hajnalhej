@@ -92,7 +92,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        "/admin/ingredient-supplier-terms",
+        route("admin.ingredient-supplier-terms.index"),
         {
             search: filterState.search || undefined,
             active: filterState.active,
@@ -157,7 +157,7 @@ const openEdit = (term) => {
 };
 
 const submitCreate = () => {
-    form.post("/admin/ingredient-supplier-terms", {
+    form.post(route("admin.ingredient-supplier-terms.store"), {
         preserveScroll: true,
         onSuccess: () => {
             createModalVisible.value = false;
@@ -171,7 +171,7 @@ const submitEdit = () => {
         return;
     }
 
-    form.put(`/admin/ingredient-supplier-terms/${editingId.value}`, {
+    form.put(route("admin.ingredient-supplier-terms.update", editingId.value), {
         preserveScroll: true,
         onSuccess: () => {
             editModalVisible.value = false;
@@ -192,7 +192,7 @@ const confirmDelete = (term) => {
         acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
-            router.delete(`/admin/ingredient-supplier-terms/${term.id}`, {
+            router.delete(route("admin.ingredient-supplier-terms.destroy", term.id), {
                 preserveScroll: true,
             });
         },

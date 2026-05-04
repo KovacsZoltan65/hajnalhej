@@ -52,7 +52,7 @@ const dayLabel = (days) => trans('admin_procurement_intelligence.units.days', { 
         </div>
         <div v-if="rows.length" class="mt-4 overflow-x-auto">
             <table class="min-w-[1260px] w-full text-sm">
-                <thead class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                <thead class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60">
                     <tr>
                         <th class="px-2 py-2">
                             <input

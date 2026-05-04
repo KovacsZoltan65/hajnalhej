@@ -35,7 +35,7 @@ const form = useForm({
 });
 
 const submitUpdate = () => {
-    form.put(`/admin/purchases/${props.purchase.id}`, {
+    form.put(route('admin.purchases.update', props.purchase.id), {
         preserveScroll: true,
     });
 };
@@ -48,7 +48,7 @@ const submitUpdate = () => {
         <div class="ui-card p-4 sm:p-5">
             <div class="flex items-center justify-between">
                 <h1 class="font-heading text-2xl text-bakery-dark">Beszerzés #{{ purchase.id }}</h1>
-                <Link href="/admin/purchases" class="text-sm underline">Vissza</Link>
+                <Link :href="route('admin.purchases.index')" class="text-sm underline">Vissza</Link>
             </div>
             <div class="mt-4 grid gap-3 md:grid-cols-3 text-sm">
                 <p><strong>Beszállító:</strong> {{ purchase.supplier_name || '-' }}</p>
@@ -80,7 +80,7 @@ const submitUpdate = () => {
 
         <div class="ui-card p-4 sm:p-5 overflow-x-auto">
             <table class="min-w-full text-sm">
-                <thead class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                <thead class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60">
                     <tr>
                         <th class="px-2 py-2">Alapanyag</th>
                         <th class="px-2 py-2 text-right">Mennyiség</th>

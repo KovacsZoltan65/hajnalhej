@@ -98,7 +98,7 @@ const perPageOptions = [
 const load = (extra = {}) => {
     loading.value = true;
 
-    router.get('/admin/permissions', {
+    router.get(route('admin.permissions.index'), {
         search: filterState.search || undefined,
         module: filterState.module || undefined,
         dangerous_only: filterState.dangerous_only ? 1 : undefined,
@@ -127,7 +127,7 @@ const onPage = (event) => {
 
 const runSync = () => {
     syncing.value = true;
-    router.post('/admin/permissions/sync', {}, {
+    router.post(route('admin.permissions.sync'), {}, {
         preserveScroll: true,
         onFinish: () => {
             syncing.value = false;
@@ -273,7 +273,7 @@ const clearFilters = () => {
 
                 <Column :header="$t('common.actions')" :style="{ width: '9rem' }">
                     <template #body="{ data }">
-                        <Link :href="`/admin/permissions/${encodeURIComponent(data.name)}`">
+                        <Link :href="route('admin.permissions.show', data.name)">
                             <Button :label="$t('admin_permissions.actions.details')" size="small" text class="!min-h-11" />
                         </Link>
                     </template>
