@@ -106,7 +106,7 @@ const formatMoney = (value) =>
         <div class="space-y-3 rounded-xl border border-bakery-brown/15 bg-[#fcf8f2] p-3">
             <div class="flex items-center justify-between">
                 <h3 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">Tételek</h3>
-                <Button label="Tétel hozzáadása" icon="pi pi-plus" outlined class="!min-h-11" @click="addItem" />
+                <Button label="Tétel hozzáadása" icon="pi pi-plus" outlined class="min-h-11!" @click="addItem" />
             </div>
 
             <p v-if="form.errors.items" class="text-xs text-red-700">{{ form.errors.items }}</p>
@@ -161,7 +161,7 @@ const formatMoney = (value) =>
                         icon="pi pi-trash"
                         severity="danger"
                         text
-                        class="!min-h-11"
+                        class="min-h-11!"
                         :disabled="form.items.length <= 1"
                         @click="removeItem(index)"
                     />

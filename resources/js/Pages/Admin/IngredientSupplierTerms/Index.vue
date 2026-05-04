@@ -1,6 +1,6 @@
 <script setup>
 import { Head, router, useForm } from "@inertiajs/vue3";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -15,7 +15,8 @@ import PreferredBadge from "@/Components/Admin/IngredientSupplierTerms/Preferred
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
-import { perPageOptions } from "@/Utils/functions.js";
+import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -32,15 +33,35 @@ const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const editingId = ref(null);
 
-const filterState = reactive({
-    search: props.filters.search ?? "",
-    active: props.filters.active ?? "",
-    sort_field: props.filters.sort_field ?? "ingredient",
-    sort_direction: props.filters.sort_direction ?? "asc",
-    per_page: props.filters.per_page ?? 10,
+const {
+    filterState,
+    sortOrder,
+    load,
+    submitFilters,
+    clearFilters,
+    onSort,
+    onPage,
+} = useAdminFilterState({
+    filters: props.filters,
+    defaults: {
+        search: "",
+        active: "",
+        sort_field: "ingredient",
+        sort_direction: "asc",
+        per_page: 10,
+    },
+    routeName: "admin.ingredient-supplier-terms.index",
+    loading,
+    toQuery: (state) => ({
+        search: state.search || undefined,
+        active: state.active,
+        sort_field: state.sort_field,
+        sort_direction: state.sort_direction,
+        per_page: state.per_page,
+    }),
 });
 
-const perPageOptions = perPageOptions(trans, [10, 20, 50]);
+const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
 /*
 const perPageOptions = [
     { label: trans("common.page_count", { count: 10 }), value: 10 },
@@ -67,7 +88,6 @@ const form = useForm({
     meta: "",
 });
 
-const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 const currentPage = computed(() => props.terms.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.terms.per_page ?? 10));
 
@@ -90,51 +110,6 @@ const metaToString = (meta) => {
     }
 
     return JSON.stringify(meta, null, 2);
-};
-
-const load = (extra = {}) => {
-    loading.value = true;
-
-    router.get(
-        route("admin.ingredient-supplier-terms.index"),
-        {
-            search: filterState.search || undefined,
-            active: filterState.active,
-            sort_field: filterState.sort_field,
-            sort_direction: filterState.sort_direction,
-            per_page: filterState.per_page,
-            ...extra,
-        },
-        {
-            preserveState: true,
-            replace: true,
-            preserveScroll: true,
-            onFinish: () => {
-                loading.value = false;
-            },
-        }
-    );
-};
-
-const submitFilters = () => load({ page: 1 });
-const clearFilters = () => {
-    filterState.search = "";
-    filterState.active = "";
-    filterState.sort_field = "ingredient";
-    filterState.sort_direction = "asc";
-    filterState.per_page = 10;
-    submitFilters();
-};
-
-const onSort = (event) => {
-    filterState.sort_field = event.sortField;
-    filterState.sort_direction = event.sortOrder === 1 ? "asc" : "desc";
-    load({ page: 1 });
-};
-
-const onPage = (event) => {
-    filterState.per_page = event.rows;
-    load({ page: event.page + 1, per_page: event.rows });
 };
 
 const openCreate = () => {
@@ -457,7 +432,7 @@ const formatCurrency = (value) => {
                                     icon="pi pi-pencil"
                                     text
                                     rounded
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     :aria-label="$t('admin_supplier_terms.actions.edit')"
                                     @click="openEdit(data)"
                                 />
@@ -466,7 +441,7 @@ const formatCurrency = (value) => {
                                     text
                                     rounded
                                     severity="danger"
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     :aria-label="
                                         $t('admin_supplier_terms.actions.delete')
                                     "

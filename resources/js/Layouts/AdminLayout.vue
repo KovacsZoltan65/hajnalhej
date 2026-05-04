@@ -6,6 +6,7 @@ import AppLogo from "../Components/AppLogo.vue";
 import AdminSidebar from "../Components/AdminSidebar.vue";
 import FlashToast from "../Components/FlashToast.vue";
 import { trans } from "laravel-vue-i18n";
+import { Button } from "primevue";
 
 const page = usePage();
 const logoutForm = useForm({});
@@ -239,13 +240,14 @@ onUnmounted(() => {
                                 page.props.auth?.user?.name
                             }}</span>
                         </p>
-                        <button
+                        <Button
                             type="button"
+                            unstyled
                             class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bakery-gold/70"
                             @click="logout"
                         >
                             {{ $t("common.logout") }}
-                        </button>
+                        </Button>
                     </div>
                 </template>
             </AppHeader>

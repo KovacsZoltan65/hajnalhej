@@ -116,13 +116,14 @@ const clearCart = () => {
                                     (value) => updateQuantity(item, value)
                                 "
                             />
-                            <button
+                            <Button
                                 type="button"
+                                unstyled
                                 class="text-xs font-semibold text-rose-700 hover:underline"
                                 @click="removeItem(item)"
                             >
                                 {{ $t("common.delete") }}
-                            </button>
+                            </Button>
                         </div>
                     </div>
 

@@ -90,7 +90,7 @@ const emit = defineEmits(['sort', 'page', 'open-editor']);
         </Column>
         <Column header="Műveletek" :exportable="false">
             <template #body="{ data }">
-                <Button icon="pi pi-pencil" text rounded class="!h-11 !w-11" aria-label="Recept szerkesztése" @click="emit('open-editor', data)" />
+                <Button icon="pi pi-pencil" text rounded class="h-11! w-11!" aria-label="Recept szerkesztése" @click="emit('open-editor', data)" />
             </template>
         </Column>
         </DataTable>

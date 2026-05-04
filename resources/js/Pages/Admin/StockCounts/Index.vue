@@ -45,7 +45,7 @@ const form = useForm({
             <div class="grid gap-3 md:grid-cols-3">
                 <Select v-model="status" :options="[{ label: 'Mind', value: '' }, ...statuses.map((s) => ({ label: s, value: s }))]" option-label="label" option-value="value" />
                 <div />
-                <Button label="Szűrés" class="!min-h-11" @click="load" />
+                <Button label="Szűrés" class="min-h-11!" @click="load" />
             </div>
 
             <div class="overflow-x-auto">
@@ -83,7 +83,7 @@ const form = useForm({
                     <InputText v-model="item.counted_quantity" type="number" step="0.001" placeholder="Számolt mennyiség" />
                 </div>
             </div>
-            <Button label="Leltár mentése" class="!min-h-11" :disabled="form.processing" @click="form.post(route('admin.stock-counts.store'), { preserveScroll: true })" />
+            <Button label="Leltár mentése" class="min-h-11!" :disabled="form.processing" @click="form.post(route('admin.stock-counts.store'), { preserveScroll: true })" />
         </section>
     </div>
 </template>

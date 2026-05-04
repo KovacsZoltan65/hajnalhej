@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, router, useForm } from "@inertiajs/vue3";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -13,8 +13,9 @@ import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
 import CreateModal from "@/Components/Admin/Purchases/CreateModal.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import { perPageOptions } from "@/Utils/functions.js";
+import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
 import { trans } from "laravel-vue-i18n";
+import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -45,16 +46,37 @@ const confirm = useConfirm();
 const loading = ref(false);
 const createModalVisible = ref(false);
 
-const filterState = reactive({
-    search: props.filters.search ?? "",
-    status: props.filters.status ?? "",
-    supplier_id: props.filters.supplier_id || null,
-    sort_field: props.filters.sort_field ?? "purchase_date",
-    sort_direction: props.filters.sort_direction ?? "desc",
-    per_page: props.filters.per_page ?? 10,
+const {
+    filterState,
+    sortOrder,
+    load,
+    submitFilters,
+    clearFilters,
+    onSort,
+    onPage,
+} = useAdminFilterState({
+    filters: props.filters,
+    defaults: {
+    search: "",
+    status: "",
+    supplier_id: null,
+    sort_field: "purchase_date",
+    sort_direction: "desc",
+    per_page: 10,
+},
+    routeName: "admin.purchases.index",
+    loading,
+    toQuery: (state) => ({
+            search: state.search || undefined,
+            status: state.status || undefined,
+            supplier_id: state.supplier_id || undefined,
+            sort_field: state.sort_field,
+            sort_direction: state.sort_direction,
+            per_page: state.per_page,
+        }),
 });
 
-const perPageOptions = perPageOptions(trans, [10, 20, 50]);
+const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
 /*
 const perPageOptions = [
     { label: '10 / oldal', value: 10 },
@@ -90,56 +112,12 @@ const form = useForm({
     items: [newItem()],
 });
 
-const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 const currentPage = computed(() => props.purchases.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.purchases.per_page ?? 10));
 
-const load = (extra = {}) => {
-    loading.value = true;
 
-    router.get(
-        route("admin.purchases.index"),
-        {
-            search: filterState.search || undefined,
-            status: filterState.status || undefined,
-            supplier_id: filterState.supplier_id || undefined,
-            sort_field: filterState.sort_field,
-            sort_direction: filterState.sort_direction,
-            per_page: filterState.per_page,
-            ...extra,
-        },
-        {
-            preserveState: true,
-            replace: true,
-            preserveScroll: true,
-            onFinish: () => {
-                loading.value = false;
-            },
-        }
-    );
-};
 
-const submitFilters = () => load({ page: 1 });
-const clearFilters = () => {
-    filterState.search = "";
-    filterState.status = "";
-    filterState.supplier_id = null;
-    filterState.sort_field = "purchase_date";
-    filterState.sort_direction = "desc";
-    filterState.per_page = 10;
-    submitFilters();
-};
 
-const onSort = (event) => {
-    filterState.sort_field = event.sortField;
-    filterState.sort_direction = event.sortOrder === 1 ? "asc" : "desc";
-    load({ page: 1 });
-};
-
-const onPage = (event) => {
-    filterState.per_page = event.rows;
-    load({ page: event.page + 1, per_page: event.rows });
-};
 
 const openCreate = () => {
     form.reset();
@@ -406,7 +384,7 @@ const statusClass = (status) => {
                                     icon="pi pi-check"
                                     text
                                     rounded
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     aria-label="Beszerzés könyvelése"
                                     @click="postNow(data)"
                                 />
@@ -416,7 +394,7 @@ const statusClass = (status) => {
                                     text
                                     rounded
                                     severity="danger"
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     aria-label="Beszerzés stornózása"
                                     @click="cancelPurchase(data)"
                                 />

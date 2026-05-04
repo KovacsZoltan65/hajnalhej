@@ -118,7 +118,7 @@ const generatePurchaseDrafts = () => {
                     </p>
                 </div>
 
-                <div class="grid gap-3 sm:grid-cols-2 xl:w-[680px] xl:grid-cols-5">
+                <div class="grid gap-3 sm:grid-cols-2 xl:w-170 xl:grid-cols-5">
                     <Select
                         :model-value="filters.days"
                         :options="filter_options.days"
@@ -165,13 +165,14 @@ const generatePurchaseDrafts = () => {
                         class="min-h-11 w-full"
                         @update:model-value="updateFilter('urgency', $event)"
                     />
-                    <button
+                    <Button
                         type="button"
+                        unstyled
                         class="min-h-11 rounded-lg border border-bakery-brown/25 px-4 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
                         @click="resetFilters"
                     >
                         {{ trans("common.clear_filters") }}
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -201,7 +202,7 @@ const generatePurchaseDrafts = () => {
                                 'admin_procurement_intelligence.actions.generate_purchase_drafts'
                             )
                         "
-                        class="!min-h-11"
+                        class="min-h-11!"
                         :disabled="generatableCount === 0 || draftGenerationProcessing"
                         :loading="draftGenerationProcessing"
                         @click="generatePurchaseDrafts"

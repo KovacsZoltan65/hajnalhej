@@ -1,6 +1,6 @@
 <script setup>
 import { Head, router, useForm } from "@inertiajs/vue3";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
@@ -14,8 +14,9 @@ import WasteEntryModal from "@/Components/Admin/Inventory/WasteEntryModal.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
+import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
 
-import { createDayOptions, perPageOptions } from "@/Utils/functions";
+import { createDayOptions, pageOptions as createPerPageOptions } from "@/Utils/functions";
 
 defineOptions({ layout: AdminLayout });
 
@@ -33,20 +34,41 @@ const loading = ref(false);
 const wasteModalVisible = ref(false);
 const adjustmentModalVisible = ref(false);
 
-const filterState = reactive({
-    days: props.filters.days ?? 7,
-    date_from: props.filters.date_from ?? "",
-    date_to: props.filters.date_to ?? "",
-    search: props.filters.search ?? "",
-    movement_type: props.filters.movement_type ?? "",
-    ingredient_id: props.filters.ingredient_id || null,
-    per_page: props.filters.per_page ?? 15,
+const {
+    filterState,
+    sortOrder,
+    load,
+    submitFilters,
+    clearFilters,
+    onSort,
+    onPage,
+} = useAdminFilterState({
+    filters: props.filters,
+    defaults: {
+    days: 7,
+    date_from: "",
+    date_to: "",
+    search: "",
+    movement_type: "",
+    ingredient_id: null,
+    per_page: 15,
+},
+    routeName: "admin.inventory.index",
+    loading,
+    toQuery: (state) => ({
+            days: state.days,
+            date_from: state.date_from || undefined,
+            date_to: state.date_to || undefined,
+            search: state.search || undefined,
+            movement_type: state.movement_type || undefined,
+            ingredient_id: state.ingredient_id || undefined,
+            per_page: state.per_page,
+        }),
 });
 
 const dayOptions = createDayOptions(trans, [7, 14, 30, 90]);
 
-import { trans } from "laravel-vue-i18n";
-const perPageOptions = perPageOptions(trans, [15, 30, 50]);
+const perPageOptions = createPerPageOptions(trans, [15, 30, 50]);
 /*
 const perPageOptions = [
     { label: trans("common.page_count", { count: 15 }), value: 15 },
@@ -107,49 +129,9 @@ const first = computed(
     () => (currentPage.value - 1) * (props.ledger.per_page ?? filterState.per_page)
 );
 
-const load = (extra = {}) => {
-    loading.value = true;
 
-    router.get(
-        route("admin.inventory.index"),
-        {
-            days: filterState.days,
-            date_from: filterState.date_from || undefined,
-            date_to: filterState.date_to || undefined,
-            search: filterState.search || undefined,
-            movement_type: filterState.movement_type || undefined,
-            ingredient_id: filterState.ingredient_id || undefined,
-            per_page: filterState.per_page,
-            ...extra,
-        },
-        {
-            preserveState: true,
-            replace: true,
-            preserveScroll: true,
-            onFinish: () => {
-                loading.value = false;
-            },
-        }
-    );
-};
 
-const submitFilters = () => load({ page: 1 });
 
-const clearFilters = () => {
-    filterState.days = 7;
-    filterState.date_from = "";
-    filterState.date_to = "";
-    filterState.search = "";
-    filterState.movement_type = "";
-    filterState.ingredient_id = null;
-    filterState.per_page = 15;
-    submitFilters();
-};
-
-const onPage = (event) => {
-    filterState.per_page = event.rows;
-    load({ page: event.page + 1, per_page: event.rows });
-};
 
 const openWasteModal = () => {
     wasteForm.reset();

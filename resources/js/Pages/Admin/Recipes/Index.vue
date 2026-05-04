@@ -439,7 +439,7 @@ watch(
                         :options="perPageOptions"
                         option-label="label"
                         option-value="value"
-                        class="w-[9rem]"
+                        class="w-36"
                         @change="submitFilters"
                     />
                     <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />

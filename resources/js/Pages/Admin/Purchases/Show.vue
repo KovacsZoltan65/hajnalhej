@@ -70,7 +70,7 @@ const submitUpdate = () => {
                 <Button
                     label="Tervezet mentése"
                     icon="pi pi-save"
-                    class="!min-h-11"
+                    class="min-h-11!"
                     :loading="form.processing"
                     @click="submitUpdate"
                 />

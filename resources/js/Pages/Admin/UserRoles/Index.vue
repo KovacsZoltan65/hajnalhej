@@ -1,6 +1,6 @@
 <script setup>
 import { Head, router, useForm } from "@inertiajs/vue3";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
@@ -12,8 +12,9 @@ import RoleBadge from "@/Components/Admin/Roles/RoleBadge.vue";
 import UserRoleAssignmentModal from "@/Components/Admin/UserRoles/UserRoleAssignmentModal.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import { perPageOptions } from "@/Utils/functions";
+import { pageOptions as createPerPageOptions } from "@/Utils/functions";
 import { trans } from "laravel-vue-i18n";
+import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -45,12 +46,29 @@ const form = useForm({
     roles: [],
 });
 
-const filterState = reactive({
-    search: props.filters.search ?? "",
-    per_page: props.filters.per_page ?? 15,
+const {
+    filterState,
+    sortOrder,
+    load,
+    submitFilters,
+    clearFilters,
+    onSort,
+    onPage,
+} = useAdminFilterState({
+    filters: props.filters,
+    defaults: {
+    search: "",
+    per_page: 15,
+},
+    routeName: "admin.user-roles.index",
+    loading,
+    toQuery: (state) => ({
+            search: state.search || undefined,
+            per_page: state.per_page,
+        }),
 });
 
-const perPageOptions = perPageOptions(trans, [15, 30, 50]);
+const perPageOptions = createPerPageOptions(trans, [15, 30, 50]);
 /*
 const perPageOptions = [
     { label: '15 / oldal', value: 15 },
@@ -68,38 +86,8 @@ const roleSystemMap = computed(() =>
     )
 );
 
-const load = (extra = {}) => {
-    loading.value = true;
 
-    router.get(
-        route("admin.user-roles.index"),
-        {
-            search: filterState.search || undefined,
-            per_page: filterState.per_page,
-            ...extra,
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-            onFinish: () => {
-                loading.value = false;
-            },
-        }
-    );
-};
 
-const submitFilters = () => load({ page: 1 });
-const clearFilters = () => {
-    filterState.search = "";
-    filterState.per_page = 15;
-    submitFilters();
-};
-
-const onPage = (event) => {
-    filterState.per_page = event.rows;
-    load({ page: event.page + 1, per_page: event.rows });
-};
 
 const openAssignModal = (user) => {
     selectedUser.value = user;
@@ -242,7 +230,7 @@ const saveRoles = () => {
                                 label="Szerepkörök kezelése"
                                 size="small"
                                 outlined
-                                class="!min-h-11"
+                                class="min-h-11!"
                                 @click="openAssignModal(data)"
                             />
                         </template>

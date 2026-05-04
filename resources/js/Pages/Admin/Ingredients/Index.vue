@@ -1,6 +1,6 @@
 <script setup>
 import { Head, router, useForm } from "@inertiajs/vue3";
-import { computed, reactive, ref, transformVNodeArgs } from "vue";
+import { computed, ref, transformVNodeArgs } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -16,7 +16,8 @@ import IngredientStockBadge from "../../../Components/Admin/Ingredients/Ingredie
 import SectionTitle from "../../../Components/SectionTitle.vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
-import { perPageOptions } from "@/Utils/functions.js";
+import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -41,16 +42,37 @@ const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const editingId = ref(null);
 
-const filterState = reactive({
-    search: props.filters.search ?? "",
-    is_active: props.filters.is_active ?? "",
-    unit: props.filters.unit ?? "",
-    sort_field: props.filters.sort_field ?? "name",
-    sort_direction: props.filters.sort_direction ?? "asc",
-    per_page: props.filters.per_page ?? 10,
+const {
+    filterState,
+    sortOrder,
+    load,
+    submitFilters,
+    clearFilters,
+    onSort,
+    onPage,
+} = useAdminFilterState({
+    filters: props.filters,
+    defaults: {
+        search: "",
+        is_active: "",
+        unit: "",
+        sort_field: "name",
+        sort_direction: "asc",
+        per_page: 10,
+    },
+    routeName: "admin.ingredients.index",
+    loading,
+    toQuery: (state) => ({
+        search: state.search || undefined,
+        is_active: state.is_active,
+        unit: state.unit || undefined,
+        sort_field: state.sort_field,
+        sort_direction: state.sort_direction,
+        per_page: state.per_page,
+    }),
 });
 
-const perPageOptions = perPageOptions(trans, [10, 20, 50]);
+const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
 /*
 const perPageOptions = [
     { label: trans("common.page_count", { count: 10 }), value: 10 },
@@ -94,58 +116,10 @@ const form = useForm({
     notes: "",
 });
 
-const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 const currentPage = computed(() => props.ingredients.current_page ?? 1);
 const first = computed(
     () => (currentPage.value - 1) * (props.ingredients.per_page ?? 10)
 );
-
-const load = (extra = {}) => {
-    loading.value = true;
-
-    router.get(
-        route("admin.ingredients.index"),
-        {
-            search: filterState.search || undefined,
-            is_active: filterState.is_active,
-            unit: filterState.unit || undefined,
-            sort_field: filterState.sort_field,
-            sort_direction: filterState.sort_direction,
-            per_page: filterState.per_page,
-            ...extra,
-        },
-        {
-            preserveState: true,
-            replace: true,
-            preserveScroll: true,
-            onFinish: () => {
-                loading.value = false;
-            },
-        }
-    );
-};
-
-const submitFilters = () => load({ page: 1 });
-const clearFilters = () => {
-    filterState.search = "";
-    filterState.is_active = "";
-    filterState.unit = "";
-    filterState.sort_field = "name";
-    filterState.sort_direction = "asc";
-    filterState.per_page = 10;
-    submitFilters();
-};
-
-const onSort = (event) => {
-    filterState.sort_field = event.sortField;
-    filterState.sort_direction = event.sortOrder === 1 ? "asc" : "desc";
-    load({ page: 1 });
-};
-
-const onPage = (event) => {
-    filterState.per_page = event.rows;
-    load({ page: event.page + 1, per_page: event.rows });
-};
 
 const openCreate = () => {
     editModalVisible.value = false;
@@ -425,7 +399,7 @@ const confirmDelete = (ingredient) => {
                                     icon="pi pi-pencil"
                                     text
                                     rounded
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     :aria-label="$t('admin_ingredients.actions.edit')"
                                     @click="openEdit(data)"
                                 />
@@ -434,7 +408,7 @@ const confirmDelete = (ingredient) => {
                                     text
                                     rounded
                                     severity="danger"
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     :aria-label="$t('admin_ingredients.actions.delete')"
                                     @click="confirmDelete(data)"
                                 />

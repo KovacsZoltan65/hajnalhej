@@ -27,7 +27,7 @@ const closeCount = () => router.post(route('admin.stock-counts.close', props.sto
                 <p><strong>Lezárva:</strong> {{ stock_count.closed_at || '-' }}</p>
             </div>
             <p v-if="stock_count.notes" class="mt-3 text-sm text-bakery-dark/75">{{ stock_count.notes }}</p>
-            <Button v-if="stock_count.status === 'draft'" label="Leltár lezárása és könyvelés" class="!min-h-11 mt-4" @click="closeCount" />
+            <Button v-if="stock_count.status === 'draft'" label="Leltár lezárása és könyvelés" class="min-h-11! mt-4" @click="closeCount" />
         </div>
 
         <div class="ui-card p-4 sm:p-5 overflow-x-auto">

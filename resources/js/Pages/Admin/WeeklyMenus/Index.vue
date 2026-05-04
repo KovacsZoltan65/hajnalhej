@@ -1,6 +1,6 @@
 <script setup>
 import { Head, router, useForm } from "@inertiajs/vue3";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -16,7 +16,8 @@ import WeeklyMenuStatusBadge from "@/Components/Admin/WeeklyMenus/WeeklyMenuStat
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
-import { perPageOptions } from "@/Utils/functions";
+import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { pageOptions as createPerPageOptions } from "@/Utils/functions";
 
 defineOptions({ layout: AdminLayout });
 
@@ -46,12 +47,32 @@ const selectedMenu = computed(() => {
     );
 });
 
-const filterState = reactive({
-    search: props.filters.search ?? "",
-    status: props.filters.status ?? "",
-    sort_field: props.filters.sort_field ?? "week_start",
-    sort_direction: props.filters.sort_direction ?? "desc",
-    per_page: props.filters.per_page ?? 10,
+const {
+    filterState,
+    sortOrder,
+    load,
+    submitFilters,
+    clearFilters,
+    onSort,
+    onPage,
+} = useAdminFilterState({
+    filters: props.filters,
+    defaults: {
+        search: "",
+        status: "",
+        sort_field: "week_start",
+        sort_direction: "desc",
+        per_page: 10,
+    },
+    routeName: "admin.weekly-menus.index",
+    loading,
+    toQuery: (state) => ({
+        search: state.search || undefined,
+        status: state.status || undefined,
+        sort_field: state.sort_field,
+        sort_direction: state.sort_direction,
+        per_page: state.per_page,
+    }),
 });
 
 const statusOptions = computed(() => [
@@ -59,7 +80,7 @@ const statusOptions = computed(() => [
     ...props.statuses,
 ]);
 
-const perPageOptions = perPageOptions(trans, [10, 20, 50]);
+const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
 /*
 const perPageOptions = computed(() => [
     { label: trans("common.page_count", { count: 10 }), value: 10 },
@@ -79,56 +100,10 @@ const form = useForm({
     is_featured: false,
 });
 
-const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 const currentPage = computed(() => props.weeklyMenus.current_page ?? 1);
 const first = computed(
     () => (currentPage.value - 1) * (props.weeklyMenus.per_page ?? 10)
 );
-
-const load = (extra = {}) => {
-    loading.value = true;
-
-    router.get(
-        route("admin.weekly-menus.index"),
-        {
-            search: filterState.search || undefined,
-            status: filterState.status || undefined,
-            sort_field: filterState.sort_field,
-            sort_direction: filterState.sort_direction,
-            per_page: filterState.per_page,
-            ...extra,
-        },
-        {
-            preserveState: true,
-            replace: true,
-            preserveScroll: true,
-            onFinish: () => {
-                loading.value = false;
-            },
-        }
-    );
-};
-
-const submitFilters = () => load({ page: 1 });
-const clearFilters = () => {
-    filterState.search = "";
-    filterState.status = "";
-    filterState.sort_field = "week_start";
-    filterState.sort_direction = "desc";
-    filterState.per_page = 10;
-    submitFilters();
-};
-
-const onSort = (event) => {
-    filterState.sort_field = event.sortField;
-    filterState.sort_direction = event.sortOrder === 1 ? "asc" : "desc";
-    load({ page: 1 });
-};
-
-const onPage = (event) => {
-    filterState.per_page = event.rows;
-    load({ page: event.page + 1, per_page: event.rows });
-};
 
 const openCreate = () => {
     editModalVisible.value = false;
@@ -466,7 +441,7 @@ const refreshMenus = () => {
                                     icon="pi pi-list"
                                     text
                                     rounded
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     :aria-label="$t('admin_weekly_menus.actions.items')"
                                     @click="openItems(data)"
                                 />
@@ -474,7 +449,7 @@ const refreshMenus = () => {
                                     icon="pi pi-pencil"
                                     text
                                     rounded
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     :aria-label="$t('admin_weekly_menus.actions.edit')"
                                     @click="openEdit(data)"
                                 />
@@ -483,7 +458,7 @@ const refreshMenus = () => {
                                     text
                                     rounded
                                     severity="danger"
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     :aria-label="$t('admin_weekly_menus.actions.delete')"
                                     @click="confirmDelete(data)"
                                 />
@@ -492,7 +467,7 @@ const refreshMenus = () => {
                                     :label="$t('admin_weekly_menus.actions.publish')"
                                     size="small"
                                     text
-                                    class="!min-h-11 !text-green-700"
+                                    class="min-h-11! text-green-700!"
                                     @click="publish(data)"
                                 />
                                 <Button
@@ -500,7 +475,7 @@ const refreshMenus = () => {
                                     :label="$t('admin_weekly_menus.actions.unpublish')"
                                     size="small"
                                     text
-                                    class="!min-h-11 !text-amber-700"
+                                    class="min-h-11! text-amber-700!"
                                     @click="unpublish(data)"
                                 />
                             </div>

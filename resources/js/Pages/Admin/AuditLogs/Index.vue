@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, router } from "@inertiajs/vue3";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
@@ -12,7 +12,8 @@ import AuditEventBadge from "@/Components/Admin/AuditLogs/AuditEventBadge.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
-import { perPageOptions } from "@/Utils/functions.js";
+import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -45,18 +46,38 @@ const props = defineProps({
 
 const loading = ref(false);
 
-const filterState = reactive({
-    search: props.filters.search ?? "",
-    log_name: props.filters.log_name ?? "",
-    event_key: props.filters.event_key ?? "",
-    subject_type: props.filters.subject_type ?? "",
-    per_page: props.filters.per_page ?? 20,
+const {
+    filterState,
+    sortOrder,
+    load,
+    submitFilters,
+    clearFilters,
+    onSort,
+    onPage,
+} = useAdminFilterState({
+    filters: props.filters,
+    defaults: {
+        search: "",
+        log_name: "",
+        event_key: "",
+        subject_type: "",
+        per_page: 20,
+    },
+    routeName: "admin.audit-logs.index",
+    loading,
+    toQuery: (state) => ({
+        search: state.search || undefined,
+        log_name: state.log_name || undefined,
+        event_key: state.event_key || undefined,
+        subject_type: state.subject_type || undefined,
+        per_page: state.per_page,
+    }),
 });
 
 const currentPage = computed(() => props.logs.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.logs.per_page ?? 20));
 
-const perPageOptions = perPageOptions(trans, [20, 50, 100]);
+const perPageOptions = createPerPageOptions(trans, [20, 50, 100]);
 /*
 const perPageOptions = [
     { label: trans("common.page_count", { count: 20 }), value: 20 },
@@ -93,45 +114,6 @@ const subjectTypeOptions = computed(() => [
         value: "order",
     },
 ]);
-
-const load = (extra = {}) => {
-    loading.value = true;
-
-    router.get(
-        route("admin.audit-logs.index"),
-        {
-            search: filterState.search || undefined,
-            log_name: filterState.log_name || undefined,
-            event_key: filterState.event_key || undefined,
-            subject_type: filterState.subject_type || undefined,
-            per_page: filterState.per_page,
-            ...extra,
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-            onFinish: () => {
-                loading.value = false;
-            },
-        }
-    );
-};
-
-const submitFilters = () => load({ page: 1 });
-const clearFilters = () => {
-    filterState.search = "";
-    filterState.log_name = "";
-    filterState.event_key = "";
-    filterState.subject_type = "";
-    filterState.per_page = 20;
-    submitFilters();
-};
-
-const onPage = (event) => {
-    filterState.per_page = event.rows;
-    load({ page: event.page + 1, per_page: event.rows });
-};
 </script>
 
 <template>
@@ -323,7 +305,7 @@ const onPage = (event) => {
                                     :label="$t('audit_logs.actions.details')"
                                     size="small"
                                     text
-                                    class="!min-h-11"
+                                    class="min-h-11!"
                                 />
                             </Link>
                         </template>

@@ -1,6 +1,6 @@
 <script setup>
 import { Head, router, useForm } from "@inertiajs/vue3";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -9,12 +9,13 @@ import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import { useConfirm } from "primevue/useconfirm";
 import { trans } from "laravel-vue-i18n";
+import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
 import CreateModal from "@/Components/Admin/ProductionPlans/CreateModal.vue";
 import EditModal from "@/Components/Admin/ProductionPlans/EditModal.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import { perPageOptions } from "@/Utils/functions.js";
+import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -32,14 +33,36 @@ const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const editingId = ref(null);
 
-const filterState = reactive({
-    search: props.filters.search ?? "",
-    status: props.filters.status ?? "",
-    target_from: props.filters.target_from ?? "",
-    target_to: props.filters.target_to ?? "",
-    sort_field: props.filters.sort_field ?? "target_at",
-    sort_direction: props.filters.sort_direction ?? "asc",
-    per_page: props.filters.per_page ?? 10,
+const {
+    filterState,
+    sortOrder,
+    load,
+    submitFilters,
+    clearFilters,
+    onSort,
+    onPage,
+} = useAdminFilterState({
+    filters: props.filters,
+    defaults: {
+        search: "",
+        status: "",
+        target_from: "",
+        target_to: "",
+        sort_field: "target_at",
+        sort_direction: "asc",
+        per_page: 10,
+    },
+    routeName: "admin.production-plans.index",
+    loading,
+    toQuery: (state) => ({
+        search: state.search || undefined,
+        status: state.status || undefined,
+        target_from: state.target_from || undefined,
+        target_to: state.target_to || undefined,
+        sort_field: state.sort_field,
+        sort_direction: state.sort_direction,
+        per_page: state.per_page,
+    }),
 });
 
 const statusOptions = computed(() => [
@@ -47,7 +70,7 @@ const statusOptions = computed(() => [
     ...props.statuses,
 ]);
 
-const perPageOptions = perPageOptions(trans, [10, 20, 50]);
+const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
 /*
 const perPageOptions = computed(() =>
     [10, 20, 50].map((count) => ({
@@ -68,7 +91,6 @@ const form = useForm({
 const selectedPlan = computed(
     () => props.productionPlans.data.find((plan) => plan.id === editingId.value) ?? null
 );
-const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 const currentPage = computed(() => props.productionPlans.current_page ?? 1);
 const first = computed(
     () => (currentPage.value - 1) * (props.productionPlans.per_page ?? 10)
@@ -111,55 +133,6 @@ const resetFormToDefaults = () => {
     form.is_locked = false;
     form.notes = "";
     form.items = [makeDefaultItem()];
-};
-
-const load = (extra = {}) => {
-    loading.value = true;
-
-    router.get(
-        route("admin.production-plans.index"),
-        {
-            search: filterState.search || undefined,
-            status: filterState.status || undefined,
-            target_from: filterState.target_from || undefined,
-            target_to: filterState.target_to || undefined,
-            sort_field: filterState.sort_field,
-            sort_direction: filterState.sort_direction,
-            per_page: filterState.per_page,
-            ...extra,
-        },
-        {
-            preserveState: true,
-            replace: true,
-            preserveScroll: true,
-            onFinish: () => {
-                loading.value = false;
-            },
-        }
-    );
-};
-
-const submitFilters = () => load({ page: 1 });
-const clearFilters = () => {
-    filterState.search = "";
-    filterState.status = "";
-    filterState.target_from = "";
-    filterState.target_to = "";
-    filterState.sort_field = "target_at";
-    filterState.sort_direction = "asc";
-    filterState.per_page = 10;
-    submitFilters();
-};
-
-const onSort = (event) => {
-    filterState.sort_field = event.sortField;
-    filterState.sort_direction = event.sortOrder === 1 ? "asc" : "desc";
-    load({ page: 1 });
-};
-
-const onPage = (event) => {
-    filterState.per_page = event.rows;
-    load({ page: event.page + 1, per_page: event.rows });
 };
 
 const openCreate = () => {
@@ -457,7 +430,7 @@ const confirmDelete = (plan) => {
                                     icon="pi pi-pencil"
                                     text
                                     rounded
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     :aria-label="
                                         trans('admin_production_plans.actions.edit')
                                     "
@@ -468,7 +441,7 @@ const confirmDelete = (plan) => {
                                     text
                                     rounded
                                     severity="danger"
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     :aria-label="
                                         trans('admin_production_plans.actions.delete')
                                     "

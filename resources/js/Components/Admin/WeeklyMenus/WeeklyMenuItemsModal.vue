@@ -108,7 +108,7 @@ const remove = (item) => emit("delete-item", item);
                                     icon="pi pi-pencil"
                                     text
                                     rounded
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     aria-label="Tétel szerkesztése"
                                     @click="openEdit(data)"
                                 />
@@ -117,7 +117,7 @@ const remove = (item) => emit("delete-item", item);
                                     text
                                     rounded
                                     severity="danger"
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     aria-label="Tétel törlése"
                                     @click="remove(data)"
                                 />

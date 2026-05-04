@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, router, useForm } from "@inertiajs/vue3";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -16,8 +16,9 @@ import CategoryStatusBadge from "@/Components/Admin/Categories/CategoryStatusBad
 import ProductPrice from "@/Components/Admin/Products/ProductPrice.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import { perPageOptions } from "@/Utils/functions.js";
+import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
 import { trans } from "laravel-vue-i18n";
+import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -46,16 +47,37 @@ const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const editingId = ref(null);
 
-const filterState = reactive({
-    search: props.filters.search ?? "",
-    category_id: props.filters.category_id ?? null,
-    is_active: props.filters.is_active ?? "",
-    sort_field: props.filters.sort_field ?? "sort_order",
-    sort_direction: props.filters.sort_direction ?? "asc",
-    per_page: props.filters.per_page ?? 10,
+const {
+    filterState,
+    sortOrder,
+    load,
+    submitFilters,
+    clearFilters,
+    onSort,
+    onPage,
+} = useAdminFilterState({
+    filters: props.filters,
+    defaults: {
+    search: "",
+    category_id: null,
+    is_active: "",
+    sort_field: "sort_order",
+    sort_direction: "asc",
+    per_page: 10,
+},
+    routeName: "admin.products.index",
+    loading,
+    toQuery: (state) => ({
+            search: state.search || undefined,
+            category_id: state.category_id || undefined,
+            is_active: state.is_active,
+            sort_field: state.sort_field,
+            sort_direction: state.sort_direction,
+            per_page: state.per_page,
+        }),
 });
 
-const perPageOptions = perPageOptions(trans, [10, 20, 50]);
+const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
 /*
 const perPageOptions = [
     { label: "10 / oldal", value: 10 },
@@ -83,56 +105,12 @@ const form = useForm({
     sort_order: 0,
 });
 
-const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 const currentPage = computed(() => props.products.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.products.per_page ?? 10));
 
-const load = (extra = {}) => {
-    loading.value = true;
 
-    router.get(
-        route("admin.products.index"),
-        {
-            search: filterState.search || undefined,
-            category_id: filterState.category_id || undefined,
-            is_active: filterState.is_active,
-            sort_field: filterState.sort_field,
-            sort_direction: filterState.sort_direction,
-            per_page: filterState.per_page,
-            ...extra,
-        },
-        {
-            preserveState: true,
-            replace: true,
-            preserveScroll: true,
-            onFinish: () => {
-                loading.value = false;
-            },
-        }
-    );
-};
 
-const submitFilters = () => load({ page: 1 });
-const clearFilters = () => {
-    filterState.search = "";
-    filterState.category_id = null;
-    filterState.is_active = "";
-    filterState.sort_field = "sort_order";
-    filterState.sort_direction = "asc";
-    filterState.per_page = 10;
-    submitFilters();
-};
 
-const onSort = (event) => {
-    filterState.sort_field = event.sortField;
-    filterState.sort_direction = event.sortOrder === 1 ? "asc" : "desc";
-    load({ page: 1 });
-};
-
-const onPage = (event) => {
-    filterState.per_page = event.rows;
-    load({ page: event.page + 1, per_page: event.rows });
-};
 
 const openCreate = () => {
     editModalVisible.value = false;
@@ -384,7 +362,7 @@ const confirmDelete = (product) => {
                                     icon="pi pi-pencil"
                                     text
                                     rounded
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     aria-label="Termék szerkesztése"
                                     @click="openEdit(data)"
                                 />
@@ -393,7 +371,7 @@ const confirmDelete = (product) => {
                                     text
                                     rounded
                                     severity="danger"
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     aria-label="Termék törlése"
                                     @click="confirmDelete(data)"
                                 />

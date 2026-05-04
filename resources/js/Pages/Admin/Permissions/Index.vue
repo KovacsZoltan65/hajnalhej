@@ -1,7 +1,9 @@
 <script setup>
 import { Head, Link, router, usePage } from "@inertiajs/vue3";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import { trans } from "laravel-vue-i18n";
+import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
 import Button from "primevue/button";
 import Checkbox from "primevue/checkbox";
 import Column from "primevue/column";
@@ -43,15 +45,38 @@ const loading = ref(false);
 const syncing = ref(false);
 const syncSummaryVisible = ref(Boolean(page.props.flash?.sync_summary));
 
-const filterState = reactive({
-    search: props.filters.search ?? "",
-    module: props.filters.module ?? "",
-    dangerous_only: props.filters.dangerous_only ?? false,
-    usage_state: props.filters.usage_state ?? "",
-    registry_state: props.filters.registry_state ?? "",
-    sort_field: props.filters.sort_field ?? "name",
-    sort_direction: props.filters.sort_direction ?? "asc",
-    per_page: props.filters.per_page ?? 20,
+const {
+    filterState,
+    sortOrder,
+    load,
+    submitFilters,
+    clearFilters,
+    onSort,
+    onPage,
+} = useAdminFilterState({
+    filters: props.filters,
+    defaults: {
+        search: "",
+        module: "",
+        dangerous_only: false,
+        usage_state: "",
+        registry_state: "",
+        sort_field: "name",
+        sort_direction: "asc",
+        per_page: 20,
+    },
+    routeName: "admin.permissions.index",
+    loading,
+    toQuery: (state) => ({
+        search: state.search || undefined,
+        module: state.module || undefined,
+        dangerous_only: state.dangerous_only ? 1 : undefined,
+        usage_state: state.usage_state || undefined,
+        registry_state: state.registry_state || undefined,
+        sort_field: state.sort_field,
+        sort_direction: state.sort_direction,
+        per_page: state.per_page,
+    }),
 });
 
 const currentPage = computed(() => props.permissions.current_page ?? 1);
@@ -103,9 +128,7 @@ const sortDirectionOptions = [
     { label: trans("admin_permissions.sort_directions.desc"), value: "desc" },
 ];
 
-import { perPageOptions } from "@/Utils/functions.js";
-import { trans } from "laravel-vue-i18n";
-const perPageOptions = perPageOptions(trans, [20, 50, 100]);
+const perPageOptions = createPerPageOptions(trans, [20, 50, 100]);
 /*
 const perPageOptions = [
     { label: trans("common.page_count", { count: 20 }), value: 20 },
@@ -113,40 +136,6 @@ const perPageOptions = [
     { label: trans("common.page_count", { count: 100 }), value: 100 },
 ];
 */
-
-const load = (extra = {}) => {
-    loading.value = true;
-
-    router.get(
-        route("admin.permissions.index"),
-        {
-            search: filterState.search || undefined,
-            module: filterState.module || undefined,
-            dangerous_only: filterState.dangerous_only ? 1 : undefined,
-            usage_state: filterState.usage_state || undefined,
-            registry_state: filterState.registry_state || undefined,
-            sort_field: filterState.sort_field,
-            sort_direction: filterState.sort_direction,
-            per_page: filterState.per_page,
-            ...extra,
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-            onFinish: () => {
-                loading.value = false;
-            },
-        }
-    );
-};
-
-const submitFilters = () => load({ page: 1 });
-
-const onPage = (event) => {
-    filterState.per_page = event.rows;
-    load({ page: event.page + 1, per_page: event.rows });
-};
 
 const runSync = () => {
     syncing.value = true;
@@ -161,17 +150,6 @@ const runSync = () => {
             },
         }
     );
-};
-const clearFilters = () => {
-    filterState.search = "";
-    filterState.module = "";
-    filterState.dangerous_only = false;
-    filterState.usage_state = "";
-    filterState.registry_state = "";
-    filterState.sort_field = "name";
-    filterState.sort_direction = "asc";
-    filterState.per_page = 20;
-    submitFilters();
 };
 </script>
 
@@ -432,7 +410,7 @@ const clearFilters = () => {
                                     :label="$t('admin_permissions.actions.details')"
                                     size="small"
                                     text
-                                    class="!min-h-11"
+                                    class="min-h-11!"
                                 />
                             </Link>
                         </template>

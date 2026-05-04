@@ -1,6 +1,7 @@
 <script setup>
 import { Link, useForm } from "@inertiajs/vue3";
 import { trans } from "laravel-vue-i18n";
+import { Button } from "primevue";
 
 defineProps({
     menu: {
@@ -112,14 +113,15 @@ const formatCurrency = (value) =>
                         >
                             {{ item.stock_note }}
                         </p>
-                        <button
+                        <Button
                             type="button"
-                            class="mt-4 inline-flex rounded-full bg-bakery-brown px-4 py-2 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark disabled:cursor-not-allowed disabled:opacity-70"
+                            unstyled
                             :disabled="cartForm.processing"
+                            class="mt-4 inline-flex rounded-full bg-bakery-brown px-4 py-2 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark disabled:cursor-not-allowed disabled:opacity-70"
                             @click="addToCart(item.product_id)"
                         >
                             {{ $t("common.add_to_card") }}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </article>

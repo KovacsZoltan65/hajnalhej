@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, router, useForm } from "@inertiajs/vue3";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -14,8 +14,9 @@ import RoleBadge from "@/Components/Admin/Roles/RoleBadge.vue";
 import RoleFormModal from "@/Components/Admin/Roles/RoleFormModal.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import { perPageOptions } from "@/Utils/functions";
+import { pageOptions as createPerPageOptions } from "@/Utils/functions";
 import { trans } from "laravel-vue-i18n";
+import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -43,12 +44,29 @@ const editingRole = ref(null);
 const createForm = useForm({ name: "" });
 const editForm = useForm({ name: "" });
 
-const filterState = reactive({
-    search: props.filters.search ?? "",
-    per_page: props.filters.per_page ?? 15,
+const {
+    filterState,
+    sortOrder,
+    load,
+    submitFilters,
+    clearFilters,
+    onSort,
+    onPage,
+} = useAdminFilterState({
+    filters: props.filters,
+    defaults: {
+        search: "",
+        per_page: 15,
+    },
+    routeName: "admin.roles.index",
+    loading,
+    toQuery: (state) => ({
+        search: state.search || undefined,
+        per_page: state.per_page,
+    }),
 });
 
-const perPageOptions = perPageOptions(trans, [15, 30, 50]);
+const perPageOptions = createPerPageOptions(trans, [15, 30, 50]);
 /*
 const perPageOptions = [
     { label: '15 / oldal', value: 15 },
@@ -59,39 +77,6 @@ const perPageOptions = [
 
 const currentPage = computed(() => props.roles.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.roles.per_page ?? 15));
-
-const load = (extra = {}) => {
-    loading.value = true;
-
-    router.get(
-        route("admin.roles.index"),
-        {
-            search: filterState.search || undefined,
-            per_page: filterState.per_page,
-            ...extra,
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-            onFinish: () => {
-                loading.value = false;
-            },
-        }
-    );
-};
-
-const submitFilters = () => load({ page: 1 });
-const clearFilters = () => {
-    filterState.search = "";
-    filterState.per_page = 15;
-    submitFilters();
-};
-
-const onPage = (event) => {
-    filterState.per_page = event.rows;
-    load({ page: event.page + 1, per_page: event.rows });
-};
 
 const openCreate = () => {
     createForm.reset();
@@ -255,7 +240,7 @@ const destroyRole = (role) => {
                                         label="Részletek"
                                         size="small"
                                         text
-                                        class="!min-h-11"
+                                        class="min-h-11!"
                                     />
                                 </Link>
                                 <Button
@@ -263,7 +248,7 @@ const destroyRole = (role) => {
                                     label="Átnevezés"
                                     size="small"
                                     outlined
-                                    class="!min-h-11"
+                                    class="min-h-11!"
                                     :disabled="data.is_system_role"
                                     @click="openEdit(data)"
                                 />
@@ -273,7 +258,7 @@ const destroyRole = (role) => {
                                     size="small"
                                     severity="danger"
                                     text
-                                    class="!min-h-11"
+                                    class="min-h-11!"
                                     :disabled="data.is_system_role"
                                     @click="destroyRole(data)"
                                 />

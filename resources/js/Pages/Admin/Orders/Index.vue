@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, router } from "@inertiajs/vue3";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
 import InputText from "primevue/inputtext";
@@ -12,7 +12,8 @@ import OrderStatusBadge from "@/Components/Orders/OrderStatusBadge.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
-import { perPageOptions } from "@/Utils/functions.js";
+import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -33,19 +34,38 @@ const props = defineProps({
 
 const loading = ref(false);
 
-const filterState = reactive({
-    search: props.filters.search ?? "",
-    status: props.filters.status ?? "",
-    sort_field: props.filters.sort_field ?? "placed_at",
-    sort_direction: props.filters.sort_direction ?? "desc",
-    per_page: props.filters.per_page ?? 15,
+const {
+    filterState,
+    sortOrder,
+    load,
+    submitFilters,
+    clearFilters,
+    onSort,
+    onPage,
+} = useAdminFilterState({
+    filters: props.filters,
+    defaults: {
+    search: "",
+    status: "",
+    sort_field: "placed_at",
+    sort_direction: "desc",
+    per_page: 15,
+},
+    routeName: "admin.orders.index",
+    loading,
+    toQuery: (state) => ({
+            search: state.search || undefined,
+            status: state.status || undefined,
+            sort_field: state.sort_field,
+            sort_direction: state.sort_direction,
+            per_page: state.per_page,
+        }),
 });
 
 const currentPage = computed(() => props.orders.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.orders.per_page ?? 15));
-const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 
-const perPageOptions = perPageOptions(trans, [10, 20, 50]);
+const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
 
 /*
 const perPageOptions = [
@@ -67,50 +87,9 @@ const formatCurrency = (value) =>
         maximumFractionDigits: 0,
     }).format(Number(value ?? 0));
 
-const load = (extra = {}) => {
-    loading.value = true;
 
-    router.get(
-        route("admin.orders.index"),
-        {
-            search: filterState.search || undefined,
-            status: filterState.status || undefined,
-            sort_field: filterState.sort_field,
-            sort_direction: filterState.sort_direction,
-            per_page: filterState.per_page,
-            ...extra,
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-            onFinish: () => {
-                loading.value = false;
-            },
-        }
-    );
-};
 
-const submitFilters = () => load({ page: 1 });
-const clearFilters = () => {
-    filterState.search = "";
-    filterState.status = "";
-    filterState.sort_field = "placed_at";
-    filterState.sort_direction = "desc";
-    filterState.per_page = 15;
-    submitFilters();
-};
 
-const onSort = (event) => {
-    filterState.sort_field = event.sortField;
-    filterState.sort_direction = event.sortOrder === 1 ? "asc" : "desc";
-    load({ page: 1 });
-};
-
-const onPage = (event) => {
-    filterState.per_page = event.rows;
-    load({ page: event.page + 1, per_page: event.rows });
-};
 </script>
 
 <template>

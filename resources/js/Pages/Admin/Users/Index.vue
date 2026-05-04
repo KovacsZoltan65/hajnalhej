@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, router, useForm } from "@inertiajs/vue3";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Checkbox from "primevue/checkbox";
 import Column from "primevue/column";
@@ -21,7 +21,8 @@ import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 
 import { trans } from "laravel-vue-i18n";
-import { perPageOptions } from "@/Utils/functions";
+import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { pageOptions as createPerPageOptions } from "@/Utils/functions";
 
 defineOptions({ layout: AdminLayout });
 
@@ -49,15 +50,35 @@ const editVisible = ref(false);
 const selectedUser = ref(null);
 const selectedDiscountId = ref(null);
 
-const filterState = reactive({
-    search: props.filters.search ?? "",
-    status: props.filters.status ?? "",
-    sort_field: props.filters.sort_field ?? "created_at",
-    sort_direction: props.filters.sort_direction ?? "desc",
-    per_page: props.filters.per_page ?? 15,
+const {
+    filterState,
+    sortOrder,
+    load,
+    submitFilters,
+    clearFilters,
+    onSort,
+    onPage,
+} = useAdminFilterState({
+    filters: props.filters,
+    defaults: {
+    search: "",
+    status: "",
+    sort_field: "created_at",
+    sort_direction: "desc",
+    per_page: 15,
+},
+    routeName: "admin.users.index",
+    loading,
+    toQuery: (state) => ({
+            search: state.search || undefined,
+            status: state.status || undefined,
+            sort_field: state.sort_field,
+            sort_direction: state.sort_direction,
+            per_page: state.per_page,
+        }),
 });
 
-const perPageOptions = perPageOptions(trans, [15, 30, 50]);
+const perPageOptions = createPerPageOptions(trans, [15, 30, 50]);
 /*
 const perPageOptions = [
     { label: "15 / oldal", value: 15 },
@@ -89,7 +110,6 @@ const discountTypeOptions = computed(() =>
         value: type,
     }))
 );
-const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 const currentPage = computed(() => props.users.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.users.per_page ?? 15));
 
@@ -118,48 +138,7 @@ const discountForm = useForm({
     reason: "",
 });
 
-const load = (extra = {}) => {
-    loading.value = true;
 
-    router.get(
-        route("admin.users.index"),
-        {
-            search: filterState.search || undefined,
-            status: filterState.status || undefined,
-            sort_field: filterState.sort_field,
-            sort_direction: filterState.sort_direction,
-            per_page: filterState.per_page,
-            ...extra,
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-            onFinish: () => {
-                loading.value = false;
-            },
-        }
-    );
-};
-
-const submitFilters = () => load({ page: 1 });
-const clearFilters = () => {
-    filterState.search = "";
-    filterState.status = "";
-    filterState.sort_field = "created_at";
-    filterState.sort_direction = "desc";
-    filterState.per_page = 15;
-    submitFilters();
-};
-const onSort = (event) => {
-    filterState.sort_field = event.sortField;
-    filterState.sort_direction = event.sortOrder === 1 ? "asc" : "desc";
-    load({ page: 1 });
-};
-const onPage = (event) => {
-    filterState.per_page = event.rows;
-    load({ page: event.page + 1, per_page: event.rows });
-};
 
 const resetUserForm = () => {
     userForm.reset();
@@ -481,7 +460,7 @@ const discountLabel = (discount) =>
                                     icon="pi pi-pencil"
                                     text
                                     rounded
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     aria-label="Felhasználó szerkesztése"
                                     @click="openEdit(data)"
                                 />
@@ -491,7 +470,7 @@ const discountLabel = (discount) =>
                                     text
                                     rounded
                                     severity="danger"
-                                    class="!h-11 !w-11"
+                                    class="h-11! w-11!"
                                     aria-label="Felhasználó inaktiválása"
                                     @click="confirmDeactivate(data)"
                                 />

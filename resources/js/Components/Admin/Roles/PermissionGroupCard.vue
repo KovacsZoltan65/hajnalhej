@@ -1,6 +1,7 @@
 <script setup>
-import Checkbox from 'primevue/checkbox';
-import PermissionBadge from './PermissionBadge.vue';
+import Checkbox from "primevue/checkbox";
+import PermissionBadge from "./PermissionBadge.vue";
+import { Button } from "primevue";
 
 const props = defineProps({
     groupName: {
@@ -21,7 +22,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['toggle', 'toggle-group']);
+const emit = defineEmits(["toggle", "toggle-group"]);
 
 const selectedSet = () => new Set(props.selectedPermissions);
 const isAllSelected = () => props.items.every((item) => selectedSet().has(item.name));
@@ -32,18 +33,21 @@ const groupLabel = (name) => name;
     <div class="rounded-xl border border-bakery-brown/15 bg-white/70 p-4">
         <div class="mb-3 flex items-center justify-between gap-2">
             <div>
-                <p class="text-sm font-semibold text-bakery-dark">{{ groupLabel(groupName) }}</p>
+                <p class="text-sm font-semibold text-bakery-dark">
+                    {{ groupLabel(groupName) }}
+                </p>
                 <p class="text-xs text-bakery-dark/70">{{ items.length }} jogosultság</p>
             </div>
 
-            <button
+            <Button
                 type="button"
-                class="rounded-lg border border-bakery-brown/20 px-2.5 py-1 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10 disabled:cursor-not-allowed disabled:opacity-50"
+                unstyled
                 :disabled="disabled"
+                class="rounded-lg border border-bakery-brown/20 px-2.5 py-1 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10 disabled:cursor-not-allowed disabled:opacity-50"
                 @click="emit('toggle-group', { groupName, selectAll: !isAllSelected() })"
             >
-                {{ isAllSelected() ? 'Mindet törli' : 'Mindet kijelöli' }}
-            </button>
+                {{ isAllSelected() ? "Mindet törli" : "Mindet kijelöli" }}
+            </Button>
         </div>
 
         <ul class="space-y-2">
@@ -60,12 +64,22 @@ const groupLabel = (name) => name;
                         :disabled="disabled"
                         @update:model-value="() => emit('toggle', permission.name)"
                     />
-                    <label :for="`permission-${permission.name}`" class="flex-1 space-y-1">
+                    <label
+                        :for="`permission-${permission.name}`"
+                        class="flex-1 space-y-1"
+                    >
                         <div class="flex items-center gap-2">
-                            <span class="text-sm font-medium text-bakery-dark">{{ permission.label }}</span>
-                            <PermissionBadge :permission="permission.name" :dangerous="permission.dangerous" />
+                            <span class="text-sm font-medium text-bakery-dark">{{
+                                permission.label
+                            }}</span>
+                            <PermissionBadge
+                                :permission="permission.name"
+                                :dangerous="permission.dangerous"
+                            />
                         </div>
-                        <p class="text-xs text-bakery-dark/70">{{ permission.description }}</p>
+                        <p class="text-xs text-bakery-dark/70">
+                            {{ permission.description }}
+                        </p>
                     </label>
                 </div>
             </li>
