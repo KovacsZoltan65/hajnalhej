@@ -62,7 +62,7 @@ class SupplierController extends Controller
     {
         $this->service->create($request->validated(), $request->user());
 
-        return back()->with('success', 'Beszállító létrehozva.');
+        return back()->with('success', __('admin_supplier.created') . '.');
     }
 
     /**
@@ -74,7 +74,7 @@ class SupplierController extends Controller
     {
         $this->service->update($supplier, $request->validated(), $request->user());
 
-        return back()->with('success', 'Beszállító frissítve.');
+        return back()->with('success', __('admin_supplier.updated') . '.');
     }
 
     /**
@@ -87,6 +87,6 @@ class SupplierController extends Controller
 
         $this->service->delete($supplier, request()->user());
 
-        return back()->with('success', 'Beszállító törölve.');
+        return back()->with('success', __('admin_supplier.deleted') . '.');
     }
 }

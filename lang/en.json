@@ -190,6 +190,7 @@
     "conversion_analytics.hero_variant_comparison": "Hero variant comparison",
 
     "common.submitted": "Submitted",
+    "common.entering": "Entering",
     "common.completed": "Completed",
     "common.ratio": "Ratio",
     "common.successful": "Successful",
@@ -255,6 +256,12 @@
     "weekly_menu.fallback_notice": "There is no active weekly menu for today, so the most recently published menu is shown.",
     "weekly_menu.empty_title": "Weekly menu is being prepared",
     "weekly_menu.empty_description": "There is no published weekly menu right now. Check back soon when the next selection is refreshed.",
+
+    "weekly_menu.created": "Weekly menu created",
+    "weekly_menu.updated": "Weekly menu updated",
+    "weekly_menu.deleted": "Weekly menu deleted",
+    "weekly_menu.restored_draft_mode": "Weekly menu restored to draft mode",
+    "weekly_menu.item_created": "Weekly menu item created",
 
     "admin_weekly_menus.title": "Weekly menus",
     "admin_weekly_menus.eyebrow": "Admin / Weekly menus",
@@ -327,6 +334,19 @@
     "admin_ingredients.empty": "No ingredients to display.",
     "admin_ingredients.confirm_delete_header": "Delete ingredient",
     "admin_ingredients.confirm_delete_message": "Are you sure you want to delete this ingredient: :name?",
+    "admin_ingredients.ingredient_already_included": "This ingredient is already included in the product recipe.",
+
+    "admin_supplier.created": "Supplier created",
+    "admin_supplier.updated": "Supplier updated",
+    "admin_supplier.deleted": "Supplier deleted",
+
+    "admin_user.created": "User created",
+    "admin_user.updated": "User updated",
+    "admin_user.deleted": "User deactivated",
+    "admin_user.temporary_authorization_recorded": "Temporary authorization recorded",
+    "admin_user.temporary_authorization_revoked": "Temporary authorization revoked",
+    "admin_user.discount_recorded": "Discount recorded",
+    "admin_user.discount_deactivated": "Discount deactivated",
 
     "admin_supplier_terms.meta_title": "Supplier terms",
     "admin_supplier_terms.eyebrow": "Admin / Procurement",
@@ -507,6 +527,9 @@
     "admin_production_plans.timeline.depends_on_product": "Dependency target product: :product",
     "admin_production_plans.units.minutes": ":count min",
     "admin_production_plans.units.pieces": ":count pcs",
+    "admin_production_plans.created": "Production plan created",
+    "admin_production_plans.updated": "Production plan updated",
+    "admin_production_plans.deleted": "Production plan deleted",
 
     "admin_inventory.meta_title": "Inventory movements",
     "admin_inventory.eyebrow": "Admin / Inventory movements",
@@ -546,6 +569,9 @@
     "admin_inventory.movement_types.count_correction": "Stock count correction",
     "admin_inventory.movement_types.return_in": "Return in",
     "admin_inventory.movement_types.return_out": "Return out",
+    "admin_inventory.cannot_be_scrapped": "There is no recipe/BOM item for the selected product, so it cannot be scrapped.",
+    "admin_inventory.product_scrap_not_inventory_movement": "Product scrap posting did not create an inventory movement",
+    "admin_inventory.not_enough_stock": "Not enough stock",
 
     "admin_orders.meta_title": "Orders",
     "admin_orders.eyebrow": "Admin / Orders",
@@ -582,6 +608,24 @@
     "admin_orders.fields.subtotal": "Subtotal",
     "admin_orders.fields.total": "Total",
     "admin_orders.placeholders.pickup_time_slot": "e.g. 08:00-10:00",
+
+    "admin_purchase.created": "Purchase updated",
+    "admin_purchase.updated": "Purchase posted, inventory updated",
+    "admin_purchase.deleted": "Purchase deleted",
+    "admin_purchase.canceled": "Purchase canceled",
+    "admin_purchase.purchase_revenue": "Purchase Revenue",
+    "admin_purchase.only_draft_canceled": "Only draft purchases can be canceled",
+
+    "admin_purchase_draft.no_reorder_proposal": "No reorder proposal can be generated",
+    "admin_purchase_draft.no_purchase_draft": "No purchase draft can be generated",
+    "admin_purchase_draft.least_one_item": "At least one purchase item is required",
+    "admin_purchase_draft.only_draft_purchases_modified": "Only draft purchases can be modified",
+    "admin_purchase_draft.only_draft_purchases_posted": "Only draft purchases can be posted",
+    "admin_purchase_draft.purchase_already_been_booked": "The purchase has already been booked.",
+
+    "admin_stock_count.created": "Inventory created",
+    "admin_stock_count.updated": "Inventory updated",
+    "admin_stock_count.deleted": "Inventory closed, corrections posted",
 
     "admin_permissions.meta_title": "Permissions",
     "admin_permissions.eyebrow": "Admin / Roles and permissions",

@@ -234,7 +234,7 @@ onUnmounted(() => {
                 <template #actions>
                     <div class="flex items-center gap-3">
                         <p class="hidden text-sm text-bakery-dark/75 sm:block">
-                            Belépve:
+                            {{ $t("common.entering") }}:
                             <span class="font-semibold">{{
                                 page.props.auth?.user?.name
                             }}</span>
@@ -244,7 +244,7 @@ onUnmounted(() => {
                             class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bakery-gold/70"
                             @click="logout"
                         >
-                            Kijelentkezés
+                            {{ $t("nav.logout") }}
                         </button>
                     </div>
                 </template>

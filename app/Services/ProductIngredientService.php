@@ -38,7 +38,7 @@ class ProductIngredientService
         $normalized = $this->normalizePayload($payload);
 
         if ($this->repository->existsForProduct($product, (int) $normalized['ingredient_id'])) {
-            throw new RuntimeException('Ez az alapanyag mar szerepel a termek receptjeben.');
+            throw new RuntimeException(__('admin_ingredients.ingredient_already_included') . '.');
         }
 
         return $this->repository->create($product, $normalized);
@@ -52,7 +52,7 @@ class ProductIngredientService
         $normalized = $this->normalizePayload($payload);
 
         if ($this->repository->existsForProduct($product, (int) $normalized['ingredient_id'], $productIngredient->id)) {
-            throw new RuntimeException('Ez az alapanyag mar szerepel a termek receptjeben.');
+            throw new RuntimeException(__('admin_ingredients.ingredient_already_included') . '.');
         }
 
         return $this->repository->update($productIngredient, $normalized);

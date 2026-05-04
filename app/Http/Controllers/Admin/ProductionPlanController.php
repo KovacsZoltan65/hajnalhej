@@ -96,7 +96,7 @@ class ProductionPlanController extends Controller
 
         return redirect()
             ->route('admin.production-plans.index')
-            ->with('success', 'Gyártási terv létrehozva.');
+            ->with('success', __('admin_production_plans.created') . '.');
     }
 
     /**
@@ -112,7 +112,7 @@ class ProductionPlanController extends Controller
 
         return redirect()
             ->route('admin.production-plans.index')
-            ->with('success', 'Gyártási terv frissítve.');
+            ->with('success', __('admin_production_plans.updated') . '.');
     }
 
     /**
@@ -128,7 +128,7 @@ class ProductionPlanController extends Controller
 
         return redirect()
             ->route('admin.production-plans.index')
-            ->with('success', 'Gyártási terv törölve.');
+            ->with('success', __('admin_production_plans.deleted') . '.');
     }
 }
 

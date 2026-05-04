@@ -132,7 +132,7 @@ class PurchaseController extends Controller
             return back()->with('error', $exception->getMessage());
         }
 
-        return back()->with('success', 'Beszerzés frissítve.');
+        return back()->with('success', __('admin_purchase.created') . '.');
     }
 
     /**
@@ -149,7 +149,7 @@ class PurchaseController extends Controller
             return back()->with('error', $exception->getMessage());
         }
 
-        return back()->with('success', 'Beszerzés könyvelve, készlet frissítve.');
+        return back()->with('success', __('admin_purchase.updated') . '.');
     }
 
     /**
@@ -166,6 +166,6 @@ class PurchaseController extends Controller
             return back()->with('error', $exception->getMessage());
         }
 
-        return back()->with('success', 'Beszerzés stornózva.');
+        return back()->with('success', __('admin_purchase.canceled') . '.');
     }
 }

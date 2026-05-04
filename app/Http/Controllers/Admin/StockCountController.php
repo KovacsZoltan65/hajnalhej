@@ -100,7 +100,7 @@ class StockCountController extends Controller
             return back()->with('error', $exception->getMessage());
         }
 
-        return back()->with('success', 'Leltár létrehozva.');
+        return back()->with('success', __('admin_stock_count.created') . '.');
     }
 
     /**
@@ -116,7 +116,7 @@ class StockCountController extends Controller
             return back()->with('error', $exception->getMessage());
         }
 
-        return back()->with('success', 'Leltár frissítve.');
+        return back()->with('success', __('admin_stock_count.updated') . '.');
     }
 
     /**
@@ -133,7 +133,7 @@ class StockCountController extends Controller
             return back()->with('error', $exception->getMessage());
         }
 
-        return back()->with('success', 'Leltár lezárva, korrekciók könyvelve.');
+        return back()->with('success', __('admin_stock_count.deleted') . '.');
     }
 }
 
