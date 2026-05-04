@@ -14,6 +14,8 @@ import RecipeSummaryCard from "@/Components/Admin/Recipes/RecipeSummaryCard.vue"
 import RecipeTable from "@/Components/Admin/Recipes/RecipeTable.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { pageOptions } from "@/Utils/functions.js";
+import { trans } from "laravel-vue-i18n";
 
 defineOptions({ layout: AdminLayout });
 
@@ -67,12 +69,14 @@ const filterState = reactive({
     per_page: props.filters.per_page ?? 10,
 });
 
+const perPageOptions = pageOptions(trans, [10, 20, 50]);
+/*
 const perPageOptions = [
     { label: "10 / oldal", value: 10 },
     { label: "20 / oldal", value: 20 },
     { label: "50 / oldal", value: 50 },
 ];
-
+*/
 const activeOptions = [
     { label: "Mind", value: "" },
     { label: "Aktív", value: "1" },
@@ -237,7 +241,10 @@ const deleteRecipeItem = (item) => {
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(
-                route("admin.products.ingredients.destroy", [editorRecipe.value.id, item.id]),
+                route("admin.products.ingredients.destroy", [
+                    editorRecipe.value.id,
+                    item.id,
+                ]),
                 {
                     preserveScroll: true,
                     preserveState: true,
@@ -262,7 +269,10 @@ const deleteRecipeStep = (step) => {
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(
-                route("admin.products.recipe-steps.destroy", [editorRecipe.value.id, step.id]),
+                route("admin.products.recipe-steps.destroy", [
+                    editorRecipe.value.id,
+                    step.id,
+                ]),
                 {
                     preserveScroll: true,
                     preserveState: true,

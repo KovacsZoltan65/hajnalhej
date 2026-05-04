@@ -15,7 +15,7 @@ import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
 
-import { createDayOptions } from "@/Utils/functions";
+import { createDayOptions, perPageOptions } from "@/Utils/functions";
 
 defineOptions({ layout: AdminLayout });
 
@@ -45,11 +45,15 @@ const filterState = reactive({
 
 const dayOptions = createDayOptions(trans, [7, 14, 30, 90]);
 
+import { trans } from "laravel-vue-i18n";
+const perPageOptions = perPageOptions(trans, [15, 30, 50]);
+/*
 const perPageOptions = [
-    { label: trans("admin_inventory.filters.per_page_option", { count: 15 }), value: 15 },
-    { label: trans("admin_inventory.filters.per_page_option", { count: 30 }), value: 30 },
-    { label: trans("admin_inventory.filters.per_page_option", { count: 50 }), value: 50 },
+    { label: trans("common.page_count", { count: 15 }), value: 15 },
+    { label: trans("common.page_count", { count: 30 }), value: 30 },
+    { label: trans("common.page_count", { count: 50 }), value: 50 },
 ];
+*/
 
 const movementTypeOptions = computed(() => [
     { label: trans("common.all"), value: "" },
@@ -534,10 +538,7 @@ const dateToPicker = computed({
                             </span>
                         </template>
                     </Column>
-                    <Column
-                        field="quantity"
-                        :header="$t('common.quantity')"
-                    >
+                    <Column field="quantity" :header="$t('common.quantity')">
                         <template #body="{ data }">
                             <span
                                 class="font-semibold"

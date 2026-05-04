@@ -1,18 +1,20 @@
 <script setup>
-import { Head, router, useForm } from '@inertiajs/vue3';
-import { computed, reactive, ref } from 'vue';
-import Button from 'primevue/button';
-import Column from 'primevue/column';
-import ConfirmDialog from 'primevue/confirmdialog';
-import DataTable from 'primevue/datatable';
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
-import { useConfirm } from 'primevue/useconfirm';
-import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
-import CreateModal from '@/Components/Admin/Suppliers/CreateModal.vue';
-import EditModal from '@/Components/Admin/Suppliers/EditModal.vue';
-import SectionTitle from '@/Components/SectionTitle.vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { Head, router, useForm } from "@inertiajs/vue3";
+import { computed, reactive, ref } from "vue";
+import Button from "primevue/button";
+import Column from "primevue/column";
+import ConfirmDialog from "primevue/confirmdialog";
+import DataTable from "primevue/datatable";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
+import { useConfirm } from "primevue/useconfirm";
+import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import CreateModal from "@/Components/Admin/Suppliers/CreateModal.vue";
+import EditModal from "@/Components/Admin/Suppliers/EditModal.vue";
+import SectionTitle from "@/Components/SectionTitle.vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { perPageOptions } from "@/Utils/functions";
+import { trans } from "laravel-vue-i18n";
 
 defineOptions({ layout: AdminLayout });
 
@@ -34,28 +36,31 @@ const editModalVisible = ref(false);
 const editingId = ref(null);
 
 const filterState = reactive({
-    search: props.filters.search ?? '',
-    sort_field: props.filters.sort_field ?? 'name',
-    sort_direction: props.filters.sort_direction ?? 'asc',
+    search: props.filters.search ?? "",
+    sort_field: props.filters.sort_field ?? "name",
+    sort_direction: props.filters.sort_direction ?? "asc",
     per_page: props.filters.per_page ?? 10,
 });
 
+const perPageOptions = perPageOptions(trans, [15, 30, 50]);
+/*
 const perPageOptions = [
     { label: '10 / oldal', value: 10 },
     { label: '20 / oldal', value: 20 },
     { label: '50 / oldal', value: 50 },
 ];
+*/
 
 const form = useForm({
-    name: '',
-    email: '',
-    phone: '',
-    tax_number: '',
+    name: "",
+    email: "",
+    phone: "",
+    tax_number: "",
     lead_time_days: null,
-    notes: '',
+    notes: "",
 });
 
-const sortOrder = computed(() => (filterState.sort_direction === 'asc' ? 1 : -1));
+const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 const currentPage = computed(() => props.suppliers.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.suppliers.per_page ?? 10));
 
@@ -63,7 +68,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        route('admin.suppliers.index'),
+        route("admin.suppliers.index"),
         {
             search: filterState.search || undefined,
             sort_field: filterState.sort_field,
@@ -78,22 +83,22 @@ const load = (extra = {}) => {
             onFinish: () => {
                 loading.value = false;
             },
-        },
+        }
     );
 };
 
 const submitFilters = () => load({ page: 1 });
 const clearFilters = () => {
-    filterState.search = '';
-    filterState.sort_field = 'name';
-    filterState.sort_direction = 'asc';
+    filterState.search = "";
+    filterState.sort_field = "name";
+    filterState.sort_direction = "asc";
     filterState.per_page = 10;
     submitFilters();
 };
 
 const onSort = (event) => {
     filterState.sort_field = event.sortField;
-    filterState.sort_direction = event.sortOrder === 1 ? 'asc' : 'desc';
+    filterState.sort_direction = event.sortOrder === 1 ? "asc" : "desc";
     load({ page: 1 });
 };
 
@@ -107,12 +112,12 @@ const openCreate = () => {
     editingId.value = null;
     form.reset();
     form.clearErrors();
-    form.name = '';
-    form.email = '';
-    form.phone = '';
-    form.tax_number = '';
+    form.name = "";
+    form.email = "";
+    form.phone = "";
+    form.tax_number = "";
     form.lead_time_days = null;
-    form.notes = '';
+    form.notes = "";
     createModalVisible.value = true;
 };
 
@@ -120,12 +125,12 @@ const openEdit = (supplier) => {
     createModalVisible.value = false;
     editingId.value = supplier.id;
     form.clearErrors();
-    form.name = supplier.name ?? '';
-    form.email = supplier.email ?? '';
-    form.phone = supplier.phone ?? '';
-    form.tax_number = supplier.tax_number ?? '';
+    form.name = supplier.name ?? "";
+    form.email = supplier.email ?? "";
+    form.phone = supplier.phone ?? "";
+    form.tax_number = supplier.tax_number ?? "";
     form.lead_time_days = supplier.lead_time_days ?? null;
-    form.notes = supplier.notes ?? '';
+    form.notes = supplier.notes ?? "";
     editModalVisible.value = true;
 };
 
@@ -146,7 +151,7 @@ const submitCreate = () => {
         },
     };
 
-    form.post(route('admin.suppliers.store'), options);
+    form.post(route("admin.suppliers.store"), options);
 };
 
 const submitEdit = () => {
@@ -163,18 +168,18 @@ const submitEdit = () => {
         },
     };
 
-    form.put(route('admin.suppliers.update', editingId.value), options);
+    form.put(route("admin.suppliers.update", editingId.value), options);
 };
 
 const confirmDelete = (supplier) => {
     confirm.require({
-        header: 'Beszállító törlése',
+        header: "Beszállító törlése",
         message: `Biztosan törlöd ezt a beszállítót: ${supplier.name}?`,
-        rejectLabel: 'Mégse',
-        acceptLabel: 'Törlés',
-        acceptClass: 'p-button-danger',
+        rejectLabel: "Mégse",
+        acceptLabel: "Törlés",
+        acceptClass: "p-button-danger",
         accept: () => {
-            router.delete(route('admin.suppliers.destroy', supplier.id), {
+            router.delete(route("admin.suppliers.destroy", supplier.id), {
                 preserveScroll: true,
             });
         },
@@ -183,10 +188,10 @@ const confirmDelete = (supplier) => {
 
 const formatDateTime = (value) => {
     if (!value) {
-        return '-';
+        return "-";
     }
 
-    return new Date(value).toLocaleString('hu-HU');
+    return new Date(value).toLocaleString("hu-HU");
 };
 </script>
 
@@ -204,13 +209,31 @@ const formatDateTime = (value) => {
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
-                        <InputText v-model="filterState.search" class="w-full" placeholder="Név, email, telefon, adószám" @keyup.enter="submitFilters" />
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >Keresés</label
+                        >
+                        <InputText
+                            v-model="filterState.search"
+                            class="w-full"
+                            placeholder="Név, email, telefon, adószám"
+                            @keyup.enter="submitFilters"
+                        />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
-                        <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >Találat / oldal</label
+                        >
+                        <Select
+                            v-model="filterState.per_page"
+                            :options="perPageOptions"
+                            option-label="label"
+                            option-value="value"
+                            class="w-full"
+                            @change="submitFilters"
+                        />
                     </div>
                 </template>
 
@@ -238,11 +261,24 @@ const formatDateTime = (value) => {
                     @page="onPage"
                 >
                     <template #empty>
-                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                        <div
+                            class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
+                        >
                             <p>Nincs megjeleníthető beszállító.</p>
-                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
-                                <Button label="Új beszállító" size="small" @click="openCreate" />
+                            <div
+                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
+                            >
+                                <Button
+                                    label="Szűrők törlése"
+                                    outlined
+                                    size="small"
+                                    @click="clearFilters"
+                                />
+                                <Button
+                                    label="Új beszállító"
+                                    size="small"
+                                    @click="openCreate"
+                                />
                             </div>
                         </div>
                     </template>
@@ -250,35 +286,64 @@ const formatDateTime = (value) => {
                     <Column field="name" header="Beszállító" sortable>
                         <template #body="{ data }">
                             <div>
-                                <p class="font-semibold text-bakery-dark">{{ data.name }}</p>
-                                <p class="text-xs text-bakery-dark/60">{{ data.tax_number || 'Nincs adószám' }}</p>
+                                <p class="font-semibold text-bakery-dark">
+                                    {{ data.name }}
+                                </p>
+                                <p class="text-xs text-bakery-dark/60">
+                                    {{ data.tax_number || "Nincs adószám" }}
+                                </p>
                             </div>
                         </template>
                     </Column>
                     <Column header="Kapcsolat">
                         <template #body="{ data }">
                             <div>
-                                <p class="text-sm text-bakery-dark">{{ data.email || 'Nincs email' }}</p>
-                                <p class="text-xs text-bakery-dark/60">{{ data.phone || 'Nincs telefonszám' }}</p>
+                                <p class="text-sm text-bakery-dark">
+                                    {{ data.email || "Nincs email" }}
+                                </p>
+                                <p class="text-xs text-bakery-dark/60">
+                                    {{ data.phone || "Nincs telefonszám" }}
+                                </p>
                             </div>
                         </template>
                     </Column>
                     <Column field="purchases_count" header="Beszerzések" />
                     <Column field="lead_time_days" header="Lead time" sortable>
                         <template #body="{ data }">
-                            <span class="text-sm text-bakery-dark">{{ data.lead_time_days !== null ? `${data.lead_time_days} nap` : '-' }}</span>
+                            <span class="text-sm text-bakery-dark">{{
+                                data.lead_time_days !== null
+                                    ? `${data.lead_time_days} nap`
+                                    : "-"
+                            }}</span>
                         </template>
                     </Column>
                     <Column field="created_at" header="Létrehozva" sortable>
                         <template #body="{ data }">
-                            <span class="text-xs text-bakery-dark/70">{{ formatDateTime(data.created_at) }}</span>
+                            <span class="text-xs text-bakery-dark/70">{{
+                                formatDateTime(data.created_at)
+                            }}</span>
                         </template>
                     </Column>
                     <Column header="Műveletek" :exportable="false">
                         <template #body="{ data }">
                             <div class="flex items-center gap-2">
-                                <Button icon="pi pi-pencil" text rounded class="!h-11 !w-11" aria-label="Beszállító szerkesztése" @click="openEdit(data)" />
-                                <Button icon="pi pi-trash" text rounded severity="danger" class="!h-11 !w-11" aria-label="Beszállító törlése" @click="confirmDelete(data)" />
+                                <Button
+                                    icon="pi pi-pencil"
+                                    text
+                                    rounded
+                                    class="!h-11 !w-11"
+                                    aria-label="Beszállító szerkesztése"
+                                    @click="openEdit(data)"
+                                />
+                                <Button
+                                    icon="pi pi-trash"
+                                    text
+                                    rounded
+                                    severity="danger"
+                                    class="!h-11 !w-11"
+                                    aria-label="Beszállító törlése"
+                                    @click="confirmDelete(data)"
+                                />
                             </div>
                         </template>
                     </Column>
@@ -286,7 +351,11 @@ const formatDateTime = (value) => {
             </div>
         </div>
 
-        <CreateModal v-model:visible="createModalVisible" :form="form" @submit="submitCreate" />
+        <CreateModal
+            v-model:visible="createModalVisible"
+            :form="form"
+            @submit="submitCreate"
+        />
         <EditModal v-model:visible="editModalVisible" :form="form" @submit="submitEdit" />
         <ConfirmDialog />
     </div>

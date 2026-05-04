@@ -21,6 +21,7 @@ import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 
 import { trans } from "laravel-vue-i18n";
+import { perPageOptions } from "@/Utils/functions";
 
 defineOptions({ layout: AdminLayout });
 
@@ -56,11 +57,14 @@ const filterState = reactive({
     per_page: props.filters.per_page ?? 15,
 });
 
+const perPageOptions = perPageOptions(trans, [15, 30, 50]);
+/*
 const perPageOptions = [
     { label: "15 / oldal", value: 15 },
     { label: "30 / oldal", value: 30 },
     { label: "50 / oldal", value: 50 },
 ];
+*/
 
 const statusOptions = computed(() => [
     { label: "Mind", value: "" },
@@ -214,7 +218,10 @@ const confirmDeactivate = (user) => {
         rejectLabel: "Mégse",
         acceptLabel: "Inaktiválás",
         acceptClass: "p-button-danger",
-        accept: () => router.delete(route("admin.users.destroy", user.id), { preserveScroll: true }),
+        accept: () =>
+            router.delete(route("admin.users.destroy", user.id), {
+                preserveScroll: true,
+            }),
     });
 };
 
@@ -243,7 +250,10 @@ const revokeTemporaryPermission = (permission) => {
     if (!selectedUser.value) return;
 
     router.delete(
-        route("admin.users.temporary-permissions.destroy", [selectedUser.value.id, permission.id]),
+        route("admin.users.temporary-permissions.destroy", [
+            selectedUser.value.id,
+            permission.id,
+        ]),
         {
             preserveScroll: true,
         }
@@ -283,21 +293,30 @@ const submitDiscount = () => {
 
     if (selectedDiscountId.value) {
         discountForm.put(
-            route("admin.users.discounts.update", [selectedUser.value.id, selectedDiscountId.value]),
+            route("admin.users.discounts.update", [
+                selectedUser.value.id,
+                selectedDiscountId.value,
+            ]),
             options
         );
         return;
     }
 
-    discountForm.post(route("admin.users.discounts.store", selectedUser.value.id), options);
+    discountForm.post(
+        route("admin.users.discounts.store", selectedUser.value.id),
+        options
+    );
 };
 
 const deactivateDiscount = (discount) => {
     if (!selectedUser.value) return;
 
-    router.delete(route("admin.users.discounts.destroy", [selectedUser.value.id, discount.id]), {
-        preserveScroll: true,
-    });
+    router.delete(
+        route("admin.users.discounts.destroy", [selectedUser.value.id, discount.id]),
+        {
+            preserveScroll: true,
+        }
+    );
 };
 
 const statusSeverity = (status) => (status === "active" ? "success" : "secondary");

@@ -1,6 +1,6 @@
 <script setup>
 import { Head, router, useForm } from "@inertiajs/vue3";
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, transformVNodeArgs } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
@@ -16,6 +16,7 @@ import IngredientStockBadge from "../../../Components/Admin/Ingredients/Ingredie
 import SectionTitle from "../../../Components/SectionTitle.vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
+import { perPageOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -49,11 +50,14 @@ const filterState = reactive({
     per_page: props.filters.per_page ?? 10,
 });
 
+const perPageOptions = perPageOptions(trans, [10, 20, 50]);
+/*
 const perPageOptions = [
-    { label: trans("admin_ingredients.filters.per_page_option", { count: 10 }), value: 10 },
-    { label: trans("admin_ingredients.filters.per_page_option", { count: 20 }), value: 20 },
-    { label: trans("admin_ingredients.filters.per_page_option", { count: 50 }), value: 50 },
+    { label: trans("common.page_count", { count: 10 }), value: 10 },
+    { label: trans("common.page_count", { count: 20 }), value: 20 },
+    { label: trans("common.page_count", { count: 50 }), value: 50 },
 ];
+*/
 
 const activeOptions = [
     { label: trans("common.all"), value: "" },
@@ -252,7 +256,9 @@ const confirmDelete = (ingredient) => {
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            :placeholder="$t('admin_ingredients.filters.search_placeholder')"
+                            :placeholder="
+                                $t('admin_ingredients.filters.search_placeholder')
+                            "
                             @keyup.enter="submitFilters"
                         />
                     </div>
@@ -357,7 +363,11 @@ const confirmDelete = (ingredient) => {
                         </div>
                     </template>
 
-                    <Column field="name" :header="$t('admin_ingredients.columns.name')" sortable>
+                    <Column
+                        field="name"
+                        :header="$t('admin_ingredients.columns.name')"
+                        sortable
+                    >
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">
@@ -370,7 +380,11 @@ const confirmDelete = (ingredient) => {
                             </div>
                         </template>
                     </Column>
-                    <Column field="unit" :header="$t('admin_ingredients.columns.unit')" sortable />
+                    <Column
+                        field="unit"
+                        :header="$t('admin_ingredients.columns.unit')"
+                        sortable
+                    />
                     <Column
                         field="estimated_unit_cost"
                         :header="$t('admin_ingredients.columns.estimated_unit_cost')"
@@ -382,7 +396,11 @@ const confirmDelete = (ingredient) => {
                             }}</span>
                         </template>
                     </Column>
-                    <Column field="current_stock" :header="$t('admin_ingredients.columns.stock')" sortable>
+                    <Column
+                        field="current_stock"
+                        :header="$t('admin_ingredients.columns.stock')"
+                        sortable
+                    >
                         <template #body="{ data }">
                             <IngredientStockBadge
                                 :current-stock="data.current_stock"
@@ -391,7 +409,11 @@ const confirmDelete = (ingredient) => {
                             />
                         </template>
                     </Column>
-                    <Column field="is_active" :header="$t('admin_ingredients.columns.status')" sortable>
+                    <Column
+                        field="is_active"
+                        :header="$t('admin_ingredients.columns.status')"
+                        sortable
+                    >
                         <template #body="{ data }">
                             <IngredientStatusBadge :active="data.is_active" />
                         </template>

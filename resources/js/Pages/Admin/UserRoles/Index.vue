@@ -1,17 +1,19 @@
 <script setup>
-import { Head, router, useForm } from '@inertiajs/vue3';
-import { computed, reactive, ref } from 'vue';
-import Button from 'primevue/button';
-import Column from 'primevue/column';
-import DataTable from 'primevue/datatable';
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
+import { Head, router, useForm } from "@inertiajs/vue3";
+import { computed, reactive, ref } from "vue";
+import Button from "primevue/button";
+import Column from "primevue/column";
+import DataTable from "primevue/datatable";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
 
-import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
-import RoleBadge from '@/Components/Admin/Roles/RoleBadge.vue';
-import UserRoleAssignmentModal from '@/Components/Admin/UserRoles/UserRoleAssignmentModal.vue';
-import SectionTitle from '@/Components/SectionTitle.vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import RoleBadge from "@/Components/Admin/Roles/RoleBadge.vue";
+import UserRoleAssignmentModal from "@/Components/Admin/UserRoles/UserRoleAssignmentModal.vue";
+import SectionTitle from "@/Components/SectionTitle.vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { perPageOptions } from "@/Utils/functions";
+import { trans } from "laravel-vue-i18n";
 
 defineOptions({ layout: AdminLayout });
 
@@ -44,43 +46,52 @@ const form = useForm({
 });
 
 const filterState = reactive({
-    search: props.filters.search ?? '',
+    search: props.filters.search ?? "",
     per_page: props.filters.per_page ?? 15,
 });
 
+const perPageOptions = perPageOptions(trans, [15, 30, 50]);
+/*
 const perPageOptions = [
     { label: '15 / oldal', value: 15 },
     { label: '30 / oldal', value: 30 },
     { label: '50 / oldal', value: 50 },
 ];
+*/
 
 const currentPage = computed(() => props.users.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.users.per_page ?? 15));
 
 const roleSystemMap = computed(() =>
-    Object.fromEntries(props.role_options.map((option) => [option.name, option.is_system_role]))
+    Object.fromEntries(
+        props.role_options.map((option) => [option.name, option.is_system_role])
+    )
 );
 
 const load = (extra = {}) => {
     loading.value = true;
 
-    router.get(route('admin.user-roles.index'), {
-        search: filterState.search || undefined,
-        per_page: filterState.per_page,
-        ...extra,
-    }, {
-        preserveState: true,
-        preserveScroll: true,
-        replace: true,
-        onFinish: () => {
-            loading.value = false;
+    router.get(
+        route("admin.user-roles.index"),
+        {
+            search: filterState.search || undefined,
+            per_page: filterState.per_page,
+            ...extra,
         },
-    });
+        {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+            onFinish: () => {
+                loading.value = false;
+            },
+        }
+    );
 };
 
 const submitFilters = () => load({ page: 1 });
 const clearFilters = () => {
-    filterState.search = '';
+    filterState.search = "";
     filterState.per_page = 15;
     submitFilters();
 };
@@ -110,7 +121,7 @@ const saveRoles = () => {
     if (!selectedUser.value) return;
 
     form.roles = [...selectedRoles.value];
-    form.put(route('admin.users.roles.update', selectedUser.value.id), {
+    form.put(route("admin.users.roles.update", selectedUser.value.id), {
         preserveScroll: true,
         onSuccess: () => {
             modalVisible.value = false;
@@ -130,10 +141,15 @@ const saveRoles = () => {
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
-            <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 lg:grid-cols-3'">
+            <AdminTableToolbar
+                :filters-grid-class="'grid gap-3 sm:grid-cols-2 lg:grid-cols-3'"
+            >
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Keresés</label>
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >Keresés</label
+                        >
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
@@ -143,7 +159,10 @@ const saveRoles = () => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">Találat / oldal</label>
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >Találat / oldal</label
+                        >
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -175,48 +194,59 @@ const saveRoles = () => {
                     @page="onPage"
                 >
                     <template #empty>
-                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                        <div
+                            class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
+                        >
                             <p>Nincs megjeleníthető felhasználó.</p>
-                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                            <div
+                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
+                            >
+                                <Button
+                                    label="Szűrők törlése"
+                                    outlined
+                                    size="small"
+                                    @click="clearFilters"
+                                />
                             </div>
                         </div>
                     </template>
 
-                <Column field="name" header="Név" />
-                <Column field="email" header="Email" />
+                    <Column field="name" header="Név" />
+                    <Column field="email" header="Email" />
 
-                <Column header="Szerepkörök">
-                    <template #body="{ data }">
-                        <div class="flex flex-wrap gap-1.5">
-                            <RoleBadge
-                                v-for="role in data.roles"
-                                :key="`${data.id}-${role}`"
-                                :role="role"
-                                :system="Boolean(roleSystemMap[role])"
+                    <Column header="Szerepkörök">
+                        <template #body="{ data }">
+                            <div class="flex flex-wrap gap-1.5">
+                                <RoleBadge
+                                    v-for="role in data.roles"
+                                    :key="`${data.id}-${role}`"
+                                    :role="role"
+                                    :system="Boolean(roleSystemMap[role])"
+                                />
+                            </div>
+                        </template>
+                    </Column>
+
+                    <Column v-if="can.view_permissions" header="Effektív jogosultságok">
+                        <template #body="{ data }">
+                            <span class="text-sm text-bakery-dark/75">{{
+                                data.permissions.length
+                            }}</span>
+                        </template>
+                    </Column>
+
+                    <Column header="Műveletek" :style="{ width: '12rem' }">
+                        <template #body="{ data }">
+                            <Button
+                                v-if="can.assign_roles"
+                                label="Szerepkörök kezelése"
+                                size="small"
+                                outlined
+                                class="!min-h-11"
+                                @click="openAssignModal(data)"
                             />
-                        </div>
-                    </template>
-                </Column>
-
-                <Column v-if="can.view_permissions" header="Effektív jogosultságok">
-                    <template #body="{ data }">
-                        <span class="text-sm text-bakery-dark/75">{{ data.permissions.length }}</span>
-                    </template>
-                </Column>
-
-                <Column header="Műveletek" :style="{ width: '12rem' }">
-                    <template #body="{ data }">
-                        <Button
-                            v-if="can.assign_roles"
-                            label="Szerepkörök kezelése"
-                            size="small"
-                            outlined
-                            class="!min-h-11"
-                            @click="openAssignModal(data)"
-                        />
-                    </template>
-                </Column>
+                        </template>
+                    </Column>
                 </DataTable>
             </div>
         </div>
@@ -233,5 +263,3 @@ const saveRoles = () => {
         @save="saveRoles"
     />
 </template>
-
-

@@ -16,6 +16,8 @@ import CategoryStatusBadge from "@/Components/Admin/Categories/CategoryStatusBad
 import ProductPrice from "@/Components/Admin/Products/ProductPrice.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { perPageOptions } from "@/Utils/functions.js";
+import { trans } from "laravel-vue-i18n";
 
 defineOptions({ layout: AdminLayout });
 
@@ -53,12 +55,14 @@ const filterState = reactive({
     per_page: props.filters.per_page ?? 10,
 });
 
+const perPageOptions = perPageOptions(trans, [10, 20, 50]);
+/*
 const perPageOptions = [
     { label: "10 / oldal", value: 10 },
     { label: "20 / oldal", value: 20 },
     { label: "50 / oldal", value: 50 },
 ];
-
+*/
 const activeOptions = [
     { label: "Mind", value: "" },
     { label: "Aktív", value: "1" },
@@ -326,59 +330,76 @@ const confirmDelete = (product) => {
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
                             <p>Nincs megjeleníthető termék.</p>
-                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
-                                <Button label="Új termék" size="small" @click="openCreate" />
+                            <div
+                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
+                            >
+                                <Button
+                                    label="Szűrők törlése"
+                                    outlined
+                                    size="small"
+                                    @click="clearFilters"
+                                />
+                                <Button
+                                    label="Új termék"
+                                    size="small"
+                                    @click="openCreate"
+                                />
                             </div>
                         </div>
                     </template>
 
-                <Column field="name" header="Név" sortable />
-                <Column field="slug" header="Slug" sortable>
-                    <template #body="{ data }">
-                        <code class="text-xs text-bakery-dark/70">/{{ data.slug }}</code>
-                    </template>
-                </Column>
-                <Column field="price" header="Ár" sortable>
-                    <template #body="{ data }">
-                        <ProductPrice :price="data.price" />
-                    </template>
-                </Column>
-                <Column field="sort_order" header="Sorrend" sortable />
-                <Column field="is_active" header="Státusz" sortable>
-                    <template #body="{ data }">
-                        <CategoryStatusBadge :active="data.is_active" />
-                    </template>
-                </Column>
-                <Column header="Műveletek" :exportable="false">
-                    <template #body="{ data }">
-                        <div class="flex items-center gap-2">
-                            <Link
-                                :href="route('admin.recipes.index', { product_id: data.id })"
-                                class="inline-flex min-h-11 items-center rounded-md border border-bakery-brown/20 px-3 py-2 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10"
+                    <Column field="name" header="Név" sortable />
+                    <Column field="slug" header="Slug" sortable>
+                        <template #body="{ data }">
+                            <code class="text-xs text-bakery-dark/70"
+                                >/{{ data.slug }}</code
                             >
-                                Recept
-                            </Link>
-                            <Button
-                                icon="pi pi-pencil"
-                                text
-                                rounded
-                                class="!h-11 !w-11"
-                                aria-label="Termék szerkesztése"
-                                @click="openEdit(data)"
-                            />
-                            <Button
-                                icon="pi pi-trash"
-                                text
-                                rounded
-                                severity="danger"
-                                class="!h-11 !w-11"
-                                aria-label="Termék törlése"
-                                @click="confirmDelete(data)"
-                            />
-                        </div>
-                    </template>
-                </Column>
+                        </template>
+                    </Column>
+                    <Column field="price" header="Ár" sortable>
+                        <template #body="{ data }">
+                            <ProductPrice :price="data.price" />
+                        </template>
+                    </Column>
+                    <Column field="sort_order" header="Sorrend" sortable />
+                    <Column field="is_active" header="Státusz" sortable>
+                        <template #body="{ data }">
+                            <CategoryStatusBadge :active="data.is_active" />
+                        </template>
+                    </Column>
+                    <Column header="Műveletek" :exportable="false">
+                        <template #body="{ data }">
+                            <div class="flex items-center gap-2">
+                                <Link
+                                    :href="
+                                        route('admin.recipes.index', {
+                                            product_id: data.id,
+                                        })
+                                    "
+                                    class="inline-flex min-h-11 items-center rounded-md border border-bakery-brown/20 px-3 py-2 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10"
+                                >
+                                    Recept
+                                </Link>
+                                <Button
+                                    icon="pi pi-pencil"
+                                    text
+                                    rounded
+                                    class="!h-11 !w-11"
+                                    aria-label="Termék szerkesztése"
+                                    @click="openEdit(data)"
+                                />
+                                <Button
+                                    icon="pi pi-trash"
+                                    text
+                                    rounded
+                                    severity="danger"
+                                    class="!h-11 !w-11"
+                                    aria-label="Termék törlése"
+                                    @click="confirmDelete(data)"
+                                />
+                            </div>
+                        </template>
+                    </Column>
                 </DataTable>
             </div>
         </div>
@@ -401,5 +422,3 @@ const confirmDelete = (product) => {
         <ConfirmDialog />
     </div>
 </template>
-
-

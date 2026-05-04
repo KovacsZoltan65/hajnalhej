@@ -11,11 +11,12 @@ import { useConfirm } from "primevue/useconfirm";
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
 import CreateModal from "@/Components/Admin/WeeklyMenus/CreateModal.vue";
 import EditModal from "@/Components/Admin/WeeklyMenus/EditModal.vue";
-import WeeklyMenuItemsModal from "../../../Components/Admin/WeeklyMenus/WeeklyMenuItemsModal.vue";
-import WeeklyMenuStatusBadge from "../../../Components/Admin/WeeklyMenus/WeeklyMenuStatusBadge.vue";
-import SectionTitle from "../../../Components/SectionTitle.vue";
-import AdminLayout from "../../../Layouts/AdminLayout.vue";
+import WeeklyMenuItemsModal from "@/Components/Admin/WeeklyMenus/WeeklyMenuItemsModal.vue";
+import WeeklyMenuStatusBadge from "@/Components/Admin/WeeklyMenus/WeeklyMenuStatusBadge.vue";
+import SectionTitle from "@/Components/SectionTitle.vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
+import { perPageOptions } from "@/Utils/functions";
 
 defineOptions({ layout: AdminLayout });
 
@@ -57,11 +58,15 @@ const statusOptions = computed(() => [
     { value: "", label: trans("admin_weekly_menus.filters.all_statuses") },
     ...props.statuses,
 ]);
+
+const perPageOptions = perPageOptions(trans, [10, 20, 50]);
+/*
 const perPageOptions = computed(() => [
-    { label: trans("admin_weekly_menus.filters.per_page_option", { count: 10 }), value: 10 },
-    { label: trans("admin_weekly_menus.filters.per_page_option", { count: 20 }), value: 20 },
-    { label: trans("admin_weekly_menus.filters.per_page_option", { count: 50 }), value: 50 },
+    { label: trans("common.page_count", { count: 10 }), value: 10 },
+    { label: trans("common.page_count", { count: 20 }), value: 20 },
+    { label: trans("common.page_count", { count: 50 }), value: 50 },
 ]);
+*/
 
 const form = useForm({
     title: "",
@@ -203,15 +208,25 @@ const confirmDelete = (menu) => {
         acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
-            router.delete(route("admin.weekly-menus.destroy", menu.id), { preserveScroll: true });
+            router.delete(route("admin.weekly-menus.destroy", menu.id), {
+                preserveScroll: true,
+            });
         },
     });
 };
 
 const publish = (menu) =>
-    router.post(route("admin.weekly-menus.publish", menu.id), {}, { preserveScroll: true });
+    router.post(
+        route("admin.weekly-menus.publish", menu.id),
+        {},
+        { preserveScroll: true }
+    );
 const unpublish = (menu) =>
-    router.post(route("admin.weekly-menus.unpublish", menu.id), {}, { preserveScroll: true });
+    router.post(
+        route("admin.weekly-menus.unpublish", menu.id),
+        {},
+        { preserveScroll: true }
+    );
 /*
 const openItems = (menu) => {
     selectedMenu.value = menu;
@@ -316,7 +331,9 @@ const refreshMenus = () => {
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            :placeholder="$t('admin_weekly_menus.filters.search_placeholder')"
+                            :placeholder="
+                                $t('admin_weekly_menus.filters.search_placeholder')
+                            "
                             @keyup.enter="submitFilters"
                         />
                     </div>
@@ -404,7 +421,11 @@ const refreshMenus = () => {
                         </div>
                     </template>
 
-                    <Column field="title" :header="$t('admin_weekly_menus.columns.title')" sortable>
+                    <Column
+                        field="title"
+                        :header="$t('admin_weekly_menus.columns.title')"
+                        sortable
+                    >
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">
@@ -416,17 +437,28 @@ const refreshMenus = () => {
                             </div>
                         </template>
                     </Column>
-                    <Column field="week_start" :header="$t('admin_weekly_menus.columns.week')" sortable>
+                    <Column
+                        field="week_start"
+                        :header="$t('admin_weekly_menus.columns.week')"
+                        sortable
+                    >
                         <template #body="{ data }"
                             >{{ data.week_start }} - {{ data.week_end }}</template
                         >
                     </Column>
-                    <Column field="status" :header="$t('admin_weekly_menus.columns.status')" sortable>
+                    <Column
+                        field="status"
+                        :header="$t('admin_weekly_menus.columns.status')"
+                        sortable
+                    >
                         <template #body="{ data }">
                             <WeeklyMenuStatusBadge :status="data.status" />
                         </template>
                     </Column>
-                    <Column field="items_count" :header="$t('admin_weekly_menus.columns.items')" />
+                    <Column
+                        field="items_count"
+                        :header="$t('admin_weekly_menus.columns.items')"
+                    />
                     <Column :header="$t('common.actions')">
                         <template #body="{ data }">
                             <div class="flex flex-wrap items-center gap-2">

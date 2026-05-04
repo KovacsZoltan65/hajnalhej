@@ -15,6 +15,7 @@ import PreferredBadge from "@/Components/Admin/IngredientSupplierTerms/Preferred
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
+import { perPageOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -39,11 +40,14 @@ const filterState = reactive({
     per_page: props.filters.per_page ?? 10,
 });
 
+const perPageOptions = perPageOptions(trans, [10, 20, 50]);
+/*
 const perPageOptions = [
-    { label: trans("admin_supplier_terms.filters.per_page_option", { count: 10 }), value: 10 },
-    { label: trans("admin_supplier_terms.filters.per_page_option", { count: 20 }), value: 20 },
-    { label: trans("admin_supplier_terms.filters.per_page_option", { count: 50 }), value: 50 },
+    { label: trans("common.page_count", { count: 10 }), value: 10 },
+    { label: trans("common.page_count", { count: 20 }), value: 20 },
+    { label: trans("common.page_count", { count: 50 }), value: 50 },
 ];
+*/
 
 const activeOptions = [
     { label: trans("common.all"), value: "" },
@@ -147,9 +151,11 @@ const openEdit = (term) => {
     form.ingredient_id = term.ingredient_id;
     form.supplier_id = term.supplier_id;
     form.lead_time_days = term.lead_time_days;
-    form.minimum_order_quantity = term.minimum_order_quantity === null ? null : Number(term.minimum_order_quantity);
+    form.minimum_order_quantity =
+        term.minimum_order_quantity === null ? null : Number(term.minimum_order_quantity);
     form.pack_size = term.pack_size === null ? null : Number(term.pack_size);
-    form.unit_cost_override = term.unit_cost_override === null ? null : Number(term.unit_cost_override);
+    form.unit_cost_override =
+        term.unit_cost_override === null ? null : Number(term.unit_cost_override);
     form.preferred = Boolean(term.preferred);
     form.active = Boolean(term.active);
     form.meta = metaToString(term.meta);
@@ -204,7 +210,9 @@ const formatQuantity = (value, unit = "") => {
         return "-";
     }
 
-    return `${Number(value).toLocaleString(trans("common.locale"), { maximumFractionDigits: 3 })}${unit ? ` ${unit}` : ""}`;
+    return `${Number(value).toLocaleString(trans("common.locale"), {
+        maximumFractionDigits: 3,
+    })}${unit ? ` ${unit}` : ""}`;
 };
 
 const formatCurrency = (value) => {
@@ -234,35 +242,65 @@ const formatCurrency = (value) => {
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        >
                             {{ $t("admin_supplier_terms.filters.search") }}
                         </label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            :placeholder="$t('admin_supplier_terms.filters.search_placeholder')"
+                            :placeholder="
+                                $t('admin_supplier_terms.filters.search_placeholder')
+                            "
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        >
                             {{ $t("admin_supplier_terms.filters.status") }}
                         </label>
-                        <Select v-model="filterState.active" :options="activeOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
+                        <Select
+                            v-model="filterState.active"
+                            :options="activeOptions"
+                            option-label="label"
+                            option-value="value"
+                            class="w-full"
+                            @change="submitFilters"
+                        />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        >
                             {{ $t("admin_supplier_terms.filters.per_page") }}
                         </label>
-                        <Select v-model="filterState.per_page" :options="perPageOptions" option-label="label" option-value="value" class="w-full" @change="submitFilters" />
+                        <Select
+                            v-model="filterState.per_page"
+                            :options="perPageOptions"
+                            option-label="label"
+                            option-value="value"
+                            class="w-full"
+                            @change="submitFilters"
+                        />
                     </div>
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" :label="$t('admin_supplier_terms.actions.search')" @click="submitFilters" />
-                    <Button icon="pi pi-plus" :label="$t('admin_supplier_terms.actions.create')" @click="openCreate" />
+                    <Button
+                        icon="pi pi-search"
+                        :label="$t('admin_supplier_terms.actions.search')"
+                        @click="submitFilters"
+                    />
+                    <Button
+                        icon="pi pi-plus"
+                        :label="$t('admin_supplier_terms.actions.create')"
+                        @click="openCreate"
+                    />
                 </template>
             </AdminTableToolbar>
 
@@ -284,65 +322,156 @@ const formatCurrency = (value) => {
                     @page="onPage"
                 >
                     <template #empty>
-                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                        <div
+                            class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
+                        >
                             <p>{{ $t("admin_supplier_terms.empty") }}</p>
-                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button :label="$t('common.clear_filters')" outlined size="small" @click="clearFilters" />
-                                <Button :label="$t('admin_supplier_terms.actions.create')" size="small" @click="openCreate" />
+                            <div
+                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
+                            >
+                                <Button
+                                    :label="$t('common.clear_filters')"
+                                    outlined
+                                    size="small"
+                                    @click="clearFilters"
+                                />
+                                <Button
+                                    :label="$t('admin_supplier_terms.actions.create')"
+                                    size="small"
+                                    @click="openCreate"
+                                />
                             </div>
                         </div>
                     </template>
 
-                    <Column field="ingredient" :header="$t('admin_supplier_terms.columns.ingredient')" sortable>
+                    <Column
+                        field="ingredient"
+                        :header="$t('admin_supplier_terms.columns.ingredient')"
+                        sortable
+                    >
                         <template #body="{ data }">
                             <div>
-                                <p class="font-semibold text-bakery-dark">{{ data.ingredient_name }}</p>
-                                <p class="text-xs text-bakery-dark/60">{{ data.ingredient_unit || '-' }}</p>
+                                <p class="font-semibold text-bakery-dark">
+                                    {{ data.ingredient_name }}
+                                </p>
+                                <p class="text-xs text-bakery-dark/60">
+                                    {{ data.ingredient_unit || "-" }}
+                                </p>
                             </div>
                         </template>
                     </Column>
-                    <Column field="supplier" :header="$t('admin_supplier_terms.columns.supplier')" sortable>
+                    <Column
+                        field="supplier"
+                        :header="$t('admin_supplier_terms.columns.supplier')"
+                        sortable
+                    >
                         <template #body="{ data }">
-                            <span class="font-medium text-bakery-dark">{{ data.supplier_name }}</span>
+                            <span class="font-medium text-bakery-dark">{{
+                                data.supplier_name
+                            }}</span>
                         </template>
                     </Column>
-                    <Column field="lead_time_days" :header="$t('admin_supplier_terms.columns.lead_time')" sortable>
+                    <Column
+                        field="lead_time_days"
+                        :header="$t('admin_supplier_terms.columns.lead_time')"
+                        sortable
+                    >
                         <template #body="{ data }">
-                            {{ data.lead_time_days !== null ? $t("common.day_count", { count: data.lead_time_days }) : "-" }}
+                            {{
+                                data.lead_time_days !== null
+                                    ? $t("common.day_count", {
+                                          count: data.lead_time_days,
+                                      })
+                                    : "-"
+                            }}
                         </template>
                     </Column>
-                    <Column field="minimum_order_quantity" :header="$t('admin_supplier_terms.columns.minimum')" sortable>
+                    <Column
+                        field="minimum_order_quantity"
+                        :header="$t('admin_supplier_terms.columns.minimum')"
+                        sortable
+                    >
                         <template #body="{ data }">
-                            {{ formatQuantity(data.minimum_order_quantity, data.ingredient_unit) }}
+                            {{
+                                formatQuantity(
+                                    data.minimum_order_quantity,
+                                    data.ingredient_unit
+                                )
+                            }}
                         </template>
                     </Column>
-                    <Column field="pack_size" :header="$t('admin_supplier_terms.columns.pack_size')" sortable>
+                    <Column
+                        field="pack_size"
+                        :header="$t('admin_supplier_terms.columns.pack_size')"
+                        sortable
+                    >
                         <template #body="{ data }">
                             {{ formatQuantity(data.pack_size, data.ingredient_unit) }}
                         </template>
                     </Column>
-                    <Column field="unit_cost_override" :header="$t('admin_supplier_terms.columns.unit_cost_override')" sortable>
+                    <Column
+                        field="unit_cost_override"
+                        :header="$t('admin_supplier_terms.columns.unit_cost_override')"
+                        sortable
+                    >
                         <template #body="{ data }">
                             {{ formatCurrency(data.unit_cost_override) }}
                         </template>
                     </Column>
-                    <Column field="preferred" :header="$t('admin_supplier_terms.columns.preferred')" sortable>
+                    <Column
+                        field="preferred"
+                        :header="$t('admin_supplier_terms.columns.preferred')"
+                        sortable
+                    >
                         <template #body="{ data }">
-                            <PreferredBadge :preferred="Boolean(data.preferred)" :active="Boolean(data.active)" />
+                            <PreferredBadge
+                                :preferred="Boolean(data.preferred)"
+                                :active="Boolean(data.active)"
+                            />
                         </template>
                     </Column>
-                    <Column field="active" :header="$t('admin_supplier_terms.columns.status')" sortable>
+                    <Column
+                        field="active"
+                        :header="$t('admin_supplier_terms.columns.status')"
+                        sortable
+                    >
                         <template #body="{ data }">
-                            <span class="text-sm font-semibold" :class="data.active ? 'text-emerald-700' : 'text-stone-500'">
-                                {{ data.active ? $t("common.active") : $t("common.inactive") }}
+                            <span
+                                class="text-sm font-semibold"
+                                :class="
+                                    data.active ? 'text-emerald-700' : 'text-stone-500'
+                                "
+                            >
+                                {{
+                                    data.active
+                                        ? $t("common.active")
+                                        : $t("common.inactive")
+                                }}
                             </span>
                         </template>
                     </Column>
                     <Column :header="$t('common.actions')" :exportable="false">
                         <template #body="{ data }">
                             <div class="flex items-center gap-2">
-                                <Button icon="pi pi-pencil" text rounded class="!h-11 !w-11" :aria-label="$t('admin_supplier_terms.actions.edit')" @click="openEdit(data)" />
-                                <Button icon="pi pi-trash" text rounded severity="danger" class="!h-11 !w-11" :aria-label="$t('admin_supplier_terms.actions.delete')" @click="confirmDelete(data)" />
+                                <Button
+                                    icon="pi pi-pencil"
+                                    text
+                                    rounded
+                                    class="!h-11 !w-11"
+                                    :aria-label="$t('admin_supplier_terms.actions.edit')"
+                                    @click="openEdit(data)"
+                                />
+                                <Button
+                                    icon="pi pi-trash"
+                                    text
+                                    rounded
+                                    severity="danger"
+                                    class="!h-11 !w-11"
+                                    :aria-label="
+                                        $t('admin_supplier_terms.actions.delete')
+                                    "
+                                    @click="confirmDelete(data)"
+                                />
                             </div>
                         </template>
                     </Column>
@@ -350,8 +479,20 @@ const formatCurrency = (value) => {
             </div>
         </div>
 
-        <CreateModal v-model:visible="createModalVisible" :form="form" :ingredients="ingredients" :suppliers="suppliers" @submit="submitCreate" />
-        <EditModal v-model:visible="editModalVisible" :form="form" :ingredients="ingredients" :suppliers="suppliers" @submit="submitEdit" />
+        <CreateModal
+            v-model:visible="createModalVisible"
+            :form="form"
+            :ingredients="ingredients"
+            :suppliers="suppliers"
+            @submit="submitCreate"
+        />
+        <EditModal
+            v-model:visible="editModalVisible"
+            :form="form"
+            :ingredients="ingredients"
+            :suppliers="suppliers"
+            @submit="submitEdit"
+        />
         <ConfirmDialog />
     </div>
 </template>

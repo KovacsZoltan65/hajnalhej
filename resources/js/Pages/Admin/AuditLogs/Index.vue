@@ -12,6 +12,7 @@ import AuditEventBadge from "@/Components/Admin/AuditLogs/AuditEventBadge.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
+import { perPageOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -55,14 +56,14 @@ const filterState = reactive({
 const currentPage = computed(() => props.logs.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.logs.per_page ?? 20));
 
+const perPageOptions = perPageOptions(trans, [20, 50, 100]);
+/*
 const perPageOptions = [
-    {
-        label: trans("audit_logs.filters.per_page_option", { count: 20 }),
-        value: 20,
-    },
-    { label: trans("audit_logs.filters.per_page_option", { count: 50 }), value: 50 },
-    { label: trans("audit_logs.filters.per_page_option", { count: 100 }), value: 100 },
+    { label: trans("common.page_count", { count: 20 }), value: 20 },
+    { label: trans("common.page_count", { count: 50 }), value: 50 },
+    { label: trans("common.page_count", { count: 100 }), value: 100 },
 ];
+*/
 
 const eventSelectOptions = computed(() => [
     { label: trans("audit_logs.filters.all_events"), value: "" },
