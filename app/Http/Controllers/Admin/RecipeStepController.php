@@ -29,7 +29,8 @@ class RecipeStepController extends Controller
     {
         $this->service->create($product, $request->validated());
 
-        return $this->redirectToOrigin($request)->with('success', 'Receptlépés hozzáadva.');
+        return $this->redirectToOrigin($request)
+            ->with('success', __('admin_recipe_steps.added') . '.');
     }
 
     /**
@@ -42,7 +43,8 @@ class RecipeStepController extends Controller
     {
         $this->service->update($product, $recipeStep, $request->validated());
 
-        return $this->redirectToOrigin($request)->with('success', 'Receptlépés frissítve.');
+        return $this->redirectToOrigin($request)
+            ->with('success', __('admin_recipe_steps.updated') . '.');
     }
 
     /**
@@ -57,7 +59,8 @@ class RecipeStepController extends Controller
 
         $this->service->delete($product, $recipeStep);
 
-        return $this->redirectToOrigin($request)->with('success', 'Receptlépés törölve.');
+        return $this->redirectToOrigin($request)
+            ->with('success', __('admin_recipe_steps.deleted') . '.');
     }
 
     /**

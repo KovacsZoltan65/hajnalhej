@@ -41,7 +41,7 @@ class PurchaseDraftGenerationService
             ->values();
 
         if ($recommendations->isEmpty()) {
-            throw new RuntimeException('Nincs generálható utánrendelési javaslat.');
+            throw new RuntimeException(__('admin_purchase_draft.no_reorder_proposal') . '.');
         }
 
         $ingredientIds = $recommendations
@@ -95,7 +95,7 @@ class PurchaseDraftGenerationService
         }
 
         if ($drafts === []) {
-            throw new RuntimeException('Nincs generálható beszerzési tervezet.');
+            throw new RuntimeException(__('admin_purchase_draft.no_purchase_draft') . '.');
         }
 
         return $drafts;

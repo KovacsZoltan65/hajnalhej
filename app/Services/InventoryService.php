@@ -134,7 +134,7 @@ class InventoryService
         /** @var EloquentCollection<int, ProductIngredient> $bomItems */
         $bomItems = $product->productIngredients;
         if ($bomItems->isEmpty()) {
-            throw new RuntimeException('A kiválasztott termékhez nincs recept/BOM tétel, ezért nem selejtezhető.');
+            throw new RuntimeException( __('admin_inventory.cannot_be_scrapped') . '.');
         }
 
         $notesPrefix = sprintf(
@@ -172,7 +172,7 @@ class InventoryService
         }
 
         if (! $firstMovement instanceof InventoryMovement) {
-            throw new RuntimeException('A termék selejt könyvelése nem hozott létre készletmozgást.');
+            throw new RuntimeException(__('admin_inventory.product_scrap_not_inventory_movement') . '.');
         }
 
         return $firstMovement;

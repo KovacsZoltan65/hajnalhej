@@ -44,7 +44,7 @@ class PurchaseService
         return DB::transaction(function () use ($payload, $actor): Purchase {
             $items = $this->normalizeItems($payload['items'] ?? []);
             if ($items === []) {
-                throw new RuntimeException('Legalább egy beszerzési tétel szükséges.');
+                throw new RuntimeException(__('admin_purchase_draft.least_one_item') . '.');
             }
 
             [$subtotal, $total] = $this->totals($items);
@@ -75,13 +75,13 @@ class PurchaseService
     public function update(Purchase $purchase, array $payload, ?User $actor = null): Purchase
     {
         if ($purchase->status !== Purchase::STATUS_DRAFT) {
-            throw new RuntimeException('Csak draft beszerzés módosítható.');
+            throw new RuntimeException(__('admin_purchase_draft.only_draft_purchases_modified') . '.');
         }
 
         return DB::transaction(function () use ($purchase, $payload, $actor): Purchase {
             $items = $this->normalizeItems($payload['items'] ?? []);
             if ($items === []) {
-                throw new RuntimeException('Legalább egy beszerzési tétel szükséges.');
+                throw new RuntimeException(__('admin_purchase_draft.least_one_item') . '.');
             }
 
             [$subtotal, $total] = $this->totals($items);
@@ -104,14 +104,14 @@ class PurchaseService
     public function post(Purchase $purchase, ?User $actor = null): Purchase
     {
         if ($purchase->status !== Purchase::STATUS_DRAFT) {
-            throw new RuntimeException('Csak draft beszerzés könyvelhető.');
+            throw new RuntimeException(__('admin_purchase_draft.only_draft_purchases_posted') . '.');
         }
 
         return DB::transaction(function () use ($purchase, $actor): Purchase {
             $purchase->loadMissing('items.ingredient');
 
             if ($this->movementRepository->existsForReference('purchase', $purchase->id, InventoryMovement::TYPE_PURCHASE_IN)) {
-                throw new RuntimeException('A beszerzés már könyvelve lett.');
+                throw new RuntimeException(__('admin_purchase_draft.purchase_already_been_booked') . '.');
             }
 
             foreach ($purchase->items as $item) {
@@ -125,7 +125,7 @@ class PurchaseService
                     'occurred_at' => Carbon::now(),
                     'reference_type' => 'purchase',
                     'reference_id' => $purchase->id,
-                    'notes' => 'Bevételezés beszerzésből',
+                    'notes' => __('admin_purchase.purchase_revenue'),
                 ], $actor);
             }
 
@@ -143,7 +143,7 @@ class PurchaseService
     public function cancel(Purchase $purchase, ?User $actor = null): Purchase
     {
         if ($purchase->status !== Purchase::STATUS_DRAFT) {
-            throw new RuntimeException('Csak draft beszerzés stornózható.');
+            throw new RuntimeException(__('admin_purchase.only_draft_canceled') . '.');
         }
 
         $updated = $this->repository->update($purchase, [

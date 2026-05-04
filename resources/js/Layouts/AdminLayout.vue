@@ -234,7 +234,7 @@ onUnmounted(() => {
                 <template #actions>
                     <div class="flex items-center gap-3">
                         <p class="hidden text-sm text-bakery-dark/75 sm:block">
-                            Belépve:
+                            {{ $t("common.entering") }}:
                             <span class="font-semibold">{{
                                 page.props.auth?.user?.name
                             }}</span>

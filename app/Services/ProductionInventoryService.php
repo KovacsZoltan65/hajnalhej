@@ -49,7 +49,7 @@ class ProductionInventoryService
                 $available = (float) $ingredient->current_stock;
 
                 if ($available < $requiredQty && (bool) config('inventory.block_on_shortage', false)) {
-                    throw new RuntimeException("Nincs elegendő készlet: {$ingredient->name}");
+                    throw new RuntimeException(__('admin_inventory.not_enough_stock') . ": {$ingredient->name}");
                 }
 
                 $movement = $this->inventoryService->createMovement([

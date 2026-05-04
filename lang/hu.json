@@ -209,6 +209,7 @@
     "conversion_analytics.hero_variant_comparison": "Hero variáns összehasonlítás",
 
     "common.submitted": "Beküldve",
+    "common.entering": "Belépve",
     "common.completed": "Teljesítve",
     "common.ratio": "Arány",
     "common.successful": "Sikeres",
@@ -279,6 +280,15 @@
     "weekly_menu.fallback_notice": "Jelenleg nincs aktív heti menü a mai napra, ezért a legutóbb publikált menü látható.",
     "weekly_menu.empty_title": "Heti menü feltöltés alatt",
     "weekly_menu.empty_description": "Jelenleg nincs publikált heti menü. Nézz vissza hamarosan, amint frissül a következő ajánlat.",
+
+    "weekly_menu.created": "Heti menü létrehozva",
+    "weekly_menu.updated": "Heti menü frissítve",
+    "weekly_menu.deleted": "Heti menü törölve",
+    "weekly_menu.publicated": "Weekly menü publikálva",
+    "weekly_menu.restored_draft_mode": "Heti menü visszaállítva piszkozat állapotba",
+    "weekly_menu.item_created": "Heti menü tétel létrehozva",
+    "weekly_menu.item_updated": "Heti menü tétel frissítve",
+    "weekly_menu.item_deleted": "Heti menü tétel törölve",
 
     "admin_weekly_menus.title": "Heti menük",
     "admin_weekly_menus.eyebrow": "Admin / Heti menük",
@@ -356,6 +366,18 @@
     "admin_ingredients.material_updated": "Alapanyag frissítve",
     "admin_ingredients.material_deleted": "Alapanyag törölve",
     "admin_ingredients.material_added": "Recipe item added",
+
+    "admin_supplier.created": "Beszállító létrehozva",
+    "admin_supplier.updated": "Beszállító frissítve",
+    "admin_supplier.deleted": "Beszállító törölve",
+
+    "admin_user.created": "Felhasználó létrehozva",
+    "admin_user.updated": "Felhasználó frissítve",
+    "admin_user.deleted": "Felhasználó inaktiválva",
+    "admin_user.temporary_authorization_recorded": "Időleges jogosultság rögzítve",
+    "admin_user.temporary_authorization_revoked": "Időleges jogosultság visszavonva",
+    "admin_user.discount_recorded": "Kedvezmény rögzítve",
+    "admin_user.discount_deactivated": "Kedvezmény inaktiválva",
 
     "admin_supplier_terms.meta_title": "Beszállítói feltételek",
     "admin_supplier_terms.eyebrow": "Admin / Beszerzés",
@@ -543,6 +565,9 @@
     "admin_production_plans.timeline.depends_on_product": "Függőség céltermék: :product",
     "admin_production_plans.units.minutes": ":count perc",
     "admin_production_plans.units.pieces": ":count db",
+    "admin_production_plans.created": "Gyártási terv létrehozva",
+    "admin_production_plans.updated": "Gyártási terv frissítve",
+    "admin_production_plans.deleted": "Gyártási terv törölve",
 
     "admin_inventory.meta_title": "Készletmozgások",
     "admin_inventory.eyebrow": "Admin / Készletmozgások",
@@ -586,8 +611,9 @@
     "admin_inventory.movement_types.count_correction": "Leltár korrekció",
     "admin_inventory.movement_types.return_in": "Visszáru be",
     "admin_inventory.movement_types.return_out": "Visszáru ki",
-    "admin_inventory.waste_accounting": "Selejt könyvelve",
-    "admin_inventory.inventory_adjustment_posted": "Készletkorrekció könyvelve",
+    "admin_inventory.cannot_be_scrapped": "A kiválasztott termékhez nincs recept/BOM tétel, ezért nem selejtezhető",
+    "admin_inventory.product_scrap_not_inventory_movement": "A termék selejt könyvelése nem hozott létre készletmozgást",
+    "admin_inventory.not_enough_stock": "Nincs elegendő készlet",
 
     "admin_orders.meta_title": "Rendelések",
     "admin_orders.eyebrow": "Admin / Rendelések",
@@ -624,6 +650,28 @@
     "admin_orders.fields.subtotal": "Részösszeg",
     "admin_orders.fields.total": "Végösszeg",
     "admin_orders.placeholders.pickup_time_slot": "pl. 08:00-10:00",
+
+    "admin_purchase.created": "Beszerzés frissítve",
+    "admin_purchase.updated": "Beszerzés könyvelve, készlet frissítve",
+    "admin_purchase.deleted": "Beszerzés törölve",
+    "admin_purchase.canceled": "Beszerzés stornózva",
+    "admin_purchase.purchase_revenue": "Bevételezés beszerzésből",
+    "admin_purchase.only_draft_canceled": "Csak draft beszerzés stornózható",
+
+    "admin_purchase_draft.no_reorder_proposal": "Nincs generálható utánrendelési javaslat",
+    "admin_purchase_draft.no_purchase_draft": "Nincs generálható beszerzési tervezet",
+    "admin_purchase_draft.least_one_item": "Legalább egy beszerzési tétel szükséges",
+    "admin_purchase_draft.only_draft_purchases": "Csak draft beszerzés módosítható",
+    "admin_purchase_draft.only_draft_posted": "Csak draft beszerzés könyvelhető",
+    "admin_purchase_draft.purchase_already_been_booked": "A beszerzés már könyvelve lett",
+
+    "admin_stock.created": "Leltár létrehozva",
+    "admin_stock.updated": "Leltár frissítve",
+    "admin_stock.deleted": "Leltár lezárva, korrekciók könyvelve",
+
+    "admin_recipe_steps.added": "Receptlépés hozzáadva",
+    "admin_recipe_steps.updated": "Receptlépés frissítve",
+    "admin_recipe_steps.deleted": "Receptlépés törölve",
 
     "admin_permissions.meta_title": "Jogosultságok",
     "admin_permissions.eyebrow": "Admin / Szerepkörök és jogosultságok",
