@@ -24,7 +24,7 @@ const submit = () => {
 </script>
 
 <template>
-    <Head :title="$t('login.title')" />
+    <Head :title="$t('nav.login')" />
 
     <div
         class="mx-auto max-w-md rounded-3xl border border-bakery-brown/15 bg-[#fff9f1] p-6 shadow-lg sm:p-8"
@@ -33,7 +33,7 @@ const submit = () => {
             {{ $t("auth.account_label") }}
         </p>
         <h1 class="mt-3 font-heading text-4xl text-bakery-dark">
-            {{ $t("login.title") }}
+            {{ $t("nav.login") }}
         </h1>
         <p class="mt-2 text-sm text-bakery-dark/75">
             {{ $t("login.subtitle") }}

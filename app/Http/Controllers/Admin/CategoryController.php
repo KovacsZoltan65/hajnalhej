@@ -70,7 +70,7 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', 'Kategória létrehozva.');
+            ->with('success', __('admin_categories.category_created') . ".");
     }
 
     /**
@@ -84,7 +84,7 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', 'Kategória frissítve.');
+            ->with('success', __('admin_categories.category_updated') . '.');
     }
 
     /**
@@ -99,7 +99,7 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', 'Kategória törölve.');
+            ->with('success', __('admin_categories.category_deleted') . '.');
     }
 }
 

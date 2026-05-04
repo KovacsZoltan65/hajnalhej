@@ -77,7 +77,7 @@ const registryStateOptions = [
 ];
 
 const sortFieldOptions = [
-    { label: trans("admin_permissions.sort_fields.name"), value: "name" },
+    { label: trans("common.name"), value: "name" },
     { label: trans("admin_permissions.sort_fields.module"), value: "module" },
     { label: trans("admin_permissions.sort_fields.roles_count"), value: "roles_count" },
     { label: trans("admin_permissions.sort_fields.users_count"), value: "users_count" },

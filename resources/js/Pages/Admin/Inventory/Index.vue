@@ -86,7 +86,7 @@ const wasteForm = useForm({
     ingredient_id: null,
     product_id: null,
     quantity: 1,
-    reason: trans("admin_inventory.default_waste_reason"),
+    reason: trans("admin_inventory.waste_reason_expired"),
     occurred_at: new Date().toISOString().slice(0, 10),
 });
 
@@ -154,7 +154,7 @@ const openWasteModal = () => {
     wasteForm.ingredient_id = null;
     wasteForm.product_id = null;
     wasteForm.quantity = 1;
-    wasteForm.reason = trans("admin_inventory.default_waste_reason");
+    wasteForm.reason = trans("admin_inventory.waste_reason_expired");
     wasteForm.occurred_at = new Date().toISOString().slice(0, 10);
     wasteModalVisible.value = true;
 };
@@ -348,7 +348,7 @@ const dateToPicker = computed({
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_inventory.filters.type") }}</label
+                            >{{ $t("common.type") }}</label
                         >
                         <Select
                             v-model="filterState.movement_type"
@@ -536,7 +536,7 @@ const dateToPicker = computed({
                     </Column>
                     <Column
                         field="quantity"
-                        :header="$t('admin_inventory.columns.quantity')"
+                        :header="$t('common.quantity')"
                     >
                         <template #body="{ data }">
                             <span

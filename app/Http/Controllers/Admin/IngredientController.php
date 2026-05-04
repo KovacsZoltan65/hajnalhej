@@ -79,7 +79,7 @@ class IngredientController extends Controller
 
         return redirect()
             ->route('admin.ingredients.index')
-            ->with('success', 'Alapanyag létrehozva.');
+            ->with('success', __('admin_ingredients.material_created') . '.');
     }
 
     /**
@@ -93,7 +93,7 @@ class IngredientController extends Controller
 
         return redirect()
             ->route('admin.ingredients.index')
-            ->with('success', 'Alapanyag frissítve.');
+            ->with('success', __('admin_ingredients.material_updated') . '.');
     }
 
     /**
@@ -108,7 +108,7 @@ class IngredientController extends Controller
 
         return redirect()
             ->route('admin.ingredients.index')
-            ->with('success', 'Alapanyag törölve.');
+            ->with('success', __('admin_ingredients.material_deleted') . '.');
     }
 }
 

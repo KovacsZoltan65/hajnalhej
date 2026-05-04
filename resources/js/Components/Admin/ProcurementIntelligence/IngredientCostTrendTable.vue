@@ -37,7 +37,7 @@ const formatCurrency = (value) =>
                             <th class="px-2 py-2 text-right">{{ trans('admin_procurement_intelligence.columns.average_price') }}</th>
                             <th class="px-2 py-2 text-right">{{ trans('admin_procurement_intelligence.columns.weighted_average') }}</th>
                             <th class="px-2 py-2 text-right">{{ trans('admin_procurement_intelligence.columns.last_price') }}</th>
-                            <th class="px-2 py-2 text-right">{{ trans('admin_procurement_intelligence.columns.quantity') }}</th>
+                            <th class="px-2 py-2 text-right">{{ trans('common.quantity') }}</th>
                         </tr>
                     </thead>
                     <tbody>

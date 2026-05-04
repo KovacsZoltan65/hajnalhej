@@ -76,7 +76,7 @@ class IngredientSupplierTermController extends Controller
     {
         $this->service->create($request->validated());
 
-        return back()->with('success', 'Beszállítói feltétel létrehozva.');
+        return back()->with('success', __('admin_supplier_terms.created') . '.');
     }
 
     /**
@@ -88,7 +88,7 @@ class IngredientSupplierTermController extends Controller
     {
         $this->service->update($ingredientSupplierTerm, $request->validated());
 
-        return back()->with('success', 'Beszállítói feltétel frissítve.');
+        return back()->with('success', __('admin_supplier_terms.updated') . '.');
     }
 
     /**
@@ -101,6 +101,6 @@ class IngredientSupplierTermController extends Controller
 
         $this->service->delete($ingredientSupplierTerm);
 
-        return back()->with('success', 'Beszállítói feltétel törölve.');
+        return back()->with('success', __('admin_supplier_terms.deleted') . '.');
     }
 }

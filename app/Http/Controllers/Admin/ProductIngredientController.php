@@ -34,7 +34,7 @@ class ProductIngredientController extends Controller
             return $this->redirectToOrigin($request)->with('error', $exception->getMessage());
         }
 
-        return $this->redirectToOrigin($request)->with('success', 'Recept tétel hozzáadva.');
+        return $this->redirectToOrigin($request)->with('success', __('admin_ingredients.material_added') . '.');
     }
 
     /**
@@ -55,7 +55,7 @@ class ProductIngredientController extends Controller
             return $this->redirectToOrigin($request)->with('error', $exception->getMessage());
         }
 
-        return $this->redirectToOrigin($request)->with('success', 'Recept tétel frissítve.');
+        return $this->redirectToOrigin($request)->with('success', __('admin_ingredients.material_updated') . '.');
     }
 
     /**
@@ -74,7 +74,7 @@ class ProductIngredientController extends Controller
 
         $this->service->delete($productIngredient);
 
-        return $this->redirectToOrigin($request)->with('success', 'Recept tétel törölve.');
+        return $this->redirectToOrigin($request)->with('success', __('admin_ingredients.material_deleted') . '.');
     }
 
     /**

@@ -273,7 +273,7 @@ const confirmDelete = (category) => {
                         </div>
                     </template>
 
-                    <Column field="name" :header="$t('admin_categories.columns.name')" sortable>
+                    <Column field="name" :header="$t('common.name')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">{{ data.name }}</p>
@@ -282,7 +282,7 @@ const confirmDelete = (category) => {
                         </template>
                     </Column>
                     <Column field="sort_order" :header="$t('admin_categories.columns.sort_order')" sortable />
-                    <Column field="products_count" :header="$t('admin_categories.columns.products')" />
+                    <Column field="products_count" :header="$t('nav.products')" />
                     <Column field="is_active" :header="$t('admin_categories.columns.status')" sortable>
                         <template #body="{ data }">
                             <CategoryStatusBadge :active="data.is_active" />
