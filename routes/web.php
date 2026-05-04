@@ -147,9 +147,9 @@ Route::middleware('auth')->group(function (): void {
             Route::post('/{weeklyMenu}/publish', 'publish')->name('publish');
             Route::post('/{weeklyMenu}/unpublish', 'unpublish')->name('unpublish');
 
-            Route::post('/{weeklyMenu}/items', 'storeItem')->name('store');
-            Route::put('/{weeklyMenu}/items/{item}', 'updateItem')->name('update');
-            Route::delete('/{weeklyMenu}/items/{item}', 'destroyItem')->name('destroy');
+            Route::post('/{weeklyMenu}/items', 'storeItem')->name('items.store');
+            Route::put('/{weeklyMenu}/items/{item}', 'updateItem')->name('items.update');
+            Route::delete('/{weeklyMenu}/items/{item}', 'destroyItem')->name('items.destroy');
         });
 
         //Route::get('/weekly-menus', [WeeklyMenuController::class, 'index'])->name('weekly-menus.index');

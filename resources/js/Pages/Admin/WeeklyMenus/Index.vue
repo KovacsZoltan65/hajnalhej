@@ -84,7 +84,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        "/admin/weekly-menus",
+        route("admin.weekly-menus.index"),
         {
             search: filterState.search || undefined,
             status: filterState.status || undefined,
@@ -173,7 +173,7 @@ const submitCreate = () => {
         },
     };
 
-    form.post("/admin/weekly-menus", options);
+    form.post(route("admin.weekly-menus.store"), options);
 };
 
 const submitEdit = () => {
@@ -190,7 +190,7 @@ const submitEdit = () => {
         },
     };
 
-    form.put(`/admin/weekly-menus/${editingId.value}`, options);
+    form.put(route("admin.weekly-menus.update", editingId.value), options);
 };
 
 const confirmDelete = (menu) => {
@@ -203,15 +203,15 @@ const confirmDelete = (menu) => {
         acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
-            router.delete(`/admin/weekly-menus/${menu.id}`, { preserveScroll: true });
+            router.delete(route("admin.weekly-menus.destroy", menu.id), { preserveScroll: true });
         },
     });
 };
 
 const publish = (menu) =>
-    router.post(`/admin/weekly-menus/${menu.id}/publish`, {}, { preserveScroll: true });
+    router.post(route("admin.weekly-menus.publish", menu.id), {}, { preserveScroll: true });
 const unpublish = (menu) =>
-    router.post(`/admin/weekly-menus/${menu.id}/unpublish`, {}, { preserveScroll: true });
+    router.post(route("admin.weekly-menus.unpublish", menu.id), {}, { preserveScroll: true });
 /*
 const openItems = (menu) => {
     selectedMenu.value = menu;
@@ -239,12 +239,16 @@ const saveItem = (payload) => {
     };
 
     if (payload.id) {
-        router.put(`/admin/weekly-menus/${menuId}/items/${payload.id}`, payload, options);
+        router.put(
+            route("admin.weekly-menus.items.update", [menuId, payload.id]),
+            payload,
+            options
+        );
 
         return;
     }
 
-    router.post(`/admin/weekly-menus/${menuId}/items`, payload, options);
+    router.post(route("admin.weekly-menus.items.store", menuId), payload, options);
 };
 
 const deleteItem = (item) => {
@@ -267,7 +271,10 @@ const deleteItem = (item) => {
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(
-                `/admin/weekly-menus/${selectedMenu.value.id}/items/${item.id}`,
+                route("admin.weekly-menus.items.destroy", [
+                    selectedMenu.value.id,
+                    item.id,
+                ]),
                 {
                     preserveScroll: true,
                     preserveState: true,
@@ -275,13 +282,6 @@ const deleteItem = (item) => {
             );
         },
     });
-
-    /*
-    router.delete(`/admin/weekly-menus/${selectedMenu.value.id}/items/${item.id}`, {
-        preserveScroll: true,
-        preserveState: true,
-    });
-    */
 };
 
 const refreshMenus = () => {
