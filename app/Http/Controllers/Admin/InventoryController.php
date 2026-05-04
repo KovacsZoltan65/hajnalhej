@@ -78,7 +78,13 @@ class InventoryController extends Controller
             'movement_types' => InventoryMovement::movementTypes(),
             'ingredient_options' => $this->ingredientService->listSelectableActive()->values()->all(),
             'product_options' => $this->productService->listSelectableActiveProducts()->values()->all(),
-            'waste_reasons' => ['lejárt', 'sérült', 'gyártási hiba', 'romlott', 'ismeretlen'],
+            'movement_types' => [
+                __('admin_inventory.waste_reason_expired'),
+                __('admin_inventory.waste_reason_damaged'),
+                __('admin_inventory.waste_reason_manufacturing_defect'),
+                __('admin_inventory.waste_reason_spoiled'),
+                __('admin_inventory.waste_reason_unknown'),
+            ],
         ]);
     }
 
@@ -90,7 +96,7 @@ class InventoryController extends Controller
     {
         $this->inventoryService->recordWaste($request->validated(), $request->user());
 
-        return back()->with('success', 'Selejt könyvelve.');
+        return back()->with('success', __('admin_inventory.waste_accounting') . '.');
     }
 
     /**
@@ -101,6 +107,6 @@ class InventoryController extends Controller
     {
         $this->inventoryService->recordAdjustment($request->validated(), $request->user());
 
-        return back()->with('success', 'Készletkorrekció könyvelve.');
+        return back()->with('success', __('admin_inventory.inventory_adjustment_posted') . '.');
     }
 }

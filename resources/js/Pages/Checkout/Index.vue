@@ -45,7 +45,7 @@ const submit = () => {
         },
     });
 
-    form.post('/checkout');
+    form.post(route('checkout.store'));
 };
 </script>
 
@@ -149,7 +149,7 @@ const submit = () => {
                 </div>
 
                 <Link
-                    href="/cart"
+                    :href="route('cart.index')"
                     class="mt-4 inline-flex text-sm font-semibold text-bakery-brown hover:underline"
                     @click="trackCtaClick('checkout.back_to_cart', { funnel: 'checkout', step: 'back_to_cart' })"
                 >

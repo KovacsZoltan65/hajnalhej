@@ -45,9 +45,9 @@ class ProductController extends Controller
             'categories' => $this->service->listSelectableCategories(),
             'ingredients' => $this->productIngredientService->listSelectableIngredients(),
             'stockStatuses' => [
-                ['value' => Product::STOCK_IN_STOCK, 'label' => 'Raktaron'],
-                ['value' => Product::STOCK_PREORDER, 'label' => 'Elojegyezheto'],
-                ['value' => Product::STOCK_OUT_OF_STOCK, 'label' => 'Nincs keszleten'],
+                ['value' => Product::STOCK_IN_STOCK, 'label' => __('admin_product.status_in_stock')],
+                ['value' => Product::STOCK_PREORDER, 'label' => __('admin_product.status_available_for_pre')],
+                ['value' => Product::STOCK_OUT_OF_STOCK, 'label' => __('admin_product.status_out_of_stock')],
             ],
             'filters' => $filters->toFrontendFilters(),
         ]);
@@ -59,7 +59,7 @@ class ProductController extends Controller
 
         return redirect()
             ->route('admin.products.index')
-            ->with('success', 'Termék létrehozva.');
+            ->with('success', __('admin_product.created') . '.');
     }
 
     public function update(UpdateProductRequest $request, Product $product): RedirectResponse
@@ -68,7 +68,7 @@ class ProductController extends Controller
 
         return redirect()
             ->route('admin.products.index')
-            ->with('success', 'Termék frissítve.');
+            ->with('success', __('admin_product.updated') . '.');
     }
 
     public function destroy(Product $product): RedirectResponse
@@ -79,6 +79,6 @@ class ProductController extends Controller
 
         return redirect()
             ->route('admin.products.index')
-            ->with('success', 'Termék törölve.');
+            ->with('success', __('admin_product.deleted') . '.');
     }
 }

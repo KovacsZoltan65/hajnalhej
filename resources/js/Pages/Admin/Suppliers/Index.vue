@@ -63,7 +63,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        '/admin/suppliers',
+        route('admin.suppliers.index'),
         {
             search: filterState.search || undefined,
             sort_field: filterState.sort_field,
@@ -146,7 +146,7 @@ const submitCreate = () => {
         },
     };
 
-    form.post('/admin/suppliers', options);
+    form.post(route('admin.suppliers.store'), options);
 };
 
 const submitEdit = () => {
@@ -163,7 +163,7 @@ const submitEdit = () => {
         },
     };
 
-    form.put(`/admin/suppliers/${editingId.value}`, options);
+    form.put(route('admin.suppliers.update', editingId.value), options);
 };
 
 const confirmDelete = (supplier) => {
@@ -174,7 +174,7 @@ const confirmDelete = (supplier) => {
         acceptLabel: 'Törlés',
         acceptClass: 'p-button-danger',
         accept: () => {
-            router.delete(`/admin/suppliers/${supplier.id}`, {
+            router.delete(route('admin.suppliers.destroy', supplier.id), {
                 preserveScroll: true,
             });
         },

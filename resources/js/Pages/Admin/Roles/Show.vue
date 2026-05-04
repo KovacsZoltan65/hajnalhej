@@ -32,7 +32,7 @@ const form = useForm({
 
 const submit = () => {
     form.permissions = [...selectedPermissions.value];
-    form.put(`/admin/roles/${props.role.id}/permissions`, {
+    form.put(route('admin.roles.permissions.sync', props.role.id), {
         preserveScroll: true,
     });
 };
@@ -49,7 +49,7 @@ const submit = () => {
                 description="A role-hoz tartozó jogosultságok szinkronizálása modulonként."
             />
 
-            <Link href="/admin/roles">
+            <Link :href="route('admin.roles.index')">
                 <Button label="Vissza a listara" icon="pi pi-arrow-left" text />
             </Link>
         </div>

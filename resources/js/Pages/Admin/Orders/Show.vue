@@ -38,7 +38,7 @@ const formatCurrency = (value) =>
     }).format(Number(value ?? 0));
 
 const updateStatus = () => {
-    statusForm.patch(`/admin/orders/${props.order.id}/status`);
+    statusForm.patch(route("admin.orders.status.update", props.order.id));
 };
 </script>
 

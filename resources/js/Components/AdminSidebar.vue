@@ -12,7 +12,19 @@ const props = defineProps({
     },
 });
 
-const isActive = (route) => page.url === route || page.url.startsWith(`${route}/`);
+const toPath = (route) => {
+    try {
+        return new URL(route, window.location.origin).pathname;
+    } catch {
+        return route;
+    }
+};
+
+const isActive = (route) => {
+    const path = toPath(route);
+
+    return page.url === path || page.url.startsWith(`${path}/`);
+};
 
 const visibleGroups = computed(() => {
     return props.groups

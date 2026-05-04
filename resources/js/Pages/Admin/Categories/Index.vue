@@ -64,7 +64,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        "/admin/categories",
+        route("admin.categories.index"),
         {
             search: filterState.search || undefined,
             sort_field: filterState.sort_field,
@@ -145,7 +145,7 @@ const submitCreate = () => {
         },
     };
 
-    form.post("/admin/categories", options);
+    form.post(route("admin.categories.store"), options);
 };
 
 const submitEdit = () => {
@@ -162,7 +162,7 @@ const submitEdit = () => {
         return;
     }
 
-    form.put(`/admin/categories/${editingId.value}`, options);
+    form.put(route("admin.categories.update", editingId.value), options);
 };
 
 const confirmDelete = (category) => {
@@ -175,7 +175,7 @@ const confirmDelete = (category) => {
         acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
-            router.delete(`/admin/categories/${category.id}`, {
+            router.delete(route("admin.categories.destroy", category.id), {
                 preserveScroll: true,
             });
         },
@@ -273,7 +273,7 @@ const confirmDelete = (category) => {
                         </div>
                     </template>
 
-                    <Column field="name" :header="$t('admin_categories.columns.name')" sortable>
+                    <Column field="name" :header="$t('common.name')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">{{ data.name }}</p>
@@ -282,7 +282,7 @@ const confirmDelete = (category) => {
                         </template>
                     </Column>
                     <Column field="sort_order" :header="$t('admin_categories.columns.sort_order')" sortable />
-                    <Column field="products_count" :header="$t('admin_categories.columns.products')" />
+                    <Column field="products_count" :header="$t('nav.products')" />
                     <Column field="is_active" :header="$t('admin_categories.columns.status')" sortable>
                         <template #body="{ data }">
                             <CategoryStatusBadge :active="data.is_active" />

@@ -7,7 +7,8 @@ const { translate } = vi.hoisted(() => {
         "admin_permissions.meta_title": "Jogosultságok",
         "admin_permissions.eyebrow": "Admin / Szerepkörök és jogosultságok",
         "admin_permissions.title": "Jogosultságok",
-        "admin_permissions.description": "Registry-alapú jogosultságlista, használatnézet és drift ellenőrzés.",
+        "admin_permissions.description":
+            "Registry-alapú jogosultságlista, használatnézet és drift ellenőrzés.",
         "admin_permissions.filters.search": "Keresés",
         "admin_permissions.filters.search_placeholder": "Név, címke, leírás...",
         "admin_permissions.filters.module": "Modul",
@@ -33,9 +34,10 @@ const { translate } = vi.hoisted(() => {
         "admin_permissions.usage_states.used": "Használt",
         "admin_permissions.usage_states.unused": "Nem használt",
         "admin_permissions.registry_states.synced": "Szinkronizált",
-        "admin_permissions.registry_states.missing_in_db": "Hiányzik az adatbázisból",
+        "admin_permissions.registry_states.missing_in_db":
+            "Hiányzik az adatbázisból",
         "admin_permissions.registry_states.orphan_db_only": "Csak adatbázisban",
-        "admin_permissions.sort_fields.name": "Név",
+        "common.name": "Név",
         "admin_permissions.sort_fields.module": "Modul",
         "admin_permissions.sort_fields.roles_count": "Szerepkör használat",
         "admin_permissions.sort_fields.users_count": "Felhasználói használat",
@@ -60,7 +62,11 @@ const { translate } = vi.hoisted(() => {
 
 vi.mock("@inertiajs/vue3", () => ({
     Head: { name: "Head", template: "<span />" },
-    Link: { name: "Link", props: ["href"], template: '<a :href="href"><slot /></a>' },
+    Link: {
+        name: "Link",
+        props: ["href"],
+        template: '<a :href="href"><slot /></a>',
+    },
     router: { get: vi.fn(), post: vi.fn() },
     usePage: () => ({ props: { flash: {} } }),
 }));
@@ -74,13 +80,19 @@ vi.mock("@/Layouts/AdminLayout.vue", () => ({
 }));
 
 vi.mock("primevue/button", () => ({
-    default: { props: ["label"], template: "<button>{{ label }}<slot /></button>" },
+    default: {
+        props: ["label"],
+        template: "<button>{{ label }}<slot /></button>",
+    },
 }));
 vi.mock("primevue/checkbox", () => ({
-    default: { template: "<input type=\"checkbox\" />" },
+    default: { template: '<input type="checkbox" />' },
 }));
 vi.mock("primevue/inputtext", () => ({
-    default: { props: ["placeholder"], template: '<input :placeholder="placeholder" />' },
+    default: {
+        props: ["placeholder"],
+        template: '<input :placeholder="placeholder" />',
+    },
 }));
 vi.mock("primevue/select", () => ({
     default: { template: "<div />" },
@@ -88,7 +100,8 @@ vi.mock("primevue/select", () => ({
 vi.mock("primevue/datatable", () => ({
     default: {
         props: ["value"],
-        template: '<div><slot name="empty" /><div v-for="row in value" :key="row.name">{{ row.name }} {{ row.module }}</div><slot /></div>',
+        template:
+            '<div><slot name="empty" /><div v-for="row in value" :key="row.name">{{ row.name }} {{ row.module }}</div><slot /></div>',
     },
 }));
 vi.mock("primevue/column", () => ({
@@ -115,7 +128,8 @@ const stubs = {
     },
     SectionTitle: {
         props: ["eyebrow", "title", "description"],
-        template: "<section>{{ eyebrow }} {{ title }} {{ description }}</section>",
+        template:
+            "<section>{{ eyebrow }} {{ title }} {{ description }}</section>",
     },
 };
 
@@ -149,7 +163,9 @@ describe("Admin Permissions Index", () => {
             },
         });
 
-        expect(wrapper.text()).toContain("Admin / Szerepkörök és jogosultságok");
+        expect(wrapper.text()).toContain(
+            "Admin / Szerepkörök és jogosultságok",
+        );
         expect(wrapper.text()).toContain("Keresés");
         expect(wrapper.text()).toContain("Jogosultság");
         expect(wrapper.text()).toContain("permissions.view");

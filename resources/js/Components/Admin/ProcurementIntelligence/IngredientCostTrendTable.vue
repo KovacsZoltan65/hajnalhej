@@ -29,7 +29,7 @@ const formatCurrency = (value) =>
             </div>
             <div v-if="rows.length" class="mt-4 overflow-x-auto">
                 <table class="min-w-[780px] w-full text-sm">
-                    <thead class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-[0.1em] text-bakery-dark/60">
+                    <thead class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60">
                         <tr>
                             <th class="px-2 py-2">{{ trans('admin_procurement_intelligence.columns.date') }}</th>
                             <th class="px-2 py-2">{{ trans('admin_procurement_intelligence.columns.ingredient') }}</th>
@@ -37,7 +37,7 @@ const formatCurrency = (value) =>
                             <th class="px-2 py-2 text-right">{{ trans('admin_procurement_intelligence.columns.average_price') }}</th>
                             <th class="px-2 py-2 text-right">{{ trans('admin_procurement_intelligence.columns.weighted_average') }}</th>
                             <th class="px-2 py-2 text-right">{{ trans('admin_procurement_intelligence.columns.last_price') }}</th>
-                            <th class="px-2 py-2 text-right">{{ trans('admin_procurement_intelligence.columns.quantity') }}</th>
+                            <th class="px-2 py-2 text-right">{{ trans('common.quantity') }}</th>
                         </tr>
                     </thead>
                     <tbody>

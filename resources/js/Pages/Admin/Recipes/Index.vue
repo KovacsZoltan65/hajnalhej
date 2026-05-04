@@ -99,7 +99,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        "/admin/recipes",
+        route("admin.recipes.index"),
         {
             product_id: filterState.product_id || undefined,
             search: filterState.search || undefined,
@@ -168,8 +168,8 @@ const saveRecipeItem = (payload) => {
     }
 
     const url = payload.id
-        ? `/admin/products/${editorRecipe.value.id}/ingredients/${payload.id}`
-        : `/admin/products/${editorRecipe.value.id}/ingredients`;
+        ? route("admin.products.ingredients.update", [editorRecipe.value.id, payload.id])
+        : route("admin.products.ingredients.store", editorRecipe.value.id);
 
     const options = {
         preserveScroll: true,
@@ -199,8 +199,8 @@ const saveRecipeStep = (payload) => {
     }
 
     const url = payload.id
-        ? `/admin/products/${editorRecipe.value.id}/recipe-steps/${payload.id}`
-        : `/admin/products/${editorRecipe.value.id}/recipe-steps`;
+        ? route("admin.products.recipe-steps.update", [editorRecipe.value.id, payload.id])
+        : route("admin.products.recipe-steps.store", editorRecipe.value.id);
 
     const options = {
         preserveScroll: true,
@@ -237,7 +237,7 @@ const deleteRecipeItem = (item) => {
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(
-                `/admin/products/${editorRecipe.value.id}/ingredients/${item.id}`,
+                route("admin.products.ingredients.destroy", [editorRecipe.value.id, item.id]),
                 {
                     preserveScroll: true,
                     preserveState: true,
@@ -262,7 +262,7 @@ const deleteRecipeStep = (step) => {
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(
-                `/admin/products/${editorRecipe.value.id}/recipe-steps/${step.id}`,
+                route("admin.products.recipe-steps.destroy", [editorRecipe.value.id, step.id]),
                 {
                     preserveScroll: true,
                     preserveState: true,

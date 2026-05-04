@@ -97,7 +97,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        "/admin/audit-logs",
+        route("admin.audit-logs.index"),
         {
             search: filterState.search || undefined,
             log_name: filterState.log_name || undefined,
@@ -261,12 +261,15 @@ const onPage = (event) => {
                         </div>
                     </template>
 
-                    <Column :header="$t('audit_logs.columns.created_at')" field="created_at" />
+                    <Column
+                        :header="$t('audit_logs.columns.created_at')"
+                        field="created_at"
+                    />
 
                     <Column :header="$t('audit_logs.columns.domain')">
                         <template #body="{ data }">
                             <span
-                                class="text-xs font-semibold uppercase tracking-[0.1em] text-bakery-dark/70"
+                                class="text-xs font-semibold uppercase tracking-widest text-bakery-dark/70"
                                 >{{ data.log_name }}</span
                             >
                         </template>
@@ -307,11 +310,14 @@ const onPage = (event) => {
                         </template>
                     </Column>
 
-                    <Column field="description" :header="$t('audit_logs.columns.description')" />
+                    <Column
+                        field="description"
+                        :header="$t('audit_logs.columns.description')"
+                    />
 
                     <Column :header="$t('common.actions')" :style="{ width: '9rem' }">
                         <template #body="{ data }">
-                            <Link :href="`/admin/audit-logs/${data.id}`">
+                            <Link :href="route('admin.audit-logs.show', data.id)">
                                 <Button
                                     :label="$t('audit_logs.actions.details')"
                                     size="small"

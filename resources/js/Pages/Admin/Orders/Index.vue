@@ -65,7 +65,7 @@ const formatCurrency = (value) =>
 const load = (extra = {}) => {
     loading.value = true;
 
-    router.get("/admin/orders", {
+    router.get(route("admin.orders.index"), {
         search: filterState.search || undefined,
         status: filterState.status || undefined,
         sort_field: filterState.sort_field,
@@ -193,7 +193,7 @@ const onPage = (event) => {
                 </Column>
                 <Column :header="$t('common.actions')">
                     <template #body="{ data }">
-                        <Link :href="`/admin/orders/${data.id}`" class="inline-flex min-h-11 items-center rounded-md border border-bakery-brown/20 px-3 py-2 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10">
+                        <Link :href="route('admin.orders.show', data.id)" class="inline-flex min-h-11 items-center rounded-md border border-bakery-brown/20 px-3 py-2 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10">
                             {{ $t("admin_orders.actions.details") }}
                         </Link>
                     </template>

@@ -100,7 +100,7 @@ const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        "/admin/ingredients",
+        route("admin.ingredients.index"),
         {
             search: filterState.search || undefined,
             is_active: filterState.is_active,
@@ -193,7 +193,7 @@ const submitCreate = () => {
         },
     };
 
-    form.post("/admin/ingredients", options);
+    form.post(route("admin.ingredients.store"), options);
 };
 
 const submitEdit = () => {
@@ -210,7 +210,7 @@ const submitEdit = () => {
         },
     };
 
-    form.put(`/admin/ingredients/${editingId.value}`, options);
+    form.put(route("admin.ingredients.update", editingId.value), options);
 };
 
 const confirmDelete = (ingredient) => {
@@ -223,7 +223,7 @@ const confirmDelete = (ingredient) => {
         acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
-            router.delete(`/admin/ingredients/${ingredient.id}`, {
+            router.delete(route("admin.ingredients.destroy", ingredient.id), {
                 preserveScroll: true,
             });
         },

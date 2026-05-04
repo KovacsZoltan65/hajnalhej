@@ -44,10 +44,10 @@ const props = defineProps({
         </article>
 
         <div class="flex flex-wrap gap-3">
-            <Link href="/weekly-menu" class="rounded-full bg-bakery-brown px-5 py-2.5 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark">
+            <Link :href="route('weekly-menu')" class="rounded-full bg-bakery-brown px-5 py-2.5 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark">
                 Ujabb rendeles inditasa
             </Link>
-            <Link href="/account" class="rounded-full border border-bakery-brown/25 px-5 py-2.5 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream">
+            <Link :href="route('account')" class="rounded-full border border-bakery-brown/25 px-5 py-2.5 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream">
                 Fiókom
             </Link>
         </div>

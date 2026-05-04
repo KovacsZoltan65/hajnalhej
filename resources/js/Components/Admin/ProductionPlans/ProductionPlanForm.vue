@@ -76,13 +76,13 @@ const removeItemRow = (index) => {
                 class="grid gap-3 rounded-lg border border-bakery-brown/10 bg-white p-3 md:grid-cols-[minmax(0,1fr)_8rem_6rem_5rem_auto]"
             >
                 <div class="space-y-1">
-                    <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ trans('admin_production_plans.form.product') }}</label>
+                    <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ trans('common.product') }}</label>
                     <Select v-model="item.product_id" :options="products" option-label="name" option-value="id" class="w-full" />
                     <p v-if="form.errors[`items.${index}.product_id`]" class="text-xs text-red-700">{{ form.errors[`items.${index}.product_id`] }}</p>
                 </div>
 
                 <div class="space-y-1">
-                    <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ trans('admin_production_plans.form.quantity') }}</label>
+                    <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ trans('common.quantity') }}</label>
                     <InputText v-model="item.target_quantity" type="number" min="0.001" step="0.001" class="w-full" />
                     <p v-if="form.errors[`items.${index}.target_quantity`]" class="text-xs text-red-700">{{ form.errors[`items.${index}.target_quantity`] }}</p>
                 </div>

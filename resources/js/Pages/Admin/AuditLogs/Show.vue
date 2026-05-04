@@ -34,7 +34,7 @@ const formatJson = (value) => JSON.stringify(value ?? {}, null, 2);
                 :description="$t('audit_logs.show_description')"
             />
 
-            <Link href="/admin/audit-logs">
+            <Link :href="route('admin.audit-logs.index')">
                 <Button
                     :label="$t('audit_logs.actions.back_to_list')"
                     icon="pi pi-arrow-left"
@@ -70,7 +70,7 @@ const formatJson = (value) => JSON.stringify(value ?? {}, null, 2);
                     {{ $t("audit_logs.columns.domain") }}
                 </p>
                 <p
-                    class="mt-2 text-sm font-semibold uppercase tracking-[0.1em] text-bakery-dark"
+                    class="mt-2 text-sm font-semibold uppercase tracking-widest text-bakery-dark"
                 >
                     {{ log.log_name }}
                 </p>
@@ -144,24 +144,26 @@ const formatJson = (value) => JSON.stringify(value ?? {}, null, 2);
                 </h2>
                 <pre
                     class="mt-3 overflow-x-auto rounded-lg bg-[#fff9f1] p-3 text-xs text-bakery-dark"
-                    >{{ formatJson({
-                    added_permissions: log.properties.added_permissions,
-                    removed_permissions: log.properties.removed_permissions,
-                    added_roles: log.properties.added_roles,
-                    removed_roles: log.properties.removed_roles,
-                    status_transition: log.properties.status_transition,
-                    pickup_transition: log.properties.pickup_transition,
-                    order: log.properties.order,
-                    customer_snapshot: log.properties.customer_snapshot,
-                    totals_snapshot: log.properties.totals_snapshot,
-                    items_summary: log.properties.items_summary,
-                    pickup_snapshot: log.properties.pickup_snapshot,
-                    note_summary: log.properties.note_summary,
-                    blocked_reason: log.properties.blocked_reason,
-                    actor_snapshot: log.properties.actor_snapshot,
-                    role: log.properties.role,
-                    target_user: log.properties.target_user,
-                }) }}</pre
+                    >{{
+                        formatJson({
+                            added_permissions: log.properties.added_permissions,
+                            removed_permissions: log.properties.removed_permissions,
+                            added_roles: log.properties.added_roles,
+                            removed_roles: log.properties.removed_roles,
+                            status_transition: log.properties.status_transition,
+                            pickup_transition: log.properties.pickup_transition,
+                            order: log.properties.order,
+                            customer_snapshot: log.properties.customer_snapshot,
+                            totals_snapshot: log.properties.totals_snapshot,
+                            items_summary: log.properties.items_summary,
+                            pickup_snapshot: log.properties.pickup_snapshot,
+                            note_summary: log.properties.note_summary,
+                            blocked_reason: log.properties.blocked_reason,
+                            actor_snapshot: log.properties.actor_snapshot,
+                            role: log.properties.role,
+                            target_user: log.properties.target_user,
+                        })
+                    }}</pre
                 >
             </article>
         </div>

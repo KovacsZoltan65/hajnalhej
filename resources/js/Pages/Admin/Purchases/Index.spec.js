@@ -46,7 +46,9 @@ vi.mock('primevue/select', () => ({
     },
 }));
 vi.mock('primevue/datatable', () => ({ default: { template: '<div><slot /><slot name="empty" /></div>' } }));
-vi.mock('primevue/column', () => ({ default: { template: '<div><slot name="body" :data="{}" /></div>' } }));
+vi.mock('primevue/column', () => ({
+    default: { template: '<div><slot name="body" :data="{ id: 1, status: \'draft\' }" /></div>' },
+}));
 vi.mock('primevue/confirmdialog', () => ({ default: { template: '<div />' } }));
 vi.mock('@/Components/SectionTitle.vue', () => ({ default: { props: ['title'], template: '<div>{{ title }}</div>' } }));
 

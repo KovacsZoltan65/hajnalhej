@@ -60,7 +60,7 @@ const form = reactive({
 
 const applyFilters = () => {
     loading.value = true;
-    router.get('/admin/security-dashboard', {
+    router.get(route('admin.security-dashboard.index'), {
         window: form.window,
         risk_level: form.risk_level,
         log_name: form.log_name,

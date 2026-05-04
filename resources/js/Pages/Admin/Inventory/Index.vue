@@ -15,6 +15,8 @@ import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
 
+import { createDayOptions } from "@/Utils/functions";
+
 defineOptions({ layout: AdminLayout });
 
 const props = defineProps({
@@ -41,12 +43,7 @@ const filterState = reactive({
     per_page: props.filters.per_page ?? 15,
 });
 
-const dayOptions = [
-    { label: trans("common.day_count", { count: 7 }), value: 7 },
-    { label: trans("common.day_count", { count: 14 }), value: 14 },
-    { label: trans("common.day_count", { count: 30 }), value: 30 },
-    { label: trans("common.day_count", { count: 90 }), value: 90 },
-];
+const dayOptions = createDayOptions(trans, [7, 14, 30, 90]);
 
 const perPageOptions = [
     { label: trans("admin_inventory.filters.per_page_option", { count: 15 }), value: 15 },
@@ -67,24 +64,29 @@ const ingredientOptions = computed(() =>
         label: `${ingredient.name} (${ingredient.unit})`,
         value: ingredient.id,
         unit: ingredient.unit,
-    })),
+    }))
 );
 const productOptions = computed(() =>
     props.product_options.map((product) => ({
         label: `${product.name} (/${product.slug})`,
         value: product.id,
-    })),
+    }))
 );
 
-const ingredientFilterOptions = computed(() => [{ label: trans("common.all"), value: null }, ...ingredientOptions.value]);
-const wasteReasonOptions = computed(() => props.waste_reasons.map((reason) => ({ label: reason, value: reason })));
+const ingredientFilterOptions = computed(() => [
+    { label: trans("common.all"), value: null },
+    ...ingredientOptions.value,
+]);
+const wasteReasonOptions = computed(() =>
+    props.waste_reasons.map((reason) => ({ label: reason, value: reason }))
+);
 
 const wasteForm = useForm({
     waste_type: "ingredient",
     ingredient_id: null,
     product_id: null,
     quantity: 1,
-    reason: trans("admin_inventory.default_waste_reason"),
+    reason: trans("admin_inventory.waste_reason_expired"),
     occurred_at: new Date().toISOString().slice(0, 10),
 });
 
@@ -97,13 +99,15 @@ const adjustmentForm = useForm({
 });
 
 const currentPage = computed(() => props.ledger.current_page ?? 1);
-const first = computed(() => (currentPage.value - 1) * (props.ledger.per_page ?? filterState.per_page));
+const first = computed(
+    () => (currentPage.value - 1) * (props.ledger.per_page ?? filterState.per_page)
+);
 
 const load = (extra = {}) => {
     loading.value = true;
 
     router.get(
-        "/admin/inventory",
+        route("admin.inventory.index"),
         {
             days: filterState.days,
             date_from: filterState.date_from || undefined,
@@ -150,7 +154,7 @@ const openWasteModal = () => {
     wasteForm.ingredient_id = null;
     wasteForm.product_id = null;
     wasteForm.quantity = 1;
-    wasteForm.reason = trans("admin_inventory.default_waste_reason");
+    wasteForm.reason = trans("admin_inventory.waste_reason_expired");
     wasteForm.occurred_at = new Date().toISOString().slice(0, 10);
     wasteModalVisible.value = true;
 };
@@ -167,7 +171,7 @@ const openAdjustmentModal = () => {
 };
 
 const submitWaste = () => {
-    wasteForm.post("/admin/inventory/waste", {
+    wasteForm.post(route("admin.inventory.waste.store"), {
         preserveScroll: true,
         onSuccess: () => {
             wasteModalVisible.value = false;
@@ -177,7 +181,7 @@ const submitWaste = () => {
 };
 
 const submitAdjustment = () => {
-    adjustmentForm.post("/admin/inventory/adjustments", {
+    adjustmentForm.post(route("admin.inventory.adjustments.store"), {
         preserveScroll: true,
         onSuccess: () => {
             adjustmentModalVisible.value = false;
@@ -210,23 +214,21 @@ const movementTypeLabel = (type) => {
 
 const movementTypeClass = (type) => {
     const map = {
-        purchase_in: 'bg-emerald-100 text-emerald-800',
-        production_out: 'bg-amber-100 text-amber-800',
-        waste_out: 'bg-rose-100 text-rose-800',
-        adjustment_in: 'bg-blue-100 text-blue-800',
-        adjustment_out: 'bg-orange-100 text-orange-800',
-        count_correction: 'bg-violet-100 text-violet-800',
-        return_in: 'bg-cyan-100 text-cyan-800',
-        return_out: 'bg-pink-100 text-pink-800',
+        purchase_in: "bg-emerald-100 text-emerald-800",
+        production_out: "bg-amber-100 text-amber-800",
+        waste_out: "bg-rose-100 text-rose-800",
+        adjustment_in: "bg-blue-100 text-blue-800",
+        adjustment_out: "bg-orange-100 text-orange-800",
+        count_correction: "bg-violet-100 text-violet-800",
+        return_in: "bg-cyan-100 text-cyan-800",
+        return_out: "bg-pink-100 text-pink-800",
     };
 
-    return map[type] ?? 'bg-stone-100 text-stone-700';
+    return map[type] ?? "bg-stone-100 text-stone-700";
 };
 
 const directionClass = (direction) =>
-    direction === 'out'
-        ? "text-rose-700"
-        : "text-emerald-700";
+    direction === "out" ? "text-rose-700" : "text-emerald-700";
 
 const parseDateFromYmd = (value) => {
     if (!value) {
@@ -279,11 +281,46 @@ const dateToPicker = computed({
         />
 
         <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">{{ $t("admin_inventory.summary.total_stock_value") }}</p><p class="mt-2 font-heading text-3xl">{{ asCurrency(dashboard.summary.total_stock_value) }}</p></article>
-            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">{{ $t("admin_inventory.summary.low_stock_count") }}</p><p class="mt-2 font-heading text-3xl">{{ dashboard.summary.low_stock_count }}</p></article>
-            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">{{ $t("admin_inventory.summary.out_of_stock_count") }}</p><p class="mt-2 font-heading text-3xl">{{ dashboard.summary.out_of_stock_count }}</p></article>
-            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">{{ $t("admin_inventory.summary.weekly_waste_cost") }}</p><p class="mt-2 font-heading text-3xl">{{ asCurrency(dashboard.summary.weekly_waste_cost) }}</p></article>
-            <article class="ui-card p-4"><p class="text-xs uppercase text-bakery-dark/60">{{ $t("admin_inventory.summary.weekly_purchase_value") }}</p><p class="mt-2 font-heading text-3xl">{{ asCurrency(dashboard.summary.weekly_purchase_value) }}</p></article>
+            <article class="ui-card p-4">
+                <p class="text-xs uppercase text-bakery-dark/60">
+                    {{ $t("admin_inventory.summary.total_stock_value") }}
+                </p>
+                <p class="mt-2 font-heading text-3xl">
+                    {{ asCurrency(dashboard.summary.total_stock_value) }}
+                </p>
+            </article>
+            <article class="ui-card p-4">
+                <p class="text-xs uppercase text-bakery-dark/60">
+                    {{ $t("admin_inventory.summary.low_stock_count") }}
+                </p>
+                <p class="mt-2 font-heading text-3xl">
+                    {{ dashboard.summary.low_stock_count }}
+                </p>
+            </article>
+            <article class="ui-card p-4">
+                <p class="text-xs uppercase text-bakery-dark/60">
+                    {{ $t("admin_inventory.summary.out_of_stock_count") }}
+                </p>
+                <p class="mt-2 font-heading text-3xl">
+                    {{ dashboard.summary.out_of_stock_count }}
+                </p>
+            </article>
+            <article class="ui-card p-4">
+                <p class="text-xs uppercase text-bakery-dark/60">
+                    {{ $t("admin_inventory.summary.weekly_waste_cost") }}
+                </p>
+                <p class="mt-2 font-heading text-3xl">
+                    {{ asCurrency(dashboard.summary.weekly_waste_cost) }}
+                </p>
+            </article>
+            <article class="ui-card p-4">
+                <p class="text-xs uppercase text-bakery-dark/60">
+                    {{ $t("admin_inventory.summary.weekly_purchase_value") }}
+                </p>
+                <p class="mt-2 font-heading text-3xl">
+                    {{ asCurrency(dashboard.summary.weekly_purchase_value) }}
+                </p>
+            </article>
         </section>
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
@@ -294,17 +331,25 @@ const dateToPicker = computed({
             >
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.search") }}</label>
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >{{ $t("admin_inventory.filters.search") }}</label
+                        >
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            :placeholder="$t('admin_inventory.filters.search_placeholder')"
+                            :placeholder="
+                                $t('admin_inventory.filters.search_placeholder')
+                            "
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.type") }}</label>
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >{{ $t("common.type") }}</label
+                        >
                         <Select
                             v-model="filterState.movement_type"
                             :options="movementTypeOptions"
@@ -316,7 +361,10 @@ const dateToPicker = computed({
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.ingredient") }}</label>
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >{{ $t("admin_inventory.filters.ingredient") }}</label
+                        >
                         <Select
                             v-model="filterState.ingredient_id"
                             :options="ingredientFilterOptions"
@@ -329,7 +377,10 @@ const dateToPicker = computed({
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.days") }}</label>
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >{{ $t("admin_inventory.filters.days") }}</label
+                        >
                         <Select
                             v-model="filterState.days"
                             :options="dayOptions"
@@ -343,7 +394,10 @@ const dateToPicker = computed({
 
                 <template #actions>
                     <div class="space-y-1 min-w-44">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.date_from") }}</label>
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >{{ $t("admin_inventory.filters.date_from") }}</label
+                        >
                         <DatePicker
                             v-model="dateFromPicker"
                             show-icon
@@ -353,7 +407,10 @@ const dateToPicker = computed({
                         />
                     </div>
                     <div class="space-y-1 min-w-44">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.date_to") }}</label>
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >{{ $t("admin_inventory.filters.date_to") }}</label
+                        >
                         <DatePicker
                             v-model="dateToPicker"
                             show-icon
@@ -363,7 +420,10 @@ const dateToPicker = computed({
                         />
                     </div>
                     <div class="space-y-1 min-w-36">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{ $t("admin_inventory.filters.per_page") }}</label>
+                        <label
+                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                            >{{ $t("admin_inventory.filters.per_page") }}</label
+                        >
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -373,10 +433,29 @@ const dateToPicker = computed({
                             @change="submitFilters"
                         />
                     </div>
-                    <Button icon="pi pi-filter-slash" :label="$t('common.clear_filters')" severity="secondary" outlined @click="clearFilters" />
-                    <Button icon="pi pi-search" :label="$t('admin_inventory.actions.search')" @click="submitFilters" />
-                    <Button icon="pi pi-exclamation-triangle" :label="$t('admin_inventory.actions.waste')" severity="warn" @click="openWasteModal" />
-                    <Button icon="pi pi-sliders-h" :label="$t('admin_inventory.actions.adjustment')" @click="openAdjustmentModal" />
+                    <Button
+                        icon="pi pi-filter-slash"
+                        :label="$t('common.clear_filters')"
+                        severity="secondary"
+                        outlined
+                        @click="clearFilters"
+                    />
+                    <Button
+                        icon="pi pi-search"
+                        :label="$t('admin_inventory.actions.search')"
+                        @click="submitFilters"
+                    />
+                    <Button
+                        icon="pi pi-exclamation-triangle"
+                        :label="$t('admin_inventory.actions.waste')"
+                        severity="warn"
+                        @click="openWasteModal"
+                    />
+                    <Button
+                        icon="pi pi-sliders-h"
+                        :label="$t('admin_inventory.actions.adjustment')"
+                        @click="openAdjustmentModal"
+                    />
                 </template>
             </AdminTableToolbar>
 
@@ -394,55 +473,113 @@ const dateToPicker = computed({
                     @page="onPage"
                 >
                     <template #empty>
-                        <div class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70">
+                        <div
+                            class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
+                        >
                             <p>{{ $t("admin_inventory.empty") }}</p>
-                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button :label="$t('common.clear_filters')" outlined size="small" @click="clearFilters" />
-                                <Button :label="$t('admin_inventory.actions.waste')" size="small" severity="warn" @click="openWasteModal" />
+                            <div
+                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
+                            >
+                                <Button
+                                    :label="$t('common.clear_filters')"
+                                    outlined
+                                    size="small"
+                                    @click="clearFilters"
+                                />
+                                <Button
+                                    :label="$t('admin_inventory.actions.waste')"
+                                    size="small"
+                                    severity="warn"
+                                    @click="openWasteModal"
+                                />
                             </div>
                         </div>
                     </template>
 
-                    <Column field="occurred_at" :header="$t('admin_inventory.columns.date')">
+                    <Column
+                        field="occurred_at"
+                        :header="$t('admin_inventory.columns.date')"
+                    >
                         <template #body="{ data }">
-                            <span class="text-sm text-bakery-dark">{{ data.occurred_at || '-' }}</span>
+                            <span class="text-sm text-bakery-dark">{{
+                                data.occurred_at || "-"
+                            }}</span>
                         </template>
                     </Column>
-                    <Column field="ingredient_name" :header="$t('admin_inventory.columns.ingredient')">
+                    <Column
+                        field="ingredient_name"
+                        :header="$t('admin_inventory.columns.ingredient')"
+                    >
                         <template #body="{ data }">
                             <div>
-                                <p class="font-medium text-bakery-dark">{{ data.ingredient_name || '-' }}</p>
-                                <p class="text-xs text-bakery-dark/60">{{ data.ingredient_unit || '-' }}</p>
+                                <p class="font-medium text-bakery-dark">
+                                    {{ data.ingredient_name || "-" }}
+                                </p>
+                                <p class="text-xs text-bakery-dark/60">
+                                    {{ data.ingredient_unit || "-" }}
+                                </p>
                             </div>
                         </template>
                     </Column>
-                    <Column field="movement_type" :header="$t('admin_inventory.columns.type')">
+                    <Column
+                        field="movement_type"
+                        :header="$t('admin_inventory.columns.type')"
+                    >
                         <template #body="{ data }">
-                            <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold" :class="movementTypeClass(data.movement_type)">
+                            <span
+                                class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
+                                :class="movementTypeClass(data.movement_type)"
+                            >
                                 {{ movementTypeLabel(data.movement_type) }}
                             </span>
                         </template>
                     </Column>
-                    <Column field="quantity" :header="$t('admin_inventory.columns.quantity')">
+                    <Column
+                        field="quantity"
+                        :header="$t('common.quantity')"
+                    >
                         <template #body="{ data }">
-                            <span class="font-semibold" :class="directionClass(data.direction)">
-                                {{ data.direction === 'out' ? '-' : '+' }}{{ data.quantity }}
+                            <span
+                                class="font-semibold"
+                                :class="directionClass(data.direction)"
+                            >
+                                {{ data.direction === "out" ? "-" : "+"
+                                }}{{ data.quantity }}
                             </span>
                         </template>
                     </Column>
-                    <Column field="unit_cost" :header="$t('admin_inventory.columns.unit_cost')">
+                    <Column
+                        field="unit_cost"
+                        :header="$t('admin_inventory.columns.unit_cost')"
+                    >
                         <template #body="{ data }">
-                            <span>{{ data.unit_cost !== null ? asCurrency(data.unit_cost) : '-' }}</span>
+                            <span>{{
+                                data.unit_cost !== null ? asCurrency(data.unit_cost) : "-"
+                            }}</span>
                         </template>
                     </Column>
-                    <Column field="total_cost" :header="$t('admin_inventory.columns.value')">
+                    <Column
+                        field="total_cost"
+                        :header="$t('admin_inventory.columns.value')"
+                    >
                         <template #body="{ data }">
-                            <span class="font-medium">{{ data.total_cost !== null ? asCurrency(data.total_cost) : '-' }}</span>
+                            <span class="font-medium">{{
+                                data.total_cost !== null
+                                    ? asCurrency(data.total_cost)
+                                    : "-"
+                            }}</span>
                         </template>
                     </Column>
-                    <Column field="reference_type" :header="$t('admin_inventory.columns.reference')">
+                    <Column
+                        field="reference_type"
+                        :header="$t('admin_inventory.columns.reference')"
+                    >
                         <template #body="{ data }">
-                            <span class="text-sm text-bakery-dark/80">{{ data.reference_type || '-' }} #{{ data.reference_id || '-' }}</span>
+                            <span class="text-sm text-bakery-dark/80"
+                                >{{ data.reference_type || "-" }} #{{
+                                    data.reference_id || "-"
+                                }}</span
+                            >
                         </template>
                     </Column>
                 </DataTable>

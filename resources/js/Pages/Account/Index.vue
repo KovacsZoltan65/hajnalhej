@@ -19,7 +19,7 @@ const ui = computed(() => page.props.ui ?? {});
 const verificationForm = useForm({});
 
 const resendVerification = () => {
-    verificationForm.post("/email/verification-notification");
+    verificationForm.post(route("verification.send"));
 };
 </script>
 

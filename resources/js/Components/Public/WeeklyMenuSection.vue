@@ -25,7 +25,7 @@ const cartForm = useForm({
 const addToCart = (productId) => {
     cartForm.product_id = productId;
 
-    cartForm.post("/cart/items", {
+    cartForm.post(route("cart.items.store"), {
         preserveScroll: true,
     });
 };
@@ -55,13 +55,13 @@ const formatCurrency = (value) =>
             </p>
             <div class="mt-5 flex flex-wrap gap-3">
                 <Link
-                    href="/cart"
+                    :href="route('cart.index')"
                     class="rounded-full border border-bakery-brown/35 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
                 >
                     {{ $t("home.open_cart") }}
                 </Link>
                 <Link
-                    href="/checkout"
+                    :href="route('checkout.index')"
                     class="rounded-full bg-bakery-brown px-4 py-2 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
                 >
                     {{ $t("home.go_to_checkout") }}
@@ -130,7 +130,9 @@ const formatCurrency = (value) =>
         v-else
         class="rounded-2xl border border-dashed border-bakery-brown/30 bg-[#fcf7ef] p-8 text-center"
     >
-        <h3 class="font-heading text-3xl text-bakery-dark">{{ $t("weekly_menu.empty_title") }}</h3>
+        <h3 class="font-heading text-3xl text-bakery-dark">
+            {{ $t("weekly_menu.empty_title") }}
+        </h3>
         <p class="mt-3 text-sm text-bakery-dark/75">
             {{ $t("weekly_menu.empty_description") }}
         </p>

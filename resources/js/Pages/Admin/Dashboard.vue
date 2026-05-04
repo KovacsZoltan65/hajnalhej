@@ -56,31 +56,31 @@ defineProps({
             </p>
             <div class="mt-4 flex flex-wrap gap-2">
                 <Link
-                    href="/admin/categories"
+                    :href="route('admin.categories.index')"
                     class="rounded-full border border-bakery-brown/20 px-4 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
                 >
                     Kategoriak kezelese
                 </Link>
                 <Link
-                    href="/admin/products"
+                    :href="route('admin.products.index')"
                     class="rounded-full border border-bakery-brown/20 px-4 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
                 >
                     Termekek kezelese
                 </Link>
                 <Link
-                    href="/admin/recipes"
+                    :href="route('admin.recipes.index')"
                     class="rounded-full border border-bakery-brown/20 px-4 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
                 >
                     Receptek kezelese
                 </Link>
                 <Link
-                    href="/admin/ingredients"
+                    :href="route('admin.ingredients.index')"
                     class="rounded-full border border-bakery-brown/20 px-4 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
                 >
                     Alapanyagok kezelese
                 </Link>
                 <Link
-                    href="/admin/weekly-menus"
+                    :href="route('admin.weekly-menus.index')"
                     class="rounded-full border border-bakery-brown/20 px-4 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
                 >
                     Heti menuk kezelese

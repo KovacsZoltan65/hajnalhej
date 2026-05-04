@@ -169,12 +169,12 @@ const faqs = computed(() => [
                     </p>
                     <div class="flex flex-wrap gap-3">
                         <Link
-                            href="/weekly-menu"
+                            :href="route('weekly-menu')"
                             class="inline-flex min-h-11 items-center rounded-full bg-bakery-brown px-6 py-3 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
                             @click="
                                 trackLandingCta(
                                     'hero.weekly_menu_primary',
-                                    '/weekly-menu'
+                                    route('weekly-menu')
                                 )
                             "
                         >
@@ -183,14 +183,14 @@ const faqs = computed(() => [
                         <Link
                             :href="route('register')"
                             class="inline-flex min-h-11 items-center rounded-full bg-bakery-gold px-6 py-3 text-sm font-semibold text-bakery-dark transition hover:bg-[#edbb5a]"
-                            @click="trackLandingCta('hero.register_primary', '/register')"
+                            @click="trackLandingCta('hero.register_primary', route('register'))"
                         >
                             {{ $t("home.create_account") }}
                         </Link>
                         <Link
                             :href="route('cart.index')"
                             class="inline-flex min-h-11 items-center rounded-full border border-bakery-brown/30 px-6 py-3 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
-                            @click="trackLandingCta('hero.cart_secondary', '/cart')"
+                            @click="trackLandingCta('hero.cart_secondary', route('cart.index'))"
                         >
                             {{ $t("home.open_cart") }}
                         </Link>
@@ -238,9 +238,9 @@ const faqs = computed(() => [
                         </li>
                     </ul>
                     <Link
-                        href="/about"
+                        :href="route('about')"
                         class="inline-flex min-h-11 items-center rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
-                        @click="trackLandingCta('hero.about_story', '/about')"
+                        @click="trackLandingCta('hero.about_story', route('about'))"
                     >
                         {{ $t("home.about_story") }}
                     </Link>
@@ -275,10 +275,10 @@ const faqs = computed(() => [
                         {{ item.price }}
                     </p>
                     <Link
-                        href="/weekly-menu"
+                        :href="route('weekly-menu')"
                         class="mt-4 inline-flex min-h-11 items-center rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
                         @click="
-                            trackLandingCta(`bestseller.${item.title}`, '/weekly-menu')
+                            trackLandingCta(`bestseller.${item.title}`, route('weekly-menu'))
                         "
                     >
                         {{ $t("home.reserve_cta") }}
@@ -345,16 +345,16 @@ const faqs = computed(() => [
             </p>
             <div class="mt-6 flex flex-wrap gap-3">
                 <Link
-                    href="/weekly-menu"
+                    :href="route('weekly-menu')"
                     class="inline-flex min-h-11 items-center rounded-full bg-bakery-gold px-6 py-3 text-sm font-semibold text-bakery-dark transition hover:bg-[#edbb5a]"
-                    @click="trackLandingCta('urgency.weekly_menu', '/weekly-menu')"
+                    @click="trackLandingCta('urgency.weekly_menu', route('weekly-menu'))"
                 >
                     {{ $t("home.open_weekly_menu") }}
                 </Link>
                 <Link
-                    href="/checkout"
+                    :href="route('checkout.index')"
                     class="inline-flex min-h-11 items-center rounded-full border border-bakery-cream/35 px-6 py-3 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-cream/10"
-                    @click="trackLandingCta('urgency.checkout', '/checkout')"
+                    @click="trackLandingCta('urgency.checkout', route('checkout.index'))"
                 >
                     {{ $t("home.go_to_checkout") }}
                 </Link>
@@ -397,16 +397,16 @@ const faqs = computed(() => [
             </p>
             <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
                 <Link
-                    href="/register"
+                    :href="route('register')"
                     class="inline-flex min-h-11 items-center rounded-full bg-bakery-brown px-6 py-3 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
-                    @click="trackLandingCta('final.register', '/register')"
+                    @click="trackLandingCta('final.register', route('register'))"
                 >
                     {{ $t("nav.register") }}
                 </Link>
                 <Link
-                    href="/login"
+                    :href="route('login')"
                     class="inline-flex min-h-11 items-center rounded-full border border-bakery-brown/30 px-6 py-3 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
-                    @click="trackLandingCta('final.login', '/login')"
+                    @click="trackLandingCta('final.login', route('login'))"
                 >
                     {{ $t("nav.login") }}
                 </Link>
