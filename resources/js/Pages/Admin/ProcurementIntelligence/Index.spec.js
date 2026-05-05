@@ -5,8 +5,6 @@ import IndexPage from "./Index.vue";
 const { translate } = vi.hoisted(() => {
     const translations = {
         "common.clear_filters": "Szűrők törlése",
-        "common.locale": "hu-HU",
-        "common.currency": "HUF",
         "admin_procurement_intelligence.meta_title": "Beszerzési intelligencia",
         "admin_procurement_intelligence.eyebrow": "Admin / Beszerzés",
         "admin_procurement_intelligence.title": "Beszerzési intelligencia",
@@ -150,6 +148,12 @@ const { translate } = vi.hoisted(() => {
 vi.mock("@inertiajs/vue3", () => ({
     Head: { name: "Head", template: "<span />" },
     router: { get: vi.fn(), post: vi.fn() },
+    usePage: () => ({
+        props: {
+            locale: "hu-HU",
+            preferences: { currency: "HUF", locale: "hu-HU" },
+        },
+    }),
 }));
 
 vi.mock("laravel-vue-i18n", () => ({

@@ -7,6 +7,7 @@ import Dialog from "primevue/dialog";
 import CreateWeeklyMenuItemModal from "./CreateWeeklyMenuItemModal.vue";
 import EditWeeklyMenuItemModal from "./EditWeeklyMenuItemModal.vue";
 import WeeklyMenuStatusBadge from "./WeeklyMenuStatusBadge.vue";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 const props = defineProps({
     visible: { type: Boolean, required: true },
@@ -15,6 +16,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["update:visible", "save-item", "delete-item"]);
+const { formatCurrency } = useLocaleFormat();
 
 const createModalVisible = ref(false);
 const editModalVisible = ref(false);
@@ -82,14 +84,9 @@ const remove = (item) => emit("delete-item", item);
                     <Column field="override_name" header="Felülírt név" />
                     <Column field="override_price" header="Felülírt ár">
                         <template #body="{ data }">
-                            <span v-if="data.override_price !== null"
-                                >{{
-                                    new Intl.NumberFormat("hu-HU").format(
-                                        data.override_price
-                                    )
-                                }}
-                                Ft</span
-                            >
+                            <span v-if="data.override_price !== null">
+                                {{ formatCurrency(data.override_price) }}
+                            </span>
                             <span v-else class="text-bakery-dark/60">-</span>
                         </template>
                     </Column>

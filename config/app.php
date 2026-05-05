@@ -91,6 +91,8 @@ return [
 
     'supported_locales' => ['en', 'hu'],
 
+    'currency' => env('APP_CURRENCY', 'HUF'),
+
     /*
     |--------------------------------------------------------------------------
     | Encryption Key

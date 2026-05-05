@@ -23,8 +23,6 @@ const { translate } = vi.hoisted(() => {
         'admin_orders.fields.total': 'Végösszeg',
         'admin_orders.actions.update_status': 'Státusz frissítése',
         'admin_orders.placeholders.pickup_time_slot': 'pl. 08:00-10:00',
-        'common.locale': 'hu-HU',
-        'common.currency': 'HUF',
     };
 
     return {
@@ -40,6 +38,12 @@ const { translate } = vi.hoisted(() => {
 
 vi.mock('@inertiajs/vue3', () => ({
     Head: { name: 'Head', template: '<span />' },
+    usePage: () => ({
+        props: {
+            locale: 'hu-HU',
+            preferences: { currency: 'HUF', locale: 'hu-HU' },
+        },
+    }),
     useForm: (data) => ({
         ...data,
         errors: {},

@@ -38,8 +38,6 @@ const { translate } = vi.hoisted(() => {
         "common.all": "Mind",
         "common.clear_filters": "Szűrők törlése",
         "common.day_count": ":count nap",
-        "common.locale": "hu-HU",
-        "common.currency": "HUF",
     };
 
     return {
@@ -58,6 +56,12 @@ const { translate } = vi.hoisted(() => {
 vi.mock("@inertiajs/vue3", () => ({
     Head: { name: "Head", template: "<span />" },
     router: { get: vi.fn() },
+    usePage: () => ({
+        props: {
+            locale: "hu-HU",
+            preferences: { currency: "HUF", locale: "hu-HU" },
+        },
+    }),
     useForm: (data) => ({
         ...data,
         processing: false,

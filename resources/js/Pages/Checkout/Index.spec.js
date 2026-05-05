@@ -19,6 +19,11 @@ let formState = reactive({
 vi.mock('@inertiajs/vue3', () => ({
     Head: { name: 'Head', template: '<span />' },
     Link: { name: 'Link', props: ['href'], template: '<a :href="href"><slot /></a>' },
+    usePage: () => ({
+        props: {
+            preferences: { locale: 'hu-HU', currency: 'HUF' },
+        },
+    }),
     useForm: () => formState,
 }));
 

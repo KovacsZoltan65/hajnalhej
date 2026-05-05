@@ -37,8 +37,6 @@ const { translate } = vi.hoisted(() => {
         'common.delete': 'Törlés',
         'common.clear_filters': 'Szűrők törlése',
         'common.actions': 'Műveletek',
-        'common.locale': 'hu-HU',
-        'common.currency': 'HUF',
         'common.day_count': ':count nap',
     };
 
@@ -58,6 +56,11 @@ const { translate } = vi.hoisted(() => {
 vi.mock('@inertiajs/vue3', () => ({
     Head: { name: 'Head', template: '<span />' },
     router: { get: vi.fn(), delete: vi.fn() },
+    usePage: () => ({
+        props: {
+            preferences: { locale: 'hu-HU', currency: 'HUF' },
+        },
+    }),
     useForm: (initial) =>
         reactive({
             ...initial,

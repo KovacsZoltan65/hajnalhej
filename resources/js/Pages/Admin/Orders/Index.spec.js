@@ -24,8 +24,6 @@ const { translate } = vi.hoisted(() => {
         'common.all': 'Mind',
         'common.clear_filters': 'Szűrők törlése',
         'common.actions': 'Műveletek',
-        'common.locale': 'hu-HU',
-        'common.currency': 'HUF',
     };
 
     return {
@@ -43,6 +41,11 @@ vi.mock('@inertiajs/vue3', () => ({
     Head: { name: 'Head', template: '<span />' },
     Link: { name: 'Link', props: ['href'], template: '<a :href="href"><slot /></a>' },
     router: { get: vi.fn() },
+    usePage: () => ({
+        props: {
+            preferences: { locale: 'hu-HU', currency: 'HUF' },
+        },
+    }),
 }));
 
 vi.mock('laravel-vue-i18n', () => ({

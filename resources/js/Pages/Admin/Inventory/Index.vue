@@ -15,6 +15,7 @@ import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
 import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 import { createDayOptions, pageOptions as createPerPageOptions } from "@/Utils/functions";
 
@@ -45,25 +46,25 @@ const {
 } = useAdminFilterState({
     filters: props.filters,
     defaults: {
-    days: 7,
-    date_from: "",
-    date_to: "",
-    search: "",
-    movement_type: "",
-    ingredient_id: null,
-    per_page: 15,
-},
+        days: 7,
+        date_from: "",
+        date_to: "",
+        search: "",
+        movement_type: "",
+        ingredient_id: null,
+        per_page: 15,
+    },
     routeName: "admin.inventory.index",
     loading,
     toQuery: (state) => ({
-            days: state.days,
-            date_from: state.date_from || undefined,
-            date_to: state.date_to || undefined,
-            search: state.search || undefined,
-            movement_type: state.movement_type || undefined,
-            ingredient_id: state.ingredient_id || undefined,
-            per_page: state.per_page,
-        }),
+        days: state.days,
+        date_from: state.date_from || undefined,
+        date_to: state.date_to || undefined,
+        search: state.search || undefined,
+        movement_type: state.movement_type || undefined,
+        ingredient_id: state.ingredient_id || undefined,
+        per_page: state.per_page,
+    }),
 });
 
 const dayOptions = createDayOptions(trans, [7, 14, 30, 90]);
@@ -129,10 +130,6 @@ const first = computed(
     () => (currentPage.value - 1) * (props.ledger.per_page ?? filterState.per_page)
 );
 
-
-
-
-
 const openWasteModal = () => {
     wasteForm.reset();
     wasteForm.clearErrors();
@@ -176,12 +173,7 @@ const submitAdjustment = () => {
     });
 };
 
-const asCurrency = (value) =>
-    new Intl.NumberFormat(trans("common.locale"), {
-        style: "currency",
-        currency: trans("common.currency"),
-        maximumFractionDigits: 0,
-    }).format(Number(value ?? 0));
+const { formatCurrency: asCurrency } = useLocaleFormat();
 
 const movementTypeLabel = (type) => {
     const map = {

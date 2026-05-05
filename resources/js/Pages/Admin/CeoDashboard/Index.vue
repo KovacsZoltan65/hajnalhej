@@ -1,9 +1,10 @@
 <script setup>
 import { Head, router } from "@inertiajs/vue3";
 import { computed } from "vue";
-import { currentLocale, trans, transChoice } from "laravel-vue-i18n";
+import { trans, transChoice } from "laravel-vue-i18n";
 import Select from "primevue/select";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 import { createDayOptions } from "@/Utils/functions";
 
@@ -20,15 +21,7 @@ const props = defineProps({
     },
 });
 
-const localeCode = computed(() => currentLocale.value ?? "hu");
-const numberLocale = computed(() => {
-    const locales = {
-        hu: "hu-HU",
-        en: "en-US",
-    };
-
-    return locales[localeCode.value] ?? localeCode.value;
-});
+const { locale, formatCurrency } = useLocaleFormat();
 
 const formatDayOption = (days) => transChoice("common.day_count", days, { count: days });
 
@@ -52,22 +45,15 @@ const trendPoints = computed(() => props.dashboard.order_profit_trend?.points ??
 const conversion = computed(() => props.dashboard.conversion ?? {});
 const kpiInsights = computed(() => props.dashboard.kpi_insights ?? {});
 
-const formatCurrency = (value) =>
-    new Intl.NumberFormat(numberLocale.value, {
-        style: "currency",
-        currency: "HUF",
-        maximumFractionDigits: 0,
-    }).format(Number(value ?? 0));
-
 const formatPercent = (value) =>
-    new Intl.NumberFormat(numberLocale.value, {
+    new Intl.NumberFormat(locale.value, {
         style: "percent",
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
     }).format(Number(value ?? 0) / 100);
 
 const formatSignedPercent = (value) =>
-    new Intl.NumberFormat(numberLocale.value, {
+    new Intl.NumberFormat(locale.value, {
         style: "percent",
         signDisplay: "exceptZero",
         minimumFractionDigits: 2,
@@ -79,7 +65,7 @@ const formatDate = (value) => {
         return "-";
     }
 
-    return new Intl.DateTimeFormat(numberLocale.value).format(new Date(value));
+    return new Intl.DateTimeFormat(locale.value).format(new Date(value));
 };
 
 const trendIcon = (direction) => {

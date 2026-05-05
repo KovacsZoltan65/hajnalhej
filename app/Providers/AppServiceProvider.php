@@ -36,7 +36,6 @@ use App\Policies\WeeklyMenuPolicy;
 use App\Support\PermissionRegistry;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 use Session;
@@ -104,19 +103,17 @@ class AppServiceProvider extends ServiceProvider
         $csrf_token = csrf_token();
 
         Inertia::share([
-            "errors" => fn (): array => Session::get('errors') 
-                ? Session::get('errors')->getBag('default')->getMessages() 
-                : (object) [],
-            "available_locales" => config('app.available_locales'),
-            "locale" => fn (): string => $app_locale,
-            "preferences" => fn (): array => [
+            'available_locales' => fn (): array => config('app.available_locales'),
+            'locale' => fn (): string => $app_locale,
+            'preferences' => fn (): array => [
                 'locale' => $app_locale,
-                'timezone' => Session::has('timezone') ? Session::get('timezone') : config('app.timezone', 'UTC'),
-                'theme' => Session::has('theme') ? Session::get('theme') : 'system',
+                'currency' => config('app.currency', 'HUF'),
+                'timezone' => session('timezone', config('app.timezone', 'UTC')),
+                'theme' => session('theme', 'system'),
             ],
         ]);
 
-        Inertia::share('flash', fn () => ['message' => Session::get('message'),] );
+        Inertia::share('flash', fn () => ['message' => Session::get('message')]);
 
         Inertia::share('csrf_token', fn () => $csrf_token);
     }

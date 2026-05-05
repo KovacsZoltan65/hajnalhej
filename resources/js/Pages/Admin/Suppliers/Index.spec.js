@@ -4,6 +4,11 @@ import IndexPage from './Index.vue';
 vi.mock('@inertiajs/vue3', () => ({
     Head: { name: 'Head', template: '<span />' },
     router: { get: vi.fn(), delete: vi.fn() },
+    usePage: () => ({
+        props: {
+            preferences: { locale: 'hu-HU', currency: 'HUF' },
+        },
+    }),
     useForm: (data) => ({
         ...data,
         processing: false,

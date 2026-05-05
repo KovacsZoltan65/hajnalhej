@@ -16,6 +16,7 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { pageOptions as createPerPageOptions } from "@/Utils/functions";
 import { trans } from "laravel-vue-i18n";
 import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 defineOptions({ layout: AdminLayout });
 
@@ -83,7 +84,7 @@ const form = useForm({
 const currentPage = computed(() => props.suppliers.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.suppliers.per_page ?? 10));
 
-
+const { locale } = useLocaleFormat();
 
 
 
@@ -171,7 +172,10 @@ const formatDateTime = (value) => {
         return "-";
     }
 
-    return new Date(value).toLocaleString("hu-HU");
+    return new Intl.DateTimeFormat(locale.value, {
+        dateStyle: "medium",
+        timeStyle: "short",
+    }).format(new Date(value));
 };
 </script>
 

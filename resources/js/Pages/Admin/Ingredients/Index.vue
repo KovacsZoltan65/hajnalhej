@@ -17,6 +17,7 @@ import SectionTitle from "../../../Components/SectionTitle.vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
 import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
@@ -92,17 +93,7 @@ const unitOptions = computed(() => [
     ...props.units.map((unit) => ({ label: unit, value: unit })),
 ]);
 
-const formatCurrency = (value) => {
-    if (value === null || value === undefined || value === "") {
-        return "-";
-    }
-
-    return new Intl.NumberFormat(trans("common.locale"), {
-        style: "currency",
-        currency: trans("common.currency"),
-        maximumFractionDigits: 0,
-    }).format(Number(value));
-};
+const { formatCurrency } = useLocaleFormat();
 
 const form = useForm({
     name: "",

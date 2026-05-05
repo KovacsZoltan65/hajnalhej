@@ -4,6 +4,7 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import Textarea from 'primevue/textarea';
+import { useLocaleFormat } from '@/composables/useLocaleFormat';
 
 const props = defineProps({
     form: {
@@ -62,10 +63,7 @@ const total = computed(() =>
     ),
 );
 
-const formatMoney = (value) =>
-    new Intl.NumberFormat('hu-HU', {
-        maximumFractionDigits: 0,
-    }).format(Number(value || 0));
+const { formatCurrency } = useLocaleFormat();
 </script>
 
 <template>
@@ -151,7 +149,7 @@ const formatMoney = (value) =>
                 <div class="space-y-1 md:col-span-2">
                     <label class="text-xs font-medium text-bakery-dark/80">Sor összesen</label>
                     <div class="flex min-h-11 items-center rounded-md border border-bakery-brown/15 px-3 text-sm font-medium text-bakery-dark">
-                        {{ formatMoney(Number(item.quantity || 0) * Number(item.unit_cost || 0)) }} Ft
+                        {{ formatCurrency(Number(item.quantity || 0) * Number(item.unit_cost || 0)) }}
                     </div>
                 </div>
 
@@ -171,7 +169,7 @@ const formatMoney = (value) =>
 
         <div class="flex items-center justify-between border-t border-bakery-brown/10 pt-3">
             <p class="text-sm text-bakery-dark/80">Összesen</p>
-            <p class="text-base font-semibold text-bakery-dark">{{ formatMoney(total) }} Ft</p>
+            <p class="text-base font-semibold text-bakery-dark">{{ formatCurrency(total) }}</p>
         </div>
     </div>
 </template>

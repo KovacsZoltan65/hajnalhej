@@ -4,6 +4,11 @@ import IndexPage from './Index.vue';
 vi.mock('@inertiajs/vue3', () => ({
     Head: { name: 'Head', template: '<span />' },
     router: { get: vi.fn() },
+    usePage: () => ({
+        props: {
+            preferences: { locale: 'en-US', currency: 'HUF' },
+        },
+    }),
 }));
 
 const translations = {
@@ -52,10 +57,20 @@ const translations = {
     'common.cta_top_click': 'Top CTA clicks',
     'common.cta_id': 'CTA ID',
     'common.click': 'Click',
+    'common.day_count': ':count days',
 };
 
 vi.mock('laravel-vue-i18n', () => ({
     currentLocale: { value: 'en' },
+    trans: (key, replacements = {}) => {
+        let value = translations[key] ?? key;
+
+        Object.entries(replacements).forEach(([name, replacement]) => {
+            value = value.replace(`:${name}`, replacement);
+        });
+
+        return value;
+    },
     transChoice: (key, count, replacements = {}) => {
         if (key !== 'common.day_count') {
             return key;

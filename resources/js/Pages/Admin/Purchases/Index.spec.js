@@ -5,6 +5,11 @@ vi.mock('@inertiajs/vue3', () => ({
     Head: { name: 'Head', template: '<span />' },
     Link: { name: 'Link', props: ['href'], template: '<a :href="href"><slot /></a>' },
     router: { get: vi.fn(), post: vi.fn() },
+    usePage: () => ({
+        props: {
+            preferences: { locale: 'hu-HU', currency: 'HUF' },
+        },
+    }),
     useForm: (data) => ({
         ...data,
         processing: false,

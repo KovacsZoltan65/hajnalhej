@@ -1,5 +1,6 @@
 <script setup>
 import Button from "primevue/button";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 const props = defineProps({
     items: {
@@ -10,11 +11,7 @@ const props = defineProps({
 
 const emit = defineEmits(["edit", "delete"]);
 
-const formatQuantity = (value) =>
-    new Intl.NumberFormat("hu-HU", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 3,
-    }).format(value);
+const { formatQuantity } = useLocaleFormat();
 </script>
 
 <template>
@@ -27,7 +24,7 @@ const formatQuantity = (value) =>
             <div>
                 <p class="font-medium text-bakery-dark">{{ item.ingredient_name }}</p>
                 <p class="text-xs text-bakery-dark/65">
-                    {{ formatQuantity(item.quantity) }} {{ item.ingredient_unit }}
+                    {{ formatQuantity(item.quantity, item.ingredient_unit) }}
                 </p>
                 <p v-if="item.notes" class="mt-1 text-xs text-bakery-dark/70">
                     {{ item.notes }}

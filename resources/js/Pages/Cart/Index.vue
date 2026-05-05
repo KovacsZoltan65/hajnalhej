@@ -4,6 +4,7 @@ import Button from "primevue/button";
 import InputNumber from "primevue/inputnumber";
 import PublicLayout from "../../Layouts/PublicLayout.vue";
 import { useConversionTracking } from "@/composables/useConversionTracking";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 defineOptions({ layout: PublicLayout });
 
@@ -15,6 +16,7 @@ const props = defineProps({
 });
 
 const { trackCtaClick } = useConversionTracking();
+const { formatCurrency } = useLocaleFormat();
 
 const updateQuantity = (item, quantity) => {
     router.patch(
@@ -97,10 +99,7 @@ const clearCart = () => {
                                 {{ item.short_description }}
                             </p>
                             <p class="mt-2 text-sm font-semibold text-bakery-brown">
-                                {{
-                                    new Intl.NumberFormat("hu-HU").format(item.unit_price)
-                                }}
-                                Ft / db
+                                {{ formatCurrency(item.unit_price) }} / db
                             </p>
                         </div>
 
@@ -130,8 +129,7 @@ const clearCart = () => {
                     <div class="mt-4 border-t border-bakery-brown/10 pt-4 text-right">
                         <p class="text-sm text-bakery-dark/70">Reszosszeg</p>
                         <p class="text-lg font-semibold text-bakery-dark">
-                            {{ new Intl.NumberFormat("hu-HU").format(item.line_total) }}
-                            Ft
+                            {{ formatCurrency(item.line_total) }}
                         </p>
                     </div>
                 </article>
@@ -151,10 +149,7 @@ const clearCart = () => {
                     <div class="flex justify-between font-semibold text-bakery-dark">
                         <dt>{{ $t("admin_orders.columns.total") }}</dt>
                         <dd>
-                            {{
-                                new Intl.NumberFormat("hu-HU").format(cart.summary.total)
-                            }}
-                            Ft
+                            {{ formatCurrency(cart.summary.total) }}
                         </dd>
                     </div>
                 </dl>

@@ -1,5 +1,6 @@
 <script setup>
 import { trans } from "laravel-vue-i18n";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 defineProps({
     rows: {
@@ -12,12 +13,7 @@ defineProps({
     },
 });
 
-const formatCurrency = (value) =>
-    new Intl.NumberFormat(trans("common.locale"), {
-        style: "currency",
-        currency: trans("common.currency"),
-        maximumFractionDigits: 0,
-    }).format(Number(value ?? 0));
+const { formatCurrency } = useLocaleFormat();
 </script>
 
 <template>

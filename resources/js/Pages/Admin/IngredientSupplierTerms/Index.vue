@@ -16,6 +16,7 @@ import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
 import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
@@ -180,27 +181,7 @@ const confirmDelete = (term) => {
     });
 };
 
-const formatQuantity = (value, unit = "") => {
-    if (value === null || value === undefined || value === "") {
-        return "-";
-    }
-
-    return `${Number(value).toLocaleString(trans("common.locale"), {
-        maximumFractionDigits: 3,
-    })}${unit ? ` ${unit}` : ""}`;
-};
-
-const formatCurrency = (value) => {
-    if (value === null || value === undefined || value === "") {
-        return "-";
-    }
-
-    return new Intl.NumberFormat(trans("common.locale"), {
-        style: "currency",
-        currency: trans("common.currency"),
-        maximumFractionDigits: 0,
-    }).format(Number(value));
-};
+const { formatCurrency, formatQuantity } = useLocaleFormat();
 </script>
 
 <template>

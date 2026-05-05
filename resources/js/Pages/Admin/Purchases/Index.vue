@@ -16,6 +16,7 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
 import { trans } from "laravel-vue-i18n";
 import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 defineOptions({ layout: AdminLayout });
 
@@ -181,10 +182,7 @@ const cancelPurchase = (purchase) => {
     });
 };
 
-const formatCurrency = (value) =>
-    `${new Intl.NumberFormat("hu-HU", {
-        maximumFractionDigits: 0,
-    }).format(Number(value || 0))} Ft`;
+const { formatCurrency } = useLocaleFormat();
 
 const statusLabel = (status) => {
     const map = {

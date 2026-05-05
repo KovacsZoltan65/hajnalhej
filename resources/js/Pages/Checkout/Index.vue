@@ -7,6 +7,7 @@ import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
 import PublicLayout from '../../Layouts/PublicLayout.vue';
 import { useConversionTracking } from '@/composables/useConversionTracking';
+import { useLocaleFormat } from '@/composables/useLocaleFormat';
 
 defineOptions({ layout: PublicLayout });
 
@@ -22,6 +23,7 @@ const props = defineProps({
 });
 
 const { trackCtaClick, trackFunnel } = useConversionTracking();
+const { formatCurrency } = useLocaleFormat();
 
 const form = useForm({
     customer_name: props.prefill.customer_name,
@@ -135,16 +137,16 @@ const submit = () => {
                     <li v-for="item in cart.items" :key="item.product_id" class="flex items-start justify-between gap-3">
                         <div>
                             <p class="font-medium text-bakery-dark">{{ item.name }}</p>
-                            <p class="text-xs text-bakery-dark/70">{{ item.quantity }} x {{ new Intl.NumberFormat('hu-HU').format(item.unit_price) }} Ft</p>
+                            <p class="text-xs text-bakery-dark/70">{{ item.quantity }} x {{ formatCurrency(item.unit_price) }}</p>
                         </div>
-                        <p class="font-semibold text-bakery-dark">{{ new Intl.NumberFormat('hu-HU').format(item.line_total) }} Ft</p>
+                        <p class="font-semibold text-bakery-dark">{{ formatCurrency(item.line_total) }}</p>
                     </li>
                 </ul>
 
                 <div class="mt-5 border-t border-bakery-brown/10 pt-4 text-sm">
                     <div class="flex justify-between font-semibold text-bakery-dark">
                         <span>Végösszeg</span>
-                        <span>{{ new Intl.NumberFormat('hu-HU').format(cart.summary.total) }} Ft</span>
+                        <span>{{ formatCurrency(cart.summary.total) }}</span>
                     </div>
                 </div>
 
@@ -159,4 +161,3 @@ const submit = () => {
         </div>
     </section>
 </template>
-

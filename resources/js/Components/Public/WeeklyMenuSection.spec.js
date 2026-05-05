@@ -2,8 +2,6 @@ import { mount } from '@vue/test-utils';
 import WeeklyMenuSection from './WeeklyMenuSection.vue';
 
 const translations = vi.hoisted(() => ({
-    'common.locale': 'hu-HU',
-    'common.currency': 'HUF',
     'weekly_menu.current': 'Aktuális heti menü',
     'weekly_menu.empty_title': 'Heti menü feltöltés alatt',
     'weekly_menu.empty_description': 'Jelenleg nincs publikált heti menü.',
@@ -23,6 +21,12 @@ vi.mock('@inertiajs/vue3', () => ({
         quantity: 1,
         processing: false,
         post: vi.fn(),
+    }),
+    usePage: () => ({
+        props: {
+            locale: 'hu-HU',
+            preferences: { currency: 'HUF', locale: 'hu-HU' },
+        },
     }),
 }));
 
@@ -74,4 +78,3 @@ describe('WeeklyMenuSection', () => {
         expect(wrapper.text()).toContain('2500 Ft');
     });
 });
-

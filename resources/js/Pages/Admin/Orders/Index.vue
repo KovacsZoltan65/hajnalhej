@@ -13,6 +13,7 @@ import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
 import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
@@ -45,21 +46,21 @@ const {
 } = useAdminFilterState({
     filters: props.filters,
     defaults: {
-    search: "",
-    status: "",
-    sort_field: "placed_at",
-    sort_direction: "desc",
-    per_page: 15,
-},
+        search: "",
+        status: "",
+        sort_field: "placed_at",
+        sort_direction: "desc",
+        per_page: 15,
+    },
     routeName: "admin.orders.index",
     loading,
     toQuery: (state) => ({
-            search: state.search || undefined,
-            status: state.status || undefined,
-            sort_field: state.sort_field,
-            sort_direction: state.sort_direction,
-            per_page: state.per_page,
-        }),
+        search: state.search || undefined,
+        status: state.status || undefined,
+        sort_field: state.sort_field,
+        sort_direction: state.sort_direction,
+        per_page: state.per_page,
+    }),
 });
 
 const currentPage = computed(() => props.orders.current_page ?? 1);
@@ -80,16 +81,7 @@ const statusSelectOptions = computed(() => [
     ...props.statusOptions.map((status) => ({ label: status, value: status })),
 ]);
 
-const formatCurrency = (value) =>
-    new Intl.NumberFormat(trans("common.locale"), {
-        style: "currency",
-        currency: trans("common.currency"),
-        maximumFractionDigits: 0,
-    }).format(Number(value ?? 0));
-
-
-
-
+const { formatCurrency } = useLocaleFormat();
 </script>
 
 <template>

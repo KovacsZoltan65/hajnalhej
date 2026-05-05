@@ -283,8 +283,6 @@
     "common.all": "All",
     "common.active": "Active",
     "common.inactive": "Inactive",
-    "common.locale": "en-US",
-    "common.currency": "HUF",
     "common.our_history": "Our history",
     "common.summary": "Summary",
     "common.logout": "Logout",

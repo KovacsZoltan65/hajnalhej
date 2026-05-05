@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from "vue";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 const props = defineProps({
     currentStock: {
@@ -18,43 +19,10 @@ const props = defineProps({
 
 const isLowStock = computed(() => props.currentStock <= props.minimumStock);
 
-//import { useLocaleFormat } from "@/composables/useLocaleFormat";
-//const { number } = useLocaleFormat();
+const { number } = useLocaleFormat();
 
-//const formattedCurrent = computed(() => number(props.currentStock));
-//const formattedMinimum = computed(() => number(props.minimumStock));
-
-const currentLocale = computed(() => page.props.locale ?? "hu");
-
-const formattedCurrent = computed(() =>
-    new Intl.NumberFormat(currentLocale.value, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 3,
-    }).format(props.currentStock)
-);
-
-const formattedMinimum = computed(() =>
-    new Intl.NumberFormat(currentLocale.value, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 3,
-    }).format(props.minimumStock)
-);
-
-/*
-const formattedCurrent = computed(() =>
-    new Intl.NumberFormat("hu-HU", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 3,
-    }).format(props.currentStock)
-);
-
-const formattedMinimum = computed(() =>
-    new Intl.NumberFormat("hu-HU", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 3,
-    }).format(props.minimumStock)
-);
-*/
+const formattedCurrent = computed(() => number(props.currentStock));
+const formattedMinimum = computed(() => number(props.minimumStock));
 </script>
 
 <template>
