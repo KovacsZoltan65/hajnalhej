@@ -19,6 +19,10 @@
     "nav.audit_logs": "Audit Logs",
     "brand.name": "Hajnalhéj",
     "brand.slogan": "Crispy mornings.",
+    "brand.description": "Sourdough cakes and breads in Budapest",
+
+    "all_right": "All rights reserved",
+    "bakery": "Bakery",
 
     "nav.overview": "Overview",
     "nav.dashboard": "Daily overview",
@@ -286,6 +290,8 @@
     "common.logout": "Logout",
     "common.type": "Type",
     "common.name": "Name",
+    "common.slug": "Slug",
+    "common.automatic_generated": "Automatically generated based on name",
 
     "weekly_menu.current": "Current weekly menu",
     "weekly_menu.fallback_notice": "There is no active weekly menu for today, so the most recently published menu is shown.",
@@ -345,6 +351,7 @@
     "admin_categories.category_created": "Category created",
     "admin_categories.category_updated": "Category updated",
     "admin_categories.category_deleted": "Category deleted",
+    "admin_categories.active_category": "Aktíve category",
 
     "admin_ingredients.meta_title": "Ingredients",
     "admin_ingredients.eyebrow": "Admin / Ingredients",
@@ -371,6 +378,7 @@
     "admin_ingredients.material_updated": "Material updated",
     "admin_ingredients.material_deleted": "Material deleted",
     "admin_ingredients.material_added": "Recipe item added",
+    "admin_ingredients.active_ingredient": "Active ingredient",
 
     "admin_supplier.created": "Supplier created",
     "admin_supplier.updated": "Supplier updated",
@@ -449,6 +457,7 @@
     "admin_procurement_intelligence.columns.quantity": "Quantity",
     "admin_procurement_intelligence.columns.current_stock": "Current stock",
     "admin_procurement_intelligence.columns.minimum_stock": "Minimum stock",
+    "admin_procurement_intelligence.reorder_level": "reorder level",
     "admin_procurement_intelligence.columns.weekly_average_consumption": "Weekly average consumption",
     "admin_procurement_intelligence.columns.recommended_supplier": "Recommended supplier",
     "admin_procurement_intelligence.columns.lead_time": "Lead time",

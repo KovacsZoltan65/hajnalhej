@@ -23,7 +23,7 @@ const close = () => emit("update:visible", false);
     <Dialog
         :visible="visible"
         modal
-        header="Új kategória"
+        :header="$t('admin_categories.actions.create')"
         :style="{ width: '40rem', maxWidth: '95vw' }"
         :content-style="{ maxHeight: '70vh', overflowY: 'auto' }"
         @update:visible="(value) => emit('update:visible', value)"
@@ -38,15 +38,19 @@ const close = () => emit("update:visible", false);
 
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Mégse" @click="close" />
+                <Button
+                    type="button"
+                    severity="secondary"
+                    :label="$t('common.cancel')"
+                    @click="close"
+                />
                 <Button
                     type="submit"
                     form="category-create-form"
-                    label="Létrehozás"
+                    :label="$t('admin_production_plans.actions.store')"
                     :loading="form.processing"
                 />
             </div>
         </template>
     </Dialog>
 </template>
-

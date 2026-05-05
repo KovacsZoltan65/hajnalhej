@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed } from "vue";
 
 const props = defineProps({
     currentStock: {
@@ -18,30 +18,59 @@ const props = defineProps({
 
 const isLowStock = computed(() => props.currentStock <= props.minimumStock);
 
+//import { useLocaleFormat } from "@/composables/useLocaleFormat";
+//const { number } = useLocaleFormat();
+
+//const formattedCurrent = computed(() => number(props.currentStock));
+//const formattedMinimum = computed(() => number(props.minimumStock));
+
+const currentLocale = computed(() => page.props.locale ?? "hu");
+
 const formattedCurrent = computed(() =>
-    new Intl.NumberFormat('hu-HU', {
+    new Intl.NumberFormat(currentLocale.value, {
         minimumFractionDigits: 0,
         maximumFractionDigits: 3,
-    }).format(props.currentStock),
+    }).format(props.currentStock)
 );
 
 const formattedMinimum = computed(() =>
-    new Intl.NumberFormat('hu-HU', {
+    new Intl.NumberFormat(currentLocale.value, {
         minimumFractionDigits: 0,
         maximumFractionDigits: 3,
-    }).format(props.minimumStock),
+    }).format(props.minimumStock)
 );
+
+/*
+const formattedCurrent = computed(() =>
+    new Intl.NumberFormat("hu-HU", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 3,
+    }).format(props.currentStock)
+);
+
+const formattedMinimum = computed(() =>
+    new Intl.NumberFormat("hu-HU", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 3,
+    }).format(props.minimumStock)
+);
+*/
 </script>
 
 <template>
     <div class="space-y-1">
         <span
             class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
-            :class="isLowStock ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'"
+            :class="
+                isLowStock
+                    ? 'bg-amber-100 text-amber-800'
+                    : 'bg-emerald-100 text-emerald-800'
+            "
         >
-            {{ isLowStock ? 'Alacsony készlet' : 'Rendben' }}
+            {{ isLowStock ? "Alacsony készlet" : "Rendben" }}
         </span>
-        <p class="text-xs text-bakery-dark/70">{{ formattedCurrent }} {{ unit }} / min {{ formattedMinimum }} {{ unit }}</p>
+        <p class="text-xs text-bakery-dark/70">
+            {{ formattedCurrent }} {{ unit }} / min {{ formattedMinimum }} {{ unit }}
+        </p>
     </div>
 </template>
-

@@ -1,7 +1,7 @@
 <script setup>
-import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
-import IngredientForm from './IngredientForm.vue';
+import Button from "primevue/button";
+import Dialog from "primevue/dialog";
+import IngredientForm from "./IngredientForm.vue";
 
 defineProps({
     visible: {
@@ -18,30 +18,43 @@ defineProps({
     },
 });
 
-const emit = defineEmits(['update:visible', 'submit']);
+const emit = defineEmits(["update:visible", "submit"]);
 
-const close = () => emit('update:visible', false);
+const close = () => emit("update:visible", false);
 </script>
 
 <template>
     <Dialog
         :visible="visible"
         modal
-        header="Uj alapanyag"
+        :header="$t('admin_ingredients.actions.create')"
         :style="{ width: '52rem', maxWidth: '97vw' }"
         :content-style="{ maxHeight: '70vh', overflowY: 'auto' }"
         @update:visible="(value) => emit('update:visible', value)"
     >
-        <form id="ingredient-create-form" class="space-y-4" @submit.prevent="emit('submit')">
+        <form
+            id="ingredient-create-form"
+            class="space-y-4"
+            @submit.prevent="emit('submit')"
+        >
             <IngredientForm :form="form" :units="units" />
         </form>
 
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Mégse" @click="close" />
-                <Button type="submit" form="ingredient-create-form" label="Létrehozás" :loading="form.processing" />
+                <Button
+                    type="button"
+                    severity="secondary"
+                    :label="$t('common.cancel')"
+                    @click="close"
+                />
+                <Button
+                    type="submit"
+                    form="ingredient-create-form"
+                    :label="$t('admin_production_plans.actions.store')"
+                    :loading="form.processing"
+                />
             </div>
         </template>
     </Dialog>
 </template>
-

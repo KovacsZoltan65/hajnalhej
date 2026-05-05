@@ -1,7 +1,7 @@
 <script setup>
-import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
-import CategoryForm from './CategoryForm.vue';
+import Button from "primevue/button";
+import Dialog from "primevue/dialog";
+import CategoryForm from "./CategoryForm.vue";
 
 defineProps({
     visible: {
@@ -14,16 +14,16 @@ defineProps({
     },
 });
 
-const emit = defineEmits(['update:visible', 'submit']);
+const emit = defineEmits(["update:visible", "submit"]);
 
-const close = () => emit('update:visible', false);
+const close = () => emit("update:visible", false);
 </script>
 
 <template>
     <Dialog
         :visible="visible"
         modal
-        header="Kategoria szerkesztese"
+        :header="$t('admin_categories.actions.edit')"
         :style="{ width: '40rem', maxWidth: '95vw' }"
         :content-style="{ maxHeight: '70vh', overflowY: 'auto' }"
         @update:visible="(value) => emit('update:visible', value)"
@@ -34,10 +34,19 @@ const close = () => emit('update:visible', false);
 
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Mégse" @click="close" />
-                <Button type="submit" form="category-edit-form" label="Mentés" :loading="form.processing" />
+                <Button
+                    type="button"
+                    severity="secondary"
+                    :label="$t('common.cancel')"
+                    @click="close"
+                />
+                <Button
+                    type="submit"
+                    form="category-edit-form"
+                    :label="$t('admin_production_plans.actions.save')"
+                    :loading="form.processing"
+                />
             </div>
         </template>
     </Dialog>
 </template>
-

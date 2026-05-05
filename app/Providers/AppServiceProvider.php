@@ -36,7 +36,10 @@ use App\Policies\WeeklyMenuPolicy;
 use App\Support\PermissionRegistry;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
+use Session;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -76,7 +79,7 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::define(
             'viewProcurementIntelligence',
-            static fn (User $user): bool => app(ProcurementIntelligencePolicy::class)->viewAny($user),
+            fn (User $user): bool => app(ProcurementIntelligencePolicy::class)->viewAny($user),
         );
 
         Gate::policy(Category::class, CategoryPolicy::class);
@@ -96,5 +99,25 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Supplier::class, SupplierPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(WeeklyMenu::class, WeeklyMenuPolicy::class);
+
+        $app_locale = app()->getLocale();
+        $csrf_token = csrf_token();
+
+        Inertia::share([
+            "errors" => fn (): array => Session::get('errors') 
+                ? Session::get('errors')->getBag('default')->getMessages() 
+                : (object) [],
+            "available_locales" => config('app.available_locales'),
+            "locale" => fn (): string => $app_locale,
+            "preferences" => fn (): array => [
+                'locale' => $app_locale,
+                'timezone' => Session::has('timezone') ? Session::get('timezone') : config('app.timezone', 'UTC'),
+                'theme' => Session::has('theme') ? Session::get('theme') : 'system',
+            ],
+        ]);
+
+        Inertia::share('flash', fn () => ['message' => Session::get('message'),] );
+
+        Inertia::share('csrf_token', fn () => $csrf_token);
     }
 }

@@ -19,6 +19,10 @@
     "nav.audit_logs": "Naplók",
     "brand.name": "Hajnalhéj",
     "brand.slogan": "Ropogós reggelek.",
+    "brand.description": "Kovászos sütemények és kenyerek Budapesten",
+
+    "all_right": "Minden jog fenntartva",
+    "bakery": "Pékség",
 
     "nav.overview": "Áttekintés",
     "nav.dashboard": "Napi áttekintés",
@@ -276,6 +280,9 @@
     "common.logout": "Kijelentkezés",
     "common.type": "Típus",
     "common.name": "Név",
+    "common.slug": "Slug",
+    "common.automatic_generated": "Automatikusan generálódik a név alapján",
+    "common.sku": "Cikkszám",
 
     "weekly_menu.current": "Aktuális heti menü",
     "weekly_menu.fallback_notice": "Jelenleg nincs aktív heti menü a mai napra, ezért a legutóbb publikált menü látható.",
@@ -338,6 +345,7 @@
     "admin_categories.category_created": "Kategória létrehozva",
     "admin_categories.category_updated": "Kategória frissítve",
     "admin_categories.category_deleted": "Kategória törölve",
+    "admin_categories.active_category": "Aktív kategória",
 
     "admin_ingredients.meta_title": "Alapanyagok",
     "admin_ingredients.eyebrow": "Admin / Alapanyagok",
@@ -364,6 +372,7 @@
     "admin_ingredients.material_updated": "Alapanyag frissítve",
     "admin_ingredients.material_deleted": "Alapanyag törölve",
     "admin_ingredients.material_added": "Recipe item added",
+    "admin_ingredients.active_ingredient": "Aktív alapanyag",
 
     "admin_supplier.created": "Beszállító létrehozva",
     "admin_supplier.updated": "Beszállító frissítve",
@@ -441,6 +450,7 @@
     "admin_procurement_intelligence.columns.weighted_average": "Súlyozott átlag",
     "admin_procurement_intelligence.columns.current_stock": "Aktuális készlet",
     "admin_procurement_intelligence.columns.minimum_stock": "Minimum készlet",
+    "admin_procurement_intelligence.reorder_level": "utánrendelési szint",
     "admin_procurement_intelligence.columns.weekly_average_consumption": "Heti átlagfogyás",
     "admin_procurement_intelligence.columns.recommended_supplier": "Ajánlott beszállító",
     "admin_procurement_intelligence.columns.lead_time": "Lead time",
