@@ -133,7 +133,7 @@ const updateStatus = () => {
                 class="h-fit space-y-4 rounded-2xl border border-bakery-brown/15 bg-[#fff9f1] p-5 shadow-sm"
             >
                 <h2 class="font-heading text-2xl text-bakery-dark">
-                    {{ $t("admin_orders.sections.actions") }}
+                    {{ $t("common.actions") }}
                 </h2>
                 <div class="space-y-2 text-sm">
                     <p class="flex justify-between">

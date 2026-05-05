@@ -175,7 +175,7 @@ const confirmDelete = (category) => {
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                         >
-                            {{ $t("admin_categories.filters.search") }}
+                            {{ $t("common.search") }}
                         </label>
                         <InputText
                             v-model="filterState.search"
@@ -191,7 +191,7 @@ const confirmDelete = (category) => {
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                         >
-                            {{ $t("admin_categories.filters.per_page") }}
+                            {{ $t("table.rows_per_page") }}
                         </label>
                         <Select
                             v-model="filterState.per_page"
@@ -207,7 +207,7 @@ const confirmDelete = (category) => {
                 <template #actions>
                     <Button
                         icon="pi pi-search"
-                        :label="$t('admin_categories.actions.search')"
+                        :label="$t('common.search')"
                         @click="submitFilters"
                     />
                     <Button

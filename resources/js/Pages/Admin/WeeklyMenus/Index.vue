@@ -76,7 +76,7 @@ const {
 });
 
 const statusOptions = computed(() => [
-    { value: "", label: trans("admin_weekly_menus.filters.all_statuses") },
+    { value: "", label: trans("common.all") },
     ...props.statuses,
 ]);
 
@@ -301,7 +301,7 @@ const refreshMenus = () => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_weekly_menus.filters.search") }}</label
+                            >{{ $t("common.search") }}</label
                         >
                         <InputText
                             v-model="filterState.search"
@@ -315,7 +315,7 @@ const refreshMenus = () => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_weekly_menus.filters.status") }}</label
+                            >{{ $t("common.status") }}</label
                         >
                         <Select
                             v-model="filterState.status"
@@ -329,7 +329,7 @@ const refreshMenus = () => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_weekly_menus.filters.per_page") }}</label
+                            >{{ $t("table.rows_per_page") }}</label
                         >
                         <Select
                             v-model="filterState.per_page"

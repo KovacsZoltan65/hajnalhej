@@ -10,7 +10,7 @@ const { translate } = vi.hoisted(() => {
             'Rendelési adatok, tételek, státuszfrissítés és belső megjegyzések egy helyen.',
         'admin_orders.sections.customer_details': 'Ügyfél adatok',
         'admin_orders.sections.items': 'Rendelési tételek',
-        'admin_orders.sections.actions': 'Műveletek',
+        'common.actions': 'Műveletek',
         'admin_orders.fields.name': 'Név',
         'admin_orders.fields.email': 'Email',
         'admin_orders.fields.phone': 'Telefon',

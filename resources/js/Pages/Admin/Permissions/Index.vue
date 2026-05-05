@@ -171,7 +171,7 @@ const runSync = () => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_permissions.filters.search") }}</label
+                            >{{ $t("common.search") }}</label
                         >
                         <InputText
                             v-model="filterState.search"
@@ -261,7 +261,7 @@ const runSync = () => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_permissions.filters.per_page") }}</label
+                            >{{ $t("table.rows_per_page") }}</label
                         >
                         <Select
                             v-model="filterState.per_page"
@@ -301,7 +301,7 @@ const runSync = () => {
                 <template #actions>
                     <Button
                         icon="pi pi-search"
-                        :label="$t('admin_permissions.actions.filter')"
+                        :label="$t('common.filter')"
                         @click="submitFilters"
                     />
                     <Button
@@ -407,7 +407,7 @@ const runSync = () => {
                         <template #body="{ data }">
                             <Link :href="route('admin.permissions.show', data.name)">
                                 <Button
-                                    :label="$t('admin_permissions.actions.details')"
+                                    :label="$t('common.details')"
                                     size="small"
                                     text
                                     class="min-h-11!"

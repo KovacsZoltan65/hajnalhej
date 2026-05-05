@@ -12,7 +12,7 @@ const translations = {
     'audit_logs.show_title': 'Audit bejegyzés #:id',
     'audit_logs.show_description':
         'Részletes előtte/utána, környezet és eltérés adatok jogosultsági, felhasználói és rendelési eseményekhez.',
-    'audit_logs.actions.back_to_list': 'Vissza a listára',
+    'common.back_to_list': 'Vissza a listára',
     'audit_logs.columns.event': 'Esemény',
     'audit_logs.columns.created_at': 'Időpont',
     'audit_logs.columns.domain': 'Domain',

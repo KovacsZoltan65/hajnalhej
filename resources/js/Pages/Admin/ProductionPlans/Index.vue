@@ -264,7 +264,7 @@ const confirmDelete = (plan) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ trans("admin_production_plans.filters.search") }}</label
+                            >{{ trans("common.search") }}</label
                         >
                         <InputText
                             v-model="filterState.search"
@@ -279,7 +279,7 @@ const confirmDelete = (plan) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ trans("admin_production_plans.filters.status") }}</label
+                            >{{ trans("common.status") }}</label
                         >
                         <Select
                             v-model="filterState.status"
@@ -322,7 +322,7 @@ const confirmDelete = (plan) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ trans("admin_production_plans.filters.per_page") }}</label
+                            >{{ trans("table.rows_per_page") }}</label
                         >
                         <Select
                             v-model="filterState.per_page"

@@ -132,7 +132,7 @@ const subjectTypeOptions = computed(() => [
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("audit_logs.filters.search") }}</label
+                            >{{ $t("common.search") }}</label
                         >
                         <InputText
                             v-model="filterState.search"
@@ -190,7 +190,7 @@ const subjectTypeOptions = computed(() => [
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("audit_logs.filters.per_page") }}</label
+                            >{{ $t("table.rows_per_page") }}</label
                         >
                         <Select
                             v-model="filterState.per_page"
@@ -206,7 +206,7 @@ const subjectTypeOptions = computed(() => [
                 <template #actions>
                     <Button
                         icon="pi pi-search"
-                        :label="$t('audit_logs.actions.filter')"
+                        :label="$t('common.filter')"
                         @click="submitFilters"
                     />
                 </template>
@@ -302,7 +302,7 @@ const subjectTypeOptions = computed(() => [
                         <template #body="{ data }">
                             <Link :href="route('admin.audit-logs.show', data.id)">
                                 <Button
-                                    :label="$t('audit_logs.actions.details')"
+                                    :label="$t('common.details')"
                                     size="small"
                                     text
                                     class="min-h-11!"

@@ -46,7 +46,7 @@ class ProductController extends Controller
             'ingredients' => $this->productIngredientService->listSelectableIngredients(),
             'stockStatuses' => [
                 ['value' => Product::STOCK_IN_STOCK, 'label' => __('admin_product.status_in_stock')],
-                ['value' => Product::STOCK_PREORDER, 'label' => __('admin_product.status_available_for_pre')],
+                ['value' => Product::STOCK_PREORDER, 'label' => __('admin_product.status_available_for_preorder')],
                 ['value' => Product::STOCK_OUT_OF_STOCK, 'label' => __('admin_product.status_out_of_stock')],
             ],
             'filters' => $filters->toFrontendFilters(),

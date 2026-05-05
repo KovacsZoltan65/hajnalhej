@@ -33,7 +33,7 @@ const moduleLabel = (moduleName) => moduleName;
             />
 
             <Link :href="route('admin.permissions.index')">
-                <Button :label="$t('admin_permissions.actions.back_to_list')" icon="pi pi-arrow-left" text />
+                <Button :label="$t('common.back_to_list')" icon="pi pi-arrow-left" text />
             </Link>
         </div>
 

@@ -97,7 +97,7 @@ class WeeklyMenuController extends Controller
         }
 
         return redirect()->route('admin.weekly-menus.index')
-            ->with('success', __('weekly_menu.publicated') . '.');
+            ->with('success', __('weekly_menu.published') . '.');
     }
 
     public function unpublish(WeeklyMenu $weeklyMenu): RedirectResponse

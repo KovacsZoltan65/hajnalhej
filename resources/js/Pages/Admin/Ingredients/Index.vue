@@ -216,7 +216,7 @@ const confirmDelete = (ingredient) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_ingredients.filters.search") }}</label
+                            >{{ $t("common.search") }}</label
                         >
                         <InputText
                             v-model="filterState.search"
@@ -231,7 +231,7 @@ const confirmDelete = (ingredient) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_ingredients.filters.status") }}</label
+                            >{{ $t("common.status") }}</label
                         >
                         <Select
                             v-model="filterState.is_active"
@@ -261,7 +261,7 @@ const confirmDelete = (ingredient) => {
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_ingredients.filters.per_page") }}</label
+                            >{{ $t("table.rows_per_page") }}</label
                         >
                         <Select
                             v-model="filterState.per_page"
@@ -277,7 +277,7 @@ const confirmDelete = (ingredient) => {
                 <template #actions>
                     <Button
                         icon="pi pi-search"
-                        :label="$t('admin_ingredients.actions.search')"
+                        :label="$t('common.search')"
                         @click="submitFilters"
                     />
                     <Button

@@ -7,7 +7,7 @@ const { translate } = vi.hoisted(() => {
         "admin_permissions.show_eyebrow": "Admin / Jogosultságok",
         "admin_permissions.show_title": "Jogosultság: :name",
         "admin_permissions.show_description": "Registry metadata, használat és drift állapot áttekintése.",
-        "admin_permissions.actions.back_to_list": "Vissza a listára",
+        "common.back_to_list": "Vissza a listára",
         "admin_permissions.fields.permission": "Jogosultság",
         "admin_permissions.fields.registry_state": "Registry állapot",
         "admin_permissions.fields.label": "Label",

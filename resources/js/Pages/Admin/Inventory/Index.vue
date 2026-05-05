@@ -311,7 +311,7 @@ const dateToPicker = computed({
                     <div class="space-y-1">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_inventory.filters.search") }}</label
+                            >{{ $t("common.search") }}</label
                         >
                         <InputText
                             v-model="filterState.search"
@@ -400,7 +400,7 @@ const dateToPicker = computed({
                     <div class="space-y-1 min-w-36">
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_inventory.filters.per_page") }}</label
+                            >{{ $t("table.rows_per_page") }}</label
                         >
                         <Select
                             v-model="filterState.per_page"
@@ -420,7 +420,7 @@ const dateToPicker = computed({
                     />
                     <Button
                         icon="pi pi-search"
-                        :label="$t('admin_inventory.actions.search')"
+                        :label="$t('common.search')"
                         @click="submitFilters"
                     />
                     <Button

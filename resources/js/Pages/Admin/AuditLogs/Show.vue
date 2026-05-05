@@ -36,7 +36,7 @@ const formatJson = (value) => JSON.stringify(value ?? {}, null, 2);
 
             <Link :href="route('admin.audit-logs.index')">
                 <Button
-                    :label="$t('audit_logs.actions.back_to_list')"
+                    :label="$t('common.back_to_list')"
                     icon="pi pi-arrow-left"
                     text
                 />

@@ -201,7 +201,7 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                         >
-                            {{ $t("admin_supplier_terms.filters.search") }}
+                            {{ $t("common.search") }}
                         </label>
                         <InputText
                             v-model="filterState.search"
@@ -217,7 +217,7 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                         >
-                            {{ $t("admin_supplier_terms.filters.status") }}
+                            {{ $t("common.status") }}
                         </label>
                         <Select
                             v-model="filterState.active"
@@ -233,7 +233,7 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                         <label
                             class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                         >
-                            {{ $t("admin_supplier_terms.filters.per_page") }}
+                            {{ $t("table.rows_per_page") }}
                         </label>
                         <Select
                             v-model="filterState.per_page"
@@ -249,7 +249,7 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                 <template #actions>
                     <Button
                         icon="pi pi-search"
-                        :label="$t('admin_supplier_terms.actions.search')"
+                        :label="$t('common.search')"
                         @click="submitFilters"
                     />
                     <Button
