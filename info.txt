@@ -20,3 +20,29 @@ php artisan key:generate --env=testing
 
 php artisan ziggy:generate resources/js/ziggy.js
 php artisan ziggy:generate resources/js/ziggy.js --types
+
+=========================================
+= patch fájl használata
+=========================================
+✅ 1. Menj a projekt gyökerébe
+    cd /path/to/your/project
+
+🔍 2. Ellenőrizd (NE alkalmazd még)
+    git apply --check -p4 hajnalhej_locale_format_refactor.patch
+
+    👉 ha nincs output → jó
+    👉 ha hiba → mondja melyik fájl nem stimmel
+
+🚀 3. Alkalmazd
+    git apply -p4 hajnalhej_locale_format_refactor.patch
+
+👀 4. Nézd meg mit változott
+    git diff
+
+💾 5. Commit
+    git add .
+    git commit -m "refactor: use Inertia locale instead of trans(common.locale)"
+
+⚠️ Ha hibát kapsz (mint előbb)
+    Tipikus:
+    patch does not apply
