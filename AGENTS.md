@@ -1,4 +1,5 @@
 # AGENTS.md
+
 ## Hajnalhéj Bakery – AI Development Operating Manual
 
 > This file defines how all AI coding agents (Codex, Kiro, ChatGPT, Cursor, etc.) must work inside this repository.
@@ -8,15 +9,19 @@
 # 1. Project Identity
 
 ## Project Name
+
 **Hajnalhéj Bakery**
 
 ## Brand Direction
+
 Premium artisan bakery ordering platform.
 
 ## Public Slogan
+
 **Ropogós reggelek.**
 
 ## Internal Philosophy
+
 **Kovász. Idő. Türelem.**
 
 ## Primary Goal
@@ -378,7 +383,7 @@ Always:
 3. remove dead debug code
 4. confirm migrations sane
 
-# 15  When Agent Is Uncertain
+# 15 When Agent Is Uncertain
 
 Do NOT invent architecture randomly.
 

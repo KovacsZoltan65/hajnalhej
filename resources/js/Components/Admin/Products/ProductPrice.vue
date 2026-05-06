@@ -6,7 +6,10 @@ defineProps({
     },
 });
 
-const formatPrice = (price) => Math.round(price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+const formatPrice = (price) =>
+    Math.round(price)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 </script>
 
 <template>

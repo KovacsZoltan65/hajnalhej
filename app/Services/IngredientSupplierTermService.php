@@ -10,12 +10,10 @@ use Illuminate\Validation\ValidationException;
 
 class IngredientSupplierTermService
 {
-    public function __construct(private readonly IngredientSupplierTermRepository $repository)
-    {
-    }
+    public function __construct(private readonly IngredientSupplierTermRepository $repository) {}
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -23,7 +21,7 @@ class IngredientSupplierTermService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function create(array $payload): IngredientSupplierTerm
     {
@@ -40,7 +38,7 @@ class IngredientSupplierTermService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function update(IngredientSupplierTerm $term, array $payload): IngredientSupplierTerm
     {
@@ -56,13 +54,35 @@ class IngredientSupplierTermService
         });
     }
 
+    /**
+     * @param  array{field:string,value:mixed}  $payload
+     */
+    public function updateInline(IngredientSupplierTerm $term, array $payload): IngredientSupplierTerm
+    {
+        $data = [
+            'ingredient_id' => $term->ingredient_id,
+            'supplier_id' => $term->supplier_id,
+            'lead_time_days' => $term->lead_time_days,
+            'minimum_order_quantity' => $term->minimum_order_quantity,
+            'pack_size' => $term->pack_size,
+            'unit_cost_override' => $term->unit_cost_override,
+            'preferred' => $term->preferred,
+            'active' => $term->active,
+            'meta' => $term->meta,
+        ];
+
+        $data[(string) $payload['field']] = $payload['value'];
+
+        return $this->update($term, $data);
+    }
+
     public function delete(IngredientSupplierTerm $term): void
     {
         $this->repository->delete($term);
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      * @return array<string, mixed>
      */
     private function normalizePayload(array $payload): array
@@ -84,7 +104,7 @@ class IngredientSupplierTermService
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     private function guardPreferredRules(array $data): void
     {

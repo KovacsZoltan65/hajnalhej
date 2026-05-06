@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\Order;
+use App\Models\User;
 use App\Support\ConversionEventRegistry;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Inertia\Testing\AssertableInertia as Assert;

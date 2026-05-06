@@ -46,26 +46,18 @@ const form = useForm({
     roles: [],
 });
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
-    search: "",
-    per_page: 15,
-},
+        search: "",
+        per_page: 15,
+    },
     routeName: "admin.user-roles.index",
     loading,
     toQuery: (state) => ({
-            search: state.search || undefined,
-            per_page: state.per_page,
-        }),
+        search: state.search || undefined,
+        per_page: state.per_page,
+    }),
 });
 
 const perPageOptions = createPerPageOptions(trans, [15, 30, 50]);
@@ -81,13 +73,8 @@ const currentPage = computed(() => props.users.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.users.per_page ?? 15));
 
 const roleSystemMap = computed(() =>
-    Object.fromEntries(
-        props.role_options.map((option) => [option.name, option.is_system_role])
-    )
+    Object.fromEntries(props.role_options.map((option) => [option.name, option.is_system_role]))
 );
-
-
-
 
 const openAssignModal = (user) => {
     selectedUser.value = user;
@@ -129,13 +116,10 @@ const saveRoles = () => {
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
-            <AdminTableToolbar
-                :filters-grid-class="'grid gap-3 sm:grid-cols-2 lg:grid-cols-3'"
-            >
+            <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 lg:grid-cols-3'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Keresés</label
                         >
                         <InputText
@@ -147,8 +131,7 @@ const saveRoles = () => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Találat / oldal</label
                         >
                         <Select
@@ -186,15 +169,8 @@ const saveRoles = () => {
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
                             <p>Nincs megjeleníthető felhasználó.</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
-                                <Button
-                                    label="Szűrők törlése"
-                                    outlined
-                                    size="small"
-                                    @click="clearFilters"
-                                />
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
                             </div>
                         </div>
                     </template>
@@ -217,9 +193,7 @@ const saveRoles = () => {
 
                     <Column v-if="can.view_permissions" header="Effektív jogosultságok">
                         <template #body="{ data }">
-                            <span class="text-sm text-bakery-dark/75">{{
-                                data.permissions.length
-                            }}</span>
+                            <span class="text-sm text-bakery-dark/75">{{ data.permissions.length }}</span>
                         </template>
                     </Column>
 

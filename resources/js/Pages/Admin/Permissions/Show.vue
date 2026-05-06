@@ -39,37 +39,57 @@ const moduleLabel = (moduleName) => moduleName;
 
         <div class="grid gap-4 rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:grid-cols-2 sm:p-5">
             <div class="space-y-2">
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">{{ $t('admin_permissions.fields.permission') }}</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">
+                    {{ $t("admin_permissions.fields.permission") }}
+                </p>
                 <PermissionBadge :name="props.permission.name" />
             </div>
             <div class="space-y-2">
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">{{ $t('admin_permissions.fields.registry_state') }}</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">
+                    {{ $t("admin_permissions.fields.registry_state") }}
+                </p>
                 <PermissionRegistryStateBadge :state="props.permission.registry_state" />
             </div>
             <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">{{ $t('admin_permissions.fields.label') }}</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">
+                    {{ $t("admin_permissions.fields.label") }}
+                </p>
                 <p class="mt-2 text-sm font-semibold text-bakery-dark">{{ props.permission.label }}</p>
             </div>
             <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">{{ $t('admin_permissions.fields.module') }}</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">
+                    {{ $t("admin_permissions.fields.module") }}
+                </p>
                 <p class="mt-2 text-sm font-semibold text-bakery-dark">{{ moduleLabel(props.permission.module) }}</p>
             </div>
             <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">{{ $t('admin_permissions.fields.description') }}</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">
+                    {{ $t("admin_permissions.fields.description") }}
+                </p>
                 <p class="mt-2 text-sm text-bakery-dark/90">{{ props.permission.description }}</p>
             </div>
             <div class="space-y-2">
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">{{ $t('admin_permissions.fields.dangerous') }}</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">
+                    {{ $t("admin_permissions.fields.dangerous") }}
+                </p>
                 <PermissionDangerBadge :dangerous="props.permission.dangerous" />
             </div>
             <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">{{ $t('admin_permissions.fields.guard') }}</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">
+                    {{ $t("admin_permissions.fields.guard") }}
+                </p>
                 <p class="mt-2 text-sm font-semibold text-bakery-dark">{{ props.permission.guard_name }}</p>
             </div>
             <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">{{ $t('admin_permissions.fields.audit_sensitive') }}</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">
+                    {{ $t("admin_permissions.fields.audit_sensitive") }}
+                </p>
                 <p class="mt-2 text-sm font-semibold text-bakery-dark">
-                    {{ props.permission.audit_sensitive ? $t('admin_permissions.values.yes') : $t('admin_permissions.values.no') }}
+                    {{
+                        props.permission.audit_sensitive
+                            ? $t("admin_permissions.values.yes")
+                            : $t("admin_permissions.values.no")
+                    }}
                 </p>
             </div>
         </div>
@@ -81,4 +101,3 @@ const moduleLabel = (moduleName) => moduleName;
         />
     </div>
 </template>
-

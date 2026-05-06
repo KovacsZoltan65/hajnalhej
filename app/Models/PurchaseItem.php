@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -15,12 +17,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $unit
  * @property numeric $unit_cost
  * @property numeric $line_total
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Ingredient|null $ingredient
- * @property-read \App\Models\Purchase $purchase
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseReceiptItem> $receiptItems
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Ingredient|null $ingredient
+ * @property-read Purchase $purchase
+ * @property-read Collection<int, PurchaseReceiptItem> $receiptItems
  * @property-read int|null $receipt_items_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseItem newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseItem query()
@@ -33,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseItem whereUnit($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseItem whereUnitCost($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseItem whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class PurchaseItem extends Model

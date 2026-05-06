@@ -1,7 +1,8 @@
 <script setup>
-import { computed } from 'vue';
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
+import { computed } from "vue";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
+import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 
 const props = defineProps({
     form: {
@@ -23,9 +24,9 @@ const props = defineProps({
 });
 
 const selectedWasteTargetId = computed({
-    get: () => (props.form.waste_type === 'product' ? props.form.product_id : props.form.ingredient_id),
+    get: () => (props.form.waste_type === "product" ? props.form.product_id : props.form.ingredient_id),
     set: (value) => {
-        if (props.form.waste_type === 'product') {
+        if (props.form.waste_type === "product") {
             props.form.product_id = value;
             return;
         }
@@ -54,7 +55,7 @@ const selectedWasteTargetId = computed({
 
         <div class="space-y-2">
             <label class="text-sm font-medium text-bakery-dark">
-                {{ form.waste_type === 'product' ? 'Termék' : 'Alapanyag' }}
+                {{ form.waste_type === "product" ? "Termék" : "Alapanyag" }}
             </label>
             <Select
                 v-model="selectedWasteTargetId"
@@ -64,8 +65,12 @@ const selectedWasteTargetId = computed({
                 filter
                 class="w-full"
             />
-            <p v-if="form.waste_type === 'product' && form.errors.product_id" class="text-xs text-red-700">{{ form.errors.product_id }}</p>
-            <p v-if="form.waste_type !== 'product' && form.errors.ingredient_id" class="text-xs text-red-700">{{ form.errors.ingredient_id }}</p>
+            <p v-if="form.waste_type === 'product' && form.errors.product_id" class="text-xs text-red-700">
+                {{ form.errors.product_id }}
+            </p>
+            <p v-if="form.waste_type !== 'product' && form.errors.ingredient_id" class="text-xs text-red-700">
+                {{ form.errors.ingredient_id }}
+            </p>
         </div>
 
         <div class="space-y-2">
@@ -76,13 +81,19 @@ const selectedWasteTargetId = computed({
 
         <div class="space-y-2">
             <label class="text-sm font-medium text-bakery-dark">Ok</label>
-            <Select v-model="form.reason" :options="wasteReasons" option-label="label" option-value="value" class="w-full" />
+            <Select
+                v-model="form.reason"
+                :options="wasteReasons"
+                option-label="label"
+                option-value="value"
+                class="w-full"
+            />
             <p v-if="form.errors.reason" class="text-xs text-red-700">{{ form.errors.reason }}</p>
         </div>
 
         <div class="space-y-2">
             <label class="text-sm font-medium text-bakery-dark">Dátum</label>
-            <InputText v-model="form.occurred_at" type="date" class="w-full" />
+            <BaseDatePicker v-model="form.occurred_at" class="w-full" />
             <p v-if="form.errors.occurred_at" class="text-xs text-red-700">{{ form.errors.occurred_at }}</p>
         </div>
     </div>

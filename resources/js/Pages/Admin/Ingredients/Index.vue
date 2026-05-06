@@ -4,11 +4,13 @@ import { computed, ref, transformVNodeArgs } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
-import DataTable from "primevue/datatable";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import { useConfirm } from "primevue/useconfirm";
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import BaseDataTable from "@/Components/Admin/Table/BaseDataTable.vue";
+import InlineEditableNumber from "@/Components/Admin/Table/InlineEditableNumber.vue";
+import InlineEditableSelect from "@/Components/Admin/Table/InlineEditableSelect.vue";
 import CreateModal from "@/Components/Admin/Ingredients/CreateModal.vue";
 import EditModal from "@/Components/Admin/Ingredients/EditModal.vue";
 import IngredientStatusBadge from "../../../Components/Admin/Ingredients/IngredientStatusBadge.vue";
@@ -42,16 +44,9 @@ const loading = ref(false);
 const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const editingId = ref(null);
+const selectedIngredients = ref([]);
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
         search: "",
@@ -108,9 +103,7 @@ const form = useForm({
 });
 
 const currentPage = computed(() => props.ingredients.current_page ?? 1);
-const first = computed(
-    () => (currentPage.value - 1) * (props.ingredients.per_page ?? 10)
-);
+const first = computed(() => (currentPage.value - 1) * (props.ingredients.per_page ?? 10));
 
 const openCreate = () => {
     editModalVisible.value = false;
@@ -214,25 +207,21 @@ const confirmDelete = (ingredient) => {
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("common.search") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.search")
+                        }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            :placeholder="
-                                $t('admin_ingredients.filters.search_placeholder')
-                            "
+                            :placeholder="$t('admin_ingredients.filters.search_placeholder')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("common.status") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.status")
+                        }}</label>
                         <Select
                             v-model="filterState.is_active"
                             :options="activeOptions"
@@ -244,10 +233,9 @@ const confirmDelete = (ingredient) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_ingredients.filters.unit") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("admin_ingredients.filters.unit")
+                        }}</label>
                         <Select
                             v-model="filterState.unit"
                             :options="unitOptions"
@@ -259,10 +247,9 @@ const confirmDelete = (ingredient) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("table.rows_per_page") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("table.rows_per_page")
+                        }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -275,21 +262,14 @@ const confirmDelete = (ingredient) => {
                 </template>
 
                 <template #actions>
-                    <Button
-                        icon="pi pi-search"
-                        :label="$t('common.search')"
-                        @click="submitFilters"
-                    />
-                    <Button
-                        icon="pi pi-plus"
-                        :label="$t('admin_ingredients.actions.create')"
-                        @click="openCreate"
-                    />
+                    <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
+                    <Button icon="pi pi-plus" :label="$t('admin_ingredients.actions.create')" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
             <div class="mt-4 overflow-x-auto">
-                <DataTable
+                <BaseDataTable
+                    v-model:selection="selectedIngredients"
                     :value="ingredients.data"
                     lazy
                     paginator
@@ -302,37 +282,25 @@ const confirmDelete = (ingredient) => {
                     sort-mode="single"
                     :sort-field="filterState.sort_field"
                     :sort-order="sortOrder"
+                    :empty-title="$t('admin.common.empty.title')"
+                    :empty-description="
+                        $t(
+                            filterState.search
+                                ? 'admin.common.empty.no_results_description'
+                                : 'admin.common.empty.description'
+                        )
+                    "
+                    :empty-primary-label="$t('admin_ingredients.actions.create')"
+                    :empty-secondary-label="$t('common.clear_filters')"
+                    :selected-count="selectedIngredients.length"
                     @sort="onSort"
                     @page="onPage"
+                    @empty-primary="openCreate"
+                    @empty-secondary="clearFilters"
+                    @clear-selection="selectedIngredients = []"
                 >
-                    <template #empty>
-                        <div
-                            class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
-                        >
-                            <p>{{ $t("admin_ingredients.empty") }}</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
-                                <Button
-                                    :label="$t('common.clear_filters')"
-                                    outlined
-                                    size="small"
-                                    @click="clearFilters"
-                                />
-                                <Button
-                                    :label="$t('admin_ingredients.actions.create')"
-                                    size="small"
-                                    @click="openCreate"
-                                />
-                            </div>
-                        </div>
-                    </template>
-
-                    <Column
-                        field="name"
-                        :header="$t('admin_ingredients.columns.name')"
-                        sortable
-                    >
+                    <Column selection-mode="multiple" header-style="width:3rem" />
+                    <Column field="name" :header="$t('admin_ingredients.columns.name')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">
@@ -345,11 +313,18 @@ const confirmDelete = (ingredient) => {
                             </div>
                         </template>
                     </Column>
-                    <Column
-                        field="unit"
-                        :header="$t('admin_ingredients.columns.unit')"
-                        sortable
-                    />
+                    <Column field="unit" :header="$t('admin_ingredients.columns.unit')" sortable>
+                        <template #body="{ data }">
+                            <InlineEditableSelect
+                                :model-value="data.unit"
+                                route-name="admin.ingredients.inline.update"
+                                :route-params="data.id"
+                                field="unit"
+                                :options="units.map((unit) => ({ label: unit, value: unit }))"
+                                :reload-only="['ingredients']"
+                            />
+                        </template>
+                    </Column>
                     <Column
                         field="estimated_unit_cost"
                         :header="$t('admin_ingredients.columns.estimated_unit_cost')"
@@ -361,24 +336,34 @@ const confirmDelete = (ingredient) => {
                             }}</span>
                         </template>
                     </Column>
-                    <Column
-                        field="current_stock"
-                        :header="$t('admin_ingredients.columns.stock')"
-                        sortable
-                    >
+                    <Column field="current_stock" :header="$t('admin_ingredients.columns.stock')" sortable>
                         <template #body="{ data }">
-                            <IngredientStockBadge
-                                :current-stock="data.current_stock"
-                                :minimum-stock="data.minimum_stock"
-                                :unit="data.unit"
-                            />
+                            <div class="grid gap-2">
+                                <InlineEditableNumber
+                                    :model-value="data.current_stock"
+                                    route-name="admin.ingredients.inline.update"
+                                    :route-params="data.id"
+                                    field="current_stock"
+                                    :suffix="data.unit"
+                                    :reload-only="['ingredients']"
+                                />
+                                <InlineEditableNumber
+                                    :model-value="data.minimum_stock"
+                                    route-name="admin.ingredients.inline.update"
+                                    :route-params="data.id"
+                                    field="minimum_stock"
+                                    :suffix="data.unit"
+                                    :reload-only="['ingredients']"
+                                />
+                                <IngredientStockBadge
+                                    :current-stock="data.current_stock"
+                                    :minimum-stock="data.minimum_stock"
+                                    :unit="data.unit"
+                                />
+                            </div>
                         </template>
                     </Column>
-                    <Column
-                        field="is_active"
-                        :header="$t('admin_ingredients.columns.status')"
-                        sortable
-                    >
+                    <Column field="is_active" :header="$t('admin_ingredients.columns.status')" sortable>
                         <template #body="{ data }">
                             <IngredientStatusBadge :active="data.is_active" />
                         </template>
@@ -406,22 +391,12 @@ const confirmDelete = (ingredient) => {
                             </div>
                         </template>
                     </Column>
-                </DataTable>
+                </BaseDataTable>
             </div>
         </div>
 
-        <CreateModal
-            v-model:visible="createModalVisible"
-            :form="form"
-            :units="units"
-            @submit="submitCreate"
-        />
-        <EditModal
-            v-model:visible="editModalVisible"
-            :form="form"
-            :units="units"
-            @submit="submitEdit"
-        />
+        <CreateModal v-model:visible="createModalVisible" :form="form" :units="units" @submit="submitCreate" />
+        <EditModal v-model:visible="editModalVisible" :form="form" :units="units" @submit="submitEdit" />
         <ConfirmDialog />
     </div>
 </template>

@@ -3,22 +3,20 @@
 namespace App\Services\Audit;
 
 use App\Models\Order;
+use App\Models\User;
 use App\Repositories\AuthorizationAuditRepository;
 use App\Support\AuditEventRegistry;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Role;
-use App\Models\User;
 
 class AuthorizationAuditLogService
 {
-    public function __construct(private readonly AuthorizationAuditRepository $repository)
-    {
-    }
+    public function __construct(private readonly AuthorizationAuditRepository $repository) {}
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {

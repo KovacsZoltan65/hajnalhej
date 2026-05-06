@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 class StockCountRepository
 {
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -28,7 +28,7 @@ class StockCountRepository
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function create(array $payload): StockCount
     {
@@ -36,7 +36,7 @@ class StockCountRepository
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function update(StockCount $stockCount, array $payload): StockCount
     {
@@ -52,7 +52,7 @@ class StockCountRepository
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     private function adminQuery(array $filters): Builder
     {
@@ -70,4 +70,3 @@ class StockCountRepository
             ->orderByDesc('id');
     }
 }
-

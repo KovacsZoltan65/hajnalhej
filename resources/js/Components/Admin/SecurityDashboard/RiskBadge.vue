@@ -1,19 +1,19 @@
 <script setup>
-import Tag from 'primevue/tag';
+import Tag from "primevue/tag";
 
 const props = defineProps({
     level: {
         type: String,
-        default: 'low',
+        default: "low",
     },
 });
 
 const severityMap = {
-    critical: 'danger',
-    high: 'warn',
-    medium: 'warning',
-    low: 'info',
-    info: 'secondary',
+    critical: "danger",
+    high: "warn",
+    medium: "warning",
+    low: "info",
+    info: "secondary",
 };
 </script>
 

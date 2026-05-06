@@ -6,6 +6,7 @@ use Database\Factories\OrderItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -17,10 +18,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property numeric $line_total
  * @property array<array-key, mixed>|null $recipe_snapshot
  * @property array<array-key, mixed>|null $metadata
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Order $order
- * @property-read \App\Models\Product|null $product
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Order $order
+ * @property-read Product|null $product
+ *
  * @method static \Database\Factories\OrderItemFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem newQuery()
@@ -36,6 +38,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereRecipeSnapshot($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereUnitPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class OrderItem extends Model

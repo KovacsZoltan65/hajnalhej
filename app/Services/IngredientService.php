@@ -10,13 +10,10 @@ use Illuminate\Support\Str;
 
 class IngredientService
 {
-    public function __construct(private readonly IngredientRepository $repository)
-    {
-    }
+    public function __construct(private readonly IngredientRepository $repository) {}
 
     /**
-     * @param array<string, mixed> $filters
-     * @return LengthAwarePaginator
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -32,8 +29,7 @@ class IngredientService
     }
 
     /**
-     * @param array<string, mixed> $payload
-     * @return Ingredient
+     * @param  array<string, mixed>  $payload
      */
     public function create(array $payload): Ingredient
     {
@@ -44,8 +40,7 @@ class IngredientService
     }
 
     /**
-     * @param array<string, mixed> $payload
-     * @return Ingredient
+     * @param  array<string, mixed>  $payload
      */
     public function update(Ingredient $ingredient, array $payload): Ingredient
     {
@@ -56,9 +51,25 @@ class IngredientService
     }
 
     /**
+     * @param  array{field:string,value:mixed}  $payload
+     */
+    public function updateInline(Ingredient $ingredient, array $payload): Ingredient
+    {
+        $field = (string) $payload['field'];
+        $value = $payload['value'];
+
+        $normalized = match ($field) {
+            'current_stock' => ['current_stock' => number_format((float) $value, 3, '.', '')],
+            'minimum_stock' => ['minimum_stock' => number_format((float) $value, 3, '.', '')],
+            'unit' => ['unit' => (string) $value],
+            default => [],
+        };
+
+        return $this->repository->update($ingredient, $normalized);
+    }
+
+    /**
      * Summary of delete
-     * @param Ingredient $ingredient
-     * @return void
      */
     public function delete(Ingredient $ingredient): void
     {
@@ -66,7 +77,7 @@ class IngredientService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      * @return array<string, mixed>
      */
     private function normalizePayload(array $payload, ?Ingredient $ingredient = null): array
@@ -99,9 +110,8 @@ class IngredientService
 
     /**
      * Summary of resolveUniqueSlug
-     * @param string $baseSlug
-     * @param mixed $ignoreId
-     * @return string
+     *
+     * @param  mixed  $ignoreId
      */
     private function resolveUniqueSlug(string $baseSlug, ?int $ignoreId = null): string
     {

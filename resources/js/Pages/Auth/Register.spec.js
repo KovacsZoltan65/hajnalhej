@@ -39,8 +39,7 @@ vi.mock("primevue/inputtext", () => ({
         name: "InputText",
         props: ["modelValue", "invalid"],
         emits: ["update:modelValue"],
-        template:
-            '<input :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+        template: '<input :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
     },
 }));
 
@@ -49,8 +48,7 @@ vi.mock("primevue/password", () => ({
         name: "Password",
         props: ["modelValue", "invalid"],
         emits: ["update:modelValue"],
-        template:
-            '<input :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+        template: '<input :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
     },
 }));
 
@@ -71,8 +69,7 @@ describe("Register page", () => {
                         ({
                             "auth.account_label": "Hajnalhéj fiók",
                             "register.title": "Hozd létre a fiókodat",
-                            "register.subtitle":
-                                "Regisztrálj, hogy gyorsabban rendelhesd kedvenceidet.",
+                            "register.subtitle": "Regisztrálj, hogy gyorsabban rendelhesd kedvenceidet.",
                             "register.cta": "Fiók létrehozása",
                             "register.login_link": "Már van fiókod? Lépj be.",
                             "fields.name": "teljes név",
@@ -119,4 +116,3 @@ describe("Register page", () => {
         expect(wrapper.find("button").attributes("disabled")).toBeDefined();
     });
 });
-

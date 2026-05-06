@@ -14,17 +14,8 @@ use Inertia\Response;
 
 class CategoryController extends Controller
 {
-    /**
-     * @param CategoryService $service
-     */
-    public function __construct(private readonly CategoryService $service)
-    {
-    }
+    public function __construct(private readonly CategoryService $service) {}
 
-    /**
-     * @param Request $request
-     * @return \Inertia\Response
-     */
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Category::class);
@@ -60,37 +51,24 @@ class CategoryController extends Controller
         ]);
     }
 
-    /**
-     * @param StoreCategoryRequest $request
-     * @return RedirectResponse
-     */
     public function store(StoreCategoryRequest $request): RedirectResponse
     {
         $this->service->create($request->validated());
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', __('admin_categories.category_created') . ".");
+            ->with('success', __('admin_categories.category_created').'.');
     }
 
-    /**
-     * @param UpdateCategoryRequest $request
-     * @param Category $category
-     * @return RedirectResponse
-     */
     public function update(UpdateCategoryRequest $request, Category $category): RedirectResponse
     {
         $this->service->update($category, $request->validated());
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', __('admin_categories.category_updated') . '.');
+            ->with('success', __('admin_categories.category_updated').'.');
     }
 
-    /**
-     * @param Category $category
-     * @return RedirectResponse
-     */
     public function destroy(Category $category): RedirectResponse
     {
         $this->authorize('delete', $category);
@@ -99,8 +77,6 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', __('admin_categories.category_deleted') . '.');
+            ->with('success', __('admin_categories.category_deleted').'.');
     }
 }
-
-

@@ -1,7 +1,8 @@
 <script setup>
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
-import Textarea from 'primevue/textarea';
+import BaseDatePicker from "@/Components/BaseDatePicker.vue";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
+import Textarea from "primevue/textarea";
 
 defineProps({
     form: {
@@ -44,7 +45,7 @@ defineProps({
 
         <div class="space-y-2">
             <label class="text-sm font-medium text-bakery-dark">Dátum</label>
-            <InputText v-model="form.occurred_at" type="date" class="w-full" />
+            <BaseDatePicker v-model="form.occurred_at" class="w-full" />
             <p v-if="form.errors.occurred_at" class="text-xs text-red-700">{{ form.errors.occurred_at }}</p>
         </div>
 

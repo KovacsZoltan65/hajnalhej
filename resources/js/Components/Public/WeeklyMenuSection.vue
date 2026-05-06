@@ -33,7 +33,6 @@ const addToCart = (productId) => {
         preserveScroll: true,
     });
 };
-
 </script>
 
 <template>
@@ -45,9 +44,7 @@ const addToCart = (productId) => {
             <h2 class="mt-2 font-heading text-3xl text-bakery-dark sm:text-4xl">
                 {{ menu.title }}
             </h2>
-            <p class="mt-2 text-sm text-bakery-dark/75">
-                {{ menu.week_start }} - {{ menu.week_end }}
-            </p>
+            <p class="mt-2 text-sm text-bakery-dark/75">{{ menu.week_start }} - {{ menu.week_end }}</p>
             <p v-if="menu.public_note" class="mt-4 text-sm text-bakery-dark/80">
                 {{ menu.public_note }}
             </p>
@@ -65,10 +62,7 @@ const addToCart = (productId) => {
                     {{ $t("home.go_to_checkout") }}
                 </Link>
             </div>
-            <p
-                v-if="fallbackUsed"
-                class="mt-4 rounded-xl bg-amber-100 px-3 py-2 text-xs font-medium text-amber-800"
-            >
+            <p v-if="fallbackUsed" class="mt-4 rounded-xl bg-amber-100 px-3 py-2 text-xs font-medium text-amber-800">
                 {{ $t("weekly_menu.fallback_notice") }}
             </p>
         </div>
@@ -95,19 +89,13 @@ const addToCart = (productId) => {
                                 {{ item.badge_text }}
                             </span>
                         </div>
-                        <p
-                            v-if="item.short_description"
-                            class="mt-2 text-sm text-bakery-dark/75"
-                        >
+                        <p v-if="item.short_description" class="mt-2 text-sm text-bakery-dark/75">
                             {{ item.short_description }}
                         </p>
                         <p class="mt-4 text-sm font-semibold text-bakery-brown">
                             {{ formatCurrency(item.price) }}
                         </p>
-                        <p
-                            v-if="item.stock_note"
-                            class="mt-1 text-xs text-bakery-dark/60"
-                        >
+                        <p v-if="item.stock_note" class="mt-1 text-xs text-bakery-dark/60">
                             {{ item.stock_note }}
                         </p>
                         <Button
@@ -125,10 +113,7 @@ const addToCart = (productId) => {
         </div>
     </section>
 
-    <section
-        v-else
-        class="rounded-2xl border border-dashed border-bakery-brown/30 bg-[#fcf7ef] p-8 text-center"
-    >
+    <section v-else class="rounded-2xl border border-dashed border-bakery-brown/30 bg-[#fcf7ef] p-8 text-center">
         <h3 class="font-heading text-3xl text-bakery-dark">
             {{ $t("weekly_menu.empty_title") }}
         </h3>

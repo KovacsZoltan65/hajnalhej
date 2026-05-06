@@ -11,17 +11,8 @@ use Inertia\Response;
 
 class ConversionAnalyticsController extends Controller
 {
-    /**
-     * @param ConversionAnalyticsService $service
-     */
-    public function __construct(private readonly ConversionAnalyticsService $service)
-    {
-    }
+    public function __construct(private readonly ConversionAnalyticsService $service) {}
 
-    /**
-     * @param ConversionAnalyticsIndexRequest $request
-     * @return \Inertia\Response
-     */
     public function index(ConversionAnalyticsIndexRequest $request): Response
     {
         $this->authorize('viewAny', ConversionEvent::class);
@@ -36,4 +27,3 @@ class ConversionAnalyticsController extends Controller
         ]);
     }
 }
-

@@ -10,7 +10,6 @@ use App\Traits\Functions;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use JsonException;
 
 class CategoryRepository
 {
@@ -18,14 +17,12 @@ class CategoryRepository
 
     protected $tag = 'category';
 
-    public function __construct(private readonly CacheService $cacheService)
-    {
-    }
+    public function __construct(private readonly CacheService $cacheService) {}
 
     /**
      * Admin oldalon megjelenítendő adatokat szolgáltatja
-     * @param array<string, mixed> $filters
-     * @return LengthAwarePaginator
+     *
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -39,6 +36,7 @@ class CategoryRepository
 
     /**
      * A kiválasztható (is_active = 1) kategóriák listája
+     *
      * @return Collection<int, array{id:int,name:string}>
      */
     public function listSelectable(): Collection
@@ -56,19 +54,14 @@ class CategoryRepository
 
     /**
      * Új kategória elkészítése
-     * @param array<string, mixed> $data
-     * @return Category
+     *
+     * @param  array<string, mixed>  $data
      */
     public function create(array $data): Category
     {
         return Category::query()->create($data);
     }
 
-    /**
-     * @param Category $category
-     * @param array $data
-     * @return Category
-     */
     public function update(Category $category, array $data): Category
     {
         $category->update($data);
@@ -78,8 +71,6 @@ class CategoryRepository
 
     /**
      * Kategória törlése
-     * @param Category $category
-     * @return void
      */
     public function delete(Category $category): void
     {
@@ -88,9 +79,6 @@ class CategoryRepository
 
     /**
      * A slug létezésétnek vizsgálata
-     * @param string $slug
-     * @param int $ignoreId
-     * @return bool
      */
     public function slugExists(string $slug, ?int $ignoreId = null): bool
     {
@@ -101,8 +89,7 @@ class CategoryRepository
     }
 
     /**
-     * @param array<string, mixed> $filters
-     * @return Builder
+     * @param  array<string, mixed>  $filters
      */
     private function adminQuery(array $filters): Builder
     {

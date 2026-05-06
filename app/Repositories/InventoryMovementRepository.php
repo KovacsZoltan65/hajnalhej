@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class InventoryMovementRepository
 {
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function create(array $data): InventoryMovement
     {
@@ -28,7 +28,7 @@ class InventoryMovementRepository
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateLedger(array $filters): LengthAwarePaginator
     {
@@ -101,7 +101,7 @@ class InventoryMovementRepository
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     private function ledgerQuery(array $filters): Builder
     {

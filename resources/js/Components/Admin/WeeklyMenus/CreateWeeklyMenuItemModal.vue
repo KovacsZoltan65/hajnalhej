@@ -1,38 +1,38 @@
 <script setup>
-import { reactive, watch } from 'vue';
-import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
-import WeeklyMenuItemForm from './WeeklyMenuItemForm.vue';
+import { reactive, watch } from "vue";
+import Button from "primevue/button";
+import Dialog from "primevue/dialog";
+import WeeklyMenuItemForm from "./WeeklyMenuItemForm.vue";
 
 const props = defineProps({
     visible: { type: Boolean, required: true },
     products: { type: Array, required: true },
 });
 
-const emit = defineEmits(['update:visible', 'save']);
+const emit = defineEmits(["update:visible", "save"]);
 
 const form = reactive({
     id: null,
     product_id: null,
-    override_name: '',
-    override_short_description: '',
+    override_name: "",
+    override_short_description: "",
     override_price: null,
     sort_order: 0,
     is_active: true,
-    badge_text: '',
-    stock_note: '',
+    badge_text: "",
+    stock_note: "",
 });
 
 const resetForm = () => {
     form.id = null;
     form.product_id = props.products[0]?.id ?? null;
-    form.override_name = '';
-    form.override_short_description = '';
+    form.override_name = "";
+    form.override_short_description = "";
     form.override_price = null;
     form.sort_order = 0;
     form.is_active = true;
-    form.badge_text = '';
-    form.stock_note = '';
+    form.badge_text = "";
+    form.stock_note = "";
 };
 
 watch(
@@ -41,13 +41,13 @@ watch(
         if (open) {
             resetForm();
         }
-    },
+    }
 );
 
-const close = () => emit('update:visible', false);
+const close = () => emit("update:visible", false);
 
 const submit = () => {
-    emit('save', {
+    emit("save", {
         product_id: form.product_id,
         override_name: form.override_name || null,
         override_short_description: form.override_short_description || null,

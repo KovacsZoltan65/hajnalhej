@@ -16,20 +16,11 @@ use RuntimeException;
 
 class StockCountController extends Controller
 {
-    /**
-     * @param StockCountService $service
-     * @param IngredientService $ingredientService
-     */
     public function __construct(
         private readonly StockCountService $service,
         private readonly IngredientService $ingredientService,
-    ) {
-    }
+    ) {}
 
-    /**
-     * @param StockCountIndexRequest $request
-     * @return \Inertia\Response
-     */
     public function index(StockCountIndexRequest $request): Response
     {
         $this->authorize('viewAny', StockCount::class);
@@ -58,10 +49,6 @@ class StockCountController extends Controller
         ]);
     }
 
-    /**
-     * @param StockCount $stockCount
-     * @return \Inertia\Response
-     */
     public function show(StockCount $stockCount): Response
     {
         $this->authorize('view', $stockCount);
@@ -88,10 +75,6 @@ class StockCountController extends Controller
         ]);
     }
 
-    /**
-     * @param StoreStockCountRequest $request
-     * @return RedirectResponse
-     */
     public function store(StoreStockCountRequest $request): RedirectResponse
     {
         try {
@@ -100,14 +83,9 @@ class StockCountController extends Controller
             return back()->with('error', $exception->getMessage());
         }
 
-        return back()->with('success', __('admin_stock_count.created') . '.');
+        return back()->with('success', __('admin_stock_count.created').'.');
     }
 
-    /**
-     * @param UpdateStockCountRequest $request
-     * @param StockCount $stockCount
-     * @return RedirectResponse
-     */
     public function update(UpdateStockCountRequest $request, StockCount $stockCount): RedirectResponse
     {
         try {
@@ -116,13 +94,9 @@ class StockCountController extends Controller
             return back()->with('error', $exception->getMessage());
         }
 
-        return back()->with('success', __('admin_stock_count.updated') . '.');
+        return back()->with('success', __('admin_stock_count.updated').'.');
     }
 
-    /**
-     * @param StockCount $stockCount
-     * @return RedirectResponse
-     */
     public function close(StockCount $stockCount): RedirectResponse
     {
         $this->authorize('update', $stockCount);
@@ -133,7 +107,6 @@ class StockCountController extends Controller
             return back()->with('error', $exception->getMessage());
         }
 
-        return back()->with('success', __('admin_stock_count.deleted') . '.');
+        return back()->with('success', __('admin_stock_count.deleted').'.');
     }
 }
-

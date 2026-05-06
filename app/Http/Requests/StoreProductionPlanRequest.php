@@ -25,8 +25,8 @@ class StoreProductionPlanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'target_ready_at' => ['required_without:target_at', 'date'],
-            'target_at' => ['required_without:target_ready_at', 'date'],
+            'target_ready_at' => ['required_without:target_at', 'date', 'after_or_equal:now'],
+            'target_at' => ['required_without:target_ready_at', 'date', 'after_or_equal:now'],
             'status' => ['nullable', 'string', Rule::in(ProductionPlan::statuses())],
             'notes' => ['nullable', 'string', 'max:4000'],
             'items' => ['required', 'array', 'min:1'],
@@ -34,6 +34,17 @@ class StoreProductionPlanRequest extends FormRequest
             'items.*.target_quantity' => ['required', 'numeric', 'gt:0', 'max:999999.999'],
             'items.*.unit_label' => ['nullable', 'string', 'max:24'],
             'items.*.sort_order' => ['nullable', 'integer', 'min:0', 'max:999999'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'target_ready_at.after_or_equal' => __('admin.production_plans.validation.past_date'),
+            'target_at.after_or_equal' => __('admin.production_plans.validation.past_date'),
         ];
     }
 

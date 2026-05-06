@@ -70,7 +70,7 @@ class PermissionRepository
     }
 
     /**
-     * @param array<int, string> $permissionNames
+     * @param  array<int, string>  $permissionNames
      * @return array<int, string>
      */
     public function missingNamesFromDatabase(array $permissionNames): array
@@ -85,7 +85,7 @@ class PermissionRepository
     }
 
     /**
-     * @param array<int, string> $permissionNames
+     * @param  array<int, string>  $permissionNames
      * @return array<int, string>
      */
     public function createMissing(array $permissionNames): array
@@ -103,7 +103,7 @@ class PermissionRepository
     }
 
     /**
-     * @param array<int, string> $registryPermissionNames
+     * @param  array<int, string>  $registryPermissionNames
      * @return array<int, string>
      */
     public function orphanNames(array $registryPermissionNames): array
@@ -119,7 +119,7 @@ class PermissionRepository
     }
 
     /**
-     * @param array<int, string> $permissionNames
+     * @param  array<int, string>  $permissionNames
      * @return array<string, int>
      */
     public function userUsageCountByPermissionNames(array $permissionNames): array

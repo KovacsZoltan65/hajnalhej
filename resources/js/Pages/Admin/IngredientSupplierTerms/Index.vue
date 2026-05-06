@@ -4,11 +4,13 @@ import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
-import DataTable from "primevue/datatable";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import { useConfirm } from "primevue/useconfirm";
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import BaseDataTable from "@/Components/Admin/Table/BaseDataTable.vue";
+import InlineEditableNumber from "@/Components/Admin/Table/InlineEditableNumber.vue";
+import InlineEditableToggle from "@/Components/Admin/Table/InlineEditableToggle.vue";
 import CreateModal from "@/Components/Admin/IngredientSupplierTerms/CreateModal.vue";
 import EditModal from "@/Components/Admin/IngredientSupplierTerms/EditModal.vue";
 import PreferredBadge from "@/Components/Admin/IngredientSupplierTerms/PreferredBadge.vue";
@@ -33,16 +35,9 @@ const loading = ref(false);
 const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const editingId = ref(null);
+const selectedTerms = ref([]);
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
         search: "",
@@ -127,11 +122,9 @@ const openEdit = (term) => {
     form.ingredient_id = term.ingredient_id;
     form.supplier_id = term.supplier_id;
     form.lead_time_days = term.lead_time_days;
-    form.minimum_order_quantity =
-        term.minimum_order_quantity === null ? null : Number(term.minimum_order_quantity);
+    form.minimum_order_quantity = term.minimum_order_quantity === null ? null : Number(term.minimum_order_quantity);
     form.pack_size = term.pack_size === null ? null : Number(term.pack_size);
-    form.unit_cost_override =
-        term.unit_cost_override === null ? null : Number(term.unit_cost_override);
+    form.unit_cost_override = term.unit_cost_override === null ? null : Number(term.unit_cost_override);
     form.preferred = Boolean(term.preferred);
     form.active = Boolean(term.active);
     form.meta = metaToString(term.meta);
@@ -198,25 +191,19 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
                             {{ $t("common.search") }}
                         </label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            :placeholder="
-                                $t('admin_supplier_terms.filters.search_placeholder')
-                            "
+                            :placeholder="$t('admin_supplier_terms.filters.search_placeholder')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
                             {{ $t("common.status") }}
                         </label>
                         <Select
@@ -230,9 +217,7 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
                             {{ $t("table.rows_per_page") }}
                         </label>
                         <Select
@@ -247,21 +232,14 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                 </template>
 
                 <template #actions>
-                    <Button
-                        icon="pi pi-search"
-                        :label="$t('common.search')"
-                        @click="submitFilters"
-                    />
-                    <Button
-                        icon="pi pi-plus"
-                        :label="$t('admin_supplier_terms.actions.create')"
-                        @click="openCreate"
-                    />
+                    <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
+                    <Button icon="pi pi-plus" :label="$t('admin_supplier_terms.actions.create')" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
             <div class="mt-4 overflow-x-auto">
-                <DataTable
+                <BaseDataTable
+                    v-model:selection="selectedTerms"
                     :value="terms.data"
                     lazy
                     paginator
@@ -274,37 +252,25 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                     sort-mode="single"
                     :sort-field="filterState.sort_field"
                     :sort-order="sortOrder"
+                    :empty-title="$t('admin.common.empty.title')"
+                    :empty-description="
+                        $t(
+                            filterState.search
+                                ? 'admin.common.empty.no_results_description'
+                                : 'admin.common.empty.description'
+                        )
+                    "
+                    :empty-primary-label="$t('admin_supplier_terms.actions.create')"
+                    :empty-secondary-label="$t('common.clear_filters')"
+                    :selected-count="selectedTerms.length"
                     @sort="onSort"
                     @page="onPage"
+                    @empty-primary="openCreate"
+                    @empty-secondary="clearFilters"
+                    @clear-selection="selectedTerms = []"
                 >
-                    <template #empty>
-                        <div
-                            class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
-                        >
-                            <p>{{ $t("admin_supplier_terms.empty") }}</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
-                                <Button
-                                    :label="$t('common.clear_filters')"
-                                    outlined
-                                    size="small"
-                                    @click="clearFilters"
-                                />
-                                <Button
-                                    :label="$t('admin_supplier_terms.actions.create')"
-                                    size="small"
-                                    @click="openCreate"
-                                />
-                            </div>
-                        </div>
-                    </template>
-
-                    <Column
-                        field="ingredient"
-                        :header="$t('admin_supplier_terms.columns.ingredient')"
-                        sortable
-                    >
+                    <Column selection-mode="multiple" header-style="width:3rem" />
+                    <Column field="ingredient" :header="$t('admin_supplier_terms.columns.ingredient')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">
@@ -316,30 +282,21 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                             </div>
                         </template>
                     </Column>
-                    <Column
-                        field="supplier"
-                        :header="$t('admin_supplier_terms.columns.supplier')"
-                        sortable
-                    >
+                    <Column field="supplier" :header="$t('admin_supplier_terms.columns.supplier')" sortable>
                         <template #body="{ data }">
-                            <span class="font-medium text-bakery-dark">{{
-                                data.supplier_name
-                            }}</span>
+                            <span class="font-medium text-bakery-dark">{{ data.supplier_name }}</span>
                         </template>
                     </Column>
-                    <Column
-                        field="lead_time_days"
-                        :header="$t('admin_supplier_terms.columns.lead_time')"
-                        sortable
-                    >
+                    <Column field="lead_time_days" :header="$t('admin_supplier_terms.columns.lead_time')" sortable>
                         <template #body="{ data }">
-                            {{
-                                data.lead_time_days !== null
-                                    ? $t("common.day_count", {
-                                          count: data.lead_time_days,
-                                      })
-                                    : "-"
-                            }}
+                            <InlineEditableNumber
+                                :model-value="data.lead_time_days"
+                                route-name="admin.ingredient-supplier-terms.inline.update"
+                                :route-params="data.id"
+                                field="lead_time_days"
+                                :suffix="$t('common.day')"
+                                :reload-only="['terms']"
+                            />
                         </template>
                     </Column>
                     <Column
@@ -348,19 +305,10 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                         sortable
                     >
                         <template #body="{ data }">
-                            {{
-                                formatQuantity(
-                                    data.minimum_order_quantity,
-                                    data.ingredient_unit
-                                )
-                            }}
+                            {{ formatQuantity(data.minimum_order_quantity, data.ingredient_unit) }}
                         </template>
                     </Column>
-                    <Column
-                        field="pack_size"
-                        :header="$t('admin_supplier_terms.columns.pack_size')"
-                        sortable
-                    >
+                    <Column field="pack_size" :header="$t('admin_supplier_terms.columns.pack_size')" sortable>
                         <template #body="{ data }">
                             {{ formatQuantity(data.pack_size, data.ingredient_unit) }}
                         </template>
@@ -371,39 +319,35 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                         sortable
                     >
                         <template #body="{ data }">
-                            {{ formatCurrency(data.unit_cost_override) }}
-                        </template>
-                    </Column>
-                    <Column
-                        field="preferred"
-                        :header="$t('admin_supplier_terms.columns.preferred')"
-                        sortable
-                    >
-                        <template #body="{ data }">
-                            <PreferredBadge
-                                :preferred="Boolean(data.preferred)"
-                                :active="Boolean(data.active)"
+                            <InlineEditableNumber
+                                :model-value="data.unit_cost_override"
+                                route-name="admin.ingredient-supplier-terms.inline.update"
+                                :route-params="data.id"
+                                field="unit_cost_override"
+                                :reload-only="['terms']"
                             />
                         </template>
                     </Column>
-                    <Column
-                        field="active"
-                        :header="$t('admin_supplier_terms.columns.status')"
-                        sortable
-                    >
+                    <Column field="preferred" :header="$t('admin_supplier_terms.columns.preferred')" sortable>
                         <template #body="{ data }">
-                            <span
-                                class="text-sm font-semibold"
-                                :class="
-                                    data.active ? 'text-emerald-700' : 'text-stone-500'
-                                "
-                            >
-                                {{
-                                    data.active
-                                        ? $t("common.active")
-                                        : $t("common.inactive")
-                                }}
-                            </span>
+                            <InlineEditableToggle
+                                :model-value="Boolean(data.preferred)"
+                                route-name="admin.ingredient-supplier-terms.inline.update"
+                                :route-params="data.id"
+                                field="preferred"
+                                :reload-only="['terms']"
+                            />
+                        </template>
+                    </Column>
+                    <Column field="active" :header="$t('admin_supplier_terms.columns.status')" sortable>
+                        <template #body="{ data }">
+                            <InlineEditableToggle
+                                :model-value="Boolean(data.active)"
+                                route-name="admin.ingredient-supplier-terms.inline.update"
+                                :route-params="data.id"
+                                field="active"
+                                :reload-only="['terms']"
+                            />
                         </template>
                     </Column>
                     <Column :header="$t('common.actions')" :exportable="false">
@@ -423,15 +367,13 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                                     rounded
                                     severity="danger"
                                     class="h-11! w-11!"
-                                    :aria-label="
-                                        $t('admin_supplier_terms.actions.delete')
-                                    "
+                                    :aria-label="$t('admin_supplier_terms.actions.delete')"
                                     @click="confirmDelete(data)"
                                 />
                             </div>
                         </template>
                     </Column>
-                </DataTable>
+                </BaseDataTable>
             </div>
         </div>
 

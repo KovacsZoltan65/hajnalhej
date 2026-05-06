@@ -22,11 +22,7 @@ const classMap = {
 </script>
 
 <template>
-    <span
-        class="ui-badge"
-        :class="classMap[props.state] ?? 'bg-slate-100 text-slate-700'"
-    >
+    <span class="ui-badge" :class="classMap[props.state] ?? 'bg-slate-100 text-slate-700'">
         {{ labelMap[props.state] ? trans(labelMap[props.state]) : props.state }}
     </span>
 </template>
-

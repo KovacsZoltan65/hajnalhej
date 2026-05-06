@@ -13,14 +13,23 @@ class InventoryAuditService extends BaseAuditService
     public const LOG_NAME = 'inventory';
 
     public const SUPPLIER_CREATED = 'supplier.created';
+
     public const SUPPLIER_UPDATED = 'supplier.updated';
+
     public const SUPPLIER_DELETED = 'supplier.deleted';
+
     public const PURCHASE_CREATED = 'purchase.created';
+
     public const PURCHASE_POSTED = 'purchase.posted';
+
     public const PURCHASE_CANCELLED = 'purchase.cancelled';
+
     public const INVENTORY_ADJUSTED = 'inventory.adjusted';
+
     public const WASTE_RECORDED = 'waste.recorded';
+
     public const STOCK_COUNT_CLOSED = 'stock_count.closed';
+
     public const INVENTORY_SHORTAGE_DETECTED = 'inventory.shortage_detected';
 
     /**
@@ -133,4 +142,3 @@ class InventoryAuditService extends BaseAuditService
         ];
     }
 }
-

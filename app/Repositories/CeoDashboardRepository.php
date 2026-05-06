@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\ConversionEvent;
 use App\Models\Order;
+use App\Support\ConversionEventRegistry;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -13,8 +14,7 @@ class CeoDashboardRepository
     public function __construct(
         private readonly ProfitDashboardRepository $profitDashboardRepository,
         private readonly SecurityDashboardRepository $securityDashboardRepository,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array{revenue:float,estimated_profit:float,estimated_margin_rate:float,repeat_customer_rate:float,orders_count:int,ltv:float}
@@ -78,25 +78,25 @@ class CeoDashboardRepository
         $checkoutSubmitted = $this->countConversionEvents(
             $from,
             $to,
-            \App\Support\ConversionEventRegistry::CHECKOUT_SUBMITTED,
+            ConversionEventRegistry::CHECKOUT_SUBMITTED,
             'backend',
         );
         $checkoutCompleted = $this->countConversionEvents(
             $from,
             $to,
-            \App\Support\ConversionEventRegistry::CHECKOUT_COMPLETED,
+            ConversionEventRegistry::CHECKOUT_COMPLETED,
             'backend',
         );
         $registrationSubmitted = $this->countConversionEvents(
             $from,
             $to,
-            \App\Support\ConversionEventRegistry::REGISTRATION_SUBMITTED,
+            ConversionEventRegistry::REGISTRATION_SUBMITTED,
             'frontend',
         );
         $registrationCompleted = $this->countConversionEvents(
             $from,
             $to,
-            \App\Support\ConversionEventRegistry::REGISTRATION_COMPLETED,
+            ConversionEventRegistry::REGISTRATION_COMPLETED,
             'backend',
         );
 
@@ -205,7 +205,7 @@ class CeoDashboardRepository
     }
 
     /**
-     * @param Collection<int, Order> $orders
+     * @param  Collection<int, Order>  $orders
      * @return Collection<string, Collection<int, Order>>
      */
     private function groupOrdersByCustomer(Collection $orders): Collection

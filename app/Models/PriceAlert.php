@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -16,13 +17,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property numeric $current_unit_cost
  * @property numeric|null $change_percent
  * @property numeric|null $margin_impact
- * @property \Illuminate\Support\Carbon $detected_on
+ * @property Carbon $detected_on
  * @property string|null $notes
- * @property \Illuminate\Support\Carbon|null $resolved_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Ingredient|null $ingredient
- * @property-read \App\Models\Supplier|null $supplier
+ * @property Carbon|null $resolved_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Ingredient|null $ingredient
+ * @property-read Supplier|null $supplier
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceAlert newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceAlert newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceAlert query()
@@ -40,6 +42,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceAlert whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceAlert whereSupplierId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriceAlert whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class PriceAlert extends Model

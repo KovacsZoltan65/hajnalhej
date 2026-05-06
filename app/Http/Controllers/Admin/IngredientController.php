@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\InlineUpdateIngredientRequest;
 use App\Http\Requests\StoreIngredientRequest;
 use App\Http\Requests\UpdateIngredientRequest;
 use App\Models\Ingredient;
@@ -14,17 +15,8 @@ use Inertia\Response;
 
 class IngredientController extends Controller
 {
-    /**
-     * @param IngredientService $service
-     */
-    public function __construct(private readonly IngredientService $service)
-    {
-    }
+    public function __construct(private readonly IngredientService $service) {}
 
-    /**
-     * @param Request $request
-     * @return \Inertia\Response
-     */
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Ingredient::class);
@@ -69,37 +61,31 @@ class IngredientController extends Controller
         ]);
     }
 
-    /**
-     * @param StoreIngredientRequest $request
-     * @return RedirectResponse
-     */
     public function store(StoreIngredientRequest $request): RedirectResponse
     {
         $this->service->create($request->validated());
 
         return redirect()
             ->route('admin.ingredients.index')
-            ->with('success', __('admin_ingredients.material_created') . '.');
+            ->with('success', __('admin_ingredients.material_created').'.');
     }
 
-    /**
-     * @param UpdateIngredientRequest $request
-     * @param Ingredient $ingredient
-     * @return RedirectResponse
-     */
     public function update(UpdateIngredientRequest $request, Ingredient $ingredient): RedirectResponse
     {
         $this->service->update($ingredient, $request->validated());
 
         return redirect()
             ->route('admin.ingredients.index')
-            ->with('success', __('admin_ingredients.material_updated') . '.');
+            ->with('success', __('admin_ingredients.material_updated').'.');
     }
 
-    /**
-     * @param Ingredient $ingredient
-     * @return RedirectResponse
-     */
+    public function updateInline(InlineUpdateIngredientRequest $request, Ingredient $ingredient): RedirectResponse
+    {
+        $this->service->updateInline($ingredient, $request->validated());
+
+        return back(303)->with('success', __('admin.common.inline_edit.saved'));
+    }
+
     public function destroy(Ingredient $ingredient): RedirectResponse
     {
         $this->authorize('delete', $ingredient);
@@ -108,8 +94,6 @@ class IngredientController extends Controller
 
         return redirect()
             ->route('admin.ingredients.index')
-            ->with('success', __('admin_ingredients.material_deleted') . '.');
+            ->with('success', __('admin_ingredients.material_deleted').'.');
     }
 }
-
-

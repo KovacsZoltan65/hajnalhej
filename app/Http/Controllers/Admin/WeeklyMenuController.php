@@ -8,6 +8,7 @@ use App\Data\WeeklyMenu\WeeklyMenuUpdateData;
 use App\Data\WeeklyMenuItem\WeeklyMenuItemStoreData;
 use App\Data\WeeklyMenuItem\WeeklyMenuItemUpdateData;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\InlineUpdateWeeklyMenuRequest;
 use App\Http\Requests\StoreWeeklyMenuItemRequest;
 use App\Http\Requests\StoreWeeklyMenuRequest;
 use App\Http\Requests\UpdateWeeklyMenuItemRequest;
@@ -64,7 +65,7 @@ class WeeklyMenuController extends Controller
         $this->service->store(WeeklyMenuStoreData::from($request));
 
         return redirect()->route('admin.weekly-menus.index')
-            ->with('success', __('weekly_menu.created') . '.');
+            ->with('success', __('weekly_menu.created').'.');
     }
 
     public function update(UpdateWeeklyMenuRequest $request, WeeklyMenu $weeklyMenu): RedirectResponse
@@ -72,7 +73,19 @@ class WeeklyMenuController extends Controller
         $this->service->update($weeklyMenu, WeeklyMenuUpdateData::from($request));
 
         return redirect()->route('admin.weekly-menus.index')
-            ->with('success', __('weekly_menu.updated') . '.');
+            ->with('success', __('weekly_menu.updated').'.');
+    }
+
+    public function updateInline(InlineUpdateWeeklyMenuRequest $request, WeeklyMenu $weeklyMenu): RedirectResponse
+    {
+        try {
+            $this->service->updateInline($weeklyMenu, $request->validated());
+        } catch (RuntimeException $exception) {
+            return redirect()->route('admin.weekly-menus.index')
+                ->with('error', $exception->getMessage());
+        }
+
+        return back(303)->with('success', __('admin.common.inline_edit.saved'));
     }
 
     public function destroy(WeeklyMenu $weeklyMenu): RedirectResponse
@@ -82,7 +95,7 @@ class WeeklyMenuController extends Controller
         $this->service->delete($weeklyMenu);
 
         return redirect()->route('admin.weekly-menus.index')
-            ->with('success', __('weekly_menu.deleted') . '.');
+            ->with('success', __('weekly_menu.deleted').'.');
     }
 
     public function publish(WeeklyMenu $weeklyMenu): RedirectResponse
@@ -97,7 +110,7 @@ class WeeklyMenuController extends Controller
         }
 
         return redirect()->route('admin.weekly-menus.index')
-            ->with('success', __('weekly_menu.published') . '.');
+            ->with('success', __('weekly_menu.published').'.');
     }
 
     public function unpublish(WeeklyMenu $weeklyMenu): RedirectResponse
@@ -107,7 +120,7 @@ class WeeklyMenuController extends Controller
         $this->service->unpublish($weeklyMenu);
 
         return redirect()->route('admin.weekly-menus.index')
-            ->with('success', __('weekly_menu.restored_draft_mode') . '.');
+            ->with('success', __('weekly_menu.restored_draft_mode').'.');
     }
 
     public function storeItem(StoreWeeklyMenuItemRequest $request, WeeklyMenu $weeklyMenu): RedirectResponse
@@ -120,7 +133,7 @@ class WeeklyMenuController extends Controller
         }
 
         return redirect()->route('admin.weekly-menus.index')
-            ->with('success', __('weekly_menu.item_created') . '.');
+            ->with('success', __('weekly_menu.item_created').'.');
     }
 
     public function updateItem(UpdateWeeklyMenuItemRequest $request, WeeklyMenu $weeklyMenu, WeeklyMenuItem $item): RedirectResponse
@@ -136,7 +149,7 @@ class WeeklyMenuController extends Controller
         }
 
         return redirect()->route('admin.weekly-menus.index')
-            ->with('success', __('weekly_menu.item_updated') . '.');
+            ->with('success', __('weekly_menu.item_updated').'.');
     }
 
     public function destroyItem(WeeklyMenu $weeklyMenu, WeeklyMenuItem $item): RedirectResponse
@@ -150,6 +163,6 @@ class WeeklyMenuController extends Controller
         $this->itemService->removeItem($item);
 
         return redirect()->route('admin.weekly-menus.index')
-            ->with('success', __('weekly_menu.item_deleted') . '.');
+            ->with('success', __('weekly_menu.item_deleted').'.');
     }
 }

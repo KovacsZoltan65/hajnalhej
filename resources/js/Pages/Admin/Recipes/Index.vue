@@ -157,8 +157,7 @@ onMounted(() => {
         return;
     }
 
-    const recipe =
-        props.recipes.data.find((item) => item.id === selectedProductId) ?? null;
+    const recipe = props.recipes.data.find((item) => item.id === selectedProductId) ?? null;
     if (!recipe) {
         return;
     }
@@ -240,18 +239,11 @@ const deleteRecipeItem = (item) => {
         acceptLabel: "Törlés",
         acceptClass: "p-button-danger",
         accept: () => {
-            router.delete(
-                route("admin.products.ingredients.destroy", [
-                    editorRecipe.value.id,
-                    item.id,
-                ]),
-                {
-                    preserveScroll: true,
-                    preserveState: true,
-                    onSuccess: () =>
-                        load({ product_id: editorRecipe.value?.id ?? undefined }),
-                }
-            );
+            router.delete(route("admin.products.ingredients.destroy", [editorRecipe.value.id, item.id]), {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => load({ product_id: editorRecipe.value?.id ?? undefined }),
+            });
         },
     });
 };
@@ -268,18 +260,11 @@ const deleteRecipeStep = (step) => {
         acceptLabel: "Törlés",
         acceptClass: "p-button-danger",
         accept: () => {
-            router.delete(
-                route("admin.products.recipe-steps.destroy", [
-                    editorRecipe.value.id,
-                    step.id,
-                ]),
-                {
-                    preserveScroll: true,
-                    preserveState: true,
-                    onSuccess: () =>
-                        load({ product_id: editorRecipe.value?.id ?? undefined }),
-                }
-            );
+            router.delete(route("admin.products.recipe-steps.destroy", [editorRecipe.value.id, step.id]), {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => load({ product_id: editorRecipe.value?.id ?? undefined }),
+            });
         },
     });
 };
@@ -315,8 +300,7 @@ watch(
             return;
         }
 
-        const fresh =
-            recipes.find((recipe) => recipe.id === editorRecipe.value.id) ?? null;
+        const fresh = recipes.find((recipe) => recipe.id === editorRecipe.value.id) ?? null;
         editorRecipe.value = fresh;
 
         if (!fresh) {
@@ -345,23 +329,13 @@ watch(
                 v-if="filterState.product_id"
                 class="mb-3 flex items-center justify-between rounded-lg border border-bakery-gold/40 bg-[#fdf8ec] px-3 py-2"
             >
-                <p class="text-sm text-bakery-dark/80">
-                    Termékre fókuszált receptnézet aktív.
-                </p>
-                <Button
-                    size="small"
-                    text
-                    label="Fókusz törlése"
-                    @click="clearProductFocus"
-                />
+                <p class="text-sm text-bakery-dark/80">Termékre fókuszált receptnézet aktív.</p>
+                <Button size="small" text label="Fókusz törlése" @click="clearProductFocus" />
             </div>
-            <AdminTableToolbar
-                :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-5'"
-            >
+            <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-5'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Keresés</label
                         >
                         <InputText
@@ -373,8 +347,7 @@ watch(
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Kategória</label
                         >
                         <Select
@@ -388,8 +361,7 @@ watch(
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Státusz</label
                         >
                         <Select
@@ -403,8 +375,7 @@ watch(
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Receptállapot</label
                         >
                         <Select
@@ -418,8 +389,7 @@ watch(
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Alacsony készlet</label
                         >
                         <Select

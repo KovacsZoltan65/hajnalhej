@@ -17,8 +17,7 @@ class ProductionInventoryService
         private readonly InventoryMovementRepository $movementRepository,
         private readonly InventoryService $inventoryService,
         private readonly InventoryAuditService $auditService,
-    ) {
-    }
+    ) {}
 
     public function consumeForOrder(Order $order, ?User $actor = null): float
     {
@@ -49,7 +48,7 @@ class ProductionInventoryService
                 $available = (float) $ingredient->current_stock;
 
                 if ($available < $requiredQty && (bool) config('inventory.block_on_shortage', false)) {
-                    throw new RuntimeException(__('admin_inventory.not_enough_stock') . ": {$ingredient->name}");
+                    throw new RuntimeException(__('admin_inventory.not_enough_stock').": {$ingredient->name}");
                 }
 
                 $movement = $this->inventoryService->createMovement([
@@ -78,4 +77,3 @@ class ProductionInventoryService
         });
     }
 }
-

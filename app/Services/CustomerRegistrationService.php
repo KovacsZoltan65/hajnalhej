@@ -20,7 +20,7 @@ class CustomerRegistrationService
     ) {}
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function register(array $payload, ?string $sessionId = null): User
     {

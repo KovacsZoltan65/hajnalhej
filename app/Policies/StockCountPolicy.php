@@ -28,4 +28,3 @@ class StockCountPolicy
         return $user->can(PermissionRegistry::STOCK_COUNTS_MANAGE);
     }
 }
-

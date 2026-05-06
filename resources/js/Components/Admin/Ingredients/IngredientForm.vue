@@ -32,40 +32,24 @@ watch(
             <label for="ingredient-name" class="text-sm font-medium text-bakery-dark">{{
                 $t("admin_orders.fields.name")
             }}</label>
-            <InputText
-                id="ingredient-name"
-                v-model="form.name"
-                class="w-full"
-                :invalid="Boolean(form.errors.name)"
-            />
+            <InputText id="ingredient-name" v-model="form.name" class="w-full" :invalid="Boolean(form.errors.name)" />
             <p v-if="form.errors.name" class="text-xs text-red-700">
                 {{ form.errors.name }}
             </p>
         </div>
 
         <div class="space-y-2">
-            <label for="ingredient-slug" class="text-sm font-medium text-bakery-dark">{{
-                $t("common.slug")
-            }}</label>
+            <label for="ingredient-slug" class="text-sm font-medium text-bakery-dark">{{ $t("common.slug") }}</label>
             <InputText id="ingredient-slug" v-model="form.slug" class="w-full" disabled />
-            <p class="text-xs text-bakery-dark/60">
-                {{ $t("common.automatic_generated") }}.
-            </p>
+            <p class="text-xs text-bakery-dark/60">{{ $t("common.automatic_generated") }}.</p>
             <p v-if="form.errors.slug" class="text-xs text-red-700">
                 {{ form.errors.slug }}
             </p>
         </div>
 
         <div class="space-y-2">
-            <label for="ingredient-sku" class="text-sm font-medium text-bakery-dark">{{
-                $t("common.sku")
-            }}</label>
-            <InputText
-                id="ingredient-sku"
-                v-model="form.sku"
-                class="w-full"
-                :invalid="Boolean(form.errors.sku)"
-            />
+            <label for="ingredient-sku" class="text-sm font-medium text-bakery-dark">{{ $t("common.sku") }}</label>
+            <InputText id="ingredient-sku" v-model="form.sku" class="w-full" :invalid="Boolean(form.errors.sku)" />
             <p v-if="form.errors.sku" class="text-xs text-red-700">
                 {{ form.errors.sku }}
             </p>
@@ -89,11 +73,9 @@ watch(
         </div>
 
         <div class="space-y-2">
-            <label
-                for="ingredient-current-stock"
-                class="text-sm font-medium text-bakery-dark"
-                >{{ $t("admin_procurement_intelligence.columns.current_stock") }}</label
-            >
+            <label for="ingredient-current-stock" class="text-sm font-medium text-bakery-dark">{{
+                $t("admin_procurement_intelligence.columns.current_stock")
+            }}</label>
             <InputNumber
                 id="ingredient-current-stock"
                 v-model="form.current_stock"
@@ -109,9 +91,7 @@ watch(
         </div>
 
         <div class="space-y-2">
-            <label
-                for="ingredient-estimated-unit-cost"
-                class="text-sm font-medium text-bakery-dark"
+            <label for="ingredient-estimated-unit-cost" class="text-sm font-medium text-bakery-dark"
                 >{{ $t("admin_ingredients.columns.estimated_unit_cost") }} (Ft)</label
             >
             <InputNumber
@@ -129,9 +109,7 @@ watch(
         </div>
 
         <div class="space-y-2">
-            <label
-                for="ingredient-minimum-stock"
-                class="text-sm font-medium text-bakery-dark"
+            <label for="ingredient-minimum-stock" class="text-sm font-medium text-bakery-dark"
                 >{{ $t("admin_procurement_intelligence.columns.minimum_stock") }} /
                 {{ $t("admin_procurement_intelligence.reorder_level") }}</label
             >
@@ -153,13 +131,7 @@ watch(
             <label for="ingredient-notes" class="text-sm font-medium text-bakery-dark">{{
                 $t("admin_production_plans.form.notes")
             }}</label>
-            <Textarea
-                id="ingredient-notes"
-                v-model="form.notes"
-                rows="4"
-                auto-resize
-                class="w-full"
-            />
+            <Textarea id="ingredient-notes" v-model="form.notes" rows="4" auto-resize class="w-full" />
             <p v-if="form.errors.notes" class="text-xs text-red-700">
                 {{ form.errors.notes }}
             </p>

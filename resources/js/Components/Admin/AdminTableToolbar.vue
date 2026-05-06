@@ -6,11 +6,11 @@ defineProps({
     },
     filtersGridClass: {
         type: String,
-        default: 'grid gap-3 sm:grid-cols-2 xl:grid-cols-4',
+        default: "grid gap-3 sm:grid-cols-2 xl:grid-cols-4",
     },
     actionsClass: {
         type: String,
-        default: 'flex items-center gap-2 xl:flex-nowrap',
+        default: "flex items-center gap-2 xl:flex-nowrap",
     },
 });
 </script>

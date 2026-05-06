@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\SendCeoExecutiveReportCommand;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -10,7 +11,7 @@ use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withCommands([
-        \App\Console\Commands\SendCeoExecutiveReportCommand::class,
+        SendCeoExecutiveReportCommand::class,
     ])
     ->withRouting(
         web: __DIR__.'/../routes/web.php',

@@ -21,10 +21,6 @@ class WeeklyMenuIndexData extends Data
         public ?string $status = null,
     ) {}
 
-    /**
-     * @param array $payload
-     * @return WeeklyMenuIndexData
-     */
     public static function fromArray(array $payload): self
     {
         $active = self::nullableBool($payload['active'] ?? $payload['is_active'] ?? null);

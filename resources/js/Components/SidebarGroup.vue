@@ -36,10 +36,7 @@ const toggle = () => {
             />
         </Button>
 
-        <p
-            v-else
-            class="px-3 text-xs font-semibold uppercase tracking-[0.16em] text-bakery-brown/55"
-        >
+        <p v-else class="px-3 text-xs font-semibold uppercase tracking-[0.16em] text-bakery-brown/55">
             {{ group.label }}
         </p>
 

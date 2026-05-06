@@ -31,4 +31,3 @@ class UpdateStockCountRequest extends FormRequest
         ];
     }
 }
-

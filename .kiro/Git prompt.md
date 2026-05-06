@@ -30,6 +30,13 @@ Vizsgáld át a repository aktuális állapotát, majd készíts egy rendezett G
 
 # LÉPÉSEK
 
+## 0. Előfeltétel
+
+Győződj meg róla, hogy:
+
+- working tree clean vagy kezelhető állapotban van
+- nincs merge conflict
+
 ## 1. Repo állapot vizsgálata
 
 Futtasd le és értékeld:

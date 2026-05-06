@@ -23,4 +23,3 @@ class InventoryMovementPolicy
         return $user->can(PermissionRegistry::INVENTORY_ADJUST) || $user->can(PermissionRegistry::WASTE_MANAGE);
     }
 }
-

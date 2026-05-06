@@ -89,4 +89,3 @@ class RecipeStepSeeder extends Seeder
         }
     }
 }
-

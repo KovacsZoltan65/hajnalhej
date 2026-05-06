@@ -28,4 +28,3 @@ class PurchaseIndexRequest extends FormRequest
         ];
     }
 }
-

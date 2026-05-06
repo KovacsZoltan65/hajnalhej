@@ -68,9 +68,7 @@ const formatDate = (value) => {
 
     <section class="space-y-6">
         <header class="ui-card p-5 sm:p-6">
-            <div
-                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-            >
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 class="font-heading text-3xl text-bakery-dark">
                         {{ $t("nav.conversion_analytics") }}
@@ -148,9 +146,7 @@ const formatDate = (value) => {
         </div>
 
         <section class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ $t("common.business_indicators") }}
             </h2>
             <div class="mt-4 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
@@ -207,34 +203,24 @@ const formatDate = (value) => {
 
         <!-- Konverziós arányok -->
         <section class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ $t("conversion_analytics.real_conversion_rates") }}
             </h2>
             <div class="mt-4 grid gap-3 md:grid-cols-3">
-                <article
-                    v-for="card in rateCards"
-                    :key="card.id"
-                    class="ui-card-soft p-4"
-                >
+                <article v-for="card in rateCards" :key="card.id" class="ui-card-soft p-4">
                     <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                         {{ card.label }}
                     </p>
                     <p class="mt-2 font-heading text-3xl text-bakery-dark">
                         {{ formatPercent(card.rate) }}
                     </p>
-                    <p class="mt-1 text-xs text-bakery-dark/70">
-                        {{ card.numerator }} / {{ card.denominator }}
-                    </p>
+                    <p class="mt-1 text-xs text-bakery-dark/70">{{ card.numerator }} / {{ card.denominator }}</p>
                 </article>
             </div>
         </section>
 
         <section class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ $t("conversion_analytics.revenue_and_basket_value_trend") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
@@ -262,9 +248,7 @@ const formatDate = (value) => {
                             <td class="px-2 py-2 font-medium text-bakery-dark">
                                 {{ formatDate(point.date) }}
                             </td>
-                            <td
-                                class="px-2 py-2 text-right font-semibold text-bakery-dark"
-                            >
+                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
                                 {{ formatCurrency(point.revenue) }}
                             </td>
                             <td class="px-2 py-2 text-right text-bakery-dark">
@@ -280,9 +264,7 @@ const formatDate = (value) => {
         </section>
 
         <section class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ $t("conversion_analytics.top_product_revenue") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
@@ -308,9 +290,7 @@ const formatDate = (value) => {
                             <td class="px-2 py-2 font-medium text-bakery-dark">
                                 {{ row.product_name }}
                             </td>
-                            <td
-                                class="px-2 py-2 text-right font-semibold text-bakery-dark"
-                            >
+                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
                                 {{ formatCurrency(row.revenue) }}
                             </td>
                             <td class="px-2 py-2 text-right text-bakery-dark">
@@ -326,9 +306,7 @@ const formatDate = (value) => {
         </section>
 
         <section class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ $t("common.time_series_trends") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
@@ -357,11 +335,7 @@ const formatDate = (value) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr
-                            v-for="point in trendPoints"
-                            :key="point.date"
-                            class="border-b border-bakery-brown/10"
-                        >
+                        <tr v-for="point in trendPoints" :key="point.date" class="border-b border-bakery-brown/10">
                             <td class="px-2 py-2 font-medium text-bakery-dark">
                                 {{ formatDate(point.date) }}
                             </td>
@@ -380,12 +354,8 @@ const formatDate = (value) => {
                             <td class="px-2 py-2 text-right text-bakery-dark">
                                 {{ point.registration_completed }}
                             </td>
-                            <td
-                                class="px-2 py-2 text-right font-semibold text-bakery-dark"
-                            >
-                                {{
-                                    formatPercent(point.checkout_submit_to_complete_rate)
-                                }}
+                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
+                                {{ formatPercent(point.checkout_submit_to_complete_rate) }}
                             </td>
                         </tr>
                     </tbody>
@@ -394,9 +364,7 @@ const formatDate = (value) => {
         </section>
 
         <section class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ $t("conversion_analytics.hero_variant_comparison") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
@@ -425,11 +393,7 @@ const formatDate = (value) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr
-                            v-for="row in heroComparison"
-                            :key="row.variant"
-                            class="border-b border-bakery-brown/10"
-                        >
+                        <tr v-for="row in heroComparison" :key="row.variant" class="border-b border-bakery-brown/10">
                             <td class="px-2 py-2 font-medium text-bakery-dark">
                                 {{ row.variant }}
                             </td>
@@ -439,9 +403,7 @@ const formatDate = (value) => {
                             <td class="px-2 py-2 text-right text-bakery-dark">
                                 {{ formatPercent(row.view_share) }}
                             </td>
-                            <td
-                                class="px-2 py-2 text-right font-semibold text-bakery-dark"
-                            >
+                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
                                 {{ formatPercent(row.cta_ctr) }}
                             </td>
                             <td class="px-2 py-2 text-right text-bakery-dark">
@@ -460,9 +422,7 @@ const formatDate = (value) => {
         </section>
 
         <section class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ $t("conversion_analytics.top_funnel_drop_off_points") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
@@ -473,9 +433,7 @@ const formatDate = (value) => {
                         <tr>
                             <th class="px-2 py-2">{{ $t("common.funnel") }}</th>
                             <th class="px-2 py-2">{{ $t("common.step_change") }}</th>
-                            <th class="px-2 py-2 text-right">
-                                {{ $t("common.fall") }} ({{ $t("common.pcs") }})
-                            </th>
+                            <th class="px-2 py-2 text-right">{{ $t("common.fall") }} ({{ $t("common.pcs") }})</th>
                             <th class="px-2 py-2 text-right">
                                 {{ $t("common.fall") }} ({{ $t("common.percent_code") }})
                             </th>
@@ -490,12 +448,8 @@ const formatDate = (value) => {
                             <td class="px-2 py-2 font-medium text-bakery-dark">
                                 {{ row.funnel }}
                             </td>
-                            <td class="px-2 py-2 text-bakery-dark/80">
-                                {{ row.from }} -> {{ row.to }}
-                            </td>
-                            <td
-                                class="px-2 py-2 text-right font-semibold text-bakery-dark"
-                            >
+                            <td class="px-2 py-2 text-bakery-dark/80">{{ row.from }} -> {{ row.to }}</td>
+                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
                                 {{ row.drop_count }}
                             </td>
                             <td class="px-2 py-2 text-right text-bakery-dark">
@@ -509,17 +463,11 @@ const formatDate = (value) => {
 
         <div class="grid gap-6 xl:grid-cols-2">
             <section class="ui-card overflow-hidden p-4 sm:p-5">
-                <h2
-                    class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-                >
+                <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                     {{ $t("conversion_analytics.funnel_steps") }}
                 </h2>
                 <div class="mt-4 space-y-4">
-                    <article
-                        v-for="funnel in funnelStats"
-                        :key="funnel.id"
-                        class="ui-card-soft p-4"
-                    >
+                    <article v-for="funnel in funnelStats" :key="funnel.id" class="ui-card-soft p-4">
                         <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                             {{ funnel.label }}
                         </p>
@@ -531,10 +479,7 @@ const formatDate = (value) => {
                             >
                                 <span class="text-bakery-dark/80">{{ step.label }}</span>
                                 <span class="font-semibold text-bakery-dark"
-                                    >{{ step.count }} ·
-                                    {{
-                                        formatPercent(step.conversion_from_previous)
-                                    }}</span
+                                    >{{ step.count }} · {{ formatPercent(step.conversion_from_previous) }}</span
                                 >
                             </div>
                         </div>
@@ -543,9 +488,7 @@ const formatDate = (value) => {
             </section>
 
             <section class="ui-card overflow-hidden p-4 sm:p-5">
-                <h2
-                    class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-                >
+                <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                     {{ $t("common.cta_top_click") }}
                 </h2>
                 <div class="mt-4 overflow-x-auto">
@@ -569,9 +512,7 @@ const formatDate = (value) => {
                                 <td class="px-2 py-2 font-medium text-bakery-dark">
                                     {{ row.cta_id }}
                                 </td>
-                                <td
-                                    class="px-2 py-2 text-right font-semibold text-bakery-dark"
-                                >
+                                <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
                                     {{ row.count }}
                                 </td>
                             </tr>

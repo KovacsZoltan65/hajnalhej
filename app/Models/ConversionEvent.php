@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -21,10 +22,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $ip_hash
  * @property string|null $user_agent
  * @property array<array-key, mixed>|null $metadata
- * @property \Illuminate\Support\Carbon $occurred_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $user
+ * @property Carbon $occurred_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User|null $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversionEvent newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversionEvent newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversionEvent query()
@@ -46,6 +48,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversionEvent whereUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversionEvent whereUserAgent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversionEvent whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class ConversionEvent extends Model
@@ -87,4 +90,3 @@ class ConversionEvent extends Model
         return $this->belongsTo(User::class);
     }
 }
-

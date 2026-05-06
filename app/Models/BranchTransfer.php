@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -15,18 +16,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $status
  * @property numeric $quantity
  * @property string $unit
- * @property \Illuminate\Support\Carbon $requested_date
- * @property \Illuminate\Support\Carbon|null $transferred_date
+ * @property Carbon $requested_date
+ * @property Carbon|null $transferred_date
  * @property string|null $notes
  * @property int|null $requested_by
  * @property int|null $completed_by
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $completer
- * @property-read \App\Models\Branch|null $fromBranch
- * @property-read \App\Models\Ingredient|null $ingredient
- * @property-read \App\Models\User|null $requester
- * @property-read \App\Models\Branch|null $toBranch
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User|null $completer
+ * @property-read Branch|null $fromBranch
+ * @property-read Ingredient|null $ingredient
+ * @property-read User|null $requester
+ * @property-read Branch|null $toBranch
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BranchTransfer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BranchTransfer newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BranchTransfer query()
@@ -45,6 +47,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BranchTransfer whereTransferredDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BranchTransfer whereUnit($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BranchTransfer whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class BranchTransfer extends Model

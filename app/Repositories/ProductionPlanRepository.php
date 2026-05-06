@@ -3,7 +3,9 @@
 namespace App\Repositories;
 
 use App\Models\Product;
+use App\Models\ProductIngredient;
 use App\Models\ProductionPlan;
+use App\Models\RecipeStep;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -11,7 +13,7 @@ use Illuminate\Support\Collection;
 class ProductionPlanRepository
 {
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -28,7 +30,7 @@ class ProductionPlanRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function create(array $data): ProductionPlan
     {
@@ -37,9 +39,6 @@ class ProductionPlanRepository
 
     /**
      * Summary of update
-     * @param ProductionPlan $productionPlan
-     * @param array $data
-     * @return ProductionPlan
      */
     public function update(ProductionPlan $productionPlan, array $data): ProductionPlan
     {
@@ -50,8 +49,6 @@ class ProductionPlanRepository
 
     /**
      * Summary of delete
-     * @param ProductionPlan $productionPlan
-     * @return void
      */
     public function delete(ProductionPlan $productionPlan): void
     {
@@ -60,8 +57,6 @@ class ProductionPlanRepository
 
     /**
      * Summary of loadForEditor
-     * @param ProductionPlan $productionPlan
-     * @return ProductionPlan
      */
     public function loadForEditor(ProductionPlan $productionPlan): ProductionPlan
     {
@@ -91,11 +86,68 @@ class ProductionPlanRepository
     }
 
     /**
-     * @return Collection<int, array{id:int,name:string,slug:string}>
+     * @return Collection<int, array<string, mixed>>
+     */
+    public function listActiveProductsForCreateFlow(): Collection
+    {
+        return Product::query()
+            ->with([
+                'category:id,name',
+                'productIngredients.ingredient:id,name,slug,unit,current_stock,minimum_stock,is_active',
+                'recipeSteps' => fn ($query) => $query
+                    ->where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->orderBy('id'),
+            ])
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->map(fn (Product $product): array => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'category_name' => $product->category?->name,
+                'unit_label' => 'db',
+                'product_ingredients' => $product->productIngredients
+                    ->map(fn (ProductIngredient $item): array => [
+                        'ingredient_id' => $item->ingredient_id,
+                        'ingredient_name' => $item->ingredient?->name,
+                        'ingredient_unit' => $item->ingredient?->unit,
+                        'quantity' => (float) $item->quantity,
+                        'current_stock' => (float) ($item->ingredient?->current_stock ?? 0),
+                        'minimum_stock' => (float) ($item->ingredient?->minimum_stock ?? 0),
+                    ])
+                    ->values()
+                    ->all(),
+                'recipe_steps' => $product->recipeSteps
+                    ->map(fn (RecipeStep $step): array => [
+                        'id' => $step->id,
+                        'title' => $step->title,
+                        'step_type' => $step->step_type,
+                        'work_instruction' => $step->work_instruction,
+                        'duration_minutes' => (int) ($step->duration_minutes ?? 0),
+                        'wait_minutes' => (int) ($step->wait_minutes ?? 0),
+                        'sort_order' => $step->sort_order,
+                    ])
+                    ->values()
+                    ->all(),
+            ]);
+    }
+
+    /**
+     * @return Collection<int, array<string, mixed>>
      */
     public function listSelectableProducts(): Collection
     {
         return Product::query()
+            ->with([
+                'productIngredients.ingredient:id,name,slug,unit,current_stock,minimum_stock,is_active',
+                'recipeSteps' => fn ($query) => $query
+                    ->where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->orderBy('id'),
+            ])
             ->where('is_active', true)
             ->orderBy('sort_order')
             ->orderBy('name')
@@ -104,11 +156,30 @@ class ProductionPlanRepository
                 'id' => $product->id,
                 'name' => $product->name,
                 'slug' => $product->slug,
+                'product_ingredients' => $product->productIngredients
+                    ->map(fn (ProductIngredient $item): array => [
+                        'ingredient_id' => $item->ingredient_id,
+                        'ingredient_name' => $item->ingredient?->name,
+                        'ingredient_unit' => $item->ingredient?->unit,
+                        'quantity' => (float) $item->quantity,
+                        'current_stock' => (float) ($item->ingredient?->current_stock ?? 0),
+                        'minimum_stock' => (float) ($item->ingredient?->minimum_stock ?? 0),
+                    ])
+                    ->values()
+                    ->all(),
+                'recipe_steps' => $product->recipeSteps
+                    ->map(fn (RecipeStep $step): array => [
+                        'id' => $step->id,
+                        'duration_minutes' => (int) ($step->duration_minutes ?? 0),
+                        'wait_minutes' => (int) ($step->wait_minutes ?? 0),
+                    ])
+                    ->values()
+                    ->all(),
             ]);
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     private function adminQuery(array $filters): Builder
     {

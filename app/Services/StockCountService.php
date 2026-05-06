@@ -18,11 +18,10 @@ class StockCountService
         private readonly StockCountRepository $repository,
         private readonly InventoryService $inventoryService,
         private readonly InventoryAuditService $auditService,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -35,7 +34,7 @@ class StockCountService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function create(array $payload, ?User $actor = null): StockCount
     {
@@ -59,7 +58,7 @@ class StockCountService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function update(StockCount $stockCount, array $payload): StockCount
     {
@@ -122,7 +121,7 @@ class StockCountService
     }
 
     /**
-     * @param array<int, array<string, mixed>> $items
+     * @param  array<int, array<string, mixed>>  $items
      * @return array<int, array<string, mixed>>
      */
     private function normalizeItems(array $items): array
@@ -155,4 +154,3 @@ class StockCountService
         return $normalized === '' ? null : $normalized;
     }
 }
-

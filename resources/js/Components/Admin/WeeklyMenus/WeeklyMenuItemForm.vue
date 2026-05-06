@@ -1,9 +1,9 @@
 <script setup>
-import InputNumber from 'primevue/inputnumber';
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
-import ToggleSwitch from 'primevue/toggleswitch';
-import { useLocaleFormat } from '@/composables/useLocaleFormat';
+import InputNumber from "primevue/inputnumber";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
+import ToggleSwitch from "primevue/toggleswitch";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 const props = defineProps({
     form: { type: Object, required: true },
@@ -32,7 +32,7 @@ const { formatCurrency } = useLocaleFormat();
                         <div>
                             <p class="font-medium">{{ slotProps.option.name }}</p>
                             <p class="text-xs text-bakery-dark/70">
-                                {{ slotProps.option.category_name ?? 'Kategória nélkül' }}
+                                {{ slotProps.option.category_name ?? "Kategória nélkül" }}
                             </p>
                         </div>
                         <span class="text-xs text-bakery-brown">

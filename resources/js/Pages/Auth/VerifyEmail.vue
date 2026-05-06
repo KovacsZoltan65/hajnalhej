@@ -1,7 +1,7 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import Button from 'primevue/button';
-import PublicLayout from '../../Layouts/PublicLayout.vue';
+import { Head, Link, useForm } from "@inertiajs/vue3";
+import Button from "primevue/button";
+import PublicLayout from "../../Layouts/PublicLayout.vue";
 
 defineOptions({ layout: PublicLayout });
 
@@ -15,7 +15,7 @@ const props = defineProps({
 const resendForm = useForm({});
 
 const resendVerification = () => {
-    resendForm.post(route('verification.send'));
+    resendForm.post(route("verification.send"));
 };
 </script>
 
@@ -30,7 +30,11 @@ const resendVerification = () => {
         <div class="mt-6 space-y-3">
             <p
                 class="rounded-2xl border px-4 py-3 text-sm"
-                :class="props.isVerified ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'"
+                :class="
+                    props.isVerified
+                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                        : 'border-amber-200 bg-amber-50 text-amber-700'
+                "
             >
                 {{ props.isVerified ? $t("account.email_status_verified") : $t("account.email_status_pending") }}
             </p>

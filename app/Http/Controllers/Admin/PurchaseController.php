@@ -17,20 +17,11 @@ use RuntimeException;
 
 class PurchaseController extends Controller
 {
-    /**
-     * @param PurchaseService $service
-     * @param IngredientService $ingredientService
-     */
     public function __construct(
         private readonly PurchaseService $service,
         private readonly IngredientService $ingredientService,
-    ) {
-    }
+    ) {}
 
-    /**
-     * @param PurchaseIndexRequest $request
-     * @return \Inertia\Response
-     */
     public function index(PurchaseIndexRequest $request): Response
     {
         $this->authorize('viewAny', Purchase::class);
@@ -67,10 +58,6 @@ class PurchaseController extends Controller
         ]);
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return \Inertia\Response
-     */
     public function show(Purchase $purchase): Response
     {
         $this->authorize('view', $purchase);
@@ -104,10 +91,6 @@ class PurchaseController extends Controller
         ]);
     }
 
-    /**
-     * @param StorePurchaseRequest $request
-     * @return RedirectResponse
-     */
     public function store(StorePurchaseRequest $request): RedirectResponse
     {
         try {
@@ -119,11 +102,6 @@ class PurchaseController extends Controller
         return back()->with('success', 'Beszerzés létrehozva.');
     }
 
-    /**
-     * @param UpdatePurchaseRequest $request
-     * @param Purchase $purchase
-     * @return RedirectResponse
-     */
     public function update(UpdatePurchaseRequest $request, Purchase $purchase): RedirectResponse
     {
         try {
@@ -132,13 +110,9 @@ class PurchaseController extends Controller
             return back()->with('error', $exception->getMessage());
         }
 
-        return back()->with('success', __('admin_purchase.created') . '.');
+        return back()->with('success', __('admin_purchase.created').'.');
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return RedirectResponse
-     */
     public function post(Purchase $purchase): RedirectResponse
     {
         $this->authorize('update', $purchase);
@@ -149,13 +123,9 @@ class PurchaseController extends Controller
             return back()->with('error', $exception->getMessage());
         }
 
-        return back()->with('success', __('admin_purchase.updated') . '.');
+        return back()->with('success', __('admin_purchase.updated').'.');
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return RedirectResponse
-     */
     public function cancel(Purchase $purchase): RedirectResponse
     {
         $this->authorize('update', $purchase);
@@ -166,6 +136,6 @@ class PurchaseController extends Controller
             return back()->with('error', $exception->getMessage());
         }
 
-        return back()->with('success', __('admin_purchase.canceled') . '.');
+        return back()->with('success', __('admin_purchase.canceled').'.');
     }
 }

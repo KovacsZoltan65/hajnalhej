@@ -4,12 +4,16 @@ import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
-import DataTable from "primevue/datatable";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import { useConfirm } from "primevue/useconfirm";
 
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import BaseDataTable from "@/Components/Admin/Table/BaseDataTable.vue";
+import EntityStatusBadge from "@/Components/Admin/Table/EntityStatusBadge.vue";
+import InlineEditableNumber from "@/Components/Admin/Table/InlineEditableNumber.vue";
+import InlineEditableSelect from "@/Components/Admin/Table/InlineEditableSelect.vue";
+import InlineEditableToggle from "@/Components/Admin/Table/InlineEditableToggle.vue";
 import CreateModal from "@/Components/Admin/Products/CreateModal.vue";
 import EditModal from "@/Components/Admin/Products/EditModal.vue";
 import CategoryStatusBadge from "@/Components/Admin/Categories/CategoryStatusBadge.vue";
@@ -46,35 +50,28 @@ const loading = ref(false);
 const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const editingId = ref(null);
+const selectedProducts = ref([]);
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
-    search: "",
-    category_id: null,
-    is_active: "",
-    sort_field: "sort_order",
-    sort_direction: "asc",
-    per_page: 10,
-},
+        search: "",
+        category_id: null,
+        is_active: "",
+        sort_field: "sort_order",
+        sort_direction: "asc",
+        per_page: 10,
+    },
     routeName: "admin.products.index",
     loading,
     toQuery: (state) => ({
-            search: state.search || undefined,
-            category_id: state.category_id || undefined,
-            is_active: state.is_active,
-            sort_field: state.sort_field,
-            sort_direction: state.sort_direction,
-            per_page: state.per_page,
-        }),
+        search: state.search || undefined,
+        category_id: state.category_id || undefined,
+        is_active: state.is_active,
+        sort_field: state.sort_field,
+        sort_direction: state.sort_direction,
+        per_page: state.per_page,
+    }),
 });
 
 const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
@@ -107,10 +104,6 @@ const form = useForm({
 
 const currentPage = computed(() => props.products.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.products.per_page ?? 10));
-
-
-
-
 
 const openCreate = () => {
     editModalVisible.value = false;
@@ -216,8 +209,7 @@ const confirmDelete = (product) => {
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Keresés</label
                         >
                         <InputText
@@ -229,8 +221,7 @@ const confirmDelete = (product) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Kategória</label
                         >
                         <Select
@@ -244,8 +235,7 @@ const confirmDelete = (product) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Státusz</label
                         >
                         <Select
@@ -259,8 +249,7 @@ const confirmDelete = (product) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Találat / oldal</label
                         >
                         <Select
@@ -276,6 +265,12 @@ const confirmDelete = (product) => {
 
                 <template #actions>
                     <Link
+                        :href="route('admin.products.create-flow')"
+                        class="inline-flex items-center whitespace-nowrap rounded-lg bg-bakery-brown px-3 py-2 text-sm font-medium text-white hover:bg-bakery-dark"
+                    >
+                        {{ $t("admin.products.flow.actions.open") }}
+                    </Link>
+                    <Link
                         :href="route('admin.recipes.index')"
                         class="inline-flex items-center whitespace-nowrap rounded-lg border border-bakery-brown/20 px-3 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
                     >
@@ -287,7 +282,8 @@ const confirmDelete = (product) => {
             </AdminTableToolbar>
 
             <div class="mt-4 overflow-x-auto">
-                <DataTable
+                <BaseDataTable
+                    v-model:selection="selectedProducts"
                     :value="products.data"
                     lazy
                     paginator
@@ -300,49 +296,74 @@ const confirmDelete = (product) => {
                     sort-mode="single"
                     :sort-field="filterState.sort_field"
                     :sort-order="sortOrder"
+                    :empty-title="$t('admin.common.empty.title')"
+                    :empty-description="
+                        $t(
+                            filterState.search
+                                ? 'admin.common.empty.no_results_description'
+                                : 'admin.common.empty.description'
+                        )
+                    "
+                    :empty-primary-label="$t('admin_product.actions.create')"
+                    :empty-secondary-label="$t('common.clear_filters')"
+                    :selected-count="selectedProducts.length"
                     @sort="onSort"
                     @page="onPage"
+                    @empty-primary="openCreate"
+                    @empty-secondary="clearFilters"
+                    @clear-selection="selectedProducts = []"
                 >
-                    <template #empty>
-                        <div
-                            class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
-                        >
-                            <p>Nincs megjeleníthető termék.</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
-                                <Button
-                                    label="Szűrők törlése"
-                                    outlined
-                                    size="small"
-                                    @click="clearFilters"
-                                />
-                                <Button
-                                    label="Új termék"
-                                    size="small"
-                                    @click="openCreate"
-                                />
-                            </div>
-                        </div>
-                    </template>
-
-                    <Column field="name" header="Név" sortable />
-                    <Column field="slug" header="Slug" sortable>
+                    <Column selection-mode="multiple" header-style="width:3rem" />
+                    <Column field="name" header="Név" sortable>
                         <template #body="{ data }">
-                            <code class="text-xs text-bakery-dark/70"
-                                >/{{ data.slug }}</code
-                            >
+                            <div>
+                                <p class="font-semibold text-bakery-dark">
+                                    {{ data.name }}
+                                </p>
+                                <p class="text-xs text-bakery-dark/60">
+                                    /{{ data.slug }}
+                                    <span v-if="data.category_name">/ {{ data.category_name }}</span>
+                                </p>
+                            </div>
+                        </template>
+                    </Column>
+                    <Column field="category_id" :header="$t('admin.products.flow.fields.category')" sortable>
+                        <template #body="{ data }">
+                            <InlineEditableSelect
+                                :model-value="data.category_id"
+                                route-name="admin.products.inline.update"
+                                :route-params="data.id"
+                                field="category_id"
+                                :options="categories"
+                                option-label="name"
+                                option-value="id"
+                                :reload-only="['products']"
+                            />
                         </template>
                     </Column>
                     <Column field="price" header="Ár" sortable>
                         <template #body="{ data }">
-                            <ProductPrice :price="data.price" />
+                            <InlineEditableNumber
+                                :model-value="data.price"
+                                route-name="admin.products.inline.update"
+                                :route-params="data.id"
+                                field="price"
+                                :reload-only="['products']"
+                            />
                         </template>
                     </Column>
-                    <Column field="sort_order" header="Sorrend" sortable />
                     <Column field="is_active" header="Státusz" sortable>
                         <template #body="{ data }">
-                            <CategoryStatusBadge :active="data.is_active" />
+                            <div class="flex items-center gap-3">
+                                <InlineEditableToggle
+                                    :model-value="Boolean(data.is_active)"
+                                    route-name="admin.products.inline.update"
+                                    :route-params="data.id"
+                                    field="is_active"
+                                    :reload-only="['products']"
+                                />
+                                <EntityStatusBadge :status="Boolean(data.is_active)" />
+                            </div>
                         </template>
                     </Column>
                     <Column header="Műveletek" :exportable="false">
@@ -378,7 +399,7 @@ const confirmDelete = (product) => {
                             </div>
                         </template>
                     </Column>
-                </DataTable>
+                </BaseDataTable>
             </div>
         </div>
 

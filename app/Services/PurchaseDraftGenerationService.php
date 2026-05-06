@@ -14,11 +14,10 @@ class PurchaseDraftGenerationService
     public function __construct(
         private readonly ProcurementIntelligenceService $intelligenceService,
         private readonly PurchaseService $purchaseService,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      * @return array<int, Purchase>
      */
     public function generateFromRecommendations(array $payload, ?User $actor = null): array
@@ -41,7 +40,7 @@ class PurchaseDraftGenerationService
             ->values();
 
         if ($recommendations->isEmpty()) {
-            throw new RuntimeException(__('admin_purchase_draft.no_reorder_proposal') . '.');
+            throw new RuntimeException(__('admin_purchase_draft.no_reorder_proposal').'.');
         }
 
         $ingredientIds = $recommendations
@@ -95,7 +94,7 @@ class PurchaseDraftGenerationService
         }
 
         if ($drafts === []) {
-            throw new RuntimeException(__('admin_purchase_draft.no_purchase_draft') . '.');
+            throw new RuntimeException(__('admin_purchase_draft.no_purchase_draft').'.');
         }
 
         return $drafts;

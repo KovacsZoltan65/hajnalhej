@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -15,22 +17,23 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $purchase_id
  * @property string $recommendation_number
  * @property string $status
- * @property \Illuminate\Support\Carbon $recommendation_date
- * @property \Illuminate\Support\Carbon|null $needed_by_date
+ * @property Carbon $recommendation_date
+ * @property Carbon|null $needed_by_date
  * @property numeric $estimated_total
  * @property numeric|null $cashflow_score
  * @property numeric|null $margin_score
  * @property string|null $rationale
  * @property int|null $created_by
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\User|null $creator
- * @property-read \App\Models\ForecastRun|null $forecastRun
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseRecommendationItem> $items
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property-read User|null $creator
+ * @property-read ForecastRun|null $forecastRun
+ * @property-read Collection<int, PurchaseRecommendationItem> $items
  * @property-read int|null $items_count
- * @property-read \App\Models\Purchase|null $purchase
- * @property-read \App\Models\Supplier|null $supplier
+ * @property-read Purchase|null $purchase
+ * @property-read Supplier|null $supplier
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendation onlyTrashed()
@@ -53,6 +56,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendation withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendation withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class PurchaseRecommendation extends Model

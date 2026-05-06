@@ -64,18 +64,10 @@ const groupLabel = (name) => name;
                         :disabled="disabled"
                         @update:model-value="() => emit('toggle', permission.name)"
                     />
-                    <label
-                        :for="`permission-${permission.name}`"
-                        class="flex-1 space-y-1"
-                    >
+                    <label :for="`permission-${permission.name}`" class="flex-1 space-y-1">
                         <div class="flex items-center gap-2">
-                            <span class="text-sm font-medium text-bakery-dark">{{
-                                permission.label
-                            }}</span>
-                            <PermissionBadge
-                                :permission="permission.name"
-                                :dangerous="permission.dangerous"
-                            />
+                            <span class="text-sm font-medium text-bakery-dark">{{ permission.label }}</span>
+                            <PermissionBadge :permission="permission.name" :dangerous="permission.dangerous" />
                         </div>
                         <p class="text-xs text-bakery-dark/70">
                             {{ permission.description }}

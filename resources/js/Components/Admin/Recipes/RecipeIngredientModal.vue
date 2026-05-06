@@ -33,10 +33,7 @@ const ingredientOptions = computed(() =>
 );
 
 const selectedIngredient = computed(
-    () =>
-        ingredientOptions.value.find(
-            (ingredient) => ingredient.id === form.ingredient_id
-        ) ?? null
+    () => ingredientOptions.value.find((ingredient) => ingredient.id === form.ingredient_id) ?? null
 );
 
 const resetForm = () => {
@@ -122,11 +119,7 @@ const close = () => emit("update:visible", false);
                                         : 'bg-emerald-100 text-emerald-800'
                                 "
                             >
-                                {{
-                                    slotProps.option.is_low_stock
-                                        ? "Alacsony készlet"
-                                        : "OK"
-                                }}
+                                {{ slotProps.option.is_low_stock ? "Alacsony készlet" : "OK" }}
                             </span>
                         </div>
                     </template>
@@ -155,12 +148,7 @@ const close = () => emit("update:visible", false);
             </div>
 
             <div>
-                <InputNumber
-                    v-model="form.sort_order"
-                    :min="0"
-                    placeholder="Sorrend"
-                    fluid
-                />
+                <InputNumber v-model="form.sort_order" :min="0" placeholder="Sorrend" fluid />
                 <p v-if="errors.sort_order" class="mt-1 text-xs text-red-700">
                     {{ errors.sort_order }}
                 </p>
@@ -176,11 +164,7 @@ const close = () => emit("update:visible", false);
         <template #footer>
             <div class="flex justify-end gap-2">
                 <Button type="button" severity="secondary" label="Mégse" @click="close" />
-                <Button
-                    type="submit"
-                    form="recipe-ingredient-form"
-                    :label="item ? 'Mentés' : 'Hozzáadás'"
-                />
+                <Button type="submit" form="recipe-ingredient-form" :label="item ? 'Mentés' : 'Hozzáadás'" />
             </div>
         </template>
     </Dialog>

@@ -12,20 +12,12 @@ use Inertia\Response;
 
 class PublicPageController extends Controller
 {
-    /**
-     * @param WeeklyMenuService $weeklyMenuService
-     * @param HeroExperimentService $heroExperimentService
-     * @param ConversionTrackingService $conversionTrackingService
-     */
     public function __construct(
         private readonly WeeklyMenuService $weeklyMenuService,
         private readonly HeroExperimentService $heroExperimentService,
         private readonly ConversionTrackingService $conversionTrackingService,
     ) {}
 
-    /**
-     * @return \Inertia\Response
-     */
     public function home(Request $request): Response
     {
         $experiment = $this->heroExperimentService->resolveVariant($request);
@@ -56,9 +48,6 @@ class PublicPageController extends Controller
         ]);
     }
 
-    /**
-     * @return \Inertia\Response
-     */
     public function weeklyMenu(): Response
     {
         return Inertia::render('WeeklyMenu', $this->weeklyMenuService->getPublicWeeklyMenuPayload());

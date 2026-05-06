@@ -1,7 +1,7 @@
 <script setup>
-import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
-import WasteEntryForm from './WasteEntryForm.vue';
+import Button from "primevue/button";
+import Dialog from "primevue/dialog";
+import WasteEntryForm from "./WasteEntryForm.vue";
 
 defineProps({
     visible: {
@@ -26,9 +26,9 @@ defineProps({
     },
 });
 
-const emit = defineEmits(['update:visible', 'submit']);
+const emit = defineEmits(["update:visible", "submit"]);
 
-const close = () => emit('update:visible', false);
+const close = () => emit("update:visible", false);
 </script>
 
 <template>

@@ -90,4 +90,3 @@ npm run build
 - Completed rendelés vonja le a BOM szerinti alapanyagokat.
 - Jogosultságot backend policy és route middleware is véd.
 - Zajos read-only audit spam kerülendő; üzleti műveletek auditálandók.
-

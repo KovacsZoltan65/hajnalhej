@@ -1,31 +1,31 @@
-import { mount } from '@vue/test-utils';
-import CartPage from './Index.vue';
+import { mount } from "@vue/test-utils";
+import CartPage from "./Index.vue";
 
-vi.mock('@inertiajs/vue3', () => ({
-    Head: { name: 'Head', template: '<span />' },
-    Link: { name: 'Link', props: ['href'], template: '<a :href="href"><slot /></a>' },
+vi.mock("@inertiajs/vue3", () => ({
+    Head: { name: "Head", template: "<span />" },
+    Link: { name: "Link", props: ["href"], template: '<a :href="href"><slot /></a>' },
     router: { patch: vi.fn(), delete: vi.fn() },
     usePage: () => ({
         props: {
-            preferences: { locale: 'hu-HU', currency: 'HUF' },
+            preferences: { locale: "hu-HU", currency: "HUF" },
         },
     }),
 }));
 
-vi.mock('../../Layouts/PublicLayout.vue', () => ({
-    default: { template: '<div><slot /></div>' },
+vi.mock("../../Layouts/PublicLayout.vue", () => ({
+    default: { template: "<div><slot /></div>" },
 }));
 
-vi.mock('primevue/button', () => ({
-    default: { name: 'Button', template: '<button><slot /></button>' },
+vi.mock("primevue/button", () => ({
+    default: { name: "Button", template: "<button><slot /></button>" },
 }));
 
-vi.mock('primevue/inputnumber', () => ({
-    default: { name: 'InputNumber', template: '<input />' },
+vi.mock("primevue/inputnumber", () => ({
+    default: { name: "InputNumber", template: "<input />" },
 }));
 
-describe('Cart page', () => {
-    it('renders empty cart state', () => {
+describe("Cart page", () => {
+    it("renders empty cart state", () => {
         const wrapper = mount(CartPage, {
             props: {
                 cart: {
@@ -39,18 +39,18 @@ describe('Cart page', () => {
             },
         });
 
-        expect(wrapper.text()).toContain('A kosarad jelenleg ures');
+        expect(wrapper.text()).toContain("A kosarad jelenleg ures");
     });
 
-    it('renders cart items and totals', () => {
+    it("renders cart items and totals", () => {
         const wrapper = mount(CartPage, {
             props: {
                 cart: {
                     items: [
                         {
                             product_id: 1,
-                            name: 'Kovaszos vekni',
-                            short_description: 'Ropogos hej',
+                            name: "Kovaszos vekni",
+                            short_description: "Ropogos hej",
                             unit_price: 1200,
                             quantity: 2,
                             line_total: 2400,
@@ -65,7 +65,7 @@ describe('Cart page', () => {
             },
         });
 
-        expect(wrapper.text()).toContain('Kovaszos vekni');
-        expect(wrapper.text()).toContain('Vegosszeg');
+        expect(wrapper.text()).toContain("Kovaszos vekni");
+        expect(wrapper.text()).toContain("Vegosszeg");
     });
 });

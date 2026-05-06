@@ -11,11 +11,11 @@ Ez a változásnapló a Hajnalhéj Bakery fő fejlesztési fázisait foglalja ö
 - Selejt, korrekció és leltárkezelés.
 - `minimum_stock` egységesítése hivatalos utánrendelési szintként.
 - Procurement Intelligence:
-  - beszállítói ártrend,
-  - ingredient költség-idősor,
-  - heti fogyás forecast,
-  - minimum készlet alapú utánrendelési javaslat,
-  - beszerzési figyelmeztetések.
+    - beszállítói ártrend,
+    - ingredient költség-idősor,
+    - heti fogyás forecast,
+    - minimum készlet alapú utánrendelési javaslat,
+    - beszerzési figyelmeztetések.
 - Purchase draft generálás utánrendelési javaslatból.
 
 ## Security / Audit
@@ -62,4 +62,3 @@ Ez a változásnapló a Hajnalhéj Bakery fő fejlesztési fázisait foglalja ö
 - Public layout.
 - Tailwind és PrimeVue integráció.
 - Tesztkörnyezet Pest és Vitest alapon.
-

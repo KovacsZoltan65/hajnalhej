@@ -93,6 +93,27 @@ class WeeklyMenuService
         return $this->repository->unpublish($weeklyMenu);
     }
 
+    /**
+     * @param  array{field:string,value:mixed}  $payload
+     */
+    public function updateInline(WeeklyMenu $weeklyMenu, array $payload): WeeklyMenu
+    {
+        $status = (string) $payload['value'];
+
+        if ($status === WeeklyMenu::STATUS_PUBLISHED) {
+            return $this->publish($weeklyMenu);
+        }
+
+        if ($status === WeeklyMenu::STATUS_DRAFT) {
+            return $this->unpublish($weeklyMenu);
+        }
+
+        return $this->repository->update($weeklyMenu, [
+            'status' => WeeklyMenu::STATUS_ARCHIVED,
+            'published_at' => null,
+        ]);
+    }
+
     public function createItem(WeeklyMenu $weeklyMenu, WeeklyMenuItemStoreData $data): WeeklyMenuItem
     {
         return $this->itemService->addItem($weeklyMenu, $data);

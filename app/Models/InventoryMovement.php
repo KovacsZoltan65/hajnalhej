@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -14,15 +15,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property numeric $quantity
  * @property numeric|null $unit_cost
  * @property numeric|null $total_cost
- * @property \Illuminate\Support\Carbon $occurred_at
+ * @property Carbon $occurred_at
  * @property string|null $reference_type
  * @property int|null $reference_id
  * @property string|null $notes
  * @property int|null $created_by
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $creator
- * @property-read \App\Models\Ingredient|null $ingredient
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User|null $creator
+ * @property-read Ingredient|null $ingredient
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement query()
@@ -40,20 +42,29 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereTotalCost($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereUnitCost($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryMovement whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class InventoryMovement extends Model
 {
     public const TYPE_PURCHASE_IN = 'purchase_in';
+
     public const TYPE_PRODUCTION_OUT = 'production_out';
+
     public const TYPE_WASTE_OUT = 'waste_out';
+
     public const TYPE_ADJUSTMENT_IN = 'adjustment_in';
+
     public const TYPE_ADJUSTMENT_OUT = 'adjustment_out';
+
     public const TYPE_COUNT_CORRECTION = 'count_correction';
+
     public const TYPE_RETURN_IN = 'return_in';
+
     public const TYPE_RETURN_OUT = 'return_out';
 
     public const DIRECTION_IN = 'in';
+
     public const DIRECTION_OUT = 'out';
 
     use HasFactory;
@@ -115,4 +126,3 @@ class InventoryMovement extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 }
-

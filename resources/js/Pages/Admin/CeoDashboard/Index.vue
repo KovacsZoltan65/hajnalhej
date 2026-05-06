@@ -118,9 +118,7 @@ const ragLabel = (rag) => {
 
     <section class="space-y-6">
         <header class="ui-card p-5 sm:p-6">
-            <div
-                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-            >
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 class="font-heading text-3xl text-bakery-dark">
                         {{ $t("nav.ceo_dashboard") }}
@@ -159,10 +157,7 @@ const ragLabel = (rag) => {
                 <p class="mt-2 font-heading text-3xl text-bakery-dark">
                     {{ formatCurrency(dashboard.summary.revenue) }}
                 </p>
-                <p
-                    class="mt-2 flex items-center gap-1 text-xs"
-                    :class="trendClass(kpiInsights.revenue?.trend)"
-                >
+                <p class="mt-2 flex items-center gap-1 text-xs" :class="trendClass(kpiInsights.revenue?.trend)">
                     <i :class="trendIcon(kpiInsights.revenue?.trend)" />
                     {{ $t("common.wow") }}:
                     {{ formatSignedPercent(kpiInsights.revenue?.wow?.percent) }}
@@ -235,19 +230,11 @@ const ragLabel = (rag) => {
                 >
                     <i :class="trendIcon(kpiInsights.checkout_conversion_rate?.trend)" />
                     {{ $t("common.wow") }}:
-                    {{
-                        formatSignedPercent(
-                            kpiInsights.checkout_conversion_rate?.wow?.percent
-                        )
-                    }}
+                    {{ formatSignedPercent(kpiInsights.checkout_conversion_rate?.wow?.percent) }}
                 </p>
                 <p class="mt-1 text-xs text-bakery-dark/70">
                     {{ $t("common.mom") }}:
-                    {{
-                        formatSignedPercent(
-                            kpiInsights.checkout_conversion_rate?.mom?.percent
-                        )
-                    }}
+                    {{ formatSignedPercent(kpiInsights.checkout_conversion_rate?.mom?.percent) }}
                 </p>
             </article>
 
@@ -273,19 +260,11 @@ const ragLabel = (rag) => {
                 >
                     <i :class="trendIcon(kpiInsights.repeat_customer_rate?.trend)" />
                     {{ $t("common.wow") }}:
-                    {{
-                        formatSignedPercent(
-                            kpiInsights.repeat_customer_rate?.wow?.percent
-                        )
-                    }}
+                    {{ formatSignedPercent(kpiInsights.repeat_customer_rate?.wow?.percent) }}
                 </p>
                 <p class="mt-1 text-xs text-bakery-dark/70">
                     {{ $t("common.mom") }}:
-                    {{
-                        formatSignedPercent(
-                            kpiInsights.repeat_customer_rate?.mom?.percent
-                        )
-                    }}
+                    {{ formatSignedPercent(kpiInsights.repeat_customer_rate?.mom?.percent) }}
                 </p>
             </article>
 
@@ -305,10 +284,7 @@ const ragLabel = (rag) => {
                 <p class="mt-2 font-heading text-3xl text-bakery-dark">
                     {{ formatCurrency(dashboard.summary.ltv) }}
                 </p>
-                <p
-                    class="mt-2 flex items-center gap-1 text-xs"
-                    :class="trendClass(kpiInsights.ltv?.trend)"
-                >
+                <p class="mt-2 flex items-center gap-1 text-xs" :class="trendClass(kpiInsights.ltv?.trend)">
                     <i :class="trendIcon(kpiInsights.ltv?.trend)" />
                     {{ $t("common.wow") }}:
                     {{ formatSignedPercent(kpiInsights.ltv?.wow?.percent) }}
@@ -321,9 +297,7 @@ const ragLabel = (rag) => {
         </div>
 
         <section class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ $t("ceo_dashboard.conversion_overview") }}
             </h2>
 
@@ -333,16 +307,13 @@ const ragLabel = (rag) => {
                         {{ $t("ceo_dashboard.checkout_funnel") }}
                     </p>
                     <p class="mt-2 text-sm text-bakery-dark">
-                        {{ $t("common.submitted") }}:
-                        <strong>{{ conversion.checkout_submitted ?? 0 }}</strong> ·
+                        {{ $t("common.submitted") }}: <strong>{{ conversion.checkout_submitted ?? 0 }}</strong> ·
                         {{ $t("common.completed") }}:
                         <strong>{{ conversion.checkout_completed ?? 0 }}</strong>
                     </p>
                     <p class="mt-1 text-sm text-bakery-dark/80">
                         {{ $t("common.ratio") }}:
-                        <strong>{{
-                            formatPercent(conversion.checkout_conversion_rate)
-                        }}</strong>
+                        <strong>{{ formatPercent(conversion.checkout_conversion_rate) }}</strong>
                     </p>
                 </article>
                 <article class="ui-card-soft p-4">
@@ -350,25 +321,20 @@ const ragLabel = (rag) => {
                         {{ $t("ceo_dashboard.registration_funnel") }}
                     </p>
                     <p class="mt-2 text-sm text-bakery-dark">
-                        {{ $t("common.submitted") }}:
-                        <strong>{{ conversion.registration_submitted ?? 0 }}</strong> ·
+                        {{ $t("common.submitted") }}: <strong>{{ conversion.registration_submitted ?? 0 }}</strong> ·
                         {{ $t("common.successful") }}:
                         <strong>{{ conversion.registration_completed ?? 0 }}</strong>
                     </p>
                     <p class="mt-1 text-sm text-bakery-dark/80">
                         {{ $t("common.ratio") }}:
-                        <strong>{{
-                            formatPercent(conversion.registration_conversion_rate)
-                        }}</strong>
+                        <strong>{{ formatPercent(conversion.registration_conversion_rate) }}</strong>
                     </p>
                 </article>
             </div>
         </section>
 
         <section class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ $t("ceo_dashboard.top_products") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
@@ -384,9 +350,7 @@ const ragLabel = (rag) => {
                             <th class="px-2 py-2 text-right">
                                 {{ $t("common.profit") }}
                             </th>
-                            <th class="px-2 py-2 text-right">
-                                {{ $t("common.profit") }} %
-                            </th>
+                            <th class="px-2 py-2 text-right">{{ $t("common.profit") }} %</th>
                             <th class="px-2 py-2 text-right">{{ $t("common.piece") }}</th>
                         </tr>
                     </thead>
@@ -402,9 +366,7 @@ const ragLabel = (rag) => {
                             <td class="px-2 py-2 text-right text-bakery-dark">
                                 {{ formatCurrency(row.revenue) }}
                             </td>
-                            <td
-                                class="px-2 py-2 text-right font-semibold text-bakery-dark"
-                            >
+                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
                                 {{ formatCurrency(row.estimated_profit) }}
                             </td>
                             <td class="px-2 py-2 text-right text-bakery-dark">
@@ -415,10 +377,7 @@ const ragLabel = (rag) => {
                             </td>
                         </tr>
                         <tr v-if="topProducts.length === 0">
-                            <td
-                                colspan="5"
-                                class="px-2 py-4 text-center text-bakery-dark/70"
-                            >
+                            <td colspan="5" class="px-2 py-4 text-center text-bakery-dark/70">
                                 {{ $t("ceo_dashboard.empty_data") }}
                             </td>
                         </tr>
@@ -429,32 +388,20 @@ const ragLabel = (rag) => {
 
         <div class="grid gap-6 xl:grid-cols-2">
             <section class="ui-card p-4 sm:p-5">
-                <h2
-                    class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-                >
+                <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                     {{ $t("ceo_dashboard.safety_signs") }}
                 </h2>
                 <div class="mt-4 grid gap-3 md:grid-cols-2">
                     <article class="ui-card-soft p-4">
                         <div class="flex items-center justify-between gap-2">
-                            <p
-                                class="text-xs uppercase tracking-widest text-bakery-dark/60"
-                            >
+                            <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                                 {{ $t("ceo_dashboard.critical_alerts") }}
                             </p>
                             <span
                                 class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold"
-                                :class="
-                                    ragClass(
-                                        dashboard.security_alerts.states?.critical_alerts
-                                    )
-                                "
+                                :class="ragClass(dashboard.security_alerts.states?.critical_alerts)"
                             >
-                                {{
-                                    ragLabel(
-                                        dashboard.security_alerts.states?.critical_alerts
-                                    )
-                                }}
+                                {{ ragLabel(dashboard.security_alerts.states?.critical_alerts) }}
                             </span>
                         </div>
                         <p class="mt-2 font-heading text-2xl text-bakery-dark">
@@ -463,26 +410,14 @@ const ragLabel = (rag) => {
                     </article>
                     <article class="ui-card-soft p-4">
                         <div class="flex items-center justify-between gap-2">
-                            <p
-                                class="text-xs uppercase tracking-widest text-bakery-dark/60"
-                            >
+                            <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                                 {{ $t("ceo_dashboard.orphaned_permissions") }}
                             </p>
                             <span
                                 class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold"
-                                :class="
-                                    ragClass(
-                                        dashboard.security_alerts.states
-                                            ?.orphan_permissions
-                                    )
-                                "
+                                :class="ragClass(dashboard.security_alerts.states?.orphan_permissions)"
                             >
-                                {{
-                                    ragLabel(
-                                        dashboard.security_alerts.states
-                                            ?.orphan_permissions
-                                    )
-                                }}
+                                {{ ragLabel(dashboard.security_alerts.states?.orphan_permissions) }}
                             </span>
                         </div>
                         <p class="mt-2 font-heading text-2xl text-bakery-dark">
@@ -491,26 +426,14 @@ const ragLabel = (rag) => {
                     </article>
                     <article class="ui-card-soft p-4">
                         <div class="flex items-center justify-between gap-2">
-                            <p
-                                class="text-xs uppercase tracking-widest text-bakery-dark/60"
-                            >
+                            <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                                 {{ $t("ceo_dashboard.dangerous_permissions") }}
                             </p>
                             <span
                                 class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold"
-                                :class="
-                                    ragClass(
-                                        dashboard.security_alerts.states
-                                            ?.dangerous_permissions
-                                    )
-                                "
+                                :class="ragClass(dashboard.security_alerts.states?.dangerous_permissions)"
                             >
-                                {{
-                                    ragLabel(
-                                        dashboard.security_alerts.states
-                                            ?.dangerous_permissions
-                                    )
-                                }}
+                                {{ ragLabel(dashboard.security_alerts.states?.dangerous_permissions) }}
                             </span>
                         </div>
                         <p class="mt-2 font-heading text-2xl text-bakery-dark">
@@ -519,24 +442,14 @@ const ragLabel = (rag) => {
                     </article>
                     <article class="ui-card-soft p-4">
                         <div class="flex items-center justify-between gap-2">
-                            <p
-                                class="text-xs uppercase tracking-widest text-bakery-dark/60"
-                            >
+                            <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                                 {{ $t("ceo_dashboard.high_risk_users") }}
                             </p>
                             <span
                                 class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold"
-                                :class="
-                                    ragClass(
-                                        dashboard.security_alerts.states?.high_risk_users
-                                    )
-                                "
+                                :class="ragClass(dashboard.security_alerts.states?.high_risk_users)"
                             >
-                                {{
-                                    ragLabel(
-                                        dashboard.security_alerts.states?.high_risk_users
-                                    )
-                                }}
+                                {{ ragLabel(dashboard.security_alerts.states?.high_risk_users) }}
                             </span>
                         </div>
                         <p class="mt-2 font-heading text-2xl text-bakery-dark">
@@ -547,17 +460,11 @@ const ragLabel = (rag) => {
             </section>
 
             <section class="ui-card p-4 sm:p-5">
-                <h2
-                    class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-                >
+                <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                     {{ $t("ceo_dashboard.audit_highlights") }}
                 </h2>
                 <div class="mt-4 space-y-3">
-                    <article
-                        v-for="item in auditHighlights"
-                        :key="`audit-${item.id}`"
-                        class="ui-card-soft p-3"
-                    >
+                    <article v-for="item in auditHighlights" :key="`audit-${item.id}`" class="ui-card-soft p-3">
                         <p class="text-xs uppercase tracking-widest text-bakery-dark/60">
                             {{ item.log_name }} · {{ item.severity }}
                         </p>
@@ -567,10 +474,7 @@ const ragLabel = (rag) => {
                             {{ $t("common.time") }}: {{ formatDate(item.timestamp) }}
                         </p>
                     </article>
-                    <p
-                        v-if="auditHighlights.length === 0"
-                        class="ui-card-soft p-3 text-sm text-bakery-dark/70"
-                    >
+                    <p v-if="auditHighlights.length === 0" class="ui-card-soft p-3 text-sm text-bakery-dark/70">
                         {{ $t("ceo_dashboard.audit_highlights_empty") }}
                     </p>
                 </div>
@@ -578,9 +482,7 @@ const ragLabel = (rag) => {
         </div>
 
         <section class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ $t("ceo_dashboard.order_profit_trend") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
@@ -596,9 +498,7 @@ const ragLabel = (rag) => {
                             <th class="px-2 py-2 text-right">
                                 {{ $t("common.profit") }}
                             </th>
-                            <th class="px-2 py-2 text-right">
-                                {{ $t("common.profit") }} %
-                            </th>
+                            <th class="px-2 py-2 text-right">{{ $t("common.profit") }} %</th>
                             <th class="px-2 py-2 text-right">{{ $t("nav.orders") }}</th>
                         </tr>
                     </thead>
@@ -614,9 +514,7 @@ const ragLabel = (rag) => {
                             <td class="px-2 py-2 text-right text-bakery-dark">
                                 {{ formatCurrency(row.revenue) }}
                             </td>
-                            <td
-                                class="px-2 py-2 text-right font-semibold text-bakery-dark"
-                            >
+                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
                                 {{ formatCurrency(row.estimated_profit) }}
                             </td>
                             <td class="px-2 py-2 text-right text-bakery-dark">
@@ -627,10 +525,7 @@ const ragLabel = (rag) => {
                             </td>
                         </tr>
                         <tr v-if="trendPoints.length === 0">
-                            <td
-                                colspan="5"
-                                class="px-2 py-4 text-center text-bakery-dark/70"
-                            >
+                            <td colspan="5" class="px-2 py-4 text-center text-bakery-dark/70">
                                 {{ $t("ceo_dashboard.order_profit_trend_empty") }}
                             </td>
                         </tr>

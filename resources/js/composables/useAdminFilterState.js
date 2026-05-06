@@ -18,14 +18,12 @@ export function useAdminFilterState({
         ...Object.fromEntries(
             Object.entries(initialDefaults).map(([key, defaultValue]) => [
                 key,
-                (defaultValue === null ? filters[key] || null : filters[key] ?? defaultValue),
+                defaultValue === null ? filters[key] || null : (filters[key] ?? defaultValue),
             ])
         ),
     });
 
-    const sortOrder = computed(() =>
-        filterState.sort_direction === "asc" ? 1 : -1
-    );
+    const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 
     const resetFilters = () => {
         Object.assign(filterState, cloneDefaults(initialDefaults));

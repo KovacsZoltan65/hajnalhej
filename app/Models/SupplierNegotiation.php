@@ -6,14 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property int $supplier_id
  * @property int|null $ingredient_id
  * @property string $status
- * @property \Illuminate\Support\Carbon|null $planned_on
- * @property \Illuminate\Support\Carbon|null $completed_on
+ * @property Carbon|null $planned_on
+ * @property Carbon|null $completed_on
  * @property numeric|null $current_unit_cost
  * @property numeric|null $target_unit_cost
  * @property numeric|null $expected_savings
@@ -22,12 +23,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $outcome_notes
  * @property array<array-key, mixed>|null $evidence_snapshot
  * @property int|null $owner_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Ingredient|null $ingredient
- * @property-read \App\Models\User|null $owner
- * @property-read \App\Models\Supplier $supplier
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property-read Ingredient|null $ingredient
+ * @property-read User|null $owner
+ * @property-read Supplier $supplier
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierNegotiation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierNegotiation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierNegotiation onlyTrashed()
@@ -51,6 +53,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierNegotiation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierNegotiation withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierNegotiation withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class SupplierNegotiation extends Model

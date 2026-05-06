@@ -18,4 +18,3 @@ class SecurityDashboardPolicy
         return $user->can(PermissionRegistry::SECURITY_DASHBOARD_VIEW);
     }
 }
-

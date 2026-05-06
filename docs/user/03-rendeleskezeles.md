@@ -34,4 +34,3 @@ Rendelést csak indokolt esetben állíts `cancelled` állapotba. A lemondott re
 - Rossz státuszba léptetés: ellenőrizd a rendelés életciklusát.
 - Completed túl korán: készletlevonás és riportok is érintettek lehetnek.
 - Hiányzó belső jegyzet: a műszakváltásnál félreértést okozhat.
-

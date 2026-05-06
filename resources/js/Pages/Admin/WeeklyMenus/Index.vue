@@ -4,11 +4,12 @@ import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
-import DataTable from "primevue/datatable";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import { useConfirm } from "primevue/useconfirm";
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import BaseDataTable from "@/Components/Admin/Table/BaseDataTable.vue";
+import InlineEditableSelect from "@/Components/Admin/Table/InlineEditableSelect.vue";
 import CreateModal from "@/Components/Admin/WeeklyMenus/CreateModal.vue";
 import EditModal from "@/Components/Admin/WeeklyMenus/EditModal.vue";
 import WeeklyMenuItemsModal from "@/Components/Admin/WeeklyMenus/WeeklyMenuItemsModal.vue";
@@ -34,6 +35,7 @@ const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const itemsVisible = ref(false);
 const editingId = ref(null);
+const selectedMenus = ref([]);
 
 const selectedMenuId = ref(null);
 
@@ -42,20 +44,10 @@ const selectedMenu = computed(() => {
         return null;
     }
 
-    return (
-        props.weeklyMenus.data.find((menu) => menu.id === selectedMenuId.value) ?? null
-    );
+    return props.weeklyMenus.data.find((menu) => menu.id === selectedMenuId.value) ?? null;
 });
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
         search: "",
@@ -75,10 +67,7 @@ const {
     }),
 });
 
-const statusOptions = computed(() => [
-    { value: "", label: trans("common.all") },
-    ...props.statuses,
-]);
+const statusOptions = computed(() => [{ value: "", label: trans("common.all") }, ...props.statuses]);
 
 const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
 /*
@@ -101,9 +90,7 @@ const form = useForm({
 });
 
 const currentPage = computed(() => props.weeklyMenus.current_page ?? 1);
-const first = computed(
-    () => (currentPage.value - 1) * (props.weeklyMenus.per_page ?? 10)
-);
+const first = computed(() => (currentPage.value - 1) * (props.weeklyMenus.per_page ?? 10));
 
 const openCreate = () => {
     editModalVisible.value = false;
@@ -190,18 +177,8 @@ const confirmDelete = (menu) => {
     });
 };
 
-const publish = (menu) =>
-    router.post(
-        route("admin.weekly-menus.publish", menu.id),
-        {},
-        { preserveScroll: true }
-    );
-const unpublish = (menu) =>
-    router.post(
-        route("admin.weekly-menus.unpublish", menu.id),
-        {},
-        { preserveScroll: true }
-    );
+const publish = (menu) => router.post(route("admin.weekly-menus.publish", menu.id), {}, { preserveScroll: true });
+const unpublish = (menu) => router.post(route("admin.weekly-menus.unpublish", menu.id), {}, { preserveScroll: true });
 /*
 const openItems = (menu) => {
     selectedMenu.value = menu;
@@ -229,11 +206,7 @@ const saveItem = (payload) => {
     };
 
     if (payload.id) {
-        router.put(
-            route("admin.weekly-menus.items.update", [menuId, payload.id]),
-            payload,
-            options
-        );
+        router.put(route("admin.weekly-menus.items.update", [menuId, payload.id]), payload, options);
 
         return;
     }
@@ -246,10 +219,7 @@ const deleteItem = (item) => {
         return;
     }
 
-    const itemName =
-        item.override_name ??
-        item.product_name ??
-        trans("admin_weekly_menus.unnamed_item");
+    const itemName = item.override_name ?? item.product_name ?? trans("admin_weekly_menus.unnamed_item");
 
     confirm.require({
         header: trans("admin_weekly_menus.confirm_delete_item_header"),
@@ -260,16 +230,10 @@ const deleteItem = (item) => {
         acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
-            router.delete(
-                route("admin.weekly-menus.items.destroy", [
-                    selectedMenu.value.id,
-                    item.id,
-                ]),
-                {
-                    preserveScroll: true,
-                    preserveState: true,
-                }
-            );
+            router.delete(route("admin.weekly-menus.items.destroy", [selectedMenu.value.id, item.id]), {
+                preserveScroll: true,
+                preserveState: true,
+            });
         },
     });
 };
@@ -294,29 +258,23 @@ const refreshMenus = () => {
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
-            <AdminTableToolbar
-                :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-3'"
-            >
+            <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-3'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("common.search") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.search")
+                        }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            :placeholder="
-                                $t('admin_weekly_menus.filters.search_placeholder')
-                            "
+                            :placeholder="$t('admin_weekly_menus.filters.search_placeholder')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("common.status") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.status")
+                        }}</label>
                         <Select
                             v-model="filterState.status"
                             :options="statusOptions"
@@ -327,10 +285,9 @@ const refreshMenus = () => {
                         />
                     </div>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("table.rows_per_page") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("table.rows_per_page")
+                        }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -343,21 +300,14 @@ const refreshMenus = () => {
                 </template>
 
                 <template #actions>
-                    <Button
-                        icon="pi pi-search"
-                        :label="$t('common.search')"
-                        @click="submitFilters"
-                    />
-                    <Button
-                        icon="pi pi-plus"
-                        :label="$t('admin_weekly_menus.actions.create')"
-                        @click="openCreate"
-                    />
+                    <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
+                    <Button icon="pi pi-plus" :label="$t('admin_weekly_menus.actions.create')" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
             <div class="mt-4 overflow-x-auto">
-                <DataTable
+                <BaseDataTable
+                    v-model:selection="selectedMenus"
                     :value="weeklyMenus.data"
                     lazy
                     paginator
@@ -370,70 +320,53 @@ const refreshMenus = () => {
                     sort-mode="single"
                     :sort-field="filterState.sort_field"
                     :sort-order="sortOrder"
+                    :empty-title="$t('admin.common.empty.title')"
+                    :empty-description="
+                        $t(
+                            filterState.search
+                                ? 'admin.common.empty.no_results_description'
+                                : 'admin.common.empty.description'
+                        )
+                    "
+                    :empty-primary-label="$t('admin_weekly_menus.actions.create')"
+                    :empty-secondary-label="$t('common.clear_filters')"
+                    :selected-count="selectedMenus.length"
                     @sort="onSort"
                     @page="onPage"
+                    @empty-primary="openCreate"
+                    @empty-secondary="clearFilters"
+                    @clear-selection="selectedMenus = []"
                 >
-                    <template #empty>
-                        <div
-                            class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
-                        >
-                            <p>{{ $t("admin_weekly_menus.empty") }}</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
-                                <Button
-                                    :label="$t('common.clear_filters')"
-                                    outlined
-                                    size="small"
-                                    @click="clearFilters"
-                                />
-                                <Button
-                                    :label="$t('admin_weekly_menus.actions.create')"
-                                    size="small"
-                                    @click="openCreate"
-                                />
-                            </div>
-                        </div>
-                    </template>
-
-                    <Column
-                        field="title"
-                        :header="$t('admin_weekly_menus.columns.title')"
-                        sortable
-                    >
+                    <Column selection-mode="multiple" header-style="width:3rem" />
+                    <Column field="title" :header="$t('admin_weekly_menus.columns.title')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">
                                     {{ data.title }}
                                 </p>
-                                <p class="text-xs text-bakery-dark/60">
-                                    /{{ data.slug }}
-                                </p>
+                                <p class="text-xs text-bakery-dark/60">/{{ data.slug }}</p>
                             </div>
                         </template>
                     </Column>
-                    <Column
-                        field="week_start"
-                        :header="$t('admin_weekly_menus.columns.week')"
-                        sortable
-                    >
-                        <template #body="{ data }"
-                            >{{ data.week_start }} - {{ data.week_end }}</template
-                        >
+                    <Column field="week_start" :header="$t('admin_weekly_menus.columns.week')" sortable>
+                        <template #body="{ data }">{{ data.week_start }} - {{ data.week_end }}</template>
                     </Column>
-                    <Column
-                        field="status"
-                        :header="$t('admin_weekly_menus.columns.status')"
-                        sortable
-                    >
+                    <Column field="status" :header="$t('admin_weekly_menus.columns.status')" sortable>
                         <template #body="{ data }">
-                            <WeeklyMenuStatusBadge :status="data.status" />
+                            <div class="grid gap-2">
+                                <InlineEditableSelect
+                                    :model-value="data.status"
+                                    route-name="admin.weekly-menus.inline.update"
+                                    :route-params="data.id"
+                                    field="status"
+                                    :options="statuses"
+                                    :reload-only="['weeklyMenus']"
+                                />
+                                <WeeklyMenuStatusBadge :status="data.status" />
+                            </div>
                         </template>
                     </Column>
-                    <Column
-                        field="items_count"
-                        :header="$t('admin_weekly_menus.columns.items')"
-                    />
+                    <Column field="items_count" :header="$t('admin_weekly_menus.columns.items')" />
                     <Column :header="$t('common.actions')">
                         <template #body="{ data }">
                             <div class="flex flex-wrap items-center gap-2">
@@ -481,22 +414,12 @@ const refreshMenus = () => {
                             </div>
                         </template>
                     </Column>
-                </DataTable>
+                </BaseDataTable>
             </div>
         </div>
 
-        <CreateModal
-            v-model:visible="createModalVisible"
-            :form="form"
-            :statuses="statuses"
-            @submit="submitCreate"
-        />
-        <EditModal
-            v-model:visible="editModalVisible"
-            :form="form"
-            :statuses="statuses"
-            @submit="submitEdit"
-        />
+        <CreateModal v-model:visible="createModalVisible" :form="form" :statuses="statuses" @submit="submitCreate" />
+        <EditModal v-model:visible="editModalVisible" :form="form" :statuses="statuses" @submit="submitEdit" />
         <WeeklyMenuItemsModal
             v-model:visible="itemsVisible"
             :menu="selectedMenu"

@@ -15,8 +15,7 @@ const logout = () => {
     logoutForm.post(route("logout"));
 };
 
-const hasAny = (can, permissions) =>
-    permissions.some((permission) => Boolean(can[permission]));
+const hasAny = (can, permissions) => permissions.some((permission) => Boolean(can[permission]));
 
 const menuGroups = computed(() => {
     const can = page.props.auth?.can ?? {};
@@ -236,9 +235,7 @@ onUnmounted(() => {
                     <div class="flex items-center gap-3">
                         <p class="hidden text-sm text-bakery-dark/75 sm:block">
                             {{ $t("common.entering") }}:
-                            <span class="font-semibold">{{
-                                page.props.auth?.user?.name
-                            }}</span>
+                            <span class="font-semibold">{{ page.props.auth?.user?.name }}</span>
                         </p>
                         <Button
                             type="button"
@@ -252,9 +249,7 @@ onUnmounted(() => {
                 </template>
             </AppHeader>
 
-            <main
-                class="main-content min-h-0 overflow-y-auto overscroll-contain scroll-smooth p-4 sm:p-6 lg:p-8"
-            >
+            <main class="main-content min-h-0 overflow-y-auto overscroll-contain scroll-smooth p-4 sm:p-6 lg:p-8">
                 <div class="ui-card ui-card-elevated min-h-full p-4 sm:p-6 lg:p-8">
                     <slot />
                 </div>

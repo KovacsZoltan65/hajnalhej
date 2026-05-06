@@ -31,10 +31,6 @@ class ProductListItemData extends Data
         public ?string $updated_at = null,
     ) {}
 
-    /**
-     * @param Product $product
-     * @return ProductListItemData
-     */
     public static function fromModel(Product $product): self
     {
         return new self(

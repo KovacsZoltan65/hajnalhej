@@ -58,7 +58,7 @@ final class LocaleSettingsService
                 $label = $value;
             }
 
-            if ($value === '' || !\in_array($value, $supported, true)) {
+            if ($value === '' || ! \in_array($value, $supported, true)) {
                 continue;
             }
 

@@ -1,4 +1,5 @@
 # HAJNALHÉJ BAKERY – MAIN CODEX PROMPT
+
 ## Alap projekt felépítése Laravel 13 + Vue 3 + Inertia + PrimeVue stacken
 
 ```text
@@ -468,3 +469,4 @@ If needed, generate the project in coherent batches:
 - docs
 
 Start by building the full foundation of the project.
+```

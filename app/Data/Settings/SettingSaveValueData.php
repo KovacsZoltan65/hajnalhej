@@ -13,4 +13,3 @@ class SettingSaveValueData extends Data
         public mixed $value,
     ) {}
 }
-

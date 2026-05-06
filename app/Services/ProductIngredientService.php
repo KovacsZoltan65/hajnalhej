@@ -10,9 +10,7 @@ use RuntimeException;
 
 class ProductIngredientService
 {
-    public function __construct(private readonly ProductIngredientRepository $repository)
-    {
-    }
+    public function __construct(private readonly ProductIngredientRepository $repository) {}
 
     /**
      * @return Collection<int, array{id:int,name:string,unit:string,is_low_stock:bool}>
@@ -31,28 +29,28 @@ class ProductIngredientService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function create(Product $product, array $payload): ProductIngredient
     {
         $normalized = $this->normalizePayload($payload);
 
         if ($this->repository->existsForProduct($product, (int) $normalized['ingredient_id'])) {
-            throw new RuntimeException(__('admin_ingredients.ingredient_already_included') . '.');
+            throw new RuntimeException(__('admin_ingredients.ingredient_already_included').'.');
         }
 
         return $this->repository->create($product, $normalized);
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function update(Product $product, ProductIngredient $productIngredient, array $payload): ProductIngredient
     {
         $normalized = $this->normalizePayload($payload);
 
         if ($this->repository->existsForProduct($product, (int) $normalized['ingredient_id'], $productIngredient->id)) {
-            throw new RuntimeException(__('admin_ingredients.ingredient_already_included') . '.');
+            throw new RuntimeException(__('admin_ingredients.ingredient_already_included').'.');
         }
 
         return $this->repository->update($productIngredient, $normalized);
@@ -64,7 +62,7 @@ class ProductIngredientService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      * @return array<string, mixed>
      */
     private function normalizePayload(array $payload): array

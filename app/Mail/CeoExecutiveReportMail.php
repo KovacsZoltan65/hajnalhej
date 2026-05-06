@@ -14,16 +14,12 @@ class CeoExecutiveReportMail extends Mailable
     use SerializesModels;
 
     /**
-     * @param array<string, mixed> $dashboard
+     * @param  array<string, mixed>  $dashboard
      */
     public function __construct(
         public readonly array $dashboard,
-    ) {
-    }
+    ) {}
 
-    /**
-     * @return Envelope
-     */
     public function envelope(): Envelope
     {
         $date = now()->format('Y.m.d');
@@ -33,9 +29,6 @@ class CeoExecutiveReportMail extends Mailable
         );
     }
 
-    /**
-     * @return Content
-     */
     public function content(): Content
     {
         return new Content(

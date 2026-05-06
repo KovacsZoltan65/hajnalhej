@@ -13,29 +13,18 @@ const { translate } = vi.hoisted(() => {
         "admin_procurement_intelligence.filters.ingredient": "Alapanyag",
         "admin_procurement_intelligence.filters.supplier": "Beszállító",
         "admin_procurement_intelligence.filters.urgency": "Sürgősség",
-        "admin_procurement_intelligence.filters.alert_type":
-            "Figyelmeztetés típusa",
-        "admin_procurement_intelligence.actions.generate_purchase_drafts":
-            "Beszerzési tervezet készítése",
-        "admin_procurement_intelligence.selection.selected":
-            ":count kijelölt javaslat",
-        "admin_procurement_intelligence.selection.generatable":
-            ":count generálható javaslat",
-        "admin_procurement_intelligence.summary.active_alerts":
-            "Aktív figyelmeztetés",
-        "admin_procurement_intelligence.summary.filtered_hint":
-            "Szűrők után számolva",
-        "admin_procurement_intelligence.summary.critical_reorders":
-            "Kritikus utánrendelés",
-        "admin_procurement_intelligence.summary.critical_hint":
-            "Azonnali beszerzési figyelem",
+        "admin_procurement_intelligence.filters.alert_type": "Figyelmeztetés típusa",
+        "admin_procurement_intelligence.actions.generate_purchase_drafts": "Beszerzési tervezet készítése",
+        "admin_procurement_intelligence.selection.selected": ":count kijelölt javaslat",
+        "admin_procurement_intelligence.selection.generatable": ":count generálható javaslat",
+        "admin_procurement_intelligence.summary.active_alerts": "Aktív figyelmeztetés",
+        "admin_procurement_intelligence.summary.filtered_hint": "Szűrők után számolva",
+        "admin_procurement_intelligence.summary.critical_reorders": "Kritikus utánrendelés",
+        "admin_procurement_intelligence.summary.critical_hint": "Azonnali beszerzési figyelem",
         "admin_procurement_intelligence.summary.price_increase": "Áremelkedés",
-        "admin_procurement_intelligence.summary.price_increase_hint":
-            "10% vagy nagyobb növekedés",
-        "admin_procurement_intelligence.summary.stockout_risk":
-            "Elfogyási kockázat",
-        "admin_procurement_intelligence.summary.stockout_hint":
-            "7 napon belüli fedezet",
+        "admin_procurement_intelligence.summary.price_increase_hint": "10% vagy nagyobb növekedés",
+        "admin_procurement_intelligence.summary.stockout_risk": "Elfogyási kockázat",
+        "admin_procurement_intelligence.summary.stockout_hint": "7 napon belüli fedezet",
         "admin_procurement_intelligence.counts.rows": ":count sor",
         "admin_procurement_intelligence.counts.points": ":count pont",
         "admin_procurement_intelligence.counts.ingredients": ":count alapanyag",
@@ -51,85 +40,56 @@ const { translate } = vi.hoisted(() => {
         "admin_procurement_intelligence.columns.trend": "Trend",
         "admin_procurement_intelligence.columns.date": "Dátum",
         "admin_procurement_intelligence.columns.average_price": "Átlagár",
-        "admin_procurement_intelligence.columns.weighted_average":
-            "Súlyozott átlag",
+        "admin_procurement_intelligence.columns.weighted_average": "Súlyozott átlag",
         "common.quantity": "Mennyiség",
-        "admin_procurement_intelligence.columns.current_stock":
-            "Aktuális készlet",
-        "admin_procurement_intelligence.columns.minimum_stock":
-            "Minimum készlet",
-        "admin_procurement_intelligence.columns.weekly_average_consumption":
-            "Heti átlagfogyás",
-        "admin_procurement_intelligence.columns.recommended_supplier":
-            "Ajánlott beszállító",
+        "admin_procurement_intelligence.columns.current_stock": "Aktuális készlet",
+        "admin_procurement_intelligence.columns.minimum_stock": "Minimum készlet",
+        "admin_procurement_intelligence.columns.weekly_average_consumption": "Heti átlagfogyás",
+        "admin_procurement_intelligence.columns.recommended_supplier": "Ajánlott beszállító",
         "admin_procurement_intelligence.columns.lead_time": "Lead time",
         "admin_procurement_intelligence.columns.pack_size": "Csomag",
-        "admin_procurement_intelligence.columns.minimum_order":
-            "Minimum rendelés",
+        "admin_procurement_intelligence.columns.minimum_order": "Minimum rendelés",
         "admin_procurement_intelligence.columns.stock_days": "Készlet nap",
-        "admin_procurement_intelligence.columns.suggested_order":
-            "Javasolt rendelés",
+        "admin_procurement_intelligence.columns.suggested_order": "Javasolt rendelés",
         "admin_procurement_intelligence.columns.urgency": "Sürgősség",
-        "admin_procurement_intelligence.columns.last_week_consumption":
-            "Elmúlt heti fogyás",
-        "admin_procurement_intelligence.columns.four_week_average":
-            "4 hetes átlag",
-        "admin_procurement_intelligence.columns.next_week_forecast":
-            "Következő heti várható",
+        "admin_procurement_intelligence.columns.last_week_consumption": "Elmúlt heti fogyás",
+        "admin_procurement_intelligence.columns.four_week_average": "4 hetes átlag",
+        "admin_procurement_intelligence.columns.next_week_forecast": "Következő heti várható",
         "admin_procurement_intelligence.columns.coverage_days": "Fedezet nap",
-        "admin_procurement_intelligence.supplier_price_trends.title":
-            "Beszállítói ártrend",
+        "admin_procurement_intelligence.supplier_price_trends.title": "Beszállítói ártrend",
         "admin_procurement_intelligence.supplier_price_trends.empty":
             "Nincs beszerzési ártrend a kiválasztott szűrőkkel.",
-        "admin_procurement_intelligence.ingredient_cost_trends.title":
-            "Alapanyag költség-idősor",
+        "admin_procurement_intelligence.ingredient_cost_trends.title": "Alapanyag költség-idősor",
         "admin_procurement_intelligence.ingredient_cost_trends.empty":
             "Nincs költség-idősor adat a kiválasztott időablakban.",
-        "admin_procurement_intelligence.recent_purchases.title":
-            "Legutóbbi 5 beszerzés",
-        "admin_procurement_intelligence.recent_purchases.empty":
-            "Még nincs friss beszerzési tétel.",
-        "admin_procurement_intelligence.minimum_stock.title":
-            "Utánrendelési javaslat",
-        "admin_procurement_intelligence.minimum_stock.select_all":
-            "Minden utánrendelési javaslat kijelölése",
-        "admin_procurement_intelligence.minimum_stock.select_one":
-            ":name kijelölése beszerzési tervezethez",
-        "admin_procurement_intelligence.minimum_stock.no_supplier":
-            "Nincs beszállító",
+        "admin_procurement_intelligence.recent_purchases.title": "Legutóbbi 5 beszerzés",
+        "admin_procurement_intelligence.recent_purchases.empty": "Még nincs friss beszerzési tétel.",
+        "admin_procurement_intelligence.minimum_stock.title": "Utánrendelési javaslat",
+        "admin_procurement_intelligence.minimum_stock.select_all": "Minden utánrendelési javaslat kijelölése",
+        "admin_procurement_intelligence.minimum_stock.select_one": ":name kijelölése beszerzési tervezethez",
+        "admin_procurement_intelligence.minimum_stock.no_supplier": "Nincs beszállító",
         "admin_procurement_intelligence.minimum_stock.empty":
             "Nincs utánrendelési javaslat a jelenlegi készlet és fogyás alapján.",
-        "admin_procurement_intelligence.weekly_forecast.title":
-            "Heti várható fogyás",
-        "admin_procurement_intelligence.weekly_forecast.subtitle":
-            "4 hetes átlag",
-        "admin_procurement_intelligence.weekly_forecast.empty":
-            "Nincs production_out fogyási adat az előrejelzéshez.",
-        "admin_procurement_intelligence.alerts.title":
-            "Beszerzési figyelmeztetések",
-        "admin_procurement_intelligence.alerts.empty":
-            "Nincs beszerzési figyelmeztetés a kiválasztott szűrők mellett.",
-        "admin_procurement_intelligence.alert_types.price_increase":
-            "Áremelkedés",
+        "admin_procurement_intelligence.weekly_forecast.title": "Heti várható fogyás",
+        "admin_procurement_intelligence.weekly_forecast.subtitle": "4 hetes átlag",
+        "admin_procurement_intelligence.weekly_forecast.empty": "Nincs production_out fogyási adat az előrejelzéshez.",
+        "admin_procurement_intelligence.alerts.title": "Beszerzési figyelmeztetések",
+        "admin_procurement_intelligence.alerts.empty": "Nincs beszerzési figyelmeztetés a kiválasztott szűrők mellett.",
+        "admin_procurement_intelligence.alert_types.price_increase": "Áremelkedés",
         "admin_procurement_intelligence.urgencies.critical": "Kritikus",
         "admin_procurement_intelligence.urgencies.high": "Magas",
         "admin_procurement_intelligence.urgencies.medium": "Közepes",
         "admin_procurement_intelligence.urgencies.low": "Alacsony",
-        "admin_procurement_intelligence.supplier_sources.preferred_supplier":
-            "Preferált",
-        "admin_procurement_intelligence.supplier_sources.latest_supplier":
-            "Legutóbbi",
-        "admin_procurement_intelligence.supplier_sources.cheapest_fresh_supplier":
-            "Legolcsóbb friss",
+        "admin_procurement_intelligence.supplier_sources.preferred_supplier": "Preferált",
+        "admin_procurement_intelligence.supplier_sources.latest_supplier": "Legutóbbi",
+        "admin_procurement_intelligence.supplier_sources.cheapest_fresh_supplier": "Legolcsóbb friss",
         "admin_procurement_intelligence.supplier_sources.none": "Nincs adat",
         "admin_procurement_intelligence.units.days": ":count nap",
         "admin_procurement_intelligence.calculation.title": "Számítási alapok",
         "admin_procurement_intelligence.calculation.consumption_window":
             "Fogyási ablak: :days nap production_out átlag.",
-        "admin_procurement_intelligence.calculation.price_increase":
-            "Áremelkedés jelzés: :percent% felett.",
-        "admin_procurement_intelligence.calculation.stockout_risk":
-            "Elfogyási kockázat: :days napon belül.",
+        "admin_procurement_intelligence.calculation.price_increase": "Áremelkedés jelzés: :percent% felett.",
+        "admin_procurement_intelligence.calculation.stockout_risk": "Elfogyási kockázat: :days napon belül.",
         "admin_procurement_intelligence.calculation.reorder_target":
             "Utánrendelési cél: minimum készlet, lead time igény és :days nap biztonsági puffer maximuma.",
     };
@@ -165,8 +125,7 @@ vi.mock("primevue/button", () => ({
         name: "Button",
         props: ["label", "icon", "loading", "disabled"],
         emits: ["click"],
-        template:
-            '<button :disabled="disabled" @click="$emit(\'click\')">{{ label }}</button>',
+        template: '<button :disabled="disabled" @click="$emit(\'click\')">{{ label }}</button>',
     },
 }));
 
@@ -177,15 +136,7 @@ vi.mock("@/Layouts/AdminLayout.vue", () => ({
 vi.mock("primevue/select", () => ({
     default: {
         name: "Select",
-        props: [
-            "modelValue",
-            "options",
-            "optionLabel",
-            "optionValue",
-            "placeholder",
-            "showClear",
-            "filter",
-        ],
+        props: ["modelValue", "options", "optionLabel", "optionValue", "placeholder", "showClear", "filter"],
         emits: ["update:model-value"],
         template: '<select class="select-stub"></select>',
     },
@@ -379,7 +330,7 @@ describe("Admin Procurement Intelligence page", () => {
                 days: 30,
                 ingredient_ids: [1],
             }),
-            expect.any(Object),
+            expect.any(Object)
         );
     });
 });

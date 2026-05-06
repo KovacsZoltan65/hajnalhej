@@ -47,11 +47,7 @@ const moduleLabel = (moduleName) => moduleName;
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        v-for="row in rows"
-                        :key="row.name"
-                        class="border-b border-bakery-brown/10"
-                    >
+                    <tr v-for="row in rows" :key="row.name" class="border-b border-bakery-brown/10">
                         <td class="px-2 py-2">
                             <p class="font-medium text-bakery-dark">{{ row.name }}</p>
                             <p class="text-xs text-bakery-dark/60">

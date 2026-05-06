@@ -18,10 +18,6 @@ class ProductIndexData extends Data
         public string $sort_direction = 'asc',
     ) {}
 
-    /**
-     * @param array $payload
-     * @return ProductIndexData
-     */
     public static function fromArray(array $payload): self
     {
         return new self(

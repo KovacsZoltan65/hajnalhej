@@ -35,4 +35,3 @@ Példák:
 ## Jó gyakorlat
 
 Minden mozgáshoz írj érthető megjegyzést. Később ez segít az auditban és a készleteltérések okainak feltárásában.
-

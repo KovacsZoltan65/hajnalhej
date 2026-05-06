@@ -85,17 +85,12 @@ const clearCart = () => {
                     :key="item.product_id"
                     class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-5"
                 >
-                    <div
-                        class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
-                    >
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                             <h3 class="font-heading text-2xl text-bakery-dark">
                                 {{ item.name }}
                             </h3>
-                            <p
-                                v-if="item.short_description"
-                                class="mt-1 text-sm text-bakery-dark/70"
-                            >
+                            <p v-if="item.short_description" class="mt-1 text-sm text-bakery-dark/70">
                                 {{ item.short_description }}
                             </p>
                             <p class="mt-2 text-sm font-semibold text-bakery-brown">
@@ -111,9 +106,7 @@ const clearCart = () => {
                                 :min="1"
                                 :max="99"
                                 input-class="w-16 text-center"
-                                @update:model-value="
-                                    (value) => updateQuantity(item, value)
-                                "
+                                @update:model-value="(value) => updateQuantity(item, value)"
                             />
                             <Button
                                 type="button"
@@ -135,9 +128,7 @@ const clearCart = () => {
                 </article>
             </div>
 
-            <aside
-                class="h-fit rounded-2xl border border-bakery-brown/15 bg-[#fff9f1] p-5 shadow-sm"
-            >
+            <aside class="h-fit rounded-2xl border border-bakery-brown/15 bg-[#fff9f1] p-5 shadow-sm">
                 <h2 class="font-heading text-2xl text-bakery-dark">
                     {{ $t("common.summary") }}
                 </h2>

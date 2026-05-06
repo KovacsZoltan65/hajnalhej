@@ -15,11 +15,7 @@ import { ZiggyVue } from "../../vendor/tightenco/ziggy";
 
 createInertiaApp({
     title: (title) => (title ? `${title} | Hajnalhej` : "Hajnalhej"),
-    resolve: (name) =>
-        resolvePageComponent(
-            `./Pages/${name}.vue`,
-            import.meta.glob("./Pages/**/*.vue"),
-        ),
+    resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob("./Pages/**/*.vue")),
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
             .use(plugin)

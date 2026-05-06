@@ -28,22 +28,13 @@ const close = () => emit("update:visible", false);
         :content-style="{ maxHeight: '70vh', overflowY: 'auto' }"
         @update:visible="(value) => emit('update:visible', value)"
     >
-        <form
-            id="category-create-form"
-            class="space-y-4"
-            @submit.prevent="emit('submit')"
-        >
+        <form id="category-create-form" class="space-y-4" @submit.prevent="emit('submit')">
             <CategoryForm :form="form" />
         </form>
 
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button
-                    type="button"
-                    severity="secondary"
-                    :label="$t('common.cancel')"
-                    @click="close"
-                />
+                <Button type="button" severity="secondary" :label="$t('common.cancel')" @click="close" />
                 <Button
                     type="submit"
                     form="category-create-form"

@@ -18,7 +18,7 @@ class RecipeStepRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function create(Product $product, array $data): RecipeStep
     {
@@ -26,7 +26,7 @@ class RecipeStepRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function update(RecipeStep $recipeStep, array $data): RecipeStep
     {
@@ -40,4 +40,3 @@ class RecipeStepRepository
         $recipeStep->delete();
     }
 }
-

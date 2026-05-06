@@ -42,4 +42,3 @@ Draft heti menü nem tekintendő végleges kínálatnak. Published állapot jelz
 ## Jó gyakorlat
 
 Heti menü publikálása előtt ellenőrizd a BOM-ot és az alapanyag készletet, hogy a rendelhető termékek gyárthatók legyenek.
-

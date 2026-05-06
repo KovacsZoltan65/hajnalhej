@@ -3,28 +3,30 @@
 namespace App\Models;
 
 use Database\Factories\WeeklyMenuFactory;
-use DateTime;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id Rekord azonosító
  * @property string $title Heti menü admin címe
  * @property string $slug Egyedi URL azonosító, SEO célra
- * @property \Illuminate\Support\Carbon $week_start A heti menü kezdődátuma
- * @property \Illuminate\Support\Carbon $week_end A heti menü záródátuma
+ * @property Carbon $week_start A heti menü kezdődátuma
+ * @property Carbon $week_end A heti menü záródátuma
  * @property string $status Állapot: draft|published|archived
  * @property string|null $public_note Vásárlóknak megjelenő megjegyzés
  * @property string|null $internal_note Belső üzemeltetési megjegyzés
  * @property bool $is_featured Kiemelt heti menü jelző
- * @property \Illuminate\Support\Carbon|null $published_at Publikálás időpontja
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at Soft delete időpontja
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WeeklyMenuItem> $items
+ * @property Carbon|null $published_at Publikálás időpontja
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at Soft delete időpontja
+ * @property-read Collection<int, WeeklyMenuItem> $items
  * @property-read int|null $items_count
+ *
  * @method static \Database\Factories\WeeklyMenuFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenu newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenu newQuery()
@@ -45,12 +47,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenu whereWeekStart($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenu withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WeeklyMenu withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class WeeklyMenu extends Model
 {
     public const STATUS_DRAFT = 'draft';
+
     public const STATUS_PUBLISHED = 'published';
+
     public const STATUS_ARCHIVED = 'archived';
 
     /** @use HasFactory<WeeklyMenuFactory> */

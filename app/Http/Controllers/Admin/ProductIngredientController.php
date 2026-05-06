@@ -14,18 +14,8 @@ use RuntimeException;
 
 class ProductIngredientController extends Controller
 {
-    /**
-     * @param ProductIngredientService $service
-     */
-    public function __construct(private readonly ProductIngredientService $service)
-    {
-    }
+    public function __construct(private readonly ProductIngredientService $service) {}
 
-    /**
-     * @param StoreProductIngredientRequest $request
-     * @param Product $product
-     * @return RedirectResponse
-     */
     public function store(StoreProductIngredientRequest $request, Product $product): RedirectResponse
     {
         try {
@@ -34,15 +24,9 @@ class ProductIngredientController extends Controller
             return $this->redirectToOrigin($request)->with('error', $exception->getMessage());
         }
 
-        return $this->redirectToOrigin($request)->with('success', __('admin_ingredients.material_added') . '.');
+        return $this->redirectToOrigin($request)->with('success', __('admin_ingredients.material_added').'.');
     }
 
-    /**
-     * @param UpdateProductIngredientRequest $request
-     * @param Product $product
-     * @param ProductIngredient $productIngredient
-     * @return RedirectResponse
-     */
     public function update(UpdateProductIngredientRequest $request, Product $product, ProductIngredient $productIngredient): RedirectResponse
     {
         if ($productIngredient->product_id !== $product->id) {
@@ -55,15 +39,9 @@ class ProductIngredientController extends Controller
             return $this->redirectToOrigin($request)->with('error', $exception->getMessage());
         }
 
-        return $this->redirectToOrigin($request)->with('success', __('admin_ingredients.material_updated') . '.');
+        return $this->redirectToOrigin($request)->with('success', __('admin_ingredients.material_updated').'.');
     }
 
-    /**
-     * @param Request $request
-     * @param Product $product
-     * @param ProductIngredient $productIngredient
-     * @return RedirectResponse
-     */
     public function destroy(Request $request, Product $product, ProductIngredient $productIngredient): RedirectResponse
     {
         $this->authorize('update', $product);
@@ -74,13 +52,9 @@ class ProductIngredientController extends Controller
 
         $this->service->delete($productIngredient);
 
-        return $this->redirectToOrigin($request)->with('success', __('admin_ingredients.material_deleted') . '.');
+        return $this->redirectToOrigin($request)->with('success', __('admin_ingredients.material_deleted').'.');
     }
 
-    /**
-     * @param Request $request
-     * @return RedirectResponse
-     */
     private function redirectToOrigin(Request $request): RedirectResponse
     {
         $fallback = route('admin.products.index');
@@ -93,5 +67,3 @@ class ProductIngredientController extends Controller
         return redirect()->to($fallback);
     }
 }
-
-

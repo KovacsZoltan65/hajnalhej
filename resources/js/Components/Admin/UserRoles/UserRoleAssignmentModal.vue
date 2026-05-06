@@ -68,11 +68,9 @@ const close = () => emit("update:visible", false);
                                 :disabled="props.loading"
                                 @update:model-value="() => emit('toggle-role', role.name)"
                             />
-                            <label
-                                :for="`user-role-${role.name}`"
-                                class="text-sm text-bakery-dark"
-                                >{{ role.name }}</label
-                            >
+                            <label :for="`user-role-${role.name}`" class="text-sm text-bakery-dark">{{
+                                role.name
+                            }}</label>
                         </div>
 
                         <RoleBadge :role="role.name" :system="role.is_system_role" />
@@ -81,16 +79,9 @@ const close = () => emit("update:visible", false);
             </div>
 
             <div v-if="props.canViewPermissions" class="space-y-2">
-                <p class="text-sm font-semibold text-bakery-dark">
-                    Effektiv jogosultsagok
-                </p>
-                <div
-                    class="max-h-32 overflow-y-auto rounded-lg border border-bakery-brown/10 bg-white/80 p-3"
-                >
-                    <p
-                        v-if="props.user.permissions.length === 0"
-                        class="text-xs text-bakery-dark/60"
-                    >
+                <p class="text-sm font-semibold text-bakery-dark">Effektiv jogosultsagok</p>
+                <div class="max-h-32 overflow-y-auto rounded-lg border border-bakery-brown/10 bg-white/80 p-3">
+                    <p v-if="props.user.permissions.length === 0" class="text-xs text-bakery-dark/60">
                         Nincs jogosultság.
                     </p>
                     <ul v-else class="grid gap-1 sm:grid-cols-2">

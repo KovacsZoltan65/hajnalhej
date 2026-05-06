@@ -1,12 +1,12 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import Button from 'primevue/button';
+import { Head, Link, useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
+import Button from "primevue/button";
 
-import RoleBadge from '@/Components/Admin/Roles/RoleBadge.vue';
-import RolePermissionMatrix from '@/Components/Admin/Roles/RolePermissionMatrix.vue';
-import SectionTitle from '@/Components/SectionTitle.vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import RoleBadge from "@/Components/Admin/Roles/RoleBadge.vue";
+import RolePermissionMatrix from "@/Components/Admin/Roles/RolePermissionMatrix.vue";
+import SectionTitle from "@/Components/SectionTitle.vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
 
 defineOptions({ layout: AdminLayout });
 
@@ -32,7 +32,7 @@ const form = useForm({
 
 const submit = () => {
     form.permissions = [...selectedPermissions.value];
-    form.put(route('admin.roles.permissions.sync', props.role.id), {
+    form.put(route("admin.roles.permissions.sync", props.role.id), {
         preserveScroll: true,
     });
 };
@@ -100,5 +100,3 @@ const submit = () => {
         </div>
     </div>
 </template>
-
-

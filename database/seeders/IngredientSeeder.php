@@ -54,7 +54,7 @@ class IngredientSeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'name' => 'Eleszto',
+                'name' => 'Élesztő',
                 'slug' => 'eleszto',
                 'sku' => 'ING-ELESZTO',
                 'unit' => 'g',

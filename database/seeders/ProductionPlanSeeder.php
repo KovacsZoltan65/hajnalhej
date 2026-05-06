@@ -87,8 +87,15 @@ class ProductionPlanSeeder extends Seeder
                 continue;
             }
 
+            $targetReadyAt = Carbon::parse((string) $blueprint['target_ready_at']);
+            $minimumReadyAt = $service->calculateMinimumReadyAt($items);
+
+            if ($targetReadyAt->lt($minimumReadyAt)) {
+                $targetReadyAt = $minimumReadyAt->copy()->addMinutes(5);
+            }
+
             $payload = [
-                'target_ready_at' => $blueprint['target_ready_at'],
+                'target_ready_at' => $targetReadyAt->toDateTimeString(),
                 'status' => $blueprint['status'],
                 'notes' => $blueprint['notes'],
                 'is_locked' => false,
@@ -101,6 +108,7 @@ class ProductionPlanSeeder extends Seeder
 
             if ($existing instanceof ProductionPlan) {
                 $service->update($existing, $payload);
+
                 continue;
             }
 
@@ -111,4 +119,3 @@ class ProductionPlanSeeder extends Seeder
         }
     }
 }
-

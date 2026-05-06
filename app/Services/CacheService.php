@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\Role;
 use Closure;
 use DateInterval;
 use DateTimeInterface;
@@ -15,13 +16,6 @@ use Spatie\Permission\PermissionRegistrar as SpatiePermissionRegistrar;
 
 class CacheService
 {
-    /**
-     * @param string $tag
-     * @param string $key
-     * @param mixed $value
-     * @param DateTimeInterface|DateInterval|int $ttl
-     * @return void
-     */
     public function put(string $tag, string $key, mixed $value, DateTimeInterface|DateInterval|int $ttl = 3600): void
     {
         $cacheKey = "{$tag}_{$key}";
@@ -37,7 +31,7 @@ class CacheService
     /**
      * @template TCacheValue
      *
-     * @param Closure():TCacheValue $callback
+     * @param  Closure():TCacheValue  $callback
      * @return TCacheValue
      */
     public function remember(string $tag, string $key, Closure $callback, DateTimeInterface|DateInterval|int $ttl = 3600): mixed
@@ -79,8 +73,6 @@ class CacheService
      * - Ha a store támogatja a tageket (pl. redis/memcached), flusholja a megadott taget.
      * - Ha nem, akkor NO-OP helyett célzott fallback (Spatie permission cache flush),
      *   és csak DEBUG módban logoljuk, hogy nincs tag támogatás.
-     * @param string $tag
-     * @return void
      */
     public function forgetByTag(string $tag): void
     {
@@ -93,7 +85,7 @@ class CacheService
         }
 
         // Fallback – a szerep/jogosultság területén legalább a Spatie cache ürüljön
-        if (\in_array($tag, ['roles', 'permissions', \App\Models\Role::getTag()], true)) {
+        if (\in_array($tag, ['roles', 'permissions', Role::getTag()], true)) {
             app(SpatiePermissionRegistrar::class)->forgetCachedPermissions();
         }
 
@@ -103,7 +95,7 @@ class CacheService
             if (! $warned) {
                 logger()->debug('Cache tag flush skipped: store has no tag support', [
                     'store' => \get_class($store),
-                    'tag'   => $tag,
+                    'tag' => $tag,
                 ]);
                 $warned = true;
             }
@@ -113,8 +105,6 @@ class CacheService
     /**
      * Minta szerinti törlés, ha a store tudja; különben kulturált no-op.
      * (Pl. saját Redis store implementációban lehet "deleteUsingPattern" metódus.)
-     * @param string $pattern
-     * @return void
      */
     public function forgetByPattern(string $pattern): void
     {
@@ -126,11 +116,11 @@ class CacheService
             return;
         }
 
-        if( config('app.debug') && config('cache.tag_debug', false) ) {
+        if (config('app.debug') && config('cache.tag_debug', false)) {
             static $warned = false;
             if (! $warned) {
                 logger()->debug('Pattern-based cache deletion is not supported by this store', [
-                    'store'   => \get_class($store),
+                    'store' => \get_class($store),
                     'pattern' => $pattern,
                 ]);
                 $warned = true;
@@ -140,8 +130,6 @@ class CacheService
 
     /**
      * Summary of forgetAllMatching
-     * @param string $pattern
-     * @return void
      */
     public function forgetAllMatching(string $pattern): void
     {
@@ -149,7 +137,7 @@ class CacheService
 
         if ($store instanceof RedisStore) {
             $prefix = (string) config('cache.prefix');
-            $keys   = $store->connection()->keys($prefix.":{$pattern}");
+            $keys = $store->connection()->keys($prefix.":{$pattern}");
             foreach ($keys as $key) {
                 Cache::forget(str_replace("{$prefix}:", '', (string) $key));
             }

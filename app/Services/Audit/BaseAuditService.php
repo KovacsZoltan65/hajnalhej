@@ -8,10 +8,10 @@ use Illuminate\Support\Arr;
 abstract class BaseAuditService
 {
     /**
-     * @param array<string, mixed> $before
-     * @param array<string, mixed> $after
-     * @param array<string, mixed> $context
-     * @param array<string, mixed> $extraProperties
+     * @param  array<string, mixed>  $before
+     * @param  array<string, mixed>  $after
+     * @param  array<string, mixed>  $context
+     * @param  array<string, mixed>  $extraProperties
      */
     protected function log(
         string $logName,
@@ -46,7 +46,7 @@ abstract class BaseAuditService
     }
 
     /**
-     * @param array<int, string> $values
+     * @param  array<int, string>  $values
      * @return array<int, string>
      */
     protected function normalizeList(array $values): array

@@ -11,17 +11,8 @@ use Spatie\Activitylog\Models\Activity;
 
 class AuthorizationAuditController extends Controller
 {
-    /**
-     * @param AuthorizationAuditLogService $service
-     */
-    public function __construct(private readonly AuthorizationAuditLogService $service)
-    {
-    }
+    public function __construct(private readonly AuthorizationAuditLogService $service) {}
 
-    /**
-     * @param AuditLogIndexRequest $request
-     * @return \Inertia\Response
-     */
     public function index(AuditLogIndexRequest $request): Response
     {
         $this->authorize('viewAny', Activity::class);
@@ -48,10 +39,6 @@ class AuthorizationAuditController extends Controller
         ]);
     }
 
-    /**
-     * @param Activity $activity
-     * @return \Inertia\Response
-     */
     public function show(Activity $activity): Response
     {
         $this->authorize('view', $activity);

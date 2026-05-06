@@ -6,6 +6,7 @@ use Database\Factories\RecipeStepFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id Rekord azonosító
@@ -23,9 +24,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property numeric|null $temperature_celsius Hőmérséklet Celsius fokban
  * @property int $sort_order Lépés sorrendje a recepten belül
  * @property bool $is_active Aktív lépés jelző
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Product|null $product
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Product|null $product
+ *
  * @method static \Database\Factories\RecipeStepFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecipeStep newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecipeStep newQuery()
@@ -47,16 +49,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecipeStep whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecipeStep whereWaitMinutes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecipeStep whereWorkInstruction($value)
+ *
  * @mixin \Eloquent
  */
 class RecipeStep extends Model
 {
     public const TYPE_PREPARATION = 'preparation';
+
     public const TYPE_MIXING = 'mixing';
+
     public const TYPE_RESTING = 'resting';
+
     public const TYPE_PROOFING = 'proofing';
+
     public const TYPE_BAKING = 'baking';
+
     public const TYPE_COOLING = 'cooling';
+
     public const TYPE_FINISHING = 'finishing';
 
     /** @use HasFactory<RecipeStepFactory> */

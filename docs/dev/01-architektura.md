@@ -71,4 +71,3 @@ Admin listák jellemzően:
 ## Audit réteg
 
 Spatie Activitylog alapú. Service réteg auditál üzleti műveleteket, például rendelés státuszfrissítés, beszerzés könyvelés, készletkorrekció.
-

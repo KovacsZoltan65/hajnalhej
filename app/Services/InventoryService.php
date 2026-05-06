@@ -19,11 +19,10 @@ class InventoryService
     public function __construct(
         private readonly InventoryMovementRepository $movementRepository,
         private readonly InventoryAuditService $auditService,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function createMovement(array $payload, ?User $actor = null): InventoryMovement
     {
@@ -87,7 +86,7 @@ class InventoryService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function recordWaste(array $payload, ?User $actor = null): InventoryMovement
     {
@@ -113,7 +112,7 @@ class InventoryService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     private function recordProductWaste(array $payload, ?User $actor = null): InventoryMovement
     {
@@ -134,7 +133,7 @@ class InventoryService
         /** @var EloquentCollection<int, ProductIngredient> $bomItems */
         $bomItems = $product->productIngredients;
         if ($bomItems->isEmpty()) {
-            throw new RuntimeException( __('admin_inventory.cannot_be_scrapped') . '.');
+            throw new RuntimeException(__('admin_inventory.cannot_be_scrapped').'.');
         }
 
         $notesPrefix = sprintf(
@@ -172,14 +171,14 @@ class InventoryService
         }
 
         if (! $firstMovement instanceof InventoryMovement) {
-            throw new RuntimeException(__('admin_inventory.product_scrap_not_inventory_movement') . '.');
+            throw new RuntimeException(__('admin_inventory.product_scrap_not_inventory_movement').'.');
         }
 
         return $firstMovement;
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function recordAdjustment(array $payload, ?User $actor = null): InventoryMovement
     {

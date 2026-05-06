@@ -37,30 +37,22 @@ const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const editingId = ref(null);
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
-    search: "",
-    sort_field: "name",
-    sort_direction: "asc",
-    per_page: 10,
-},
+        search: "",
+        sort_field: "name",
+        sort_direction: "asc",
+        per_page: 10,
+    },
     routeName: "admin.suppliers.index",
     loading,
     toQuery: (state) => ({
-            search: state.search || undefined,
-            sort_field: state.sort_field,
-            sort_direction: state.sort_direction,
-            per_page: state.per_page,
-        }),
+        search: state.search || undefined,
+        sort_field: state.sort_field,
+        sort_direction: state.sort_direction,
+        per_page: state.per_page,
+    }),
 });
 
 const perPageOptions = createPerPageOptions(trans, [15, 30, 50]);
@@ -85,8 +77,6 @@ const currentPage = computed(() => props.suppliers.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.suppliers.per_page ?? 10));
 
 const { locale } = useLocaleFormat();
-
-
 
 const openCreate = () => {
     editModalVisible.value = false;
@@ -193,8 +183,7 @@ const formatDateTime = (value) => {
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Keresés</label
                         >
                         <InputText
@@ -206,8 +195,7 @@ const formatDateTime = (value) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Találat / oldal</label
                         >
                         <Select
@@ -249,20 +237,9 @@ const formatDateTime = (value) => {
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
                             <p>Nincs megjeleníthető beszállító.</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
-                                <Button
-                                    label="Szűrők törlése"
-                                    outlined
-                                    size="small"
-                                    @click="clearFilters"
-                                />
-                                <Button
-                                    label="Új beszállító"
-                                    size="small"
-                                    @click="openCreate"
-                                />
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                                <Button label="Új beszállító" size="small" @click="openCreate" />
                             </div>
                         </div>
                     </template>
@@ -295,17 +272,13 @@ const formatDateTime = (value) => {
                     <Column field="lead_time_days" header="Lead time" sortable>
                         <template #body="{ data }">
                             <span class="text-sm text-bakery-dark">{{
-                                data.lead_time_days !== null
-                                    ? `${data.lead_time_days} nap`
-                                    : "-"
+                                data.lead_time_days !== null ? `${data.lead_time_days} nap` : "-"
                             }}</span>
                         </template>
                     </Column>
                     <Column field="created_at" header="Létrehozva" sortable>
                         <template #body="{ data }">
-                            <span class="text-xs text-bakery-dark/70">{{
-                                formatDateTime(data.created_at)
-                            }}</span>
+                            <span class="text-xs text-bakery-dark/70">{{ formatDateTime(data.created_at) }}</span>
                         </template>
                     </Column>
                     <Column header="Műveletek" :exportable="false">
@@ -335,11 +308,7 @@ const formatDateTime = (value) => {
             </div>
         </div>
 
-        <CreateModal
-            v-model:visible="createModalVisible"
-            :form="form"
-            @submit="submitCreate"
-        />
+        <CreateModal v-model:visible="createModalVisible" :form="form" @submit="submitCreate" />
         <EditModal v-model:visible="editModalVisible" :form="form" @submit="submitEdit" />
         <ConfirmDialog />
     </div>

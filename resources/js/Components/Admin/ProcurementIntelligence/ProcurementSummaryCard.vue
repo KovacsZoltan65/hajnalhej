@@ -10,11 +10,11 @@ defineProps({
     },
     hint: {
         type: String,
-        default: '',
+        default: "",
     },
     icon: {
         type: String,
-        default: 'pi pi-chart-line',
+        default: "pi pi-chart-line",
     },
 });
 </script>

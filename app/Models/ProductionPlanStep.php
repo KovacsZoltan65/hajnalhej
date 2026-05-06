@@ -6,6 +6,7 @@ use Database\Factories\ProductionPlanStepFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id Rekord azonosito
@@ -21,20 +22,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $attention_points Kritikus figyelmeztetesek (snapshot)
  * @property string|null $required_tools Szukseges eszkozok (snapshot)
  * @property string|null $expected_result Elvart eredmeny (snapshot)
- * @property \Illuminate\Support\Carbon $starts_at Lepes kezdete
- * @property \Illuminate\Support\Carbon $ends_at Lepes vege
+ * @property Carbon $starts_at Lepes kezdete
+ * @property Carbon $ends_at Lepes vege
  * @property int $duration_minutes Aktiv ido percben
  * @property int $wait_minutes Varakozasi ido percben
  * @property int $sort_order Globalis timeline sorrend
  * @property string|null $timeline_group Csoport azonosito (pl. termek vagy starter)
  * @property bool $is_dependency Dependency lepes-e (starter/kovasz)
  * @property array<array-key, mixed>|null $meta Kiegeszito technikai adatok
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Product|null $dependsOnProduct
- * @property-read \App\Models\Product|null $product
- * @property-read \App\Models\ProductionPlan $productionPlan
- * @property-read \App\Models\ProductionPlanItem|null $productionPlanItem
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Product|null $dependsOnProduct
+ * @property-read Product|null $product
+ * @property-read ProductionPlan $productionPlan
+ * @property-read ProductionPlanItem|null $productionPlanItem
+ *
  * @method static \Database\Factories\ProductionPlanStepFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductionPlanStep newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductionPlanStep newQuery()
@@ -62,6 +64,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductionPlanStep whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductionPlanStep whereWaitMinutes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductionPlanStep whereWorkInstruction($value)
+ *
  * @mixin \Eloquent
  */
 class ProductionPlanStep extends Model

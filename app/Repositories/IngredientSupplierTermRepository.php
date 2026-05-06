@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 class IngredientSupplierTermRepository
 {
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -35,7 +35,7 @@ class IngredientSupplierTermRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function create(array $data): IngredientSupplierTerm
     {
@@ -43,7 +43,7 @@ class IngredientSupplierTermRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function update(IngredientSupplierTerm $term, array $data): IngredientSupplierTerm
     {
@@ -68,7 +68,7 @@ class IngredientSupplierTermRepository
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     private function adminQuery(array $filters): Builder
     {

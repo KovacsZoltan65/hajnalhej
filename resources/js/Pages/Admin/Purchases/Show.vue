@@ -1,10 +1,10 @@
 <script setup>
-import { computed } from 'vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import Button from 'primevue/button';
-import PurchaseForm from '@/Components/Admin/Purchases/PurchaseForm.vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useLocaleFormat } from '@/composables/useLocaleFormat';
+import { computed } from "vue";
+import { Head, Link, useForm } from "@inertiajs/vue3";
+import Button from "primevue/button";
+import PurchaseForm from "@/Components/Admin/Purchases/PurchaseForm.vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 defineOptions({ layout: AdminLayout });
 
@@ -21,14 +21,14 @@ const ingredientOptions = computed(() =>
         label: `${ingredient.name} (${ingredient.unit})`,
         value: ingredient.id,
         unit: ingredient.unit,
-    })),
+    }))
 );
 
 const form = useForm({
     supplier_id: props.purchase.supplier_id,
-    reference_number: props.purchase.reference_number || '',
+    reference_number: props.purchase.reference_number || "",
     purchase_date: props.purchase.purchase_date,
-    notes: props.purchase.notes || '',
+    notes: props.purchase.notes || "",
     items: props.purchase.items.map((item) => ({
         ingredient_id: item.ingredient_id,
         quantity: item.quantity,
@@ -38,7 +38,7 @@ const form = useForm({
 });
 
 const submitUpdate = () => {
-    form.put(route('admin.purchases.update', props.purchase.id), {
+    form.put(route("admin.purchases.update", props.purchase.id), {
         preserveScroll: true,
     });
 };
@@ -54,11 +54,11 @@ const submitUpdate = () => {
                 <Link :href="route('admin.purchases.index')" class="text-sm underline">Vissza</Link>
             </div>
             <div class="mt-4 grid gap-3 md:grid-cols-3 text-sm">
-                <p><strong>Beszállító:</strong> {{ purchase.supplier_name || '-' }}</p>
-                <p><strong>Referencia:</strong> {{ purchase.reference_number || '-' }}</p>
+                <p><strong>Beszállító:</strong> {{ purchase.supplier_name || "-" }}</p>
+                <p><strong>Referencia:</strong> {{ purchase.reference_number || "-" }}</p>
                 <p><strong>Dátum:</strong> {{ purchase.purchase_date }}</p>
                 <p><strong>Státusz:</strong> {{ purchase.status }}</p>
-                <p><strong>Könyvelt:</strong> {{ purchase.posted_at || '-' }}</p>
+                <p><strong>Könyvelt:</strong> {{ purchase.posted_at || "-" }}</p>
                 <p><strong>Összesen:</strong> {{ formatCurrency(purchase.total) }}</p>
             </div>
             <p v-if="purchase.notes" class="mt-3 text-sm text-bakery-dark/75">{{ purchase.notes }}</p>
@@ -67,7 +67,9 @@ const submitUpdate = () => {
         <div v-if="purchase.status === 'draft'" class="ui-card p-4 sm:p-5">
             <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">Tervezet szerkesztése</h2>
+                    <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
+                        Tervezet szerkesztése
+                    </h2>
                     <p class="mt-1 text-sm text-bakery-dark/65">A generált tételek könyvelés előtt módosíthatók.</p>
                 </div>
                 <Button
@@ -83,7 +85,9 @@ const submitUpdate = () => {
 
         <div class="ui-card p-4 sm:p-5 overflow-x-auto">
             <table class="min-w-full text-sm">
-                <thead class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60">
+                <thead
+                    class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60"
+                >
                     <tr>
                         <th class="px-2 py-2">Alapanyag</th>
                         <th class="px-2 py-2 text-right">Mennyiség</th>

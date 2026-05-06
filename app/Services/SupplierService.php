@@ -13,11 +13,10 @@ class SupplierService
     public function __construct(
         private readonly SupplierRepository $repository,
         private readonly InventoryAuditService $auditService,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -25,7 +24,7 @@ class SupplierService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function create(array $payload, ?User $actor = null): Supplier
     {
@@ -36,7 +35,7 @@ class SupplierService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function update(Supplier $supplier, array $payload, ?User $actor = null): Supplier
     {
@@ -54,7 +53,7 @@ class SupplierService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      * @return array<string, mixed>
      */
     private function normalizePayload(array $payload): array

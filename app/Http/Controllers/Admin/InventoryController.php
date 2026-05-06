@@ -18,26 +18,14 @@ use Inertia\Response;
 
 class InventoryController extends Controller
 {
-    /**
-     * @param InventoryMovementRepository $movementRepository
-     * @param InventoryDashboardService $dashboardService
-     * @param IngredientService $ingredientService
-     * @param InventoryService $inventoryService
-     * @param ProductService $productService
-     */
     public function __construct(
         private readonly InventoryMovementRepository $movementRepository,
         private readonly InventoryDashboardService $dashboardService,
         private readonly IngredientService $ingredientService,
         private readonly InventoryService $inventoryService,
         private readonly ProductService $productService,
-    ) {
-    }
+    ) {}
 
-    /**
-     * @param InventoryLedgerIndexRequest $request
-     * @return \Inertia\Response
-     */
     public function index(InventoryLedgerIndexRequest $request): Response
     {
         $this->authorize('viewAny', InventoryMovement::class);
@@ -88,25 +76,17 @@ class InventoryController extends Controller
         ]);
     }
 
-    /**
-     * @param StoreWasteEntryRequest $request
-     * @return RedirectResponse
-     */
     public function storeWaste(StoreWasteEntryRequest $request): RedirectResponse
     {
         $this->inventoryService->recordWaste($request->validated(), $request->user());
 
-        return back()->with('success', __('admin_inventory.waste_accounting') . '.');
+        return back()->with('success', __('admin_inventory.waste_accounting').'.');
     }
 
-    /**
-     * @param StoreInventoryAdjustmentRequest $request
-     * @return RedirectResponse
-     */
     public function storeAdjustment(StoreInventoryAdjustmentRequest $request): RedirectResponse
     {
         $this->inventoryService->recordAdjustment($request->validated(), $request->user());
 
-        return back()->with('success', __('admin_inventory.inventory_adjustment_posted') . '.');
+        return back()->with('success', __('admin_inventory.inventory_adjustment_posted').'.');
     }
 }

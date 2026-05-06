@@ -13,8 +13,7 @@ class CartService
     public function __construct(
         private readonly SessionCartRepository $cartRepository,
         private readonly ProductRepository $productRepository,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<string, mixed>

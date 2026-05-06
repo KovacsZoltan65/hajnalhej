@@ -33,4 +33,3 @@ class SupplierPolicy
         return $user->can(PermissionRegistry::SUPPLIERS_MANAGE);
     }
 }
-

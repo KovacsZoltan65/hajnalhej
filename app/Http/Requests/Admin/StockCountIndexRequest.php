@@ -26,4 +26,3 @@ class StockCountIndexRequest extends FormRequest
         ];
     }
 }
-

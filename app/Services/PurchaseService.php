@@ -20,11 +20,10 @@ class PurchaseService
         private readonly InventoryMovementRepository $movementRepository,
         private readonly InventoryService $inventoryService,
         private readonly InventoryAuditService $auditService,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -37,14 +36,14 @@ class PurchaseService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function create(array $payload, ?User $actor = null): Purchase
     {
         return DB::transaction(function () use ($payload, $actor): Purchase {
             $items = $this->normalizeItems($payload['items'] ?? []);
             if ($items === []) {
-                throw new RuntimeException(__('admin_purchase_draft.least_one_item') . '.');
+                throw new RuntimeException(__('admin_purchase_draft.least_one_item').'.');
             }
 
             [$subtotal, $total] = $this->totals($items);
@@ -70,18 +69,18 @@ class PurchaseService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function update(Purchase $purchase, array $payload, ?User $actor = null): Purchase
     {
         if ($purchase->status !== Purchase::STATUS_DRAFT) {
-            throw new RuntimeException(__('admin_purchase_draft.only_draft_purchases_modified') . '.');
+            throw new RuntimeException(__('admin_purchase_draft.only_draft_purchases_modified').'.');
         }
 
-        return DB::transaction(function () use ($purchase, $payload, $actor): Purchase {
+        return DB::transaction(function () use ($purchase, $payload): Purchase {
             $items = $this->normalizeItems($payload['items'] ?? []);
             if ($items === []) {
-                throw new RuntimeException(__('admin_purchase_draft.least_one_item') . '.');
+                throw new RuntimeException(__('admin_purchase_draft.least_one_item').'.');
             }
 
             [$subtotal, $total] = $this->totals($items);
@@ -104,14 +103,14 @@ class PurchaseService
     public function post(Purchase $purchase, ?User $actor = null): Purchase
     {
         if ($purchase->status !== Purchase::STATUS_DRAFT) {
-            throw new RuntimeException(__('admin_purchase_draft.only_draft_purchases_posted') . '.');
+            throw new RuntimeException(__('admin_purchase_draft.only_draft_purchases_posted').'.');
         }
 
         return DB::transaction(function () use ($purchase, $actor): Purchase {
             $purchase->loadMissing('items.ingredient');
 
             if ($this->movementRepository->existsForReference('purchase', $purchase->id, InventoryMovement::TYPE_PURCHASE_IN)) {
-                throw new RuntimeException(__('admin_purchase_draft.purchase_already_been_booked') . '.');
+                throw new RuntimeException(__('admin_purchase_draft.purchase_already_been_booked').'.');
             }
 
             foreach ($purchase->items as $item) {
@@ -143,7 +142,7 @@ class PurchaseService
     public function cancel(Purchase $purchase, ?User $actor = null): Purchase
     {
         if ($purchase->status !== Purchase::STATUS_DRAFT) {
-            throw new RuntimeException(__('admin_purchase.only_draft_canceled') . '.');
+            throw new RuntimeException(__('admin_purchase.only_draft_canceled').'.');
         }
 
         $updated = $this->repository->update($purchase, [
@@ -155,7 +154,7 @@ class PurchaseService
     }
 
     /**
-     * @param array<int, array<string, mixed>> $items
+     * @param  array<int, array<string, mixed>>  $items
      * @return array<int, array<string, mixed>>
      */
     private function normalizeItems(array $items): array
@@ -182,7 +181,7 @@ class PurchaseService
     }
 
     /**
-     * @param array<int, array<string, mixed>> $items
+     * @param  array<int, array<string, mixed>>  $items
      * @return array{0:float,1:float}
      */
     private function totals(array $items): array

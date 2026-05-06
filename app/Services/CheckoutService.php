@@ -21,11 +21,10 @@ class CheckoutService
         private readonly OrderService $orderService,
         private readonly OrderAuditService $orderAuditService,
         private readonly ConversionTrackingService $conversionTrackingService,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function placeOrder(array $payload, ?User $user, ?string $sessionId = null): Order
     {
@@ -101,7 +100,7 @@ class CheckoutService
     }
 
     /**
-     * @param Collection<int, array<string, mixed>> $lines
+     * @param  Collection<int, array<string, mixed>>  $lines
      * @return Collection<int, array<string, mixed>>
      */
     private function buildLineSnapshots(Collection $lines): Collection

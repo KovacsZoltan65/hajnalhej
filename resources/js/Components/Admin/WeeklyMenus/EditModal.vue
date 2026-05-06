@@ -1,7 +1,7 @@
 <script setup>
-import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
-import WeeklyMenuForm from './WeeklyMenuForm.vue';
+import Button from "primevue/button";
+import Dialog from "primevue/dialog";
+import WeeklyMenuForm from "./WeeklyMenuForm.vue";
 
 defineProps({
     visible: { type: Boolean, required: true },
@@ -9,9 +9,9 @@ defineProps({
     statuses: { type: Array, required: true },
 });
 
-const emit = defineEmits(['update:visible', 'submit']);
+const emit = defineEmits(["update:visible", "submit"]);
 
-const close = () => emit('update:visible', false);
+const close = () => emit("update:visible", false);
 </script>
 
 <template>
@@ -35,4 +35,3 @@ const close = () => emit('update:visible', false);
         </template>
     </Dialog>
 </template>
-

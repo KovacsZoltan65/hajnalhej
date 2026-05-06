@@ -14,17 +14,8 @@ use RuntimeException;
 
 class OrderController extends Controller
 {
-    /**
-     * @param OrderService $service
-     */
-    public function __construct(private readonly OrderService $service)
-    {
-    }
+    public function __construct(private readonly OrderService $service) {}
 
-    /**
-     * @param OrderIndexRequest $request
-     * @return \Inertia\Response
-     */
     public function index(OrderIndexRequest $request): Response
     {
         $this->authorize('viewAny', Order::class);
@@ -61,10 +52,6 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
-     * @param Order $order
-     * @return \Inertia\Response
-     */
     public function show(Order $order): Response
     {
         $this->authorize('view', $order);
@@ -103,11 +90,6 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
-     * @param UpdateOrderStatusRequest $request
-     * @param Order $order
-     * @return RedirectResponse
-     */
     public function updateStatus(UpdateOrderStatusRequest $request, Order $order): RedirectResponse
     {
         $this->authorize('update', $order);

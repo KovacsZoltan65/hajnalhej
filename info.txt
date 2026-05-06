@@ -22,6 +22,11 @@ php artisan ziggy:generate resources/js/ziggy.js
 php artisan ziggy:generate resources/js/ziggy.js --types
 
 =========================================
+= Fromázás minden fájlra
+=========================================
+npm run format:all
+
+=========================================
 = patch fájl használata
 =========================================
 ✅ 1. Menj a projekt gyökerébe

@@ -10,10 +10,15 @@ class OrderAuditService extends BaseAuditService
     public const LOG_NAME = 'orders';
 
     public const ORDER_PLACED = 'order.placed';
+
     public const ORDER_STATUS_UPDATED = 'order.status.updated';
+
     public const ORDER_CANCELLED = 'order.cancelled';
+
     public const ORDER_INTERNAL_NOTE_CREATED = 'order.internal_note.created';
+
     public const ORDER_INTERNAL_NOTE_UPDATED = 'order.internal_note.updated';
+
     public const ORDER_PICKUP_UPDATED = 'order.pickup.updated';
 
     /**
@@ -32,7 +37,7 @@ class OrderAuditService extends BaseAuditService
     }
 
     /**
-     * @param array<string, mixed> $context
+     * @param  array<string, mixed>  $context
      */
     public function logOrderPlaced(Order $order, ?User $actor, array $context = []): void
     {
@@ -81,7 +86,7 @@ class OrderAuditService extends BaseAuditService
     }
 
     /**
-     * @param array<string, mixed> $context
+     * @param  array<string, mixed>  $context
      */
     public function logOrderStatusUpdated(
         Order $order,
@@ -113,7 +118,7 @@ class OrderAuditService extends BaseAuditService
     }
 
     /**
-     * @param array<string, mixed> $context
+     * @param  array<string, mixed>  $context
      */
     public function logInternalNoteCreated(
         Order $order,
@@ -143,7 +148,7 @@ class OrderAuditService extends BaseAuditService
     }
 
     /**
-     * @param array<string, mixed> $context
+     * @param  array<string, mixed>  $context
      */
     public function logInternalNoteUpdated(
         Order $order,
@@ -177,7 +182,7 @@ class OrderAuditService extends BaseAuditService
     }
 
     /**
-     * @param array<string, mixed> $context
+     * @param  array<string, mixed>  $context
      */
     public function logPickupUpdated(
         Order $order,

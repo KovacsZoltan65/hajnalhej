@@ -11,8 +11,7 @@ class InventoryDashboardService
     public function __construct(
         private readonly InventoryMovementRepository $movementRepository,
         private readonly IngredientRepository $ingredientRepository,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<string, mixed>
@@ -28,4 +27,3 @@ class InventoryDashboardService
         ];
     }
 }
-

@@ -8,9 +8,7 @@ class SessionCartRepository
 {
     private const SESSION_KEY = 'cart.items';
 
-    public function __construct(private readonly Store $session)
-    {
-    }
+    public function __construct(private readonly Store $session) {}
 
     /**
      * @return array<int, array{product_id:int,quantity:int}>

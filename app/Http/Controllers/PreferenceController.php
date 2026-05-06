@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Data\Settings\SettingSaveValueData;
 use App\Services\LocaleSettingsService;
 use App\Services\SettingsService;
 use Illuminate\Http\Request;

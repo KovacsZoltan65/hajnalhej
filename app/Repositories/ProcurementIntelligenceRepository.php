@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class ProcurementIntelligenceRepository
 {
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return Collection<int, object>
      */
     public function purchasePriceRows(array $filters): Collection
@@ -45,7 +45,7 @@ class ProcurementIntelligenceRepository
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return Collection<int, object>
      */
     public function costTrendRows(array $filters): Collection
@@ -88,7 +88,7 @@ class ProcurementIntelligenceRepository
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return Collection<int, object>
      */
     public function recentPurchaseRows(array $filters): Collection
@@ -182,7 +182,7 @@ class ProcurementIntelligenceRepository
     }
 
     /**
-     * @param array<int, int> $ingredientIds
+     * @param  array<int, int>  $ingredientIds
      * @return Collection<int, object>
      */
     public function latestPurchaseRowsForIngredients(array $ingredientIds): Collection
@@ -213,7 +213,7 @@ class ProcurementIntelligenceRepository
     }
 
     /**
-     * @param array<int, int> $ingredientIds
+     * @param  array<int, int>  $ingredientIds
      * @return Collection<int, object>
      */
     public function cheapestFreshSupplierRows(array $ingredientIds, int $days): Collection
@@ -247,7 +247,7 @@ class ProcurementIntelligenceRepository
     }
 
     /**
-     * @param array<int, int> $ingredientIds
+     * @param  array<int, int>  $ingredientIds
      * @return Collection<int, object>
      */
     public function supplierTermRowsForIngredients(array $ingredientIds): Collection

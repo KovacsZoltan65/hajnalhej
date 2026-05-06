@@ -17,11 +17,10 @@ class RoleManagementService
         private readonly RoleRepository $roleRepository,
         private readonly PermissionRepository $permissionRepository,
         private readonly AuthorizationAuditService $auditService,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -37,7 +36,7 @@ class RoleManagementService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function create(array $payload, User $actor): Role
     {
@@ -52,7 +51,7 @@ class RoleManagementService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function update(Role $role, array $payload, User $actor): Role
     {
@@ -91,7 +90,7 @@ class RoleManagementService
     }
 
     /**
-     * @param array<int, string> $permissionNames
+     * @param  array<int, string>  $permissionNames
      */
     public function syncPermissions(Role $role, array $permissionNames, User $actor): Role
     {

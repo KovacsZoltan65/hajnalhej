@@ -33,4 +33,3 @@ class PurchasePolicy
         return $user->can(PermissionRegistry::PURCHASES_MANAGE);
     }
 }
-

@@ -16,8 +16,7 @@ class SecurityDashboardRepository
 {
     public function __construct(
         private readonly PermissionRepository $permissionRepository,
-    ) {
-    }
+    ) {}
 
     /**
      * @return Collection<int, array<string, mixed>>
@@ -86,7 +85,7 @@ class SecurityDashboardRepository
     }
 
     /**
-     * @param Collection<int, array<string, mixed>> $permissionRows
+     * @param  Collection<int, array<string, mixed>>  $permissionRows
      * @return array<string, mixed>
      */
     public function permissionRiskStats(Collection $permissionRows): array
@@ -119,7 +118,7 @@ class SecurityDashboardRepository
     }
 
     /**
-     * @param Collection<int, array<string, mixed>> $permissionRows
+     * @param  Collection<int, array<string, mixed>>  $permissionRows
      * @return Collection<int, array<string, mixed>>
      */
     public function orphanPermissionInsights(Collection $permissionRows, bool $dangerousOnly, int $limit): Collection
@@ -372,7 +371,7 @@ class SecurityDashboardRepository
     }
 
     /**
-     * @param array<int, int> $userIds
+     * @param  array<int, int>  $userIds
      * @return array<int, string>
      */
     private function lastRelevantActivityMap(array $userIds): array
@@ -443,7 +442,7 @@ class SecurityDashboardRepository
     }
 
     /**
-     * @param array<string, mixed> $properties
+     * @param  array<string, mixed>  $properties
      */
     private function eventSummary(Activity $activity, array $properties): string
     {
@@ -482,6 +481,3 @@ class SecurityDashboardRepository
         };
     }
 }
-
-
-

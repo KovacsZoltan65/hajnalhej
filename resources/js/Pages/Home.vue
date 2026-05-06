@@ -21,15 +21,11 @@ const { trackCtaClick } = useConversionTracking();
 const heroVariant = computed(() => props.heroExperiment?.variant ?? "artisan_story");
 
 const heroTitle = computed(() =>
-    heroVariant.value === "speed_checkout"
-        ? trans("home.hero_title_01")
-        : trans("home.hero_title_02")
+    heroVariant.value === "speed_checkout" ? trans("home.hero_title_01") : trans("home.hero_title_02")
 );
 
 const heroSubtitle = computed(() =>
-    heroVariant.value === "speed_checkout"
-        ? trans("home.hero_title_03")
-        : trans("home.hero_title_04")
+    heroVariant.value === "speed_checkout" ? trans("home.hero_title_03") : trans("home.hero_title_04")
 );
 
 const trackLandingCta = (ctaId, href) => {
@@ -139,44 +135,27 @@ const faqs = computed(() => [
     <Head :title="$t('home.meta_title')" />
 
     <div class="space-y-14 md:space-y-16">
-        <section
-            class="ui-card ui-card-elevated relative overflow-hidden p-6 sm:p-8 lg:p-10"
-        >
-            <div
-                class="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-bakery-gold/20 blur-3xl"
-            />
-            <div
-                class="absolute -bottom-20 -left-12 h-64 w-64 rounded-full bg-bakery-brown/12 blur-3xl"
-            />
+        <section class="ui-card ui-card-elevated relative overflow-hidden p-6 sm:p-8 lg:p-10">
+            <div class="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-bakery-gold/20 blur-3xl" />
+            <div class="absolute -bottom-20 -left-12 h-64 w-64 rounded-full bg-bakery-brown/12 blur-3xl" />
 
             <div class="relative grid gap-8 lg:grid-cols-[1.25fr_0.95fr] lg:items-start">
                 <div class="space-y-6">
-                    <p
-                        class="text-xs font-semibold uppercase tracking-[0.24em] text-bakery-gold"
-                    >
+                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-bakery-gold">
                         Hajnalhéj Bakery | Budapest
                     </p>
-                    <h1
-                        class="font-heading text-[2.1rem] leading-tight text-bakery-dark sm:text-5xl"
-                    >
+                    <h1 class="font-heading text-[2.1rem] leading-tight text-bakery-dark sm:text-5xl">
                         {{ $t("home.crispy_mornings") }}.
                         <span class="block text-bakery-brown">{{ heroTitle }}</span>
                     </h1>
-                    <p
-                        class="max-w-2xl text-base leading-relaxed text-bakery-dark/78 sm:text-lg"
-                    >
+                    <p class="max-w-2xl text-base leading-relaxed text-bakery-dark/78 sm:text-lg">
                         {{ heroSubtitle }}
                     </p>
                     <div class="flex flex-wrap gap-3">
                         <Link
                             :href="route('weekly-menu')"
                             class="inline-flex min-h-11 items-center rounded-full bg-bakery-brown px-6 py-3 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
-                            @click="
-                                trackLandingCta(
-                                    'hero.weekly_menu_primary',
-                                    route('weekly-menu')
-                                )
-                            "
+                            @click="trackLandingCta('hero.weekly_menu_primary', route('weekly-menu'))"
                         >
                             {{ $t("home.weekly_menu") }}
                         </Link>
@@ -196,14 +175,8 @@ const faqs = computed(() => [
                         </Link>
                     </div>
                     <div class="grid gap-3 sm:grid-cols-3">
-                        <article
-                            v-for="item in heroHighlights"
-                            :key="item.label"
-                            class="ui-card-soft p-3"
-                        >
-                            <p
-                                class="text-[0.68rem] uppercase tracking-[0.16em] text-bakery-brown/70"
-                            >
+                        <article v-for="item in heroHighlights" :key="item.label" class="ui-card-soft p-3">
+                            <p class="text-[0.68rem] uppercase tracking-[0.16em] text-bakery-brown/70">
                                 {{ item.label }}
                             </p>
                             <p class="mt-1 font-heading text-2xl text-bakery-dark">
@@ -214,9 +187,7 @@ const faqs = computed(() => [
                 </div>
 
                 <aside class="ui-card-soft space-y-4 p-5 sm:p-6">
-                    <p
-                        class="text-xs font-semibold uppercase tracking-[0.2em] text-bakery-gold"
-                    >
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-bakery-gold">
                         {{ $t("home.why_it_works") }}
                     </p>
                     <h2 class="font-heading text-3xl leading-tight text-bakery-dark">
@@ -231,9 +202,7 @@ const faqs = computed(() => [
                             :key="pillar"
                             class="flex items-start gap-2 text-sm text-bakery-dark/80"
                         >
-                            <span
-                                class="mt-1 inline-block h-2 w-2 rounded-full bg-bakery-gold"
-                            />
+                            <span class="mt-1 inline-block h-2 w-2 rounded-full bg-bakery-gold" />
                             <span>{{ pillar }}</span>
                         </li>
                     </ul>
@@ -255,18 +224,12 @@ const faqs = computed(() => [
                 :description="$t('home.bestsellers_description')"
             />
             <div class="grid gap-4 md:grid-cols-3">
-                <article
-                    v-for="item in bestsellers"
-                    :key="item.title"
-                    class="ui-card p-5"
-                >
+                <article v-for="item in bestsellers" :key="item.title" class="ui-card p-5">
                     <div class="flex items-start justify-between gap-3">
                         <h3 class="font-heading text-2xl text-bakery-dark">
                             {{ item.title }}
                         </h3>
-                        <span class="ui-badge bg-bakery-gold/20 text-bakery-brown">{{
-                            item.tag
-                        }}</span>
+                        <span class="ui-badge bg-bakery-gold/20 text-bakery-brown">{{ item.tag }}</span>
                     </div>
                     <p class="mt-2 text-sm leading-relaxed text-bakery-dark/75">
                         {{ item.note }}
@@ -277,9 +240,7 @@ const faqs = computed(() => [
                     <Link
                         :href="route('weekly-menu')"
                         class="mt-4 inline-flex min-h-11 items-center rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown/10"
-                        @click="
-                            trackLandingCta(`bestseller.${item.title}`, route('weekly-menu'))
-                        "
+                        @click="trackLandingCta(`bestseller.${item.title}`, route('weekly-menu'))"
                     >
                         {{ $t("home.reserve_cta") }}
                     </Link>
@@ -294,11 +255,7 @@ const faqs = computed(() => [
                 :description="$t('home.steps_description')"
             />
             <div class="mt-6 grid gap-4 md:grid-cols-3">
-                <article
-                    v-for="(step, index) in steps"
-                    :key="step.title"
-                    class="ui-card-soft p-5"
-                >
+                <article v-for="(step, index) in steps" :key="step.title" class="ui-card-soft p-5">
                     <p class="font-heading text-3xl text-bakery-brown">
                         {{ String(index + 1).padStart(2, "0") }}
                     </p>
@@ -315,11 +272,7 @@ const faqs = computed(() => [
                 :description="$t('home.testimonials_description')"
             />
             <div class="grid gap-4 md:grid-cols-3">
-                <article
-                    v-for="item in testimonials"
-                    :key="item.name"
-                    class="ui-card p-5"
-                >
+                <article v-for="item in testimonials" :key="item.name" class="ui-card p-5">
                     <p class="text-sm leading-relaxed text-bakery-dark/80">
                         {{ item.quote }}
                     </p>
@@ -331,9 +284,7 @@ const faqs = computed(() => [
             </div>
         </section>
 
-        <section
-            class="ui-card ui-card-elevated overflow-hidden bg-bakery-brown p-7 text-bakery-cream sm:p-10"
-        >
+        <section class="ui-card ui-card-elevated overflow-hidden bg-bakery-brown p-7 text-bakery-cream sm:p-10">
             <p class="text-xs uppercase tracking-[0.22em] text-bakery-gold">
                 {{ $t("home.urgency_eyebrow") }}
             </p>
@@ -368,14 +319,8 @@ const faqs = computed(() => [
                 :description="$t('home.faq_description')"
             />
             <div class="mt-6 space-y-3">
-                <details
-                    v-for="item in faqs"
-                    :key="item.question"
-                    class="ui-card-soft group p-4"
-                >
-                    <summary
-                        class="cursor-pointer list-none text-sm font-semibold text-bakery-dark"
-                    >
+                <details v-for="item in faqs" :key="item.question" class="ui-card-soft group p-4">
+                    <summary class="cursor-pointer list-none text-sm font-semibold text-bakery-dark">
                         {{ item.question }}
                     </summary>
                     <p class="mt-2 text-sm leading-relaxed text-bakery-dark/75">

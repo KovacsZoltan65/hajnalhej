@@ -16,9 +16,7 @@ defineOptions({ layout: PublicLayout });
             :description="$t('about.description')"
         />
 
-        <div
-            class="rounded-2xl border border-bakery-brown/15 bg-white/70 p-6 leading-relaxed text-bakery-dark/80"
-        >
+        <div class="rounded-2xl border border-bakery-brown/15 bg-white/70 p-6 leading-relaxed text-bakery-dark/80">
             <p>
                 {{ $t("about.philosophy") }}
             </p>

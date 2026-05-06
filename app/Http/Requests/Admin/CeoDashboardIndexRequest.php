@@ -22,4 +22,3 @@ class CeoDashboardIndexRequest extends FormRequest
         ];
     }
 }
-

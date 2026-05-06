@@ -8,7 +8,7 @@ use RuntimeException;
 trait UsesSeededIngredients
 {
     /**
-     * @param array<int, string> $slugs
+     * @param  array<int, string>  $slugs
      * @return array<string, Ingredient>
      */
     private function seededIngredients(array $slugs): array

@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Database\Factories\OrderFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -21,19 +23,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property numeric $total
  * @property numeric $material_cost_total
  * @property string|null $notes
- * @property \Illuminate\Support\Carbon|null $pickup_date
+ * @property Carbon|null $pickup_date
  * @property string|null $pickup_time_slot
- * @property \Illuminate\Support\Carbon|null $placed_at
- * @property \Illuminate\Support\Carbon|null $confirmed_at
- * @property \Illuminate\Support\Carbon|null $completed_at
- * @property \Illuminate\Support\Carbon|null $cancelled_at
+ * @property Carbon|null $placed_at
+ * @property Carbon|null $confirmed_at
+ * @property Carbon|null $completed_at
+ * @property Carbon|null $cancelled_at
  * @property string|null $internal_notes
  * @property array<array-key, mixed>|null $metadata
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderItem> $items
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, OrderItem> $items
  * @property-read int|null $items_count
- * @property-read \App\Models\User|null $user
+ * @property-read User|null $user
+ *
  * @method static \Database\Factories\OrderFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newQuery()
@@ -60,15 +63,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereTotal($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class Order extends Model
 {
     public const STATUS_PENDING = 'pending';
+
     public const STATUS_CONFIRMED = 'confirmed';
+
     public const STATUS_IN_PREPARATION = 'in_preparation';
+
     public const STATUS_READY_FOR_PICKUP = 'ready_for_pickup';
+
     public const STATUS_COMPLETED = 'completed';
+
     public const STATUS_CANCELLED = 'cancelled';
 
     /** @use HasFactory<OrderFactory> */

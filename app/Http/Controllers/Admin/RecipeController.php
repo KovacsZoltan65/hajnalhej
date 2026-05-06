@@ -13,17 +13,8 @@ use Inertia\Response;
 
 class RecipeController extends Controller
 {
-    /**
-     * @param RecipeService $service
-     */
-    public function __construct(private readonly RecipeService $service)
-    {
-    }
+    public function __construct(private readonly RecipeService $service) {}
 
-    /**
-     * @param Request $request
-     * @return \Inertia\Response
-     */
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Product::class);
@@ -44,53 +35,53 @@ class RecipeController extends Controller
         $summary = $this->service->buildSummary(collect($paginator->items()));
 
         $recipes = $paginator->through(fn (Product $product): array => [
-                'id' => $product->id,
-                'category_id' => $product->category_id,
-                'category_name' => $product->category?->name,
-                'name' => $product->name,
-                'slug' => $product->slug,
-                'is_active' => $product->is_active,
-                'recipe_items_count' => $product->recipe_items_count,
-                'recipe_steps_count' => $product->recipe_steps_count,
-                'low_stock_ingredients_count' => $product->low_stock_ingredients_count,
-                'has_recipe' => $product->recipe_items_count > 0,
-                'product_ingredients' => $product->productIngredients
-                    ->map(fn (ProductIngredient $item): array => [
-                        'id' => $item->id,
-                        'product_id' => $item->product_id,
-                        'ingredient_id' => $item->ingredient_id,
-                        'ingredient_name' => $item->ingredient?->name,
-                        'ingredient_unit' => $item->ingredient?->unit,
-                        'ingredient_is_active' => $item->ingredient?->is_active ?? false,
-                        'ingredient_is_low_stock' => $item->ingredient?->isLowStock() ?? false,
-                        'quantity' => (float) $item->quantity,
-                        'sort_order' => $item->sort_order,
-                        'notes' => $item->notes,
-                    ])
-                    ->values()
-                    ->all(),
-                'recipe_steps' => $product->recipeSteps
-                    ->map(fn (RecipeStep $step): array => [
-                        'id' => $step->id,
-                        'product_id' => $step->product_id,
-                        'title' => $step->title,
-                        'step_type' => $step->step_type,
-                        'description' => $step->description,
-                        'work_instruction' => $step->work_instruction,
-                        'completion_criteria' => $step->completion_criteria,
-                        'attention_points' => $step->attention_points,
-                        'required_tools' => $step->required_tools,
-                        'expected_result' => $step->expected_result,
-                        'duration_minutes' => $step->duration_minutes,
-                        'wait_minutes' => $step->wait_minutes,
-                        'temperature_celsius' => $step->temperature_celsius !== null ? (float) $step->temperature_celsius : null,
-                        'sort_order' => $step->sort_order,
-                        'is_active' => $step->is_active,
-                    ])
-                    ->values()
-                    ->all(),
-                'recipe_summary' => $this->service->buildRecipeWorkflowSummary($product),
-            ]);
+            'id' => $product->id,
+            'category_id' => $product->category_id,
+            'category_name' => $product->category?->name,
+            'name' => $product->name,
+            'slug' => $product->slug,
+            'is_active' => $product->is_active,
+            'recipe_items_count' => $product->recipe_items_count,
+            'recipe_steps_count' => $product->recipe_steps_count,
+            'low_stock_ingredients_count' => $product->low_stock_ingredients_count,
+            'has_recipe' => $product->recipe_items_count > 0,
+            'product_ingredients' => $product->productIngredients
+                ->map(fn (ProductIngredient $item): array => [
+                    'id' => $item->id,
+                    'product_id' => $item->product_id,
+                    'ingredient_id' => $item->ingredient_id,
+                    'ingredient_name' => $item->ingredient?->name,
+                    'ingredient_unit' => $item->ingredient?->unit,
+                    'ingredient_is_active' => $item->ingredient?->is_active ?? false,
+                    'ingredient_is_low_stock' => $item->ingredient?->isLowStock() ?? false,
+                    'quantity' => (float) $item->quantity,
+                    'sort_order' => $item->sort_order,
+                    'notes' => $item->notes,
+                ])
+                ->values()
+                ->all(),
+            'recipe_steps' => $product->recipeSteps
+                ->map(fn (RecipeStep $step): array => [
+                    'id' => $step->id,
+                    'product_id' => $step->product_id,
+                    'title' => $step->title,
+                    'step_type' => $step->step_type,
+                    'description' => $step->description,
+                    'work_instruction' => $step->work_instruction,
+                    'completion_criteria' => $step->completion_criteria,
+                    'attention_points' => $step->attention_points,
+                    'required_tools' => $step->required_tools,
+                    'expected_result' => $step->expected_result,
+                    'duration_minutes' => $step->duration_minutes,
+                    'wait_minutes' => $step->wait_minutes,
+                    'temperature_celsius' => $step->temperature_celsius !== null ? (float) $step->temperature_celsius : null,
+                    'sort_order' => $step->sort_order,
+                    'is_active' => $step->is_active,
+                ])
+                ->values()
+                ->all(),
+            'recipe_summary' => $this->service->buildRecipeWorkflowSummary($product),
+        ]);
 
         return Inertia::render('Admin/Recipes/Index', [
             'recipes' => $recipes,

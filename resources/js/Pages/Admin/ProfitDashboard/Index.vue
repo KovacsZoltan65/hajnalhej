@@ -49,9 +49,7 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
 
     <section class="space-y-6">
         <header class="ui-card p-5 sm:p-6">
-            <div
-                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-            >
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 class="font-heading text-3xl text-bakery-dark">
                         {{ $t("admin_profit_dashboard.title") }}
@@ -141,9 +139,7 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
         </div>
 
         <section class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ $t("admin_profit_dashboard.product_margins.title") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
@@ -185,9 +181,7 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
                             <td class="px-2 py-2 text-right text-bakery-dark">
                                 {{ formatCurrency(row.estimated_unit_cost) }}
                             </td>
-                            <td
-                                class="px-2 py-2 text-right font-semibold text-bakery-dark"
-                            >
+                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
                                 {{ formatCurrency(row.margin_amount) }}
                             </td>
                             <td class="px-2 py-2 text-right text-bakery-dark">
@@ -203,9 +197,7 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
         </section>
 
         <section class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ $t("admin_profit_dashboard.top_profit_products.title") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
@@ -222,9 +214,7 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
                                 {{ $t("admin_profit_dashboard.columns.estimated_cost") }}
                             </th>
                             <th class="px-2 py-2 text-right">
-                                {{
-                                    $t("admin_profit_dashboard.columns.estimated_profit")
-                                }}
+                                {{ $t("admin_profit_dashboard.columns.estimated_profit") }}
                             </th>
                             <th class="px-2 py-2 text-right">
                                 {{ $t("admin_profit_dashboard.columns.margin_rate") }}
@@ -247,9 +237,7 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
                             <td class="px-2 py-2 text-right text-bakery-dark">
                                 {{ formatCurrency(row.estimated_cost) }}
                             </td>
-                            <td
-                                class="px-2 py-2 text-right font-semibold text-bakery-dark"
-                            >
+                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
                                 {{ formatCurrency(row.estimated_profit) }}
                             </td>
                             <td class="px-2 py-2 text-right text-bakery-dark">
@@ -265,9 +253,7 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
         </section>
 
         <section class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ $t("admin_profit_dashboard.order_profit_trend.title") }}
             </h2>
             <div class="mt-4 overflow-x-auto">
@@ -284,19 +270,13 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
                                 {{ $t("admin_profit_dashboard.columns.estimated_cost") }}
                             </th>
                             <th class="px-2 py-2 text-right">
-                                {{
-                                    $t(
-                                        "admin_profit_dashboard.columns.actual_material_cost"
-                                    )
-                                }}
+                                {{ $t("admin_profit_dashboard.columns.actual_material_cost") }}
                             </th>
                             <th class="px-2 py-2 text-right">
                                 {{ $t("admin_profit_dashboard.columns.gross_profit") }}
                             </th>
                             <th class="px-2 py-2 text-right">
-                                {{
-                                    $t("admin_profit_dashboard.columns.estimated_profit")
-                                }}
+                                {{ $t("admin_profit_dashboard.columns.estimated_profit") }}
                             </th>
                             <th class="px-2 py-2 text-right">
                                 {{ $t("admin_profit_dashboard.columns.margin_rate") }}
@@ -325,9 +305,7 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
                             <td class="px-2 py-2 text-right text-bakery-dark">
                                 {{ formatCurrency(row.gross_profit) }}
                             </td>
-                            <td
-                                class="px-2 py-2 text-right font-semibold text-bakery-dark"
-                            >
+                            <td class="px-2 py-2 text-right font-semibold text-bakery-dark">
                                 {{ formatCurrency(row.estimated_profit) }}
                             </td>
                             <td class="px-2 py-2 text-right text-bakery-dark">

@@ -11,18 +11,10 @@ use Spatie\Activitylog\Models\Activity;
 
 class SecurityDashboardController extends Controller
 {
-    /**
-     * @param SecurityDashboardService $service
-     */
     public function __construct(
         private readonly SecurityDashboardService $service,
-    ) {
-    }
+    ) {}
 
-    /**
-     * @param SecurityDashboardRequest $request
-     * @return \Inertia\Response
-     */
     public function index(SecurityDashboardRequest $request): Response
     {
         $this->authorize('viewAny', Activity::class);
@@ -37,10 +29,6 @@ class SecurityDashboardController extends Controller
         ]);
     }
 
-    /**
-     * @param Activity $activity
-     * @return \Inertia\Response
-     */
     public function showEvent(Activity $activity): Response
     {
         $this->authorize('view', Activity::class);
@@ -50,4 +38,3 @@ class SecurityDashboardController extends Controller
         ]);
     }
 }
-

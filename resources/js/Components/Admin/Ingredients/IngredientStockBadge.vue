@@ -29,11 +29,7 @@ const formattedMinimum = computed(() => number(props.minimumStock));
     <div class="space-y-1">
         <span
             class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
-            :class="
-                isLowStock
-                    ? 'bg-amber-100 text-amber-800'
-                    : 'bg-emerald-100 text-emerald-800'
-            "
+            :class="isLowStock ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'"
         >
             {{ isLowStock ? "Alacsony készlet" : "Rendben" }}
         </span>

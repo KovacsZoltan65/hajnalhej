@@ -52,4 +52,3 @@ Példák:
 - Operatív audit: legalább 12 hónap.
 - Jogosultsági és security audit: legalább 24 hónap.
 - Archiválás előtt export vagy hideg tárolás javasolt.
-

@@ -9,27 +9,18 @@ use App\Services\ConversionTrackingService;
 use App\Support\ConversionEventRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use RuntimeException;
 use Inertia\Inertia;
 use Inertia\Response;
+use RuntimeException;
 
 class CheckoutController extends Controller
 {
-    /**
-     * @param CartService $cartService
-     * @param CheckoutService $checkoutService
-     * @param ConversionTrackingService $conversionTrackingService
-     */
     public function __construct(
         private readonly CartService $cartService,
         private readonly CheckoutService $checkoutService,
         private readonly ConversionTrackingService $conversionTrackingService,
     ) {}
 
-    /**
-     * @param Request $request
-     * @return RedirectResponse|\Inertia\Response
-     */
     public function index(Request $request): Response|RedirectResponse
     {
         if ($this->cartService->isEmpty()) {
@@ -61,10 +52,6 @@ class CheckoutController extends Controller
         ]);
     }
 
-    /**
-     * @param PlaceOrderRequest $request
-     * @return RedirectResponse
-     */
     public function store(PlaceOrderRequest $request): RedirectResponse
     {
         $payload = $request->validated();

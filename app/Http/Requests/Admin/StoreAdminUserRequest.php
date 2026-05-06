@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin;
 
 use App\Models\User;
-use App\Support\PermissionRegistry;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

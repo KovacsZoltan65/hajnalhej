@@ -1,8 +1,8 @@
-import { mount } from '@vue/test-utils';
-import PreferredBadge from './PreferredBadge.vue';
+import { mount } from "@vue/test-utils";
+import PreferredBadge from "./PreferredBadge.vue";
 
-describe('IngredientSupplierTerms PreferredBadge', () => {
-    it('renders preferred state', () => {
+describe("IngredientSupplierTerms PreferredBadge", () => {
+    it("renders preferred state", () => {
         const wrapper = mount(PreferredBadge, {
             props: {
                 preferred: true,
@@ -10,10 +10,10 @@ describe('IngredientSupplierTerms PreferredBadge', () => {
             },
         });
 
-        expect(wrapper.text()).toContain('Preferált');
+        expect(wrapper.text()).toContain("Preferált");
     });
 
-    it('renders normal state for inactive preferred rows', () => {
+    it("renders normal state for inactive preferred rows", () => {
         const wrapper = mount(PreferredBadge, {
             props: {
                 preferred: true,
@@ -21,6 +21,6 @@ describe('IngredientSupplierTerms PreferredBadge', () => {
             },
         });
 
-        expect(wrapper.text()).toContain('Normál');
+        expect(wrapper.text()).toContain("Normál");
     });
 });

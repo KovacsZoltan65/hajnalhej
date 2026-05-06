@@ -26,9 +26,7 @@ const submit = () => {
 <template>
     <Head :title="$t('nav.login')" />
 
-    <div
-        class="mx-auto max-w-md rounded-3xl border border-bakery-brown/15 bg-[#fff9f1] p-6 shadow-lg sm:p-8"
-    >
+    <div class="mx-auto max-w-md rounded-3xl border border-bakery-brown/15 bg-[#fff9f1] p-6 shadow-lg sm:p-8">
         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-bakery-gold">
             {{ $t("auth.account_label") }}
         </p>
@@ -41,9 +39,7 @@ const submit = () => {
 
         <form class="mt-7 space-y-5" @submit.prevent="submit">
             <div class="space-y-2">
-                <label for="email" class="text-sm font-medium text-bakery-dark">{{
-                    $t("fields.email")
-                }}</label>
+                <label for="email" class="text-sm font-medium text-bakery-dark">{{ $t("fields.email") }}</label>
                 <InputText
                     id="email"
                     v-model="form.email"
@@ -58,9 +54,7 @@ const submit = () => {
             </div>
 
             <div class="space-y-2">
-                <label for="password" class="text-sm font-medium text-bakery-dark">{{
-                    $t("fields.password")
-                }}</label>
+                <label for="password" class="text-sm font-medium text-bakery-dark">{{ $t("fields.password") }}</label>
                 <Password
                     id="password"
                     v-model="form.password"
@@ -78,9 +72,7 @@ const submit = () => {
 
             <div class="flex items-center gap-2">
                 <Checkbox id="remember" v-model="form.remember" binary />
-                <label for="remember" class="text-sm text-bakery-dark/80">{{
-                    $t("login.remember")
-                }}</label>
+                <label for="remember" class="text-sm text-bakery-dark/80">{{ $t("login.remember") }}</label>
             </div>
 
             <Button
@@ -93,11 +85,9 @@ const submit = () => {
         </form>
 
         <p class="mt-6 text-center text-xs text-bakery-dark/70">
-            <Link
-                :href="route('register')"
-                class="font-semibold text-bakery-brown hover:underline"
-                >{{ $t("login.register_link") }}</Link
-            >
+            <Link :href="route('register')" class="font-semibold text-bakery-brown hover:underline">{{
+                $t("login.register_link")
+            }}</Link>
         </p>
     </div>
 </template>

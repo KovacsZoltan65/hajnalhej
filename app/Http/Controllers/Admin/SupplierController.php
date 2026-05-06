@@ -14,17 +14,8 @@ use Inertia\Response;
 
 class SupplierController extends Controller
 {
-    /**
-     * @param SupplierService $service
-     */
-    public function __construct(private readonly SupplierService $service)
-    {
-    }
+    public function __construct(private readonly SupplierService $service) {}
 
-    /**
-     * @param SupplierIndexRequest $request
-     * @return \Inertia\Response
-     */
     public function index(SupplierIndexRequest $request): Response
     {
         $this->authorize('viewAny', Supplier::class);
@@ -54,39 +45,26 @@ class SupplierController extends Controller
         ]);
     }
 
-    /**
-     * @param StoreSupplierRequest $request
-     * @return RedirectResponse
-     */
     public function store(StoreSupplierRequest $request): RedirectResponse
     {
         $this->service->create($request->validated(), $request->user());
 
-        return back()->with('success', __('admin_supplier.created') . '.');
+        return back()->with('success', __('admin_supplier.created').'.');
     }
 
-    /**
-     * @param UpdateSupplierRequest $request
-     * @param Supplier $supplier
-     * @return RedirectResponse
-     */
     public function update(UpdateSupplierRequest $request, Supplier $supplier): RedirectResponse
     {
         $this->service->update($supplier, $request->validated(), $request->user());
 
-        return back()->with('success', __('admin_supplier.updated') . '.');
+        return back()->with('success', __('admin_supplier.updated').'.');
     }
 
-    /**
-     * @param Supplier $supplier
-     * @return RedirectResponse
-     */
     public function destroy(Supplier $supplier): RedirectResponse
     {
         $this->authorize('delete', $supplier);
 
         $this->service->delete($supplier, request()->user());
 
-        return back()->with('success', __('admin_supplier.deleted') . '.');
+        return back()->with('success', __('admin_supplier.deleted').'.');
     }
 }

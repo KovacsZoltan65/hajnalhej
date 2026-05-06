@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Product;
-use App\Models\ProductIngredient;
 use App\Models\RecipeStep;
 use App\Repositories\RecipeRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -17,7 +16,7 @@ class RecipeService
     ) {}
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -53,7 +52,7 @@ class RecipeService
     }
 
     /**
-     * @param Collection<int, Product> $products
+     * @param  Collection<int, Product>  $products
      * @return array<string, int>
      */
     public function buildSummary(Collection $products): array

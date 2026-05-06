@@ -1,5 +1,5 @@
 <script setup>
-import { Head, router, useForm } from "@inertiajs/vue3";
+import { Head, Link, router, useForm } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
@@ -11,6 +11,7 @@ import { useConfirm } from "primevue/useconfirm";
 import { trans } from "laravel-vue-i18n";
 import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 import CreateModal from "@/Components/Admin/ProductionPlans/CreateModal.vue";
 import EditModal from "@/Components/Admin/ProductionPlans/EditModal.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
@@ -33,15 +34,7 @@ const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const editingId = ref(null);
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
         search: "",
@@ -65,10 +58,7 @@ const {
     }),
 });
 
-const statusOptions = computed(() => [
-    { value: "", label: trans("common.all") },
-    ...props.statuses,
-]);
+const statusOptions = computed(() => [{ value: "", label: trans("common.all") }, ...props.statuses]);
 
 const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
 /*
@@ -88,13 +78,9 @@ const form = useForm({
     items: [],
 });
 
-const selectedPlan = computed(
-    () => props.productionPlans.data.find((plan) => plan.id === editingId.value) ?? null
-);
+const selectedPlan = computed(() => props.productionPlans.data.find((plan) => plan.id === editingId.value) ?? null);
 const currentPage = computed(() => props.productionPlans.current_page ?? 1);
-const first = computed(
-    () => (currentPage.value - 1) * (props.productionPlans.per_page ?? 10)
-);
+const first = computed(() => (currentPage.value - 1) * (props.productionPlans.per_page ?? 10));
 
 const makeDefaultItem = () => ({
     product_id: props.products[0]?.id ?? null,
@@ -124,6 +110,95 @@ const mapDateTimeForInput = (value) => {
     }
 
     return String(value).slice(0, 16);
+};
+
+const parseDateTime = (value) => {
+    if (!value) {
+        return null;
+    }
+
+    return value instanceof Date ? value : new Date(String(value).replace(" ", "T"));
+};
+
+const selectedProducts = computed(() =>
+    (form.items ?? [])
+        .map((item) => props.products.find((product) => Number(product.id) === Number(item.product_id)))
+        .filter(Boolean)
+);
+
+const recipeDurationMinutes = (product) =>
+    (product?.recipe_steps ?? []).reduce(
+        (total, recipeStep) => total + Number(recipeStep.duration_minutes ?? 0) + Number(recipeStep.wait_minutes ?? 0),
+        0
+    );
+
+const longestRecipeDurationMinutes = computed(() => {
+    const longest = selectedProducts.value.reduce(
+        (maxDuration, product) => Math.max(maxDuration, recipeDurationMinutes(product)),
+        0
+    );
+
+    return Math.max(15, longest);
+});
+
+const minimumTargetReadyAt = computed(() => {
+    const date = new Date();
+    date.setMinutes(date.getMinutes() + longestRecipeDurationMinutes.value);
+
+    return date;
+});
+
+const formatDateTime = (value) =>
+    new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short",
+    }).format(value);
+
+const formatForBackend = (value) => {
+    if (!value) {
+        return null;
+    }
+
+    const date = parseDateTime(value);
+
+    if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    const pad = (part) => String(part).padStart(2, "0");
+
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+        date.getDate()
+    )} ${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
+};
+
+const productionPlanPayload = () => ({
+    target_ready_at: formatForBackend(form.target_ready_at),
+    status: form.status,
+    is_locked: form.is_locked,
+    notes: form.notes,
+    items: form.items,
+});
+
+const isTooEarlyTargetReadyAt = (value) => {
+    const date = parseDateTime(value);
+
+    return date instanceof Date && !Number.isNaN(date.getTime()) && date < minimumTargetReadyAt.value;
+};
+
+const validateTargetReadyAt = () => {
+    if (!isTooEarlyTargetReadyAt(form.target_ready_at)) {
+        return true;
+    }
+
+    form.setError(
+        "target_ready_at",
+        trans("admin.production_plans.validation.too_early_for_recipe", {
+            datetime: formatDateTime(minimumTargetReadyAt.value),
+        })
+    );
+
+    return false;
 };
 
 const resetFormToDefaults = () => {
@@ -164,7 +239,11 @@ const closeEditModal = () => {
 };
 
 const submitCreate = () => {
-    form.post(route("admin.production-plans.store"), {
+    if (!validateTargetReadyAt()) {
+        return;
+    }
+
+    form.transform(productionPlanPayload).post(route("admin.production-plans.store"), {
         preserveScroll: true,
         onSuccess: () => {
             closeCreateModal();
@@ -178,7 +257,11 @@ const submitEdit = () => {
         return;
     }
 
-    form.put(route("admin.production-plans.update", editingId.value), {
+    if (!validateTargetReadyAt()) {
+        return;
+    }
+
+    form.transform(productionPlanPayload).put(route("admin.production-plans.update", editingId.value), {
         preserveScroll: true,
         onSuccess: () => {
             closeEditModal();
@@ -215,9 +298,7 @@ const confirmDelete = (plan) => {
             :description="trans('admin_production_plans.description')"
         />
 
-        <div
-            class="grid gap-3 rounded-2xl border border-bakery-brown/15 bg-white/85 p-4 sm:grid-cols-2 xl:grid-cols-4"
-        >
+        <div class="grid gap-3 rounded-2xl border border-bakery-brown/15 bg-white/85 p-4 sm:grid-cols-2 xl:grid-cols-4">
             <div class="rounded-xl bg-[#fcf8f1] p-3">
                 <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/75">
                     {{ trans("admin_production_plans.summary.total_plans") }}
@@ -257,30 +338,26 @@ const confirmDelete = (plan) => {
         </div>
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
-            <AdminTableToolbar
-                :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-5'"
-            >
+            <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-5'">
                 <template #filters>
+                    <!-- KERESÉS -->
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ trans("common.search") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            trans("common.search")
+                        }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            :placeholder="
-                                trans('admin_production_plans.filters.search_placeholder')
-                            "
+                            :placeholder="trans('admin_production_plans.filters.search_placeholder')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
+                    <!-- ÁLLAPOT -->
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ trans("common.status") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            trans("common.status")
+                        }}</label>
                         <Select
                             v-model="filterState.status"
                             :options="statusOptions"
@@ -291,39 +368,27 @@ const confirmDelete = (plan) => {
                         />
                     </div>
 
+                    <!-- CÉLPONT INNEN -->
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{
-                                trans("admin_production_plans.filters.target_from")
-                            }}</label
-                        >
-                        <InputText
-                            v-model="filterState.target_from"
-                            type="date"
-                            class="w-full"
-                        />
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            trans("admin_production_plans.filters.target_from")
+                        }}</label>
+                        <BaseDatePicker v-model="filterState.target_from" class="w-full" />
                     </div>
 
+                    <!-- CÉLPONT -->
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{
-                                trans("admin_production_plans.filters.target_to")
-                            }}</label
-                        >
-                        <InputText
-                            v-model="filterState.target_to"
-                            type="date"
-                            class="w-full"
-                        />
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            trans("admin_production_plans.filters.target_to")
+                        }}</label>
+                        <BaseDatePicker v-model="filterState.target_to" class="w-full" />
                     </div>
 
+                    <!-- SOROK / OLDAL -->
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ trans("table.rows_per_page") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            trans("table.rows_per_page")
+                        }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -336,11 +401,13 @@ const confirmDelete = (plan) => {
                 </template>
 
                 <template #actions>
-                    <Button
-                        icon="pi pi-search"
-                        :label="trans('common.search')"
-                        @click="submitFilters"
-                    />
+                    <Link
+                        :href="route('admin.production-plans.create-flow')"
+                        class="inline-flex items-center whitespace-nowrap rounded-lg bg-bakery-brown px-3 py-2 text-sm font-medium text-white hover:bg-bakery-dark"
+                    >
+                        {{ trans("admin.production_plans.flow.actions.open") }}
+                    </Link>
+                    <Button icon="pi pi-search" :label="trans('common.search')" @click="submitFilters" />
                     <Button
                         icon="pi pi-plus"
                         :label="trans('admin_production_plans.actions.create')"
@@ -371,9 +438,7 @@ const confirmDelete = (plan) => {
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
                             <p>{{ trans("admin_production_plans.empty") }}</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
                                 <Button
                                     :label="trans('common.clear_filters')"
                                     outlined
@@ -381,9 +446,7 @@ const confirmDelete = (plan) => {
                                     @click="clearFilters"
                                 />
                                 <Button
-                                    :label="
-                                        trans('admin_production_plans.actions.create')
-                                    "
+                                    :label="trans('admin_production_plans.actions.create')"
                                     size="small"
                                     @click="openCreate"
                                 />
@@ -391,31 +454,17 @@ const confirmDelete = (plan) => {
                         </div>
                     </template>
 
-                    <Column
-                        field="plan_number"
-                        :header="trans('admin_production_plans.columns.plan')"
-                        sortable
-                    />
-                    <Column
-                        field="target_at"
-                        :header="trans('admin_production_plans.columns.target_time')"
-                        sortable
-                    />
+                    <Column field="plan_number" :header="trans('admin_production_plans.columns.plan')" sortable />
+                    <Column field="target_at" :header="trans('admin_production_plans.columns.target_time')" sortable />
                     <Column
                         field="planned_start_at"
                         :header="trans('admin_production_plans.columns.planned_start')"
                         sortable
                     />
-                    <Column
-                        field="status"
-                        :header="trans('admin_production_plans.columns.status')"
-                        sortable
-                    />
+                    <Column field="status" :header="trans('admin_production_plans.columns.status')" sortable />
                     <Column
                         field="total_recipe_minutes"
-                        :header="
-                            trans('admin_production_plans.columns.total_time_minutes')
-                        "
+                        :header="trans('admin_production_plans.columns.total_time_minutes')"
                         sortable
                     />
                     <Column
@@ -431,9 +480,7 @@ const confirmDelete = (plan) => {
                                     text
                                     rounded
                                     class="h-11! w-11!"
-                                    :aria-label="
-                                        trans('admin_production_plans.actions.edit')
-                                    "
+                                    :aria-label="trans('admin_production_plans.actions.edit')"
                                     @click="openEdit(data)"
                                 />
                                 <Button
@@ -442,9 +489,7 @@ const confirmDelete = (plan) => {
                                     rounded
                                     severity="danger"
                                     class="h-11! w-11!"
-                                    :aria-label="
-                                        trans('admin_production_plans.actions.delete')
-                                    "
+                                    :aria-label="trans('admin_production_plans.actions.delete')"
                                     @click="confirmDelete(data)"
                                 />
                             </div>

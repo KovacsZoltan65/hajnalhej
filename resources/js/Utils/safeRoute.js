@@ -10,44 +10,32 @@ export function safeRoute(name, params = undefined, absolute = false) {
     const requiredParams = routeDefinition.parameters ?? [];
 
     if (requiredParams.length === 0 && params !== undefined) {
-        throw new Error(
-            `[safeRoute] Route "${name}" does not accept parameters, but params were provided.`,
-        );
+        throw new Error(`[safeRoute] Route "${name}" does not accept parameters, but params were provided.`);
     }
 
     if (requiredParams.length > 0) {
         if (params === undefined || params === null) {
-            throw new Error(
-                `[safeRoute] Route "${name}" requires params: ${requiredParams.join(", ")}`,
-            );
+            throw new Error(`[safeRoute] Route "${name}" requires params: ${requiredParams.join(", ")}`);
         }
 
         const normalizedParams =
-            typeof params === "object" && !Array.isArray(params)
-                ? params
-                : { [requiredParams[0]]: params };
+            typeof params === "object" && !Array.isArray(params) ? params : { [requiredParams[0]]: params };
 
         const missingParams = requiredParams.filter(
             (param) =>
                 normalizedParams[param] === undefined ||
                 normalizedParams[param] === null ||
-                normalizedParams[param] === "",
+                normalizedParams[param] === ""
         );
 
         if (missingParams.length > 0) {
-            throw new Error(
-                `[safeRoute] Route "${name}" is missing params: ${missingParams.join(", ")}`,
-            );
+            throw new Error(`[safeRoute] Route "${name}" is missing params: ${missingParams.join(", ")}`);
         }
 
-        const unknownParams = Object.keys(normalizedParams).filter(
-            (param) => !requiredParams.includes(param),
-        );
+        const unknownParams = Object.keys(normalizedParams).filter((param) => !requiredParams.includes(param));
 
         if (unknownParams.length > 0) {
-            throw new Error(
-                `[safeRoute] Route "${name}" received unknown params: ${unknownParams.join(", ")}`,
-            );
+            throw new Error(`[safeRoute] Route "${name}" received unknown params: ${unknownParams.join(", ")}`);
         }
 
         return route(name, normalizedParams, absolute);

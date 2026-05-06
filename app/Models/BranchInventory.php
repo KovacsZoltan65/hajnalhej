@@ -21,8 +21,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $last_counted_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \App\Models\Branch|null $branch
- * @property-read \App\Models\Ingredient|null $ingredient
+ * @property-read Branch|null $branch
+ * @property-read Ingredient|null $ingredient
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BranchInventory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BranchInventory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BranchInventory query()
@@ -37,6 +38,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BranchInventory whereReservedStock($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BranchInventory whereTargetStock($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BranchInventory whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class BranchInventory extends Model

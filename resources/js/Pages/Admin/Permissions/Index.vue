@@ -45,15 +45,7 @@ const loading = ref(false);
 const syncing = ref(false);
 const syncSummaryVisible = ref(Boolean(page.props.flash?.sync_summary));
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
         search: "",
@@ -80,9 +72,7 @@ const {
 });
 
 const currentPage = computed(() => props.permissions.current_page ?? 1);
-const first = computed(
-    () => (currentPage.value - 1) * (props.permissions.per_page ?? 20)
-);
+const first = computed(() => (currentPage.value - 1) * (props.permissions.per_page ?? 20));
 const moduleLabel = (moduleName) => moduleName;
 
 const moduleOptions = computed(() => [
@@ -164,30 +154,24 @@ const runSync = () => {
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
-            <AdminTableToolbar
-                :filters-grid-class="'grid gap-3 md:grid-cols-2 xl:grid-cols-4'"
-            >
+            <AdminTableToolbar :filters-grid-class="'grid gap-3 md:grid-cols-2 xl:grid-cols-4'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("common.search") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.search")
+                        }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            :placeholder="
-                                $t('admin_permissions.filters.search_placeholder')
-                            "
+                            :placeholder="$t('admin_permissions.filters.search_placeholder')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_permissions.filters.module") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("admin_permissions.filters.module")
+                        }}</label>
                         <Select
                             v-model="filterState.module"
                             :options="moduleOptions"
@@ -199,10 +183,9 @@ const runSync = () => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_permissions.filters.usage") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("admin_permissions.filters.usage")
+                        }}</label>
                         <Select
                             v-model="filterState.usage_state"
                             :options="usageOptions"
@@ -214,10 +197,9 @@ const runSync = () => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_permissions.filters.registry_state") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("admin_permissions.filters.registry_state")
+                        }}</label>
                         <Select
                             v-model="filterState.registry_state"
                             :options="registryStateOptions"
@@ -229,10 +211,9 @@ const runSync = () => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_permissions.filters.sort_field") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("admin_permissions.filters.sort_field")
+                        }}</label>
                         <Select
                             v-model="filterState.sort_field"
                             :options="sortFieldOptions"
@@ -244,10 +225,9 @@ const runSync = () => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_permissions.filters.sort_direction") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("admin_permissions.filters.sort_direction")
+                        }}</label>
                         <Select
                             v-model="filterState.sort_direction"
                             :options="sortDirectionOptions"
@@ -259,10 +239,9 @@ const runSync = () => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("table.rows_per_page") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("table.rows_per_page")
+                        }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -274,36 +253,25 @@ const runSync = () => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_permissions.filters.dangerous_only") }}</label
-                        >
-                        <div
-                            class="flex h-10 items-center gap-2 rounded-lg border border-bakery-brown/15 px-3"
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("admin_permissions.filters.dangerous_only")
+                        }}</label>
+                        <div class="flex h-10 items-center gap-2 rounded-lg border border-bakery-brown/15 px-3">
                             <Checkbox
                                 v-model="filterState.dangerous_only"
                                 binary
                                 input-id="dangerous-only"
                                 @change="submitFilters"
                             />
-                            <label
-                                for="dangerous-only"
-                                class="text-sm text-bakery-dark"
-                                >{{
-                                    $t("admin_permissions.filters.dangerous_only")
-                                }}</label
-                            >
+                            <label for="dangerous-only" class="text-sm text-bakery-dark">{{
+                                $t("admin_permissions.filters.dangerous_only")
+                            }}</label>
                         </div>
                     </div>
                 </template>
 
                 <template #actions>
-                    <Button
-                        icon="pi pi-search"
-                        :label="$t('common.filter')"
-                        @click="submitFilters"
-                    />
+                    <Button icon="pi pi-search" :label="$t('common.filter')" @click="submitFilters" />
                     <Button
                         v-if="can.sync"
                         icon="pi pi-sync"
@@ -335,9 +303,7 @@ const runSync = () => {
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
                             <p>{{ $t("admin_permissions.empty") }}</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
                                 <Button
                                     :label="$t('common.clear_filters')"
                                     outlined
@@ -354,64 +320,38 @@ const runSync = () => {
                         </div>
                     </template>
 
-                    <Column
-                        field="name"
-                        :header="$t('admin_permissions.columns.permission')"
-                    >
+                    <Column field="name" :header="$t('admin_permissions.columns.permission')">
                         <template #body="{ data }">
                             <PermissionBadge :name="data.name" />
                         </template>
                     </Column>
 
-                    <Column
-                        field="module"
-                        :header="$t('admin_permissions.columns.module')"
-                    >
+                    <Column field="module" :header="$t('admin_permissions.columns.module')">
                         <template #body="{ data }">
                             {{ moduleLabel(data.module) }}
                         </template>
                     </Column>
 
-                    <Column
-                        field="dangerous"
-                        :header="$t('admin_permissions.columns.risk')"
-                    >
+                    <Column field="dangerous" :header="$t('admin_permissions.columns.risk')">
                         <template #body="{ data }">
                             <PermissionDangerBadge :dangerous="data.dangerous" />
                         </template>
                     </Column>
 
-                    <Column
-                        field="registry_state"
-                        :header="$t('admin_permissions.columns.registry_state')"
-                    >
+                    <Column field="registry_state" :header="$t('admin_permissions.columns.registry_state')">
                         <template #body="{ data }">
                             <PermissionRegistryStateBadge :state="data.registry_state" />
                         </template>
                     </Column>
 
-                    <Column
-                        field="roles_count"
-                        :header="$t('admin_permissions.columns.roles')"
-                    />
-                    <Column
-                        field="users_count"
-                        :header="$t('admin_permissions.columns.users')"
-                    />
-                    <Column
-                        field="guard_name"
-                        :header="$t('admin_permissions.columns.guard')"
-                    />
+                    <Column field="roles_count" :header="$t('admin_permissions.columns.roles')" />
+                    <Column field="users_count" :header="$t('admin_permissions.columns.users')" />
+                    <Column field="guard_name" :header="$t('admin_permissions.columns.guard')" />
 
                     <Column :header="$t('common.actions')" :style="{ width: '9rem' }">
                         <template #body="{ data }">
                             <Link :href="route('admin.permissions.show', data.name)">
-                                <Button
-                                    :label="$t('common.details')"
-                                    size="small"
-                                    text
-                                    class="min-h-11!"
-                                />
+                                <Button :label="$t('common.details')" size="small" text class="min-h-11!" />
                             </Link>
                         </template>
                     </Column>

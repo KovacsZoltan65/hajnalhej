@@ -356,3 +356,58 @@ it('product list item data admin listahoz optimalizalt payloadot ad', function (
             'sort_order' => 2,
         ]);
 });
+
+it('product inline endpoint csak engedelyezett mezot fogad', function (): void {
+    $user = User::factory()->create();
+    $product = Product::factory()->create();
+
+    $response = $this->actingAs($user)->patch("/admin/products/{$product->id}/inline", [
+        'field' => 'name',
+        'value' => 'Nem engedelyezett',
+    ]);
+
+    $response->assertSessionHasErrors(['field']);
+});
+
+it('product inline endpoint jogosultsag nelkul 403', function (): void {
+    $user = User::factory()->customer()->create();
+    $product = Product::factory()->create();
+
+    $response = $this->actingAs($user)->patch("/admin/products/{$product->id}/inline", [
+        'field' => 'price',
+        'value' => 1990,
+    ]);
+
+    $response->assertForbidden();
+});
+
+it('product inline endpoint validacio hibanal 422 ajax keresnel', function (): void {
+    $user = User::factory()->create();
+    $product = Product::factory()->create();
+
+    $response = $this->actingAs($user)
+        ->withHeader('X-Requested-With', 'XMLHttpRequest')
+        ->withHeader('Accept', 'application/json')
+        ->patch("/admin/products/{$product->id}/inline", [
+            'field' => 'price',
+            'value' => -10,
+        ]);
+
+    $response->assertStatus(422);
+});
+
+it('product inline endpoint frissiti a rekordot', function (): void {
+    $user = User::factory()->create();
+    $product = Product::factory()->create(['price' => 1200]);
+
+    $response = $this->actingAs($user)->patch("/admin/products/{$product->id}/inline", [
+        'field' => 'price',
+        'value' => 1450.5,
+    ]);
+
+    $response->assertRedirect();
+    $this->assertDatabaseHas('products', [
+        'id' => $product->id,
+        'price' => '1450.50',
+    ]);
+});

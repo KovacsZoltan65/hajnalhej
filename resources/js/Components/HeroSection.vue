@@ -6,23 +6,15 @@ import { Link, router } from "@inertiajs/vue3";
     <section
         class="relative overflow-hidden rounded-3xl border border-bakery-brown/15 bg-[#f8efe3] p-8 shadow-lg sm:p-12"
     >
-        <div
-            class="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-bakery-gold/25 blur-2xl"
-        />
-        <div
-            class="absolute -bottom-20 -left-12 h-52 w-52 rounded-full bg-bakery-brown/15 blur-2xl"
-        />
+        <div class="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-bakery-gold/25 blur-2xl" />
+        <div class="absolute -bottom-20 -left-12 h-52 w-52 rounded-full bg-bakery-brown/15 blur-2xl" />
 
         <div class="relative grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-center">
             <div class="space-y-6 rise-in">
-                <p
-                    class="text-xs font-semibold uppercase tracking-[0.24em] text-bakery-gold"
-                >
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-bakery-gold">
                     {{ $t("hero_section.artisan_bakery_budapest") }}
                 </p>
-                <h1
-                    class="font-heading text-4xl leading-tight text-bakery-dark sm:text-5xl"
-                >
+                <h1 class="font-heading text-4xl leading-tight text-bakery-dark sm:text-5xl">
                     {{ $t("hero_section.freshly_baked_breads") }}
                 </h1>
                 <p class="max-w-xl text-lg text-bakery-dark/80">

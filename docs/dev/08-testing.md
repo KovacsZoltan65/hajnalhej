@@ -51,4 +51,3 @@ Tesztadat legyen üzletileg érthető:
 - Nulla assertion.
 - Csak renderel és semmit nem ellenőriz.
 - Túl általános snapshot, amely üzleti hibát nem fog meg.
-

@@ -7,8 +7,7 @@ const { confirmRequire, translate } = vi.hoisted(() => {
         "admin_categories.meta_title": "Kategóriák",
         "admin_categories.eyebrow": "Admin / Kategóriák",
         "admin_categories.title": "Kategóriák",
-        "admin_categories.description":
-            "Referencia CRUD modul teljes repository-service-policy architektúrával.",
+        "admin_categories.description": "Referencia CRUD modul teljes repository-service-policy architektúrával.",
         "common.search": "Keresés",
         "admin_categories.filters.search_placeholder": "Név vagy slug",
         "table.rows_per_page": "Találat / oldal",
@@ -22,8 +21,7 @@ const { confirmRequire, translate } = vi.hoisted(() => {
         "admin_categories.actions.delete": "Kategória törlése",
         "admin_categories.empty": "Nincs megjeleníthető kategória.",
         "admin_categories.confirm_delete_header": "Kategória törlése",
-        "admin_categories.confirm_delete_message":
-            "Biztosan törlöd ezt a kategóriát: :name?",
+        "admin_categories.confirm_delete_message": "Biztosan törlöd ezt a kategóriát: :name?",
         "common.cancel": "Mégse",
         "common.delete": "Törlés",
         "common.clear_filters": "Szűrők törlése",
@@ -73,8 +71,7 @@ vi.mock("primevue/button", () => ({
     default: {
         props: ["label", "ariaLabel"],
         emits: ["click"],
-        template:
-            '<button :aria-label="ariaLabel" @click="$emit(\'click\')">{{ label }}</button>',
+        template: '<button :aria-label="ariaLabel" @click="$emit(\'click\')">{{ label }}</button>',
     },
 }));
 vi.mock("primevue/confirmdialog", () => ({
@@ -112,8 +109,7 @@ const stubs = {
     EditModal: { template: "<div />" },
     SectionTitle: {
         props: ["eyebrow", "title", "description"],
-        template:
-            "<section>{{ eyebrow }} {{ title }} {{ description }}</section>",
+        template: "<section>{{ eyebrow }} {{ title }} {{ description }}</section>",
     },
 };
 

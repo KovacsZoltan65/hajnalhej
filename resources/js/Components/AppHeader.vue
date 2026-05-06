@@ -1,10 +1,10 @@
 <script setup>
-import AppLogo from './AppLogo.vue';
+import AppLogo from "./AppLogo.vue";
 
 const props = defineProps({
     containerClass: {
         type: String,
-        default: 'max-w-6xl',
+        default: "max-w-6xl",
     },
 });
 </script>

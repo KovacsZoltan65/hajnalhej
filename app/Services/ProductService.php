@@ -53,6 +53,25 @@ class ProductService
         return DB::transaction(fn (): Product => $this->repository->update($product, $normalized));
     }
 
+    /**
+     * @param  array{field:string,value:mixed}  $payload
+     */
+    public function updateInline(Product $product, array $payload): Product
+    {
+        $field = (string) $payload['field'];
+        $value = $payload['value'];
+
+        $normalized = match ($field) {
+            'price' => ['price' => number_format((float) $value, 2, '.', '')],
+            'is_active' => ['is_active' => (bool) $value],
+            'category_id' => ['category_id' => (int) $value],
+            'stock_status' => ['stock_status' => $this->normalizeStockStatus((string) $value)],
+            default => [],
+        };
+
+        return DB::transaction(fn (): Product => $this->repository->update($product, $normalized));
+    }
+
     public function delete(Product $product): void
     {
         $this->repository->delete($product);

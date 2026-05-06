@@ -27,20 +27,13 @@ const resendVerification = () => {
     <Head :title="ui.account?.title ?? 'Fiókom'" />
 
     <section class="mx-auto max-w-3xl space-y-6">
-        <header
-            class="rounded-3xl border border-bakery-brown/15 bg-[#fff9f1] p-6 shadow-sm sm:p-8"
-        >
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-bakery-gold">
-                Hajnalhej account
-            </p>
+        <header class="rounded-3xl border border-bakery-brown/15 bg-[#fff9f1] p-6 shadow-sm sm:p-8">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-bakery-gold">Hajnalhej account</p>
             <h1 class="mt-3 font-heading text-4xl text-bakery-dark">
                 {{ ui.account?.title ?? "Fiókom" }}
             </h1>
             <p class="mt-2 max-w-2xl text-sm text-bakery-dark/75">
-                {{
-                    ui.account?.subtitle ??
-                    "Itt kezeled a profilodat es a jovobeli gyors rendeles alapjait."
-                }}
+                {{ ui.account?.subtitle ?? "Itt kezeled a profilodat es a jovobeli gyors rendeles alapjait." }}
             </p>
         </header>
 
@@ -53,9 +46,7 @@ const resendVerification = () => {
             </article>
 
             <article class="rounded-2xl border border-bakery-brown/15 bg-[#fff9f1] p-5">
-                <p class="text-xs uppercase tracking-[0.18em] text-bakery-dark/60">
-                    Email
-                </p>
+                <p class="text-xs uppercase tracking-[0.18em] text-bakery-dark/60">Email</p>
                 <p class="mt-2 text-base font-semibold text-bakery-dark">
                     {{ props.account.email }}
                 </p>
@@ -63,26 +54,17 @@ const resendVerification = () => {
         </div>
 
         <article class="rounded-2xl border border-bakery-brown/15 bg-[#fff9f1] p-5">
-            <div
-                class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-            >
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <p class="text-xs uppercase tracking-[0.18em] text-bakery-dark/60">
-                        Email státusz
-                    </p>
+                    <p class="text-xs uppercase tracking-[0.18em] text-bakery-dark/60">Email státusz</p>
                     <p
                         class="mt-2 text-sm font-semibold"
-                        :class="
-                            props.account.is_verified
-                                ? 'text-emerald-700'
-                                : 'text-amber-700'
-                        "
+                        :class="props.account.is_verified ? 'text-emerald-700' : 'text-amber-700'"
                     >
                         {{
                             props.account.is_verified
-                                ? ui.account?.email_status_verified ?? "Email megerositve"
-                                : ui.account?.email_status_pending ??
-                                  "Email megerősítés folyamatban"
+                                ? (ui.account?.email_status_verified ?? "Email megerositve")
+                                : (ui.account?.email_status_pending ?? "Email megerősítés folyamatban")
                         }}
                     </p>
                 </div>
@@ -98,9 +80,7 @@ const resendVerification = () => {
             </div>
         </article>
 
-        <article
-            class="rounded-2xl border border-dashed border-bakery-brown/35 bg-[#fffaf4] p-5"
-        >
+        <article class="rounded-2xl border border-dashed border-bakery-brown/35 bg-[#fffaf4] p-5">
             <p class="text-sm text-bakery-dark/75">
                 {{
                     ui.account?.future_features ??

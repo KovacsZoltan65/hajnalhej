@@ -23,7 +23,7 @@ class IngredientFactory extends Factory
             'Rozs liszt',
             'So',
             'Cukor',
-            'Eleszto',
+            'Élesztő',
             'Vaj',
             'Tej',
             'Tojas',

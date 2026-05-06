@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 class HeroExperimentService
 {
     public const SESSION_KEY = 'experiments.hero_variant';
+
     public const ASSIGNED_FLAG_SESSION_KEY = 'experiments.hero_variant_assigned';
 
     public const VARIANT_ARTISAN_STORY = 'artisan_story';
+
     public const VARIANT_SPEED_CHECKOUT = 'speed_checkout';
 
     /**
@@ -50,4 +52,3 @@ class HeroExperimentService
         ];
     }
 }
-

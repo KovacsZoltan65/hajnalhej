@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -9,8 +9,8 @@
 @source '../**/*.vue';
 
 @theme {
-    --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
-    --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
+    --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+    --font-serif: "Playfair Display", ui-serif, Georgia, serif;
     --color-bakery-brown: #6b4423;
     --color-bakery-cream: #f4ebdd;
     --color-bakery-dark: #2b2118;
@@ -68,14 +68,16 @@ body.admin-shell-active .main-content {
 }
 
 .grain-overlay::before {
-    content: '';
+    content: "";
     pointer-events: none;
     position: absolute;
     inset: 0;
     background-image:
         radial-gradient(rgba(43, 33, 24, 0.06) 0.4px, transparent 0.4px),
         radial-gradient(rgba(43, 33, 24, 0.04) 0.4px, transparent 0.4px);
-    background-position: 0 0, 12px 12px;
+    background-position:
+        0 0,
+        12px 12px;
     background-size: 24px 24px;
     opacity: 0.3;
 }
@@ -100,7 +102,7 @@ body.admin-shell-active .main-content {
 }
 
 .ui-shell::after {
-    content: '';
+    content: "";
     pointer-events: none;
     position: fixed;
     inset: 0;
@@ -174,7 +176,7 @@ body.admin-shell-active .main-content {
 }
 
 .ui-loading-shimmer::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
@@ -213,7 +215,10 @@ body.admin-shell-active .main-content {
 }
 
 .p-button {
-    transition: transform 0.16s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    transition:
+        transform 0.16s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
 }
 
 .p-button:enabled:active {
@@ -233,5 +238,5 @@ body.admin-shell-active .main-content {
 /* Keep PrimeIcons glyph rendering stable even if global font rules change. */
 .pi,
 .pi::before {
-    font-family: 'primeicons' !important;
+    font-family: "primeicons" !important;
 }

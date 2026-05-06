@@ -47,5 +47,3 @@ return [
         'future_features' => 'Hamarosan: rendelési előzmények, mentett címek, kedvencek és hűség beállítások.',
     ],
 ];
-
-
