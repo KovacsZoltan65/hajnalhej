@@ -70,6 +70,8 @@ class DatabaseSeeder extends Seeder
             // Bagel, Croisant, Fahéjas cdiga
             PremiumBakerySeedPackSeeder::class,
 
+            RealisticBakeryRecipeSeeder::class,
+
             ProductionPlanSeeder::class,
             InventoryProcurementSeeder::class,
             ProcurementIntelligenceSeeder::class,
