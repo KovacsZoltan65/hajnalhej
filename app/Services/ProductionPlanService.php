@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Summary of ProductionPlanService
@@ -64,6 +65,8 @@ class ProductionPlanService
      */
     public function create(array $data, int $userId): ProductionPlan
     {
+        $this->ensureTargetReadyAtCanFitRecipe($data);
+
         /** @var ProductionPlan $productionPlan */
         $productionPlan = DB::transaction(function () use ($data, $userId): ProductionPlan {
             $targetAt = Carbon::parse((string) ($data['target_ready_at'] ?? $data['target_at']));
@@ -91,6 +94,8 @@ class ProductionPlanService
      */
     public function update(ProductionPlan $productionPlan, array $data): ProductionPlan
     {
+        $this->ensureTargetReadyAtCanFitRecipe($data);
+
         /** @var ProductionPlan $updated */
         $updated = DB::transaction(function () use ($productionPlan, $data): ProductionPlan {
             $plan = $this->repository->update($productionPlan, [
@@ -107,6 +112,59 @@ class ProductionPlanService
         });
 
         return $this->repository->loadForEditor($updated);
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $items
+     */
+    public function calculateMinimumReadyAt(array $items): Carbon
+    {
+        $productIds = collect($items)
+            ->pluck('product_id')
+            ->map(fn ($id): int => (int) $id)
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($productIds->isEmpty()) {
+            return Carbon::now()->addMinutes(15);
+        }
+
+        $longestDuration = Product::query()
+            ->with([
+                'recipeSteps' => fn ($query) => $query
+                    ->where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->orderBy('id'),
+            ])
+            ->whereIn('id', $productIds->all())
+            ->get()
+            ->map(fn (Product $product): int => (int) $product->recipeSteps
+                ->sum(fn (RecipeStep $step): int => (int) ($step->duration_minutes ?? 0) + (int) ($step->wait_minutes ?? 0)))
+            ->max();
+
+        return Carbon::now()->addMinutes(max(15, (int) $longestDuration));
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     *
+     * @throws ValidationException
+     */
+    public function ensureTargetReadyAtCanFitRecipe(array $data): void
+    {
+        $targetReadyAt = Carbon::parse((string) ($data['target_ready_at'] ?? $data['target_at']));
+        $minimumReadyAt = $this->calculateMinimumReadyAt((array) ($data['items'] ?? []));
+
+        if ($targetReadyAt->greaterThanOrEqualTo($minimumReadyAt)) {
+            return;
+        }
+
+        throw ValidationException::withMessages([
+            'target_ready_at' => __('admin.production_plans.validation.too_early_for_recipe', [
+                'datetime' => $minimumReadyAt->timezone(config('app.timezone'))->format('Y-m-d H:i'),
+            ]),
+        ]);
     }
 
     public function delete(ProductionPlan $productionPlan): void

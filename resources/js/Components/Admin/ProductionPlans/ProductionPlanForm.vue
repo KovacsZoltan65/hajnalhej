@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from "vue";
 import Button from "primevue/button";
+import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import Textarea from "primevue/textarea";
@@ -16,15 +17,55 @@ const props = defineProps({
 
 const canRemoveRows = computed(() => (props.form.items?.length ?? 0) > 1);
 
-const addItemRow = () => {
-    const firstProductId = props.products[0]?.id ?? null;
+const selectedProducts = computed(() =>
+    (props.form.items ?? [])
+        .map((item) => props.products.find((product) => Number(product.id) === Number(item.product_id)))
+        .filter(Boolean)
+);
 
-    props.form.items.push({
-        product_id: firstProductId,
-        target_quantity: 1,
-        unit_label: "db",
-        sort_order: props.form.items.length,
-    });
+const recipeDurationMinutes = (product) =>
+    (product?.recipe_steps ?? []).reduce(
+        (total, recipeStep) => total + Number(recipeStep.duration_minutes ?? 0) + Number(recipeStep.wait_minutes ?? 0),
+        0
+    );
+
+const longestRecipeDurationMinutes = computed(() => {
+    const longest = selectedProducts.value.reduce(
+        (maxDuration, product) => Math.max(maxDuration, recipeDurationMinutes(product)),
+        0
+    );
+
+    return Math.max(15, longest);
+});
+
+const minTargetReadyAt = computed(() => {
+    const date = new Date();
+    date.setMinutes(date.getMinutes() + longestRecipeDurationMinutes.value);
+
+    return date;
+});
+
+const formatDateTime = (value) =>
+    new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short",
+    }).format(value);
+
+const earliestReadyAtText = computed(() =>
+    trans("admin.production_plans.flow.target.earliest_ready_at", {
+        datetime: formatDateTime(minTargetReadyAt.value),
+    })
+);
+
+const createEmptyPlanItem = () => ({
+    product_id: null,
+    target_quantity: null,
+    unit_label: "",
+    sort_order: null,
+});
+
+const addItemRow = () => {
+    props.form.items.push(createEmptyPlanItem());
 };
 
 const removeItemRow = (index) => {
@@ -43,12 +84,21 @@ const removeItemRow = (index) => {
                 <label class="text-sm font-medium text-bakery-dark">{{
                     trans("admin_production_plans.form.target_ready_at")
                 }}</label>
-                <InputText v-model="form.target_ready_at" type="datetime-local" class="w-full" />
+                <DatePicker
+                    v-model="form.target_ready_at"
+                    show-time
+                    hour-format="24"
+                    :min-date="minTargetReadyAt"
+                    class="w-full"
+                />
                 <p v-if="form.errors.target_ready_at" class="text-xs text-red-700">
                     {{ form.errors.target_ready_at }}
                 </p>
                 <p v-if="form.errors.target_at" class="text-xs text-red-700">
                     {{ form.errors.target_at }}
+                </p>
+                <p class="text-xs text-bakery-dark/60">
+                    {{ earliestReadyAtText }}
                 </p>
             </div>
 
@@ -103,6 +153,7 @@ const removeItemRow = (index) => {
                 :key="`plan-item-${index}`"
                 class="grid gap-3 rounded-lg border border-bakery-brown/10 bg-white p-3 md:grid-cols-[minmax(0,1fr)_8rem_6rem_5rem_auto]"
             >
+                <!-- TERMÉK -->
                 <div class="space-y-1">
                     <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                         trans("common.product")
@@ -119,16 +170,18 @@ const removeItemRow = (index) => {
                     </p>
                 </div>
 
+                <!-- MENNYISÉG -->
                 <div class="space-y-1">
                     <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                         trans("common.quantity")
                     }}</label>
-                    <InputText v-model="item.target_quantity" type="number" min="0.001" step="0.001" class="w-full" />
+                    <InputText v-model="item.target_quantity" type="number" min="1" step="1" class="w-full" />
                     <p v-if="form.errors[`items.${index}.target_quantity`]" class="text-xs text-red-700">
                         {{ form.errors[`items.${index}.target_quantity`] }}
                     </p>
                 </div>
 
+                <!-- MENNYISÉG -->
                 <div class="space-y-1">
                     <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                         trans("admin_production_plans.form.unit")
@@ -139,6 +192,7 @@ const removeItemRow = (index) => {
                     </p>
                 </div>
 
+                <!-- SORREND -->
                 <div class="space-y-1">
                     <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                         trans("admin_production_plans.form.sort_order")

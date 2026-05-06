@@ -111,6 +111,95 @@ const mapDateTimeForInput = (value) => {
     return String(value).slice(0, 16);
 };
 
+const parseDateTime = (value) => {
+    if (!value) {
+        return null;
+    }
+
+    return value instanceof Date ? value : new Date(String(value).replace(" ", "T"));
+};
+
+const selectedProducts = computed(() =>
+    (form.items ?? [])
+        .map((item) => props.products.find((product) => Number(product.id) === Number(item.product_id)))
+        .filter(Boolean)
+);
+
+const recipeDurationMinutes = (product) =>
+    (product?.recipe_steps ?? []).reduce(
+        (total, recipeStep) => total + Number(recipeStep.duration_minutes ?? 0) + Number(recipeStep.wait_minutes ?? 0),
+        0
+    );
+
+const longestRecipeDurationMinutes = computed(() => {
+    const longest = selectedProducts.value.reduce(
+        (maxDuration, product) => Math.max(maxDuration, recipeDurationMinutes(product)),
+        0
+    );
+
+    return Math.max(15, longest);
+});
+
+const minimumTargetReadyAt = computed(() => {
+    const date = new Date();
+    date.setMinutes(date.getMinutes() + longestRecipeDurationMinutes.value);
+
+    return date;
+});
+
+const formatDateTime = (value) =>
+    new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short",
+    }).format(value);
+
+const formatForBackend = (value) => {
+    if (!value) {
+        return null;
+    }
+
+    const date = parseDateTime(value);
+
+    if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    const pad = (part) => String(part).padStart(2, "0");
+
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(
+        date.getMinutes()
+    )}:00`;
+};
+
+const productionPlanPayload = () => ({
+    target_ready_at: formatForBackend(form.target_ready_at),
+    status: form.status,
+    is_locked: form.is_locked,
+    notes: form.notes,
+    items: form.items,
+});
+
+const isTooEarlyTargetReadyAt = (value) => {
+    const date = parseDateTime(value);
+
+    return date instanceof Date && !Number.isNaN(date.getTime()) && date < minimumTargetReadyAt.value;
+};
+
+const validateTargetReadyAt = () => {
+    if (!isTooEarlyTargetReadyAt(form.target_ready_at)) {
+        return true;
+    }
+
+    form.setError(
+        "target_ready_at",
+        trans("admin.production_plans.validation.too_early_for_recipe", {
+            datetime: formatDateTime(minimumTargetReadyAt.value),
+        })
+    );
+
+    return false;
+};
+
 const resetFormToDefaults = () => {
     form.clearErrors();
     form.target_ready_at = "";
@@ -149,7 +238,11 @@ const closeEditModal = () => {
 };
 
 const submitCreate = () => {
-    form.post(route("admin.production-plans.store"), {
+    if (!validateTargetReadyAt()) {
+        return;
+    }
+
+    form.transform(productionPlanPayload).post(route("admin.production-plans.store"), {
         preserveScroll: true,
         onSuccess: () => {
             closeCreateModal();
@@ -163,7 +256,11 @@ const submitEdit = () => {
         return;
     }
 
-    form.put(route("admin.production-plans.update", editingId.value), {
+    if (!validateTargetReadyAt()) {
+        return;
+    }
+
+    form.transform(productionPlanPayload).put(route("admin.production-plans.update", editingId.value), {
         preserveScroll: true,
         onSuccess: () => {
             closeEditModal();

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\ProductionPlan;
+use Illuminate\Support\Carbon;
 
 class ProductionPlanCreateFlowService
 {
@@ -16,5 +17,13 @@ class ProductionPlanCreateFlowService
         $payload['status'] = ProductionPlan::STATUS_CALCULATED;
 
         return $this->productionPlanService->create($payload, $userId);
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $items
+     */
+    public function calculateMinimumReadyAt(array $items): Carbon
+    {
+        return $this->productionPlanService->calculateMinimumReadyAt($items);
     }
 }

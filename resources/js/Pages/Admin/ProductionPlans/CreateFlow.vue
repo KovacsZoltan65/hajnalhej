@@ -22,17 +22,17 @@ const props = defineProps({
 
 const step = ref(1);
 
-const makeDefaultItem = () => ({
-    product_id: props.products[0]?.id ?? null,
-    target_quantity: 1,
-    unit_label: props.products[0]?.unit_label ?? "db",
-    sort_order: 0,
+const createEmptyPlanItem = () => ({
+    product_id: null,
+    target_quantity: null,
+    unit_label: "",
+    sort_order: null,
 });
 
 const form = useForm({
     target_ready_at: null,
     notes: "",
-    items: props.products.length > 0 ? [makeDefaultItem()] : [],
+    items: props.products.length > 0 ? [createEmptyPlanItem()] : [],
 });
 
 const steps = computed(() => [
@@ -59,6 +59,45 @@ const selectedItems = computed(() =>
             target_quantity: Number(item.target_quantity ?? 0),
         }))
         .filter((item) => item.product)
+);
+
+const recipeDurationMinutes = (product) =>
+    (product?.recipe_steps ?? []).reduce(
+        (total, recipeStep) => total + Number(recipeStep.duration_minutes ?? 0) + Number(recipeStep.wait_minutes ?? 0),
+        0
+    );
+
+const longestRecipeDurationMinutes = computed(() => {
+    const longest = selectedItems.value.reduce(
+        (maxDuration, item) => Math.max(maxDuration, recipeDurationMinutes(item.product)),
+        0
+    );
+
+    return Math.max(15, longest);
+});
+
+const minTargetReadyAt = computed(() => {
+    const date = new Date();
+    date.setMinutes(date.getMinutes() + longestRecipeDurationMinutes.value);
+
+    return date;
+});
+
+const formatDateTime = (value) => {
+    if (!value) {
+        return "-";
+    }
+
+    return new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short",
+    }).format(value);
+};
+
+const earliestReadyAtText = computed(() =>
+    trans("admin.production_plans.flow.target.earliest_ready_at", {
+        datetime: formatDateTime(minTargetReadyAt.value),
+    })
 );
 
 const ingredientRequirements = computed(() => {
@@ -156,6 +195,20 @@ const formatForBackend = (value) => {
     )} ${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
 };
 
+const parseDateTime = (value) => {
+    if (!value) {
+        return null;
+    }
+
+    return value instanceof Date ? value : new Date(String(value).replace(" ", "T"));
+};
+
+const isTooEarlyTargetReadyAt = (value) => {
+    const date = parseDateTime(value);
+
+    return date instanceof Date && !Number.isNaN(date.getTime()) && date < minTargetReadyAt.value;
+};
+
 const canContinue = computed(() => {
     if (step.value === 1) {
         return selectedItems.value.length > 0 && selectedItems.value.every((item) => item.target_quantity > 0);
@@ -169,18 +222,11 @@ const canContinue = computed(() => {
 });
 
 const addItem = () => {
-    const product = availableProducts.value[0];
-
-    if (!product) {
+    if (availableProducts.value.length === 0) {
         return;
     }
 
-    form.items.push({
-        product_id: product.id,
-        target_quantity: 1,
-        unit_label: product.unit_label ?? "db",
-        sort_order: form.items.length,
-    });
+    form.items.push(createEmptyPlanItem());
 };
 
 const removeItem = (index) => {
@@ -200,6 +246,17 @@ const previous = () => {
 };
 
 const submit = () => {
+    if (isTooEarlyTargetReadyAt(form.target_ready_at)) {
+        form.setError(
+            "target_ready_at",
+            trans("admin.production_plans.validation.too_early_for_recipe", {
+                datetime: formatDateTime(minTargetReadyAt.value),
+            })
+        );
+
+        return;
+    }
+
     form.transform(() => ({
         target_ready_at: formatForBackend(form.target_ready_at),
         notes: form.notes,
@@ -325,9 +382,18 @@ const submit = () => {
                             <label class="text-xs font-semibold uppercase text-bakery-brown/80">
                                 {{ trans("admin.production_plans.flow.fields.target_ready_at") }}
                             </label>
-                            <DatePicker v-model="form.target_ready_at" show-time hour-format="24" class="w-full" />
+                            <DatePicker
+                                v-model="form.target_ready_at"
+                                show-time
+                                hour-format="24"
+                                :min-date="minTargetReadyAt"
+                                class="w-full"
+                            />
                             <p v-if="form.errors.target_ready_at" class="text-xs text-red-700">
                                 {{ form.errors.target_ready_at }}
+                            </p>
+                            <p class="text-xs text-bakery-dark/60">
+                                {{ earliestReadyAtText }}
                             </p>
                         </div>
                         <div class="space-y-1 md:col-span-2">
@@ -408,6 +474,10 @@ const submit = () => {
                         </article>
                     </div>
                 </section>
+
+                <p v-if="form.errors.target_ready_at" class="mt-4 text-sm font-medium text-red-700">
+                    {{ form.errors.target_ready_at }}
+                </p>
 
                 <div
                     class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-bakery-brown/10 pt-4"

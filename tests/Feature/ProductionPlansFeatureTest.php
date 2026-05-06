@@ -138,6 +138,196 @@ it('production plan create-flow validacio hibazik nem pozitiv quantity eseten', 
     $response->assertSessionHasErrors(['items.0.target_quantity']);
 });
 
+it('production plan create-flow validacio hibazik multbeli target_ready_at eseten', function (): void {
+    Carbon::setTestNow(Carbon::parse('2026-05-06 10:00:00'));
+
+    $user = User::factory()->create();
+    $product = Product::factory()->create(['is_active' => true]);
+
+    $response = $this->actingAs($user)->post('/admin/production-plans/create-flow', [
+        'target_ready_at' => Carbon::now()->subMinute()->toDateTimeString(),
+        'items' => [
+            [
+                'product_id' => $product->id,
+                'target_quantity' => 1,
+                'unit_label' => 'db',
+            ],
+        ],
+    ]);
+
+    $response->assertSessionHasErrors(['target_ready_at']);
+
+    Carbon::setTestNow();
+});
+
+it('production plan create-flow tul korai target_ready_at eseten receptido alapjan hibazik', function (): void {
+    Carbon::setTestNow(Carbon::parse('2026-05-06 10:00:00'));
+
+    $user = User::factory()->create();
+    $product = Product::factory()->create(['is_active' => true]);
+
+    RecipeStep::factory()->create([
+        'product_id' => $product->id,
+        'duration_minutes' => 30,
+        'wait_minutes' => 30,
+        'is_active' => true,
+    ]);
+
+    $response = $this->actingAs($user)->post('/admin/production-plans/create-flow', [
+        'target_ready_at' => Carbon::now()->addMinutes(59)->toDateTimeString(),
+        'items' => [
+            [
+                'product_id' => $product->id,
+                'target_quantity' => 1,
+                'unit_label' => 'db',
+            ],
+        ],
+    ]);
+
+    $response->assertSessionHasErrors(['target_ready_at']);
+
+    Carbon::setTestNow();
+});
+
+it('production plan create-flow elfogadja a pontos minimum ready time idopontot', function (): void {
+    Carbon::setTestNow(Carbon::parse('2026-05-06 10:00:00'));
+
+    $user = User::factory()->create();
+    $product = Product::factory()->create(['is_active' => true]);
+
+    RecipeStep::factory()->create([
+        'product_id' => $product->id,
+        'duration_minutes' => 30,
+        'wait_minutes' => 30,
+        'is_active' => true,
+    ]);
+
+    $response = $this->actingAs($user)->post('/admin/production-plans/create-flow', [
+        'target_ready_at' => Carbon::now()->addMinutes(60)->toDateTimeString(),
+        'items' => [
+            [
+                'product_id' => $product->id,
+                'target_quantity' => 1,
+                'unit_label' => 'db',
+            ],
+        ],
+    ]);
+
+    $plan = ProductionPlan::query()->firstOrFail();
+
+    $response->assertRedirect("/admin/production-plans/{$plan->id}");
+
+    Carbon::setTestNow();
+});
+
+it('production plan create-flow elfogadja a jovobeli target_ready_at idopontot', function (): void {
+    Carbon::setTestNow(Carbon::parse('2026-05-06 10:00:00'));
+
+    $user = User::factory()->create();
+    $product = Product::factory()->create(['is_active' => true]);
+
+    RecipeStep::factory()->create([
+        'product_id' => $product->id,
+        'duration_minutes' => 30,
+        'wait_minutes' => 30,
+        'is_active' => true,
+    ]);
+
+    $response = $this->actingAs($user)->post('/admin/production-plans/create-flow', [
+        'target_ready_at' => Carbon::now()->addMinutes(61)->toDateTimeString(),
+        'items' => [
+            [
+                'product_id' => $product->id,
+                'target_quantity' => 1,
+                'unit_label' => 'db',
+            ],
+        ],
+    ]);
+
+    $plan = ProductionPlan::query()->firstOrFail();
+
+    $response->assertRedirect("/admin/production-plans/{$plan->id}");
+    $this->assertDatabaseHas('production_plans', [
+        'id' => $plan->id,
+    ]);
+
+    Carbon::setTestNow();
+});
+
+it('production plan create-flow tobb termeknel a leghosszabb receptidot hasznalja', function (): void {
+    Carbon::setTestNow(Carbon::parse('2026-05-06 10:00:00'));
+
+    $user = User::factory()->create();
+    $shortProduct = Product::factory()->create(['is_active' => true]);
+    $longProduct = Product::factory()->create(['is_active' => true]);
+
+    RecipeStep::factory()->create([
+        'product_id' => $shortProduct->id,
+        'duration_minutes' => 10,
+        'wait_minutes' => 20,
+        'is_active' => true,
+    ]);
+    RecipeStep::factory()->create([
+        'product_id' => $longProduct->id,
+        'duration_minutes' => 45,
+        'wait_minutes' => 30,
+        'is_active' => true,
+    ]);
+
+    $tooEarly = $this->actingAs($user)->post('/admin/production-plans/create-flow', [
+        'target_ready_at' => Carbon::now()->addMinutes(74)->toDateTimeString(),
+        'items' => [
+            ['product_id' => $shortProduct->id, 'target_quantity' => 1, 'unit_label' => 'db'],
+            ['product_id' => $longProduct->id, 'target_quantity' => 1, 'unit_label' => 'db'],
+        ],
+    ]);
+
+    $tooEarly->assertSessionHasErrors(['target_ready_at']);
+
+    $valid = $this->actingAs($user)->post('/admin/production-plans/create-flow', [
+        'target_ready_at' => Carbon::now()->addMinutes(75)->toDateTimeString(),
+        'items' => [
+            ['product_id' => $shortProduct->id, 'target_quantity' => 1, 'unit_label' => 'db'],
+            ['product_id' => $longProduct->id, 'target_quantity' => 1, 'unit_label' => 'db'],
+        ],
+    ]);
+
+    $plan = ProductionPlan::query()->firstOrFail();
+
+    $valid->assertRedirect("/admin/production-plans/{$plan->id}");
+
+    Carbon::setTestNow();
+});
+
+it('production plan create-flow receptlepes nelkuli termeknel 15 perc fallback minimumot hasznal', function (): void {
+    Carbon::setTestNow(Carbon::parse('2026-05-06 10:00:00'));
+
+    $user = User::factory()->create();
+    $product = Product::factory()->create(['is_active' => true]);
+
+    $tooEarly = $this->actingAs($user)->post('/admin/production-plans/create-flow', [
+        'target_ready_at' => Carbon::now()->addMinutes(14)->toDateTimeString(),
+        'items' => [
+            ['product_id' => $product->id, 'target_quantity' => 1, 'unit_label' => 'db'],
+        ],
+    ]);
+
+    $tooEarly->assertSessionHasErrors(['target_ready_at']);
+
+    $valid = $this->actingAs($user)->post('/admin/production-plans/create-flow', [
+        'target_ready_at' => Carbon::now()->addMinutes(15)->toDateTimeString(),
+        'items' => [
+            ['product_id' => $product->id, 'target_quantity' => 1, 'unit_label' => 'db'],
+        ],
+    ]);
+
+    $plan = ProductionPlan::query()->firstOrFail();
+
+    $valid->assertRedirect("/admin/production-plans/{$plan->id}");
+
+    Carbon::setTestNow();
+});
+
 it('production plan create kiszamolja idot es inditast', function (): void {
     $user = User::factory()->create();
     $category = Category::factory()->create(['is_active' => true]);

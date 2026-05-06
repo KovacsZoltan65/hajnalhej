@@ -18,6 +18,9 @@ vi.mock("@inertiajs/vue3", async () => {
                 ...data,
                 errors: {},
                 processing,
+                setError(field, message) {
+                    this.errors[field] = message;
+                },
                 transform(callback) {
                     this.payload = callback();
                     return this;
@@ -28,7 +31,13 @@ vi.mock("@inertiajs/vue3", async () => {
 });
 
 vi.mock("laravel-vue-i18n", () => ({
-    trans: (key) => key,
+    trans: (key, replacements = {}) => {
+        let value = key;
+        Object.entries(replacements).forEach(([name, replacement]) => {
+            value = value.replace(`:${name}`, replacement);
+        });
+        return value;
+    },
 }));
 
 const product = {
@@ -77,9 +86,10 @@ const stubs = {
         props: ["label", "disabled", "loading"],
     },
     DatePicker: {
+        name: "DatePicker",
         template:
             "<input data-testid='target-date' @input=\"$emit('update:modelValue', new Date('2026-05-07T09:00:00'))\" />",
-        props: ["modelValue"],
+        props: ["modelValue", "minDate"],
     },
     InputNumber: {
         template:
@@ -112,6 +122,10 @@ describe("ProductionPlans CreateFlow", () => {
 
         expect(wrapper.text()).toContain("admin.production_plans.flow.products.title");
 
+        wrapper.vm.form.items[0].product_id = 1;
+        wrapper.vm.form.items[0].target_quantity = 1;
+        await wrapper.vm.$nextTick();
+
         await wrapper
             .findAll("button")
             .find((button) => button.text().includes("admin.production_plans.flow.actions.next"))
@@ -131,12 +145,80 @@ describe("ProductionPlans CreateFlow", () => {
             .trigger("click");
 
         expect(wrapper.vm.form.items.length).toBeGreaterThan(1);
-        expect(wrapper.vm.form.items.map((item) => item.product_id)).toContain(2);
+        expect(wrapper.vm.form.items[1]).toEqual({
+            product_id: null,
+            target_quantity: null,
+            unit_label: "",
+            sort_order: null,
+        });
+    });
+
+    it("adds consecutive product rows without inherited values", async () => {
+        const wrapper = factory({
+            products: [
+                product,
+                { ...product, id: 2, name: "Baguette", slug: "baguette" },
+                { ...product, id: 3, name: "Rye", slug: "rye" },
+            ],
+        });
+
+        wrapper.vm.form.items[0].product_id = 1;
+        wrapper.vm.form.items[0].target_quantity = 9;
+        wrapper.vm.form.items[0].unit_label = "kg";
+        await wrapper.vm.$nextTick();
+
+        const addButton = wrapper
+            .findAll("button")
+            .find((button) => button.text().includes("admin.production_plans.flow.actions.add_product"));
+
+        await addButton.trigger("click");
+        await addButton.trigger("click");
+
+        expect(wrapper.vm.form.items[1]).toEqual({
+            product_id: null,
+            target_quantity: null,
+            unit_label: "",
+            sort_order: null,
+        });
+        expect(wrapper.vm.form.items[2]).toEqual({
+            product_id: null,
+            target_quantity: null,
+            unit_label: "",
+            sort_order: null,
+        });
+        expect(wrapper.vm.form.items[1]).not.toBe(wrapper.vm.form.items[2]);
+    });
+
+    it("product change does not carry an old quantity into an empty row", async () => {
+        const wrapper = factory({
+            products: [product, { ...product, id: 2, name: "Baguette", slug: "baguette" }],
+        });
+
+        wrapper.vm.form.items[0].product_id = 1;
+        wrapper.vm.form.items[0].target_quantity = 6;
+        await wrapper.vm.$nextTick();
+
+        await wrapper
+            .findAll("button")
+            .find((button) => button.text().includes("admin.production_plans.flow.actions.add_product"))
+            .trigger("click");
+
+        wrapper.vm.form.items[1].product_id = 2;
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.form.items[1]).toMatchObject({
+            product_id: 2,
+            target_quantity: null,
+            unit_label: "",
+            sort_order: null,
+        });
     });
 
     it("renders ingredient preview", async () => {
         const wrapper = factory();
 
+        wrapper.vm.form.items[0].product_id = 1;
+        wrapper.vm.form.items[0].target_quantity = 1;
         wrapper.vm.step = 3;
         await wrapper.vm.$nextTick();
 
@@ -147,6 +229,8 @@ describe("ProductionPlans CreateFlow", () => {
     it("renders timeline preview", async () => {
         const wrapper = factory();
 
+        wrapper.vm.form.items[0].product_id = 1;
+        wrapper.vm.form.items[0].target_quantity = 1;
         wrapper.vm.form.target_ready_at = new Date("2026-05-07T09:00:00");
         wrapper.vm.step = 4;
         await wrapper.vm.$nextTick();
@@ -159,11 +243,100 @@ describe("ProductionPlans CreateFlow", () => {
         processing = true;
         const wrapper = factory();
 
+        wrapper.vm.form.items[0].product_id = 1;
+        wrapper.vm.form.items[0].target_quantity = 1;
         wrapper.vm.form.target_ready_at = new Date("2026-05-07T09:00:00");
         wrapper.vm.step = 4;
         await wrapper.vm.$nextTick();
 
         expect(wrapper.text()).toContain("loading");
         processing = false;
+    });
+
+    it("passes a dynamic minimum date to the target date picker", () => {
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date("2026-05-06T10:00:00"));
+        const wrapper = factory();
+
+        wrapper.vm.form.items[0].product_id = 1;
+        wrapper.vm.step = 2;
+
+        expect(wrapper.vm.minTargetReadyAt.toISOString()).toBe("2026-05-06T09:00:00.000Z");
+        vi.useRealTimers();
+    });
+
+    it("blocks submit and shows an error for a past target time", async () => {
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date("2026-05-06T10:00:00"));
+        post.mockClear();
+        const wrapper = factory();
+
+        wrapper.vm.form.items[0].product_id = 1;
+        wrapper.vm.form.items[0].target_quantity = 1;
+        wrapper.vm.form.target_ready_at = new Date("2026-05-06T10:30:00");
+        wrapper.vm.step = 4;
+        await wrapper.vm.$nextTick();
+
+        await wrapper
+            .findAll("button")
+            .find((button) => button.text().includes("admin.production_plans.flow.actions.save"))
+            .trigger("click");
+
+        expect(post).not.toHaveBeenCalled();
+        expect(wrapper.vm.form.errors.target_ready_at).toContain(
+            "admin.production_plans.validation.too_early_for_recipe"
+        );
+        expect(wrapper.text()).toContain("admin.production_plans.validation.too_early_for_recipe");
+        vi.useRealTimers();
+    });
+
+    it("uses the longest recipe duration across selected products", async () => {
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date("2026-05-06T10:00:00"));
+        const wrapper = factory({
+            products: [
+                product,
+                {
+                    ...product,
+                    id: 2,
+                    name: "Slow rye",
+                    slug: "slow-rye",
+                    recipe_steps: [
+                        {
+                            id: 2,
+                            title: "Proof",
+                            duration_minutes: 20,
+                            wait_minutes: 100,
+                            sort_order: 0,
+                        },
+                    ],
+                },
+            ],
+        });
+
+        wrapper.vm.form.items[0].product_id = 1;
+        await wrapper
+            .findAll("button")
+            .find((button) => button.text().includes("admin.production_plans.flow.actions.add_product"))
+            .trigger("click");
+        wrapper.vm.form.items[1].product_id = 2;
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.longestRecipeDurationMinutes).toBe(120);
+        expect(wrapper.vm.minTargetReadyAt.toISOString()).toBe("2026-05-06T10:00:00.000Z");
+        vi.useRealTimers();
+    });
+
+    it("renders helper text with the earliest ready time", async () => {
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date("2026-05-06T10:00:00"));
+        const wrapper = factory();
+
+        wrapper.vm.form.items[0].product_id = 1;
+        wrapper.vm.step = 2;
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.text()).toContain("admin.production_plans.flow.target.earliest_ready_at");
+        vi.useRealTimers();
     });
 });

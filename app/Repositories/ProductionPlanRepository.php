@@ -136,11 +136,17 @@ class ProductionPlanRepository
     }
 
     /**
-     * @return Collection<int, array{id:int,name:string,slug:string}>
+     * @return Collection<int, array<string, mixed>>
      */
     public function listSelectableProducts(): Collection
     {
         return Product::query()
+            ->with([
+                'recipeSteps' => fn ($query) => $query
+                    ->where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->orderBy('id'),
+            ])
             ->where('is_active', true)
             ->orderBy('sort_order')
             ->orderBy('name')
@@ -149,6 +155,14 @@ class ProductionPlanRepository
                 'id' => $product->id,
                 'name' => $product->name,
                 'slug' => $product->slug,
+                'recipe_steps' => $product->recipeSteps
+                    ->map(fn (RecipeStep $step): array => [
+                        'id' => $step->id,
+                        'duration_minutes' => (int) ($step->duration_minutes ?? 0),
+                        'wait_minutes' => (int) ($step->wait_minutes ?? 0),
+                    ])
+                    ->values()
+                    ->all(),
             ]);
     }
 
