@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from "vue";
 import Button from "primevue/button";
+import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import Textarea from "primevue/textarea";
@@ -81,7 +82,14 @@ const { formatCurrency } = useLocaleFormat();
 
             <div class="space-y-2">
                 <label for="purchase-date" class="text-sm font-medium text-bakery-dark">Dátum</label>
-                <InputText id="purchase-date" v-model="form.purchase_date" type="date" class="w-full" />
+                <DatePicker
+                    input-id="purchase-date"
+                    v-model="form.purchase_date"
+                    date-format="yy-mm-dd"
+                    update-model-type="string"
+                    show-icon
+                    class="w-full"
+                />
                 <p v-if="form.errors.purchase_date" class="text-xs text-red-700">{{ form.errors.purchase_date }}</p>
             </div>
 

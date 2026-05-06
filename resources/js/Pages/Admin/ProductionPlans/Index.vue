@@ -5,6 +5,7 @@ import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
 import DataTable from "primevue/datatable";
+import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import { useConfirm } from "primevue/useconfirm";
@@ -166,9 +167,9 @@ const formatForBackend = (value) => {
 
     const pad = (part) => String(part).padStart(2, "0");
 
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(
-        date.getMinutes()
-    )}:00`;
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+        date.getDate()
+    )} ${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
 };
 
 const productionPlanPayload = () => ({
@@ -339,6 +340,7 @@ const confirmDelete = (plan) => {
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-5'">
                 <template #filters>
+                    <!-- KERESÉS -->
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                             trans("common.search")
@@ -351,6 +353,7 @@ const confirmDelete = (plan) => {
                         />
                     </div>
 
+                    <!-- ÁLLAPOT -->
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                             trans("common.status")
@@ -365,20 +368,35 @@ const confirmDelete = (plan) => {
                         />
                     </div>
 
+                    <!-- CÉLPONT INNEN -->
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                             trans("admin_production_plans.filters.target_from")
                         }}</label>
-                        <InputText v-model="filterState.target_from" type="date" class="w-full" />
+                        <DatePicker
+                            v-model="filterState.target_from"
+                            date-format="yy-mm-dd"
+                            update-model-type="string"
+                            show-icon
+                            class="w-full"
+                        />
                     </div>
 
+                    <!-- CÉLPONT -->
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                             trans("admin_production_plans.filters.target_to")
                         }}</label>
-                        <InputText v-model="filterState.target_to" type="date" class="w-full" />
+                        <DatePicker
+                            v-model="filterState.target_to"
+                            date-format="yy-mm-dd"
+                            update-model-type="string"
+                            show-icon
+                            class="w-full"
+                        />
                     </div>
 
+                    <!-- SOROK / OLDAL -->
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                             trans("table.rows_per_page")

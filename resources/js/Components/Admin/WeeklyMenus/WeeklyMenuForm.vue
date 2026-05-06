@@ -1,11 +1,12 @@
 <script setup>
 import { watch } from "vue";
+import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
+import Message from "primevue/message";
 import Select from "primevue/select";
 import Textarea from "primevue/textarea";
 import ToggleSwitch from "primevue/toggleswitch";
 import { slugify } from "../../../Utils/slugify";
-import { DatePicker, Message } from "primevue";
 
 const props = defineProps({
     form: { type: Object, required: true },
@@ -16,15 +17,6 @@ watch(
     () => props.form.title,
     (title) => {
         props.form.slug = slugify(title);
-    }
-);
-
-watch(
-    () => props.form.week_start,
-    (val) => {
-        if (val instanceof Date) {
-            props.form.week_start = val.toISOString().split("T")[0];
-        }
     }
 );
 </script>
@@ -58,7 +50,14 @@ watch(
         <!-- Hét kezdete -->
         <div class="space-y-2">
             <label class="text-sm font-medium text-bakery-dark">Hét kezdete</label>
-            <DatePicker v-model="form.week_start" show-icon showWeek dateFormat="yy.mm.dd" class="w-full" />
+            <DatePicker
+                v-model="form.week_start"
+                show-icon
+                show-week
+                date-format="yy-mm-dd"
+                update-model-type="string"
+                class="w-full"
+            />
             <Message v-if="form.errors.week_start" severity="error" size="small" variant="simple">
                 {{ form.errors.week_start }}
             </Message>
@@ -67,7 +66,14 @@ watch(
         <!-- Hét vége -->
         <div class="space-y-2">
             <label class="text-sm font-medium text-bakery-dark">Hét vége</label>
-            <DatePicker v-model="form.week_end" show-icon showWeek dateFormat="yy.mm.dd" class="w-full" />
+            <DatePicker
+                v-model="form.week_end"
+                show-icon
+                show-week
+                date-format="yy-mm-dd"
+                update-model-type="string"
+                class="w-full"
+            />
             <Message v-if="form.errors.week_end" severity="error" size="small" variant="simple">
                 {{ form.errors.week_end }}
             </Message>

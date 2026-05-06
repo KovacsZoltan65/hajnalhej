@@ -28,8 +28,7 @@ const stubs = {
     DatePicker: {
         props: ["modelValue"],
         emits: ["update:modelValue"],
-        template:
-            '<input type="date" :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+        template: '<input :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
     },
     Message: {
         template: "<p><slot /></p>",

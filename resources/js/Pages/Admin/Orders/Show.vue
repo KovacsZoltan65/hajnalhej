@@ -1,6 +1,7 @@
 <script setup>
 import { Head, useForm } from "@inertiajs/vue3";
 import Button from "primevue/button";
+import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import Textarea from "primevue/textarea";
@@ -163,7 +164,13 @@ const updateStatus = () => {
                         <label class="text-sm font-medium text-bakery-dark">{{
                             $t("admin_orders.fields.pickup_date")
                         }}</label>
-                        <InputText v-model="statusForm.pickup_date" type="date" class="w-full" />
+                        <DatePicker
+                            v-model="statusForm.pickup_date"
+                            date-format="yy-mm-dd"
+                            update-model-type="string"
+                            show-icon
+                            class="w-full"
+                        />
                         <p v-if="statusForm.errors.pickup_date" class="text-xs text-red-700">
                             {{ statusForm.errors.pickup_date }}
                         </p>

@@ -125,6 +125,11 @@ const stubs = {
         props: ["modelValue", "placeholder"],
         template: '<input :value="modelValue" :placeholder="placeholder" />',
     },
+    DatePicker: {
+        props: ["modelValue"],
+        emits: ["update:modelValue"],
+        template: '<input :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+    },
     SectionTitle: {
         props: ["eyebrow", "title", "description"],
         template: "<section>{{ eyebrow }} {{ title }} {{ description }}</section>",

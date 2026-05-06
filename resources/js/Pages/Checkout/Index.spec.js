@@ -50,6 +50,14 @@ vi.mock("primevue/textarea", () => ({
 vi.mock("primevue/checkbox", () => ({
     default: { name: "Checkbox", template: '<input type="checkbox" />' },
 }));
+vi.mock("primevue/datepicker", () => ({
+    default: {
+        name: "DatePicker",
+        props: ["modelValue"],
+        emits: ["update:modelValue"],
+        template: '<input :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+    },
+}));
 
 describe("Checkout page", () => {
     beforeEach(() => {
