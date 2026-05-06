@@ -114,37 +114,7 @@ Ha több commit készül, mindegyik kapjon saját korrekt üzenetet.
 
 ---
 
-## 5. Kód formázás (kötelező)
-
-Futtasd le a teljes projektre a formázást:
-
-- `npm run format`
-- `vendor/bin/pint`
-
-vagy ha van:
-
-- `npm run format:all`
-
-Cél:
-
-- egységes kódstílus
-- felesleges diffek elkerülése
-- CI kompatibilitás
-
-FONTOS:
-
-A formázás után:
-
-- futtasd újra:
-    - `git status`
-    - `git diff --stat`
-
-és ellenőrizd, hogy:
-
-- csak formázási változások történtek
-- nincs nem kívánt módosítás
-
-## 6. Commit előtti validáció
+## 5. Commit előtti validáció
 
 Commit előtt futtasd le, ha releváns:
 
@@ -163,7 +133,7 @@ Ha valami elhasal:
 
 ---
 
-## 7. Stage + commit
+## 6. Stage + commit
 
 Csak a releváns fájlokat stage-eld.
 Ne használj vak `git add .`-t addig, amíg nem ellenőrizted a státuszt.
@@ -172,7 +142,7 @@ Ezután készíts commitot.
 
 ---
 
-## 8. Opcionális push
+## 7. Opcionális push
 
 Ha a repo branch és remote rendben van, pushold is fel az aktuális branch-et.
 
