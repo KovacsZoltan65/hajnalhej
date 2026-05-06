@@ -75,6 +75,62 @@ const removeItemRow = (index) => {
 
     props.form.items.splice(index, 1);
 };
+
+const ingredientName = (ingredient) => ingredient.ingredient_name ?? ingredient.name ?? "";
+const ingredientUnit = (ingredient) => ingredient.ingredient_unit ?? ingredient.unit ?? "";
+
+const ingredientRequirements = computed(() => {
+    const rows = new Map();
+
+    (props.form.items ?? []).forEach((item) => {
+        const quantity = Number(item.target_quantity ?? 0);
+
+        if (!item.product_id || !quantity) {
+            return;
+        }
+
+        const product = props.products.find((option) => Number(option.id) === Number(item.product_id));
+
+        (product?.product_ingredients ?? []).forEach((ingredient) => {
+            const ingredientId = Number(ingredient.ingredient_id ?? ingredient.id ?? 0);
+
+            if (!ingredientId) {
+                return;
+            }
+
+            const required = Number(ingredient.quantity ?? 0) * quantity;
+
+            if (!rows.has(ingredientId)) {
+                rows.set(ingredientId, {
+                    ingredient_id: ingredientId,
+                    name: ingredientName(ingredient),
+                    unit: ingredientUnit(ingredient),
+                    total_required: 0,
+                    current_stock: Number(ingredient.current_stock ?? 0),
+                    minimum_stock: Number(ingredient.minimum_stock ?? 0),
+                });
+            }
+
+            rows.get(ingredientId).total_required += required;
+        });
+    });
+
+    return Array.from(rows.values())
+        .map((row) => {
+            const shortage = Math.max(0, row.total_required - row.current_stock);
+
+            return {
+                ...row,
+                total_required: Number(row.total_required.toFixed(3)),
+                current_stock: Number(row.current_stock.toFixed(3)),
+                minimum_stock: Number(row.minimum_stock.toFixed(3)),
+                shortage: Number(shortage.toFixed(3)),
+                is_low_stock: row.current_stock <= row.minimum_stock,
+                is_insufficient: shortage > 0,
+            };
+        })
+        .sort((left, right) => right.shortage - left.shortage || left.name.localeCompare(right.name));
+});
 </script>
 
 <template>
@@ -212,6 +268,54 @@ const removeItemRow = (index) => {
                         @click="removeItemRow(index)"
                     />
                 </div>
+            </div>
+        </div>
+
+        <div
+            v-if="ingredientRequirements.length > 0"
+            data-test="ingredient-requirements"
+            class="space-y-2 rounded-xl border border-bakery-brown/15 bg-white p-4"
+        >
+            <h4 class="text-sm font-semibold text-bakery-dark">
+                {{ trans("admin_production_plans.requirements.title") }}
+            </h4>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead class="text-left text-xs uppercase tracking-[0.12em] text-bakery-brown/75">
+                        <tr>
+                            <th class="py-2 pr-2">{{ trans("admin_production_plans.requirements.ingredient") }}</th>
+                            <th class="py-2 pr-2">{{ trans("admin_production_plans.requirements.required") }}</th>
+                            <th class="py-2 pr-2">{{ trans("admin_production_plans.requirements.stock") }}</th>
+                            <th class="py-2 pr-2">{{ trans("admin_production_plans.requirements.shortage") }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="row in ingredientRequirements"
+                            :key="row.ingredient_id"
+                            data-test="ingredient-requirement-row"
+                            class="border-t border-bakery-brown/10"
+                        >
+                            <td class="py-2 pr-2 font-medium text-bakery-dark">
+                                {{ row.name }}
+                                <span v-if="row.is_insufficient" class="ml-2 text-xs font-semibold text-red-700">
+                                    {{ trans("admin.production_plans.flow.warnings.insufficient") }}
+                                </span>
+                                <span v-else-if="row.is_low_stock" class="ml-2 text-xs font-semibold text-amber-700">
+                                    {{ trans("admin.production_plans.flow.warnings.low_stock") }}
+                                </span>
+                            </td>
+                            <td class="py-2 pr-2 text-bakery-dark/80">{{ row.total_required }} {{ row.unit }}</td>
+                            <td class="py-2 pr-2 text-bakery-dark/80">{{ row.current_stock }} {{ row.unit }}</td>
+                            <td
+                                class="py-2 pr-2"
+                                :class="row.shortage > 0 ? 'font-semibold text-red-700' : 'text-bakery-dark/70'"
+                            >
+                                {{ row.shortage }} {{ row.unit }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

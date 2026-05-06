@@ -142,6 +142,7 @@ class ProductionPlanRepository
     {
         return Product::query()
             ->with([
+                'productIngredients.ingredient:id,name,slug,unit,current_stock,minimum_stock,is_active',
                 'recipeSteps' => fn ($query) => $query
                     ->where('is_active', true)
                     ->orderBy('sort_order')
@@ -155,6 +156,17 @@ class ProductionPlanRepository
                 'id' => $product->id,
                 'name' => $product->name,
                 'slug' => $product->slug,
+                'product_ingredients' => $product->productIngredients
+                    ->map(fn (ProductIngredient $item): array => [
+                        'ingredient_id' => $item->ingredient_id,
+                        'ingredient_name' => $item->ingredient?->name,
+                        'ingredient_unit' => $item->ingredient?->unit,
+                        'quantity' => (float) $item->quantity,
+                        'current_stock' => (float) ($item->ingredient?->current_stock ?? 0),
+                        'minimum_stock' => (float) ($item->ingredient?->minimum_stock ?? 0),
+                    ])
+                    ->values()
+                    ->all(),
                 'recipe_steps' => $product->recipeSteps
                     ->map(fn (RecipeStep $step): array => [
                         'id' => $step->id,

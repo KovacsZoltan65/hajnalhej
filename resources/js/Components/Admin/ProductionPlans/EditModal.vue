@@ -18,7 +18,6 @@ const emit = defineEmits(["update:visible", "submit"]);
 
 const close = () => emit("update:visible", false);
 
-const requirementRows = computed(() => props.selectedPlan?.details?.ingredient_requirements ?? []);
 const summary = computed(() => props.selectedPlan?.details?.summary ?? null);
 const timelineSteps = computed(() => props.selectedPlan?.details?.timeline_steps ?? []);
 </script>
@@ -86,44 +85,6 @@ const timelineSteps = computed(() => props.selectedPlan?.details?.timeline_steps
                             })
                         }}
                     </p>
-                </div>
-            </div>
-
-            <div
-                v-if="requirementRows.length > 0"
-                class="space-y-2 rounded-xl border border-bakery-brown/15 bg-white p-4"
-            >
-                <h4 class="text-sm font-semibold text-bakery-dark">
-                    {{ trans("admin_production_plans.requirements.title") }}
-                </h4>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm">
-                        <thead class="text-left text-xs uppercase tracking-[0.12em] text-bakery-brown/75">
-                            <tr>
-                                <th class="py-2 pr-2">{{ trans("admin_production_plans.requirements.ingredient") }}</th>
-                                <th class="py-2 pr-2">{{ trans("admin_production_plans.requirements.required") }}</th>
-                                <th class="py-2 pr-2">{{ trans("admin_production_plans.requirements.stock") }}</th>
-                                <th class="py-2 pr-2">{{ trans("admin_production_plans.requirements.shortage") }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="row in requirementRows"
-                                :key="row.ingredient_id"
-                                class="border-t border-bakery-brown/10"
-                            >
-                                <td class="py-2 pr-2 font-medium text-bakery-dark">{{ row.name }}</td>
-                                <td class="py-2 pr-2 text-bakery-dark/80">{{ row.total_required }} {{ row.unit }}</td>
-                                <td class="py-2 pr-2 text-bakery-dark/80">{{ row.current_stock }} {{ row.unit }}</td>
-                                <td
-                                    class="py-2 pr-2"
-                                    :class="row.shortage > 0 ? 'text-red-700 font-semibold' : 'text-bakery-dark/70'"
-                                >
-                                    {{ row.shortage }} {{ row.unit }}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
 

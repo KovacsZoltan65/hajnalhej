@@ -15,6 +15,13 @@ vi.mock("laravel-vue-i18n", () => ({
                 "common.quantity": "Mennyiség",
                 "admin_production_plans.form.unit": "Egység",
                 "admin_production_plans.form.sort_order": "Sorrend",
+                "admin_production_plans.requirements.title": "Összesített alapanyag igény",
+                "admin_production_plans.requirements.ingredient": "Alapanyag",
+                "admin_production_plans.requirements.required": "Szükséges",
+                "admin_production_plans.requirements.stock": "Készlet",
+                "admin_production_plans.requirements.shortage": "Hiány",
+                "admin.production_plans.flow.warnings.insufficient": "Nincs elég készlet",
+                "admin.production_plans.flow.warnings.low_stock": "Alacsony készlet",
                 "admin.production_plans.flow.target.earliest_ready_at":
                     "A kiválasztott termékek alapján a legkorábbi elkészülési idő: :datetime",
             }[key] ?? key;
@@ -81,6 +88,68 @@ describe("ProductionPlanForm", () => {
         errors: {},
         processing: false,
     });
+
+    const productsWithIngredients = () => [
+        {
+            id: 1,
+            name: "Kovaszos feher kenyer",
+            slug: "kovaszos-feher-kenyer",
+            product_ingredients: [
+                {
+                    ingredient_id: 1,
+                    ingredient_name: "Liszt",
+                    ingredient_unit: "g",
+                    quantity: 500,
+                    current_stock: 1200,
+                    minimum_stock: 200,
+                },
+                {
+                    ingredient_id: 2,
+                    ingredient_name: "So",
+                    ingredient_unit: "g",
+                    quantity: 10,
+                    current_stock: 1000,
+                    minimum_stock: 100,
+                },
+            ],
+            recipe_steps: [{ id: 1, duration_minutes: 25, wait_minutes: 35 }],
+        },
+        {
+            id: 2,
+            name: "Baguette",
+            slug: "baguette",
+            product_ingredients: [
+                {
+                    ingredient_id: 1,
+                    ingredient_name: "Liszt",
+                    ingredient_unit: "g",
+                    quantity: 300,
+                    current_stock: 1200,
+                    minimum_stock: 200,
+                },
+                {
+                    ingredient_id: 3,
+                    ingredient_name: "Eleszto",
+                    ingredient_unit: "g",
+                    quantity: 8,
+                    current_stock: 20,
+                    minimum_stock: 50,
+                },
+            ],
+            recipe_steps: [{ id: 2, duration_minutes: 15, wait_minutes: 20 }],
+        },
+    ];
+
+    const mountForm = (form = makeForm(), products = productsWithIngredients()) =>
+        mount(ProductionPlanForm, {
+            props: {
+                form,
+                products,
+                statuses: [{ value: "draft", label: "Draft" }],
+                mode: "edit",
+            },
+            global: { stubs },
+        });
 
     it("renders key fields", () => {
         vi.useFakeTimers();
@@ -252,5 +321,106 @@ describe("ProductionPlanForm", () => {
             unit_label: "",
             sort_order: null,
         });
+    });
+
+    it("updates ingredient preview when quantity changes", async () => {
+        const form = makeForm();
+        const wrapper = mountForm(form);
+
+        expect(wrapper.text()).toContain("Liszt");
+        expect(wrapper.text()).toContain("500 g");
+
+        await wrapper.setProps({
+            form: {
+                ...form,
+                items: [{ ...form.items[0], target_quantity: 3 }],
+            },
+        });
+
+        expect(wrapper.text()).toContain("1500 g");
+        expect(wrapper.text()).toContain("300 g");
+        expect(wrapper.text()).toContain("Nincs elég készlet");
+    });
+
+    it("updates ingredient preview when product is added and aggregates identical ingredients", async () => {
+        const form = makeForm();
+        const wrapper = mountForm(form);
+
+        await wrapper.setProps({
+            form: {
+                ...form,
+                items: [
+                    ...form.items,
+                    {
+                        product_id: 2,
+                        target_quantity: 2,
+                        unit_label: "db",
+                        sort_order: 1,
+                    },
+                ],
+            },
+        });
+
+        expect(wrapper.text()).toContain("1100 g");
+        expect(wrapper.text()).toContain("Eleszto");
+        expect(wrapper.text()).toContain("16 g");
+    });
+
+    it("updates ingredient preview when product is removed", async () => {
+        const form = makeForm();
+        form.items.push({
+            product_id: 2,
+            target_quantity: 2,
+            unit_label: "db",
+            sort_order: 1,
+        });
+        const wrapper = mountForm(form);
+
+        expect(wrapper.text()).toContain("Eleszto");
+
+        await wrapper.setProps({
+            form: {
+                ...form,
+                items: [form.items[0]],
+            },
+        });
+
+        expect(wrapper.find('[data-test="ingredient-requirements"]').text()).not.toContain("Eleszto");
+        expect(wrapper.text()).toContain("500 g");
+    });
+
+    it("replaces ingredient preview rows when product changes", async () => {
+        const form = makeForm();
+        const wrapper = mountForm(form);
+
+        expect(wrapper.text()).toContain("So");
+
+        await wrapper.setProps({
+            form: {
+                ...form,
+                items: [{ ...form.items[0], product_id: 2 }],
+            },
+        });
+
+        expect(wrapper.find('[data-test="ingredient-requirements"]').text()).not.toContain("So");
+        expect(wrapper.text()).toContain("Eleszto");
+        expect(wrapper.text()).toContain("300 g");
+    });
+
+    it("updates insufficient stock badge after quantity change", async () => {
+        const form = makeForm();
+        const wrapper = mountForm(form);
+
+        expect(wrapper.text()).not.toContain("Nincs elég készlet");
+
+        await wrapper.setProps({
+            form: {
+                ...form,
+                items: [{ ...form.items[0], target_quantity: 4 }],
+            },
+        });
+
+        expect(wrapper.text()).toContain("Nincs elég készlet");
+        expect(wrapper.text()).toContain("800 g");
     });
 });

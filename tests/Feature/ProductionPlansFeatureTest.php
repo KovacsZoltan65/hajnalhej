@@ -7,8 +7,19 @@ use App\Models\ProductIngredient;
 use App\Models\ProductionPlan;
 use App\Models\RecipeStep;
 use App\Models\User;
+use App\Services\ProductionPlanService;
 use Illuminate\Support\Carbon;
 use Inertia\Testing\AssertableInertia as Assert;
+
+function requirementRowsFor(ProductionPlan $plan): array
+{
+    return app(ProductionPlanService::class)->buildPlanPayload($plan->refresh())['ingredient_requirements'];
+}
+
+function requirementRowByName(ProductionPlan $plan, string $name): ?array
+{
+    return collect(requirementRowsFor($plan))->firstWhere('name', $name);
+}
 
 it('production plans guest nem fer hozza admin indexhez', function (): void {
     $response = $this->get('/admin/production-plans');
@@ -455,6 +466,208 @@ it('production plan update mukodik', function (): void {
         'is_locked' => true,
         'notes' => 'Veglegesitett muszakterv',
     ]);
+});
+
+it('production plan update quantity recalculates ingredient requirements', function (): void {
+    $user = User::factory()->create();
+    $product = Product::factory()->create(['is_active' => true]);
+    $flour = Ingredient::factory()->create(['name' => 'Liszt', 'unit' => 'g', 'current_stock' => 1000]);
+
+    ProductIngredient::factory()->create([
+        'product_id' => $product->id,
+        'ingredient_id' => $flour->id,
+        'quantity' => 100,
+    ]);
+
+    $plan = ProductionPlan::factory()->create(['status' => 'draft']);
+    $plan->items()->create([
+        'product_id' => $product->id,
+        'product_name_snapshot' => $product->name,
+        'product_slug_snapshot' => $product->slug,
+        'target_quantity' => 2,
+        'unit_label' => 'db',
+        'sort_order' => 0,
+    ]);
+
+    $this->actingAs($user)->put("/admin/production-plans/{$plan->id}", [
+        'target_ready_at' => Carbon::tomorrow()->setTime(9, 0)->toDateTimeString(),
+        'status' => 'draft',
+        'is_locked' => false,
+        'items' => [
+            ['product_id' => $product->id, 'target_quantity' => 5, 'unit_label' => 'db', 'sort_order' => 0],
+        ],
+    ])->assertRedirect('/admin/production-plans');
+
+    expect(requirementRowByName($plan, 'Liszt')['total_required'])->toBe(500.0);
+});
+
+it('production plan update add product recalculates ingredient requirements', function (): void {
+    $user = User::factory()->create();
+    $bread = Product::factory()->create(['is_active' => true]);
+    $baguette = Product::factory()->create(['is_active' => true]);
+    $flour = Ingredient::factory()->create(['name' => 'Liszt', 'unit' => 'g', 'current_stock' => 5000]);
+    $yeast = Ingredient::factory()->create(['name' => 'Élesztő', 'unit' => 'g', 'current_stock' => 100]);
+
+    ProductIngredient::factory()->create(['product_id' => $bread->id, 'ingredient_id' => $flour->id, 'quantity' => 500]);
+    ProductIngredient::factory()->create(['product_id' => $baguette->id, 'ingredient_id' => $yeast->id, 'quantity' => 8]);
+
+    $plan = ProductionPlan::factory()->create(['status' => 'draft']);
+    $plan->items()->create([
+        'product_id' => $bread->id,
+        'product_name_snapshot' => $bread->name,
+        'product_slug_snapshot' => $bread->slug,
+        'target_quantity' => 1,
+        'unit_label' => 'db',
+        'sort_order' => 0,
+    ]);
+
+    $this->actingAs($user)->put("/admin/production-plans/{$plan->id}", [
+        'target_ready_at' => Carbon::tomorrow()->setTime(9, 0)->toDateTimeString(),
+        'status' => 'draft',
+        'is_locked' => false,
+        'items' => [
+            ['product_id' => $bread->id, 'target_quantity' => 1, 'unit_label' => 'db', 'sort_order' => 0],
+            ['product_id' => $baguette->id, 'target_quantity' => 3, 'unit_label' => 'db', 'sort_order' => 1],
+        ],
+    ])->assertRedirect('/admin/production-plans');
+
+    expect(requirementRowByName($plan, 'Liszt')['total_required'])->toBe(500.0);
+    expect(requirementRowByName($plan, 'Élesztő')['total_required'])->toBe(24.0);
+});
+
+it('production plan update remove product recalculates ingredient requirements', function (): void {
+    $user = User::factory()->create();
+    $bread = Product::factory()->create(['is_active' => true]);
+    $baguette = Product::factory()->create(['is_active' => true]);
+    $flour = Ingredient::factory()->create(['name' => 'Liszt', 'unit' => 'g']);
+    $yeast = Ingredient::factory()->create(['name' => 'Élesztő', 'unit' => 'g']);
+
+    ProductIngredient::factory()->create(['product_id' => $bread->id, 'ingredient_id' => $flour->id, 'quantity' => 500]);
+    ProductIngredient::factory()->create(['product_id' => $baguette->id, 'ingredient_id' => $yeast->id, 'quantity' => 8]);
+
+    $plan = ProductionPlan::factory()->create(['status' => 'draft']);
+    foreach ([[$bread, 1, 0], [$baguette, 2, 1]] as [$product, $quantity, $sortOrder]) {
+        $plan->items()->create([
+            'product_id' => $product->id,
+            'product_name_snapshot' => $product->name,
+            'product_slug_snapshot' => $product->slug,
+            'target_quantity' => $quantity,
+            'unit_label' => 'db',
+            'sort_order' => $sortOrder,
+        ]);
+    }
+
+    $this->actingAs($user)->put("/admin/production-plans/{$plan->id}", [
+        'target_ready_at' => Carbon::tomorrow()->setTime(9, 0)->toDateTimeString(),
+        'status' => 'draft',
+        'is_locked' => false,
+        'items' => [
+            ['product_id' => $bread->id, 'target_quantity' => 1, 'unit_label' => 'db', 'sort_order' => 0],
+        ],
+    ])->assertRedirect('/admin/production-plans');
+
+    expect(requirementRowByName($plan, 'Liszt')['total_required'])->toBe(500.0);
+    expect(requirementRowByName($plan, 'Élesztő'))->toBeNull();
+    $this->assertDatabaseMissing('production_plan_items', [
+        'production_plan_id' => $plan->id,
+        'product_id' => $baguette->id,
+    ]);
+});
+
+it('production plan update product change replaces ingredient requirements', function (): void {
+    $user = User::factory()->create();
+    $bread = Product::factory()->create(['is_active' => true]);
+    $baguette = Product::factory()->create(['is_active' => true]);
+    $flour = Ingredient::factory()->create(['name' => 'Liszt', 'unit' => 'g']);
+    $yeast = Ingredient::factory()->create(['name' => 'Élesztő', 'unit' => 'g']);
+
+    ProductIngredient::factory()->create(['product_id' => $bread->id, 'ingredient_id' => $flour->id, 'quantity' => 500]);
+    ProductIngredient::factory()->create(['product_id' => $baguette->id, 'ingredient_id' => $yeast->id, 'quantity' => 8]);
+
+    $plan = ProductionPlan::factory()->create(['status' => 'draft']);
+    $plan->items()->create([
+        'product_id' => $bread->id,
+        'product_name_snapshot' => $bread->name,
+        'product_slug_snapshot' => $bread->slug,
+        'target_quantity' => 1,
+        'unit_label' => 'db',
+        'sort_order' => 0,
+    ]);
+
+    $this->actingAs($user)->put("/admin/production-plans/{$plan->id}", [
+        'target_ready_at' => Carbon::tomorrow()->setTime(9, 0)->toDateTimeString(),
+        'status' => 'draft',
+        'is_locked' => false,
+        'items' => [
+            ['product_id' => $baguette->id, 'target_quantity' => 4, 'unit_label' => 'db', 'sort_order' => 0],
+        ],
+    ])->assertRedirect('/admin/production-plans');
+
+    expect(requirementRowByName($plan, 'Liszt'))->toBeNull();
+    expect(requirementRowByName($plan, 'Élesztő')['total_required'])->toBe(32.0);
+});
+
+it('production plan identical ingredients are aggregated correctly', function (): void {
+    $user = User::factory()->create();
+    $bread = Product::factory()->create(['is_active' => true]);
+    $baguette = Product::factory()->create(['is_active' => true]);
+    $flour = Ingredient::factory()->create(['name' => 'Liszt', 'unit' => 'g', 'current_stock' => 3000]);
+
+    ProductIngredient::factory()->create(['product_id' => $bread->id, 'ingredient_id' => $flour->id, 'quantity' => 500]);
+    ProductIngredient::factory()->create(['product_id' => $baguette->id, 'ingredient_id' => $flour->id, 'quantity' => 300]);
+
+    $plan = ProductionPlan::factory()->create(['status' => 'draft']);
+
+    $this->actingAs($user)->put("/admin/production-plans/{$plan->id}", [
+        'target_ready_at' => Carbon::tomorrow()->setTime(9, 0)->toDateTimeString(),
+        'status' => 'draft',
+        'is_locked' => false,
+        'items' => [
+            ['product_id' => $bread->id, 'target_quantity' => 2, 'unit_label' => 'db', 'sort_order' => 0],
+            ['product_id' => $baguette->id, 'target_quantity' => 3, 'unit_label' => 'db', 'sort_order' => 1],
+        ],
+    ])->assertRedirect('/admin/production-plans');
+
+    $rows = requirementRowsFor($plan);
+
+    expect($rows)->toHaveCount(1);
+    expect($rows[0]['name'])->toBe('Liszt');
+    expect($rows[0]['total_required'])->toBe(1900.0);
+});
+
+it('production plan stale ingredient requirements are removed after update', function (): void {
+    $user = User::factory()->create();
+    $oldProduct = Product::factory()->create(['is_active' => true]);
+    $newProduct = Product::factory()->create(['is_active' => true]);
+    $oldIngredient = Ingredient::factory()->create(['name' => 'Régi alapanyag', 'unit' => 'g']);
+    $newIngredient = Ingredient::factory()->create(['name' => 'Új alapanyag', 'unit' => 'g']);
+
+    ProductIngredient::factory()->create(['product_id' => $oldProduct->id, 'ingredient_id' => $oldIngredient->id, 'quantity' => 100]);
+    ProductIngredient::factory()->create(['product_id' => $newProduct->id, 'ingredient_id' => $newIngredient->id, 'quantity' => 200]);
+
+    $plan = ProductionPlan::factory()->create(['status' => 'draft']);
+    $plan->items()->create([
+        'product_id' => $oldProduct->id,
+        'product_name_snapshot' => $oldProduct->name,
+        'product_slug_snapshot' => $oldProduct->slug,
+        'target_quantity' => 2,
+        'unit_label' => 'db',
+        'sort_order' => 0,
+    ]);
+
+    expect(requirementRowByName($plan, 'Régi alapanyag')['total_required'])->toBe(200.0);
+
+    $this->actingAs($user)->put("/admin/production-plans/{$plan->id}", [
+        'target_ready_at' => Carbon::tomorrow()->setTime(9, 0)->toDateTimeString(),
+        'status' => 'draft',
+        'is_locked' => false,
+        'items' => [
+            ['product_id' => $newProduct->id, 'target_quantity' => 3, 'unit_label' => 'db', 'sort_order' => 0],
+        ],
+    ])->assertRedirect('/admin/production-plans');
+
+    expect(requirementRowByName($plan, 'Régi alapanyag'))->toBeNull();
+    expect(requirementRowByName($plan, 'Új alapanyag')['total_required'])->toBe(600.0);
 });
 
 it('production plan timeline starter dependency lépéseket general', function (): void {
