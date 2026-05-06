@@ -1,11 +1,11 @@
 <script setup>
 import { Head, useForm } from "@inertiajs/vue3";
 import Button from "primevue/button";
-import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import Textarea from "primevue/textarea";
 
+import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 import OrderStatusBadge from "@/Components/Orders/OrderStatusBadge.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
@@ -164,13 +164,7 @@ const updateStatus = () => {
                         <label class="text-sm font-medium text-bakery-dark">{{
                             $t("admin_orders.fields.pickup_date")
                         }}</label>
-                        <DatePicker
-                            v-model="statusForm.pickup_date"
-                            date-format="yy-mm-dd"
-                            update-model-type="string"
-                            show-icon
-                            class="w-full"
-                        />
+                        <BaseDatePicker v-model="statusForm.pickup_date" class="w-full" />
                         <p v-if="statusForm.errors.pickup_date" class="text-xs text-red-700">
                             {{ statusForm.errors.pickup_date }}
                         </p>

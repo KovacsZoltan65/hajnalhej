@@ -4,11 +4,11 @@ import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
-import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 import AdjustmentModal from "@/Components/Admin/Inventory/AdjustmentModal.vue";
 import WasteEntryModal from "@/Components/Admin/Inventory/WasteEntryModal.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
@@ -194,45 +194,6 @@ const movementTypeClass = (type) => {
 };
 
 const directionClass = (direction) => (direction === "out" ? "text-rose-700" : "text-emerald-700");
-
-const parseDateFromYmd = (value) => {
-    if (!value) {
-        return null;
-    }
-
-    const [year, month, day] = String(value).split("-").map(Number);
-    if (!year || !month || !day) {
-        return null;
-    }
-
-    return new Date(year, month - 1, day);
-};
-
-const toYmd = (value) => {
-    if (!(value instanceof Date) || Number.isNaN(value.getTime())) {
-        return "";
-    }
-
-    const year = value.getFullYear();
-    const month = String(value.getMonth() + 1).padStart(2, "0");
-    const day = String(value.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-};
-
-const dateFromPicker = computed({
-    get: () => parseDateFromYmd(filterState.date_from),
-    set: (value) => {
-        filterState.date_from = toYmd(value);
-    },
-});
-
-const dateToPicker = computed({
-    get: () => parseDateFromYmd(filterState.date_to),
-    set: (value) => {
-        filterState.date_to = toYmd(value);
-    },
-});
 </script>
 
 <template>
@@ -356,10 +317,8 @@ const dateToPicker = computed({
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                             $t("admin_inventory.filters.date_from")
                         }}</label>
-                        <DatePicker
-                            v-model="dateFromPicker"
-                            show-icon
-                            date-format="yy.mm.dd"
+                        <BaseDatePicker
+                            v-model="filterState.date_from"
                             class="w-full"
                             @update:model-value="submitFilters"
                         />
@@ -368,10 +327,8 @@ const dateToPicker = computed({
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                             $t("admin_inventory.filters.date_to")
                         }}</label>
-                        <DatePicker
-                            v-model="dateToPicker"
-                            show-icon
-                            date-format="yy.mm.dd"
+                        <BaseDatePicker
+                            v-model="filterState.date_to"
                             class="w-full"
                             @update:model-value="submitFilters"
                         />

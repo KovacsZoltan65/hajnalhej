@@ -46,8 +46,8 @@ const stubs = {
         emits: ["update:modelValue"],
         template: '<textarea :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
     },
-    DatePicker: {
-        name: "DatePicker",
+    BaseDatePicker: {
+        name: "BaseDatePicker",
         props: ["modelValue", "minDate"],
         emits: ["update:modelValue"],
         template: "<input />",
@@ -180,7 +180,7 @@ describe("ProductionPlanForm", () => {
         expect(wrapper.text()).toContain("Kész legyen ekkor");
         expect(wrapper.text()).toContain("Megjegyzés");
         expect(wrapper.text()).toContain("Termékek és mennyiségek");
-        expect(wrapper.findComponent({ name: "DatePicker" }).props("minDate").toISOString()).toBe(
+        expect(wrapper.findComponent({ name: "BaseDatePicker" }).props("minDate").toISOString()).toBe(
             "2026-05-06T09:00:00.000Z"
         );
         expect(wrapper.text()).toContain("A kiválasztott termékek alapján a legkorábbi elkészülési idő:");

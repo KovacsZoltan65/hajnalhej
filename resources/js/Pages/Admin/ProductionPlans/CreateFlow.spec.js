@@ -85,8 +85,8 @@ const stubs = {
             "<button :disabled='disabled' @click=\"$emit('click')\">{{ loading ? 'loading' : label }}<slot /></button>",
         props: ["label", "disabled", "loading"],
     },
-    DatePicker: {
-        name: "DatePicker",
+    BaseDatePicker: {
+        name: "BaseDatePicker",
         template:
             "<input data-testid='target-date' @input=\"$emit('update:modelValue', new Date('2026-05-07T09:00:00'))\" />",
         props: ["modelValue", "minDate"],

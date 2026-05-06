@@ -1,12 +1,12 @@
 <script setup>
 import { computed } from "vue";
 import Button from "primevue/button";
-import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import Textarea from "primevue/textarea";
 import ToggleSwitch from "primevue/toggleswitch";
 import { trans } from "laravel-vue-i18n";
+import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 
 const props = defineProps({
     form: { type: Object, required: true },
@@ -140,10 +140,11 @@ const ingredientRequirements = computed(() => {
                 <label class="text-sm font-medium text-bakery-dark">{{
                     trans("admin_production_plans.form.target_ready_at")
                 }}</label>
-                <DatePicker
+                <BaseDatePicker
                     v-model="form.target_ready_at"
                     show-time
                     hour-format="24"
+                    update-model-type="date"
                     :min-date="minTargetReadyAt"
                     class="w-full"
                 />

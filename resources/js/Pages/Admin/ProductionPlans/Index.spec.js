@@ -125,7 +125,7 @@ const stubs = {
         props: ["modelValue", "placeholder"],
         template: '<input :value="modelValue" :placeholder="placeholder" />',
     },
-    DatePicker: {
+    BaseDatePicker: {
         props: ["modelValue"],
         emits: ["update:modelValue"],
         template: '<input :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',

@@ -2,9 +2,9 @@
 import { Head, Link, router, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 import Button from "primevue/button";
-import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
+import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 
@@ -90,13 +90,7 @@ const form = useForm({
 
         <section class="ui-card p-4 sm:p-5 space-y-3">
             <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">Új leltár</h2>
-            <DatePicker
-                v-model="form.count_date"
-                date-format="yy-mm-dd"
-                update-model-type="string"
-                show-icon
-                class="w-full"
-            />
+            <BaseDatePicker v-model="form.count_date" class="w-full" />
             <InputText v-model="form.notes" placeholder="Megjegyzés" />
             <div class="space-y-2">
                 <div v-for="(item, idx) in form.items" :key="idx" class="grid gap-2 md:grid-cols-3">

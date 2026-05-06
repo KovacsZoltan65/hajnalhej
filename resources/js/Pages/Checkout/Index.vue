@@ -2,10 +2,10 @@
 import { Head, Link, useForm } from "@inertiajs/vue3";
 import Button from "primevue/button";
 import Checkbox from "primevue/checkbox";
-import DatePicker from "primevue/datepicker";
 import InputMask from "primevue/inputmask";
 import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
+import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 import PublicLayout from "../../Layouts/PublicLayout.vue";
 import { useConversionTracking } from "@/composables/useConversionTracking";
 import { useLocaleFormat } from "@/composables/useLocaleFormat";
@@ -109,12 +109,9 @@ const submit = () => {
 
                     <div class="space-y-2">
                         <label for="pickup_date" class="text-sm font-medium text-bakery-dark">Átvétel dátuma</label>
-                        <DatePicker
+                        <BaseDatePicker
                             input-id="pickup_date"
                             v-model="form.pickup_date"
-                            date-format="yy-mm-dd"
-                            update-model-type="string"
-                            show-icon
                             class="w-full"
                             :invalid="Boolean(form.errors.pickup_date)"
                         />

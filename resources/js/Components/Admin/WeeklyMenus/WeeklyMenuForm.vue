@@ -1,11 +1,11 @@
 <script setup>
 import { watch } from "vue";
-import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
 import Message from "primevue/message";
 import Select from "primevue/select";
 import Textarea from "primevue/textarea";
 import ToggleSwitch from "primevue/toggleswitch";
+import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 import { slugify } from "../../../Utils/slugify";
 
 const props = defineProps({
@@ -50,14 +50,7 @@ watch(
         <!-- Hét kezdete -->
         <div class="space-y-2">
             <label class="text-sm font-medium text-bakery-dark">Hét kezdete</label>
-            <DatePicker
-                v-model="form.week_start"
-                show-icon
-                show-week
-                date-format="yy-mm-dd"
-                update-model-type="string"
-                class="w-full"
-            />
+            <BaseDatePicker v-model="form.week_start" show-week class="w-full" />
             <Message v-if="form.errors.week_start" severity="error" size="small" variant="simple">
                 {{ form.errors.week_start }}
             </Message>
@@ -66,14 +59,7 @@ watch(
         <!-- Hét vége -->
         <div class="space-y-2">
             <label class="text-sm font-medium text-bakery-dark">Hét vége</label>
-            <DatePicker
-                v-model="form.week_end"
-                show-icon
-                show-week
-                date-format="yy-mm-dd"
-                update-model-type="string"
-                class="w-full"
-            />
+            <BaseDatePicker v-model="form.week_end" show-week class="w-full" />
             <Message v-if="form.errors.week_end" severity="error" size="small" variant="simple">
                 {{ form.errors.week_end }}
             </Message>

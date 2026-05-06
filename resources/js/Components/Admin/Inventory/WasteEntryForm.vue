@@ -1,8 +1,8 @@
 <script setup>
 import { computed } from "vue";
-import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
+import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 
 const props = defineProps({
     form: {
@@ -93,13 +93,7 @@ const selectedWasteTargetId = computed({
 
         <div class="space-y-2">
             <label class="text-sm font-medium text-bakery-dark">Dátum</label>
-            <DatePicker
-                v-model="form.occurred_at"
-                date-format="yy-mm-dd"
-                update-model-type="string"
-                show-icon
-                class="w-full"
-            />
+            <BaseDatePicker v-model="form.occurred_at" class="w-full" />
             <p v-if="form.errors.occurred_at" class="text-xs text-red-700">{{ form.errors.occurred_at }}</p>
         </div>
     </div>

@@ -5,13 +5,13 @@ import Button from "primevue/button";
 import Column from "primevue/column";
 import ConfirmDialog from "primevue/confirmdialog";
 import DataTable from "primevue/datatable";
-import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import { useConfirm } from "primevue/useconfirm";
 import { trans } from "laravel-vue-i18n";
 import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 import CreateModal from "@/Components/Admin/ProductionPlans/CreateModal.vue";
 import EditModal from "@/Components/Admin/ProductionPlans/EditModal.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
@@ -373,13 +373,7 @@ const confirmDelete = (plan) => {
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                             trans("admin_production_plans.filters.target_from")
                         }}</label>
-                        <DatePicker
-                            v-model="filterState.target_from"
-                            date-format="yy-mm-dd"
-                            update-model-type="string"
-                            show-icon
-                            class="w-full"
-                        />
+                        <BaseDatePicker v-model="filterState.target_from" class="w-full" />
                     </div>
 
                     <!-- CÉLPONT -->
@@ -387,13 +381,7 @@ const confirmDelete = (plan) => {
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                             trans("admin_production_plans.filters.target_to")
                         }}</label>
-                        <DatePicker
-                            v-model="filterState.target_to"
-                            date-format="yy-mm-dd"
-                            update-model-type="string"
-                            show-icon
-                            class="w-full"
-                        />
+                        <BaseDatePicker v-model="filterState.target_to" class="w-full" />
                     </div>
 
                     <!-- SOROK / OLDAL -->

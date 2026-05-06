@@ -2,13 +2,13 @@
 import { Head, Link, useForm } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 import Button from "primevue/button";
-import DatePicker from "primevue/datepicker";
 import InputNumber from "primevue/inputnumber";
 import Select from "primevue/select";
 import Textarea from "primevue/textarea";
 import { trans } from "laravel-vue-i18n";
 
 import AdminTableEmptyState from "@/Components/Admin/Table/AdminTableEmptyState.vue";
+import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 import EntityStatusBadge from "@/Components/Admin/Table/EntityStatusBadge.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
@@ -382,10 +382,11 @@ const submit = () => {
                             <label class="text-xs font-semibold uppercase text-bakery-brown/80">
                                 {{ trans("admin.production_plans.flow.fields.target_ready_at") }}
                             </label>
-                            <DatePicker
+                            <BaseDatePicker
                                 v-model="form.target_ready_at"
                                 show-time
                                 hour-format="24"
+                                update-model-type="date"
                                 :min-date="minTargetReadyAt"
                                 class="w-full"
                             />
