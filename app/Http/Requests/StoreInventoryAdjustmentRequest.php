@@ -27,4 +27,3 @@ class StoreInventoryAdjustmentRequest extends FormRequest
         ];
     }
 }
-

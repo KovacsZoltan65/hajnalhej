@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreProductionPlanCreateFlowRequest;
 use App\Http\Requests\StoreProductionPlanRequest;
 use App\Http\Requests\UpdateProductionPlanRequest;
 use App\Models\ProductionPlan;
+use App\Services\ProductionPlanCreateFlowService;
 use App\Services\ProductionPlanService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,17 +16,11 @@ use Inertia\Response;
 
 class ProductionPlanController extends Controller
 {
-    /**
-     * @param ProductionPlanService $service
-     */
-    public function __construct(private readonly ProductionPlanService $service)
-    {
-    }
+    public function __construct(
+        private readonly ProductionPlanService $service,
+        private readonly ProductionPlanCreateFlowService $createFlowService,
+    ) {}
 
-    /**
-     * @param Request $request
-     * @return \Inertia\Response
-     */
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', ProductionPlan::class);
@@ -84,10 +80,34 @@ class ProductionPlanController extends Controller
         ]);
     }
 
-    /**
-     * @param StoreProductionPlanRequest $request
-     * @return RedirectResponse
-     */
+    public function createFlow(): Response
+    {
+        $this->authorize('create', ProductionPlan::class);
+
+        return Inertia::render('Admin/ProductionPlans/CreateFlow', [
+            'products' => $this->service->listActiveProductsForCreateFlow(),
+            'statuses' => $this->service->listStatuses(),
+        ]);
+    }
+
+    public function storeFlow(StoreProductionPlanCreateFlowRequest $request): RedirectResponse
+    {
+        $plan = $this->createFlowService->create($request->validated(), (int) $request->user()->id);
+
+        return redirect()
+            ->route('admin.production-plans.show', $plan)
+            ->with('success', __('admin.production_plans.flow.saved').'.');
+    }
+
+    public function show(ProductionPlan $productionPlan): Response
+    {
+        $this->authorize('view', $productionPlan);
+
+        return Inertia::render('Admin/ProductionPlans/Show', [
+            'plan' => $this->service->buildPlanPayload($productionPlan),
+        ]);
+    }
+
     public function store(StoreProductionPlanRequest $request): RedirectResponse
     {
         $this->authorize('create', ProductionPlan::class);
@@ -96,14 +116,9 @@ class ProductionPlanController extends Controller
 
         return redirect()
             ->route('admin.production-plans.index')
-            ->with('success', __('admin_production_plans.created') . '.');
+            ->with('success', __('admin_production_plans.created').'.');
     }
 
-    /**
-     * @param UpdateProductionPlanRequest $request
-     * @param ProductionPlan $productionPlan
-     * @return RedirectResponse
-     */
     public function update(UpdateProductionPlanRequest $request, ProductionPlan $productionPlan): RedirectResponse
     {
         $this->authorize('update', $productionPlan);
@@ -112,14 +127,9 @@ class ProductionPlanController extends Controller
 
         return redirect()
             ->route('admin.production-plans.index')
-            ->with('success', __('admin_production_plans.updated') . '.');
+            ->with('success', __('admin_production_plans.updated').'.');
     }
 
-    /**
-     * @param Request $request
-     * @param ProductionPlan $productionPlan
-     * @return RedirectResponse
-     */
     public function destroy(Request $request, ProductionPlan $productionPlan): RedirectResponse
     {
         $this->authorize('delete', $productionPlan);
@@ -128,8 +138,6 @@ class ProductionPlanController extends Controller
 
         return redirect()
             ->route('admin.production-plans.index')
-            ->with('success', __('admin_production_plans.deleted') . '.');
+            ->with('success', __('admin_production_plans.deleted').'.');
     }
 }
-
-

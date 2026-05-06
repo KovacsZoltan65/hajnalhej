@@ -1,5 +1,5 @@
 <script setup>
-import { trans } from 'laravel-vue-i18n';
+import { trans } from "laravel-vue-i18n";
 
 const props = defineProps({
     value: {
@@ -9,10 +9,10 @@ const props = defineProps({
 });
 
 const classes = {
-    critical: 'bg-red-100 text-red-800 ring-red-200',
-    high: 'bg-amber-100 text-amber-800 ring-amber-200',
-    medium: 'bg-yellow-100 text-yellow-800 ring-yellow-200',
-    low: 'bg-emerald-100 text-emerald-800 ring-emerald-200',
+    critical: "bg-red-100 text-red-800 ring-red-200",
+    high: "bg-amber-100 text-amber-800 ring-amber-200",
+    medium: "bg-yellow-100 text-yellow-800 ring-yellow-200",
+    low: "bg-emerald-100 text-emerald-800 ring-emerald-200",
 };
 </script>
 

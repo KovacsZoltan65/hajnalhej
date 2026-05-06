@@ -6,36 +6,36 @@ const props = defineProps({
     },
     label: {
         type: String,
-        default: '',
+        default: "",
     },
 });
 
 const classForEvent = (eventKey) => {
-    if (eventKey.includes('blocked')) {
-        return 'bg-rose-100 text-rose-700';
+    if (eventKey.includes("blocked")) {
+        return "bg-rose-100 text-rose-700";
     }
 
-    if (eventKey.includes('deleted')) {
-        return 'bg-amber-100 text-amber-800';
+    if (eventKey.includes("deleted")) {
+        return "bg-amber-100 text-amber-800";
     }
 
-    if (eventKey.includes('created')) {
-        return 'bg-emerald-100 text-emerald-700';
+    if (eventKey.includes("created")) {
+        return "bg-emerald-100 text-emerald-700";
     }
 
-    if (eventKey.includes('placed') || eventKey.includes('verified') || eventKey.includes('login')) {
-        return 'bg-emerald-100 text-emerald-700';
+    if (eventKey.includes("placed") || eventKey.includes("verified") || eventKey.includes("login")) {
+        return "bg-emerald-100 text-emerald-700";
     }
 
-    if (eventKey.includes('synced')) {
-        return 'bg-blue-100 text-blue-700';
+    if (eventKey.includes("synced")) {
+        return "bg-blue-100 text-blue-700";
     }
 
-    if (eventKey.includes('updated') || eventKey.includes('logout')) {
-        return 'bg-indigo-100 text-indigo-700';
+    if (eventKey.includes("updated") || eventKey.includes("logout")) {
+        return "bg-indigo-100 text-indigo-700";
     }
 
-    return 'bg-slate-100 text-slate-700';
+    return "bg-slate-100 text-slate-700";
 };
 </script>
 

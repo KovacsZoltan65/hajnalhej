@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property int $supplier_id
- * @property \Illuminate\Support\Carbon $period_start
- * @property \Illuminate\Support\Carbon $period_end
+ * @property Carbon $period_start
+ * @property Carbon $period_end
  * @property numeric $overall_score
  * @property numeric|null $price_score
  * @property numeric|null $reliability_score
@@ -20,9 +21,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $late_deliveries_count
  * @property numeric $rejected_quantity
  * @property array<array-key, mixed>|null $score_breakdown
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Supplier $supplier
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Supplier $supplier
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierScore newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierScore newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierScore query()
@@ -41,6 +43,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierScore whereScoreBreakdown($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierScore whereSupplierId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierScore whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class SupplierScore extends Model

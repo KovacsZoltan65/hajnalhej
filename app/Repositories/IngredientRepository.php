@@ -10,8 +10,7 @@ use Illuminate\Support\Collection;
 class IngredientRepository
 {
     /**
-     * @param array<string, mixed> $filters
-     * @return LengthAwarePaginator
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -43,8 +42,7 @@ class IngredientRepository
     }
 
     /**
-     * @param array<string, mixed> $data
-     * @return Ingredient
+     * @param  array<string, mixed>  $data
      */
     public function create(array $data): Ingredient
     {
@@ -52,8 +50,7 @@ class IngredientRepository
     }
 
     /**
-     * @param array<string, mixed> $data
-     * @return Ingredient
+     * @param  array<string, mixed>  $data
      */
     public function update(Ingredient $ingredient, array $data): Ingredient
     {
@@ -64,8 +61,6 @@ class IngredientRepository
 
     /**
      * Summary of delete
-     * @param Ingredient $ingredient
-     * @return void
      */
     public function delete(Ingredient $ingredient): void
     {
@@ -74,9 +69,8 @@ class IngredientRepository
 
     /**
      * Summary of slugExists
-     * @param string $slug
-     * @param mixed $ignoreId
-     * @return bool
+     *
+     * @param  mixed  $ignoreId
      */
     public function slugExists(string $slug, ?int $ignoreId = null): bool
     {
@@ -87,8 +81,7 @@ class IngredientRepository
     }
 
     /**
-     * @param array<string, mixed> $filters
-     * @return Builder
+     * @param  array<string, mixed>  $filters
      */
     private function adminQuery(array $filters): Builder
     {

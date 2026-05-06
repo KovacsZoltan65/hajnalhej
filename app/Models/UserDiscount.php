@@ -12,6 +12,7 @@ class UserDiscount extends Model
     use HasFactory;
 
     public const TYPE_PERCENT = 'percent';
+
     public const TYPE_FIXED = 'fixed';
 
     protected $fillable = [

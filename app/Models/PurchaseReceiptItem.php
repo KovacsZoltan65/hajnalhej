@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -19,11 +20,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property numeric $line_total
  * @property string $quality_status
  * @property string|null $notes
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Ingredient|null $ingredient
- * @property-read \App\Models\PurchaseItem|null $purchaseItem
- * @property-read \App\Models\PurchaseReceipt $receipt
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Ingredient|null $ingredient
+ * @property-read PurchaseItem|null $purchaseItem
+ * @property-read PurchaseReceipt $receipt
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseReceiptItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseReceiptItem newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseReceiptItem query()
@@ -41,6 +43,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseReceiptItem whereUnit($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseReceiptItem whereUnitCost($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseReceiptItem whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class PurchaseReceiptItem extends Model

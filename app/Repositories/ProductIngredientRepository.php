@@ -38,7 +38,7 @@ class ProductIngredientRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function create(Product $product, array $data): ProductIngredient
     {
@@ -46,7 +46,7 @@ class ProductIngredientRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function update(ProductIngredient $productIngredient, array $data): ProductIngredient
     {

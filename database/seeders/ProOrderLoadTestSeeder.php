@@ -161,7 +161,7 @@ class ProOrderLoadTestSeeder extends Seeder
     }
 
     /**
-     * @param EloquentCollection<int, Product> $products
+     * @param  EloquentCollection<int, Product>  $products
      * @return Collection<int, array{product: Product, quantity: int, unit_price: float, line_total: float}>
      */
     private function buildCart(EloquentCollection $products, int $targetMin, int $targetMax): Collection

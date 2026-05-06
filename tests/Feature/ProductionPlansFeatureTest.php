@@ -26,6 +26,118 @@ it('production plans auth user hozzafer', function (): void {
         ->assertInertia(fn (Assert $page) => $page->component('Admin/ProductionPlans/Index'));
 });
 
+it('production plan create flow get route elerheto', function (): void {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->get('/admin/production-plans/create-flow');
+
+    $response
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page->component('Admin/ProductionPlans/CreateFlow'));
+});
+
+it('production plan create-flow sikeresen ment items es steps rekordokkal', function (): void {
+    $user = User::factory()->create();
+    $category = Category::factory()->create(['is_active' => true]);
+    $product = Product::factory()->create(['category_id' => $category->id, 'is_active' => true]);
+    $ingredient = Ingredient::factory()->create([
+        'unit' => 'g',
+        'current_stock' => 10000,
+        'minimum_stock' => 1000,
+    ]);
+
+    ProductIngredient::factory()->create([
+        'product_id' => $product->id,
+        'ingredient_id' => $ingredient->id,
+        'quantity' => 250,
+    ]);
+
+    RecipeStep::factory()->create([
+        'product_id' => $product->id,
+        'title' => 'Dagasztas',
+        'duration_minutes' => 20,
+        'wait_minutes' => 40,
+        'is_active' => true,
+    ]);
+
+    $response = $this->actingAs($user)->post('/admin/production-plans/create-flow', [
+        'target_ready_at' => Carbon::tomorrow()->setTime(9, 0)->toDateTimeString(),
+        'notes' => 'Reggeli gyartas',
+        'items' => [
+            [
+                'product_id' => $product->id,
+                'target_quantity' => 4,
+                'unit_label' => 'db',
+                'sort_order' => 0,
+            ],
+        ],
+    ]);
+
+    $plan = ProductionPlan::query()->firstOrFail();
+
+    $response->assertRedirect("/admin/production-plans/{$plan->id}");
+    $this->assertDatabaseHas('production_plans', [
+        'id' => $plan->id,
+        'status' => ProductionPlan::STATUS_CALCULATED,
+        'notes' => 'Reggeli gyartas',
+    ]);
+    $this->assertDatabaseHas('production_plan_items', [
+        'production_plan_id' => $plan->id,
+        'product_id' => $product->id,
+        'target_quantity' => '4.000',
+    ]);
+    $this->assertDatabaseHas('production_plan_steps', [
+        'production_plan_id' => $plan->id,
+        'product_id' => $product->id,
+        'title' => "{$product->name} - Dagasztas",
+    ]);
+});
+
+it('production plan create-flow validacio hibazik ures items eseten', function (): void {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->post('/admin/production-plans/create-flow', [
+        'target_ready_at' => Carbon::tomorrow()->toDateTimeString(),
+        'items' => [],
+    ]);
+
+    $response->assertSessionHasErrors(['items']);
+});
+
+it('production plan create-flow validacio hibazik invalid product eseten', function (): void {
+    $user = User::factory()->create();
+    $product = Product::factory()->create(['is_active' => false]);
+
+    $response = $this->actingAs($user)->post('/admin/production-plans/create-flow', [
+        'target_ready_at' => Carbon::tomorrow()->toDateTimeString(),
+        'items' => [
+            [
+                'product_id' => $product->id,
+                'target_quantity' => 1,
+            ],
+        ],
+    ]);
+
+    $response->assertSessionHasErrors(['items.0.product_id']);
+});
+
+it('production plan create-flow validacio hibazik nem pozitiv quantity eseten', function (): void {
+    $user = User::factory()->create();
+    $product = Product::factory()->create(['is_active' => true]);
+
+    $response = $this->actingAs($user)->post('/admin/production-plans/create-flow', [
+        'target_ready_at' => Carbon::tomorrow()->toDateTimeString(),
+        'items' => [
+            [
+                'product_id' => $product->id,
+                'target_quantity' => 0,
+            ],
+        ],
+    ]);
+
+    $response->assertSessionHasErrors(['items.0.target_quantity']);
+});
+
 it('production plan create kiszamolja idot es inditast', function (): void {
     $user = User::factory()->create();
     $category = Category::factory()->create(['is_active' => true]);

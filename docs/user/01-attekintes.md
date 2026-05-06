@@ -40,4 +40,3 @@ A Hajnalhéj Bakery rendszer egy pékségi rendelési és adminisztrációs plat
 ## Fontos alapelv
 
 A rendszerben a **Minimum készlet** jelenti az utánrendelési szintet. Ha egy alapanyag készlete ez alá csökken, a rendszer beszerzési figyelmet javasol.
-

@@ -1,19 +1,19 @@
-import { mount } from '@vue/test-utils';
-import WeeklyMenuSection from './WeeklyMenuSection.vue';
+import { mount } from "@vue/test-utils";
+import WeeklyMenuSection from "./WeeklyMenuSection.vue";
 
 const translations = vi.hoisted(() => ({
-    'weekly_menu.current': 'Aktuális heti menü',
-    'weekly_menu.empty_title': 'Heti menü feltöltés alatt',
-    'weekly_menu.empty_description': 'Jelenleg nincs publikált heti menü.',
-    'home.open_cart': 'Kosár megnyitása',
-    'home.go_to_checkout': 'Ugrás a pénztárhoz',
-    'common.add_to_card': 'Kosárba',
+    "weekly_menu.current": "Aktuális heti menü",
+    "weekly_menu.empty_title": "Heti menü feltöltés alatt",
+    "weekly_menu.empty_description": "Jelenleg nincs publikált heti menü.",
+    "home.open_cart": "Kosár megnyitása",
+    "home.go_to_checkout": "Ugrás a pénztárhoz",
+    "common.add_to_card": "Kosárba",
 }));
 
-vi.mock('@inertiajs/vue3', () => ({
+vi.mock("@inertiajs/vue3", () => ({
     Link: {
-        name: 'Link',
-        props: ['href'],
+        name: "Link",
+        props: ["href"],
         template: '<a :href="href"><slot /></a>',
     },
     useForm: () => ({
@@ -24,17 +24,17 @@ vi.mock('@inertiajs/vue3', () => ({
     }),
     usePage: () => ({
         props: {
-            locale: 'hu-HU',
-            preferences: { currency: 'HUF', locale: 'hu-HU' },
+            locale: "hu-HU",
+            preferences: { currency: "HUF", locale: "hu-HU" },
         },
     }),
 }));
 
-vi.mock('laravel-vue-i18n', () => ({
+vi.mock("laravel-vue-i18n", () => ({
     trans: (key) => translations[key] ?? key,
 }));
 
-describe('WeeklyMenuSection', () => {
+describe("WeeklyMenuSection", () => {
     const mountWeeklyMenuSection = (options = {}) =>
         mount(WeeklyMenuSection, {
             ...options,
@@ -47,7 +47,7 @@ describe('WeeklyMenuSection', () => {
             },
         });
 
-    it('renders empty state without menu', () => {
+    it("renders empty state without menu", () => {
         const wrapper = mountWeeklyMenuSection({
             props: {
                 menu: null,
@@ -56,25 +56,34 @@ describe('WeeklyMenuSection', () => {
             },
         });
 
-        expect(wrapper.text()).toContain('Heti menü feltöltés alatt');
+        expect(wrapper.text()).toContain("Heti menü feltöltés alatt");
     });
 
-    it('renders menu groups and item data', () => {
+    it("renders menu groups and item data", () => {
         const wrapper = mountWeeklyMenuSection({
             props: {
-                menu: { title: 'Aktualis', week_start: '2026-04-20', week_end: '2026-04-26', public_note: null },
+                menu: { title: "Aktualis", week_start: "2026-04-20", week_end: "2026-04-26", public_note: null },
                 fallbackUsed: false,
                 groups: [
                     {
-                        category_name: 'Kenyerek',
-                        items: [{ id: 1, name: 'Kenyer', short_description: 'Leírás', price: 2500, badge_text: 'Uj', stock_note: null }],
+                        category_name: "Kenyerek",
+                        items: [
+                            {
+                                id: 1,
+                                name: "Kenyer",
+                                short_description: "Leírás",
+                                price: 2500,
+                                badge_text: "Uj",
+                                stock_note: null,
+                            },
+                        ],
                     },
                 ],
             },
         });
 
-        expect(wrapper.text()).toContain('Kenyerek');
-        expect(wrapper.text()).toContain('Kenyer');
-        expect(wrapper.text()).toContain('2500 Ft');
+        expect(wrapper.text()).toContain("Kenyerek");
+        expect(wrapper.text()).toContain("Kenyer");
+        expect(wrapper.text()).toContain("2500 Ft");
     });
 });

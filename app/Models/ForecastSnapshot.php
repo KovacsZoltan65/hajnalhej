@@ -5,24 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property int $forecast_run_id
  * @property int $ingredient_id
  * @property int|null $product_id
- * @property \Illuminate\Support\Carbon $forecast_date
+ * @property Carbon $forecast_date
  * @property numeric $forecast_quantity
  * @property numeric|null $actual_quantity
  * @property numeric|null $variance_quantity
  * @property numeric|null $confidence_percent
  * @property numeric|null $estimated_cost
  * @property array<array-key, mixed>|null $drivers
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\ForecastRun $forecastRun
- * @property-read \App\Models\Ingredient|null $ingredient
- * @property-read \App\Models\Product|null $product
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read ForecastRun $forecastRun
+ * @property-read Ingredient|null $ingredient
+ * @property-read Product|null $product
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ForecastSnapshot newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ForecastSnapshot newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ForecastSnapshot query()
@@ -39,6 +41,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ForecastSnapshot whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ForecastSnapshot whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ForecastSnapshot whereVarianceQuantity($value)
+ *
  * @mixin \Eloquent
  */
 class ForecastSnapshot extends Model

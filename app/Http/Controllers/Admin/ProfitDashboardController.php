@@ -11,17 +11,10 @@ use Inertia\Response;
 
 class ProfitDashboardController extends Controller
 {
-    /**
-     * @param ProfitDashboardService $service
-     */
     public function __construct(
         private readonly ProfitDashboardService $service,
     ) {}
 
-    /**
-     * @param ProfitDashboardIndexRequest $request
-     * @return \Inertia\Response
-     */
     public function index(ProfitDashboardIndexRequest $request): Response
     {
         $this->authorize('viewProfitDashboard', ConversionEvent::class);
@@ -36,4 +29,3 @@ class ProfitDashboardController extends Controller
         ]);
     }
 }
-

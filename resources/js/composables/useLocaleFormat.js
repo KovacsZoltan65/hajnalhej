@@ -5,13 +5,9 @@ export function useLocaleFormat() {
     const page = usePage();
     const pageProps = computed(() => page?.props ?? {});
 
-    const locale = computed(
-        () => pageProps.value.preferences?.locale ?? "hu-HU",
-    );
+    const locale = computed(() => pageProps.value.preferences?.locale ?? "hu-HU");
 
-    const currency = computed(
-        () => pageProps.value.preferences?.currency ?? "HUF",
-    );
+    const currency = computed(() => pageProps.value.preferences?.currency ?? "HUF");
 
     const number = (value, options = {}) => {
         const numericValue = Number(value ?? 0);

@@ -15,17 +15,8 @@ use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    /**
-     * @param RoleManagementService $service
-     */
-    public function __construct(private readonly RoleManagementService $service)
-    {
-    }
+    public function __construct(private readonly RoleManagementService $service) {}
 
-    /**
-     * @param Request $request
-     * @return \Inertia\Response
-     */
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Role::class);
@@ -60,11 +51,6 @@ class RoleController extends Controller
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @param Role $role
-     * @return \Inertia\Response
-     */
     public function show(Request $request, Role $role): Response
     {
         $this->authorize('view', $role);
@@ -80,10 +66,6 @@ class RoleController extends Controller
         ]);
     }
 
-    /**
-     * @param StoreRoleRequest $request
-     * @return RedirectResponse
-     */
     public function store(StoreRoleRequest $request): RedirectResponse
     {
         $this->service->create($request->validated(), $request->user());
@@ -93,11 +75,6 @@ class RoleController extends Controller
             ->with('success', __('commerce.roles.created'));
     }
 
-    /**
-     * @param UpdateRoleRequest $request
-     * @param Role $role
-     * @return RedirectResponse
-     */
     public function update(UpdateRoleRequest $request, Role $role): RedirectResponse
     {
         $this->authorize('update', $role);
@@ -107,11 +84,6 @@ class RoleController extends Controller
         return back()->with('success', __('commerce.roles.updated'));
     }
 
-    /**
-     * @param Request $request
-     * @param Role $role
-     * @return RedirectResponse
-     */
     public function destroy(Request $request, Role $role): RedirectResponse
     {
         $this->authorize('delete', $role);
@@ -123,11 +95,6 @@ class RoleController extends Controller
             ->with('success', __('commerce.roles.deleted'));
     }
 
-    /**
-     * @param SyncRolePermissionsRequest $request
-     * @param Role $role
-     * @return RedirectResponse
-     */
     public function syncPermissions(SyncRolePermissionsRequest $request, Role $role): RedirectResponse
     {
         $this->authorize('syncPermissions', $role);

@@ -10,11 +10,10 @@ class SecurityDashboardService
 {
     public function __construct(
         private readonly SecurityDashboardRepository $repository,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
     public function dashboardPayload(array $filters): array
@@ -135,6 +134,3 @@ class SecurityDashboardService
         };
     }
 }
-
-
-

@@ -29,4 +29,3 @@ class InventoryLedgerIndexRequest extends FormRequest
         ];
     }
 }
-

@@ -85,4 +85,3 @@ describe("Admin Permissions Show", () => {
         expect(wrapper.text()).toContain("usage-card");
     });
 });
-

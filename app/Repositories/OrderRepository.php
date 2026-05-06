@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 class OrderRepository
 {
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -25,7 +25,7 @@ class OrderRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function createOrder(array $data): Order
     {
@@ -33,7 +33,7 @@ class OrderRepository
     }
 
     /**
-     * @param array<int, array<string, mixed>> $items
+     * @param  array<int, array<string, mixed>>  $items
      */
     public function createItems(Order $order, array $items): void
     {
@@ -41,7 +41,7 @@ class OrderRepository
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function update(Order $order, array $data): Order
     {
@@ -145,7 +145,7 @@ class OrderRepository
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     private function adminQuery(array $filters): EloquentBuilder
     {
@@ -192,7 +192,7 @@ class OrderRepository
     }
 
     /**
-     * @param Collection<int, Order> $orders
+     * @param  Collection<int, Order>  $orders
      * @return Collection<string, Collection<int, Order>>
      */
     private function groupOrdersByCustomer(Collection $orders): Collection

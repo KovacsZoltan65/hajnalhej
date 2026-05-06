@@ -5,21 +5,25 @@ declare(strict_types=1);
 namespace App\Models;
 
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Collection;
+// use Spatie\Activitylog\LogOptions;
+// use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-//use Spatie\Activitylog\LogOptions;
-//use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Support\Carbon;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role as SpatieRole;
 
 /**
  * @property int $id
  * @property string $name
  * @property string $guard_name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read Collection<int, User> $users
  * @property-read int|null $users_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Role newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Role newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Role permission($permissions, bool $without = false)
@@ -30,6 +34,7 @@ use Spatie\Permission\Models\Role as SpatieRole;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Role whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Role whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Role withoutPermission($permissions)
+ *
  * @mixin \Eloquent
  */
 class Role extends SpatieRole
@@ -52,8 +57,8 @@ class Role extends SpatieRole
         'updated_at' => 'datetime',
     ];
 
-    
     protected static string $logName = 'roles';
+
     /*
     protected static bool $logOnlyDirty = true;
 
@@ -73,7 +78,6 @@ class Role extends SpatieRole
     {
         return self::$logName;
     }
-    
 
     /** @return array<int,string> */
     public static function getSortable(): array

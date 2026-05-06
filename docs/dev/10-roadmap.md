@@ -45,4 +45,3 @@ Több egység központi termék- és recepttörzzsel, helyi készlettel és rend
 ## Forecast finomítás
 
 Nyitott rendelésállomány, szezonális tényezők és heti menü alapján pontosabb alapanyagigény-előrejelzés.
-

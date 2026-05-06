@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -13,17 +14,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $event_type
  * @property string $severity
  * @property string $status
- * @property \Illuminate\Support\Carbon $event_date
+ * @property Carbon $event_date
  * @property numeric|null $estimated_impact_amount
  * @property numeric|null $probability_percent
  * @property string $title
  * @property string|null $description
  * @property string|null $mitigation_plan
- * @property \Illuminate\Support\Carbon|null $resolved_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Ingredient|null $ingredient
- * @property-read \App\Models\Supplier|null $supplier
+ * @property Carbon|null $resolved_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Ingredient|null $ingredient
+ * @property-read Supplier|null $supplier
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RiskEvent newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RiskEvent newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RiskEvent query()
@@ -42,6 +44,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RiskEvent whereSupplierId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RiskEvent whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RiskEvent whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class RiskEvent extends Model

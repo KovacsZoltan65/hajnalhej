@@ -193,7 +193,7 @@ class ConversionAnalyticsService
     }
 
     /**
-     * @param array<int, array{id:string,label:string,steps:array<int,array<string,mixed>>}> $definitions
+     * @param  array<int, array{id:string,label:string,steps:array<int,array<string,mixed>>}>  $definitions
      * @return array<int, array{id:string,label:string,steps:array<int,array<string,mixed>>}>
      */
     private function buildFunnelStats(int $days, array $definitions): array
@@ -236,7 +236,7 @@ class ConversionAnalyticsService
     }
 
     /**
-     * @param array<int, array{id:string,label:string,steps:array<int,array<string,mixed>>}> $funnelStats
+     * @param  array<int, array{id:string,label:string,steps:array<int,array<string,mixed>>}>  $funnelStats
      * @return array<int, array<string, mixed>>
      */
     private function buildDropOffRanking(array $funnelStats): array
@@ -390,12 +390,13 @@ class ConversionAnalyticsService
 
         return array_map(function (array $row) use ($totalViews): array {
             $row['view_share'] = $this->rate((int) $row['views'], $totalViews);
+
             return $row;
         }, $rows);
     }
 
     /**
-     * @param array<int, array{date:string,count:int}> $rows
+     * @param  array<int, array{date:string,count:int}>  $rows
      * @return array<string, int>
      */
     private function toDateMap(array $rows): array

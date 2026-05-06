@@ -11,7 +11,7 @@ use Spatie\Permission\Models\Role;
 class UserRepository
 {
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -54,7 +54,7 @@ class UserRepository
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForRoleManagement(array $filters): LengthAwarePaginator
     {
@@ -76,7 +76,7 @@ class UserRepository
     }
 
     /**
-     * @param array<int, string> $roleNames
+     * @param  array<int, string>  $roleNames
      */
     public function syncRoles(User $user, array $roleNames): void
     {

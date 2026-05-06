@@ -5,9 +5,9 @@ namespace Database\Seeders;
 use App\Models\Ingredient;
 use App\Models\InventoryMovement;
 use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -129,7 +129,7 @@ class ProWasteLoadTestSeeder extends Seeder
         $minRate = max(0.0, (float) env('HH_LOAD_TEST_INGREDIENT_WASTE_RATE_MIN', 0.002));
         $maxRate = max($minRate, (float) env('HH_LOAD_TEST_INGREDIENT_WASTE_RATE_MAX', 0.015));
 
-        /** @var \Illuminate\Database\Eloquent\Collection<int, Ingredient> $ingredients */
+        /** @var Collection<int, Ingredient> $ingredients */
         $ingredients = Ingredient::query()
             ->where('is_active', true)
             ->where('current_stock', '>', 0)

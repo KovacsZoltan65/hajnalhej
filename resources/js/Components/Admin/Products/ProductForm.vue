@@ -1,11 +1,11 @@
 <script setup>
-import { watch } from 'vue';
-import InputNumber from 'primevue/inputnumber';
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
-import Textarea from 'primevue/textarea';
-import ToggleSwitch from 'primevue/toggleswitch';
-import { slugify } from '../../../Utils/slugify';
+import { watch } from "vue";
+import InputNumber from "primevue/inputnumber";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
+import Textarea from "primevue/textarea";
+import ToggleSwitch from "primevue/toggleswitch";
+import { slugify } from "../../../Utils/slugify";
 
 const props = defineProps({
     form: {
@@ -26,7 +26,7 @@ watch(
     () => props.form.name,
     (name) => {
         props.form.slug = slugify(name);
-    },
+    }
 );
 </script>
 
@@ -48,7 +48,15 @@ watch(
 
         <div class="space-y-2">
             <label for="product-price" class="text-sm font-medium text-bakery-dark">Ar (Ft)</label>
-            <InputNumber id="product-price" v-model="form.price" mode="decimal" :min="0" :min-fraction-digits="2" :max-fraction-digits="2" fluid />
+            <InputNumber
+                id="product-price"
+                v-model="form.price"
+                mode="decimal"
+                :min="0"
+                :min-fraction-digits="2"
+                :max-fraction-digits="2"
+                fluid
+            />
             <p v-if="form.errors.price" class="text-xs text-red-700">{{ form.errors.price }}</p>
         </div>
 
@@ -113,5 +121,3 @@ watch(
         </div>
     </div>
 </template>
-
-

@@ -30,20 +30,14 @@ const emit = defineEmits([
         @update:visible="(value) => emit('update:visible', value)"
     >
         <div class="space-y-6">
-            <div
-                class="grid gap-2 rounded-2xl border border-bakery-brown/10 bg-[#fcf7ef] p-3 sm:grid-cols-2"
-            >
+            <div class="grid gap-2 rounded-2xl border border-bakery-brown/10 bg-[#fcf7ef] p-3 sm:grid-cols-2">
                 <p class="text-sm text-bakery-dark/80">
                     Kategória:
-                    <span class="font-medium text-bakery-dark">{{
-                        recipe?.category_name ?? "Nincs"
-                    }}</span>
+                    <span class="font-medium text-bakery-dark">{{ recipe?.category_name ?? "Nincs" }}</span>
                 </p>
                 <p class="text-sm text-bakery-dark/80">
                     Alacsony készlet érintett:
-                    <span class="font-medium text-bakery-dark">{{
-                        recipe?.low_stock_ingredients_count ?? 0
-                    }}</span>
+                    <span class="font-medium text-bakery-dark">{{ recipe?.low_stock_ingredients_count ?? 0 }}</span>
                 </p>
             </div>
 
@@ -66,15 +60,8 @@ const emit = defineEmits([
 
             <section class="rounded-2xl border border-bakery-brown/15 bg-white/85 p-4">
                 <div class="mb-3 flex items-center justify-between">
-                    <h4 class="font-medium text-bakery-dark">
-                        Recept lépések és időzítés
-                    </h4>
-                    <Button
-                        icon="pi pi-plus"
-                        label="Új lépés"
-                        size="small"
-                        @click="emit('open-step-create')"
-                    />
+                    <h4 class="font-medium text-bakery-dark">Recept lépések és időzítés</h4>
+                    <Button icon="pi pi-plus" label="Új lépés" size="small" @click="emit('open-step-create')" />
                 </div>
                 <RecipeStepList
                     :steps="recipe?.recipe_steps ?? []"
@@ -101,10 +88,7 @@ const emit = defineEmits([
                     <p class="text-sm text-bakery-dark/80">
                         Aktív idő:
                         <span class="font-semibold text-bakery-dark"
-                            >{{
-                                recipe?.recipe_summary?.total_active_minutes ?? 0
-                            }}
-                            p</span
+                            >{{ recipe?.recipe_summary?.total_active_minutes ?? 0 }} p</span
                         >
                     </p>
                     <p class="text-sm text-bakery-dark/80">
@@ -116,10 +100,7 @@ const emit = defineEmits([
                     <p class="text-sm text-bakery-dark/80">
                         Teljes idő:
                         <span class="font-semibold text-bakery-dark"
-                            >{{
-                                recipe?.recipe_summary?.total_recipe_minutes ?? 0
-                            }}
-                            p</span
+                            >{{ recipe?.recipe_summary?.total_recipe_minutes ?? 0 }} p</span
                         >
                     </p>
                 </div>
@@ -127,12 +108,7 @@ const emit = defineEmits([
         </div>
         <template #footer>
             <div class="flex justify-end">
-                <Button
-                    type="button"
-                    severity="secondary"
-                    label="Bezárás"
-                    @click="emit('update:visible', false)"
-                />
+                <Button type="button" severity="secondary" label="Bezárás" @click="emit('update:visible', false)" />
             </div>
         </template>
     </Dialog>

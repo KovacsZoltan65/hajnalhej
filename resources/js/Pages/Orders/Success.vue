@@ -1,7 +1,7 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
-import PublicLayout from '../../Layouts/PublicLayout.vue';
-import { useLocaleFormat } from '@/composables/useLocaleFormat';
+import { Head, Link } from "@inertiajs/vue3";
+import PublicLayout from "../../Layouts/PublicLayout.vue";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 defineOptions({ layout: PublicLayout });
 
@@ -37,23 +37,28 @@ const props = defineProps({
                 </div>
                 <div>
                     <dt class="text-bakery-dark/60">Átvétel dátuma</dt>
-                    <dd class="font-semibold text-bakery-dark">{{ order.pickup_date || '-' }}</dd>
+                    <dd class="font-semibold text-bakery-dark">{{ order.pickup_date || "-" }}</dd>
                 </div>
                 <div>
                     <dt class="text-bakery-dark/60">Átvételi idősáv</dt>
-                    <dd class="font-semibold text-bakery-dark">{{ order.pickup_time_slot || '-' }}</dd>
+                    <dd class="font-semibold text-bakery-dark">{{ order.pickup_time_slot || "-" }}</dd>
                 </div>
             </dl>
         </article>
 
         <div class="flex flex-wrap gap-3">
-            <Link :href="route('weekly-menu')" class="rounded-full bg-bakery-brown px-5 py-2.5 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark">
+            <Link
+                :href="route('weekly-menu')"
+                class="rounded-full bg-bakery-brown px-5 py-2.5 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
+            >
                 Ujabb rendeles inditasa
             </Link>
-            <Link :href="route('account')" class="rounded-full border border-bakery-brown/25 px-5 py-2.5 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream">
+            <Link
+                :href="route('account')"
+                class="rounded-full border border-bakery-brown/25 px-5 py-2.5 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
+            >
                 Fiókom
             </Link>
         </div>
     </section>
 </template>
-

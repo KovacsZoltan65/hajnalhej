@@ -1,15 +1,15 @@
 <?php
 
+use App\Mail\CeoExecutiveReportMail;
 use App\Models\ConversionEvent;
 use App\Models\Ingredient;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
-use App\Mail\CeoExecutiveReportMail;
 use App\Support\ConversionEventRegistry;
 use Database\Seeders\RolesAndPermissionsSeeder;
-use Inertia\Testing\AssertableInertia as Assert;
 use Illuminate\Support\Facades\Mail;
+use Inertia\Testing\AssertableInertia as Assert;
 
 beforeEach(function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);

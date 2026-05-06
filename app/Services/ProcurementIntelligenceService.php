@@ -9,19 +9,23 @@ use Illuminate\Support\Collection;
 class ProcurementIntelligenceService
 {
     private const CONSUMPTION_WINDOW_DAYS = 28;
+
     private const PRICE_INCREASE_ALERT_PERCENT = 10.0;
+
     private const STOCKOUT_WARNING_DAYS = 7.0;
+
     private const MINIMUM_STOCK_TARGET_DAYS = 14.0;
+
     private const SAFETY_STOCK_DAYS = 3.0;
+
     private const STALE_PURCHASE_DAYS = 90;
 
     public function __construct(
         private readonly ProcurementIntelligenceRepository $repository,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
     public function buildDashboard(array $filters): array
@@ -61,7 +65,7 @@ class ProcurementIntelligenceService
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return array<int, array<string, mixed>>
      */
     public function minimumStockRecommendationsForFilters(array $filters): array
@@ -112,7 +116,7 @@ class ProcurementIntelligenceService
     }
 
     /**
-     * @param Collection<int, object> $priceRows
+     * @param  Collection<int, object>  $priceRows
      * @return array<int, array<string, mixed>>
      */
     private function supplierPriceTrends(Collection $priceRows): array
@@ -159,7 +163,7 @@ class ProcurementIntelligenceService
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return array<int, array<string, mixed>>
      */
     private function ingredientCostTrends(array $filters): array
@@ -184,7 +188,7 @@ class ProcurementIntelligenceService
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return array<int, array<string, mixed>>
      */
     private function recentPurchases(array $filters): array
@@ -205,9 +209,9 @@ class ProcurementIntelligenceService
     }
 
     /**
-     * @param Collection<int, object> $stockRows
-     * @param array<int, float> $consumption28
-     * @param array<int, array<string, mixed>> $supplierContexts
+     * @param  Collection<int, object>  $stockRows
+     * @param  array<int, float>  $consumption28
+     * @param  array<int, array<string, mixed>>  $supplierContexts
      * @return array<int, array<string, mixed>>
      */
     private function minimumStockRecommendations(Collection $stockRows, array $consumption28, array $supplierContexts): array
@@ -263,7 +267,7 @@ class ProcurementIntelligenceService
     }
 
     /**
-     * @param array<int, int> $ingredientIds
+     * @param  array<int, int>  $ingredientIds
      * @return array<int, array<string, mixed>>
      */
     private function supplierContextMap(array $ingredientIds, int $days): array
@@ -288,18 +292,21 @@ class ProcurementIntelligenceService
                 }
 
                 $contexts[$ingredientId] = $context;
+
                 continue;
             }
 
             if ($latestPurchase?->supplier_id !== null) {
                 $matchingTerm = $terms->first(static fn (object $row): bool => (int) $row->supplier_id === (int) $latestPurchase->supplier_id);
                 $contexts[$ingredientId] = $this->contextFromPurchase($latestPurchase, $matchingTerm, 'latest_supplier');
+
                 continue;
             }
 
             if ($cheapestFreshPurchase?->supplier_id !== null) {
                 $matchingTerm = $terms->first(static fn (object $row): bool => (int) $row->supplier_id === (int) $cheapestFreshPurchase->supplier_id);
                 $contexts[$ingredientId] = $this->contextFromPurchase($cheapestFreshPurchase, $matchingTerm, 'cheapest_fresh_supplier');
+
                 continue;
             }
 
@@ -380,9 +387,9 @@ class ProcurementIntelligenceService
     }
 
     /**
-     * @param Collection<int, object> $stockRows
-     * @param array<int, float> $consumption28
-     * @param array<int, float> $consumption7
+     * @param  Collection<int, object>  $stockRows
+     * @param  array<int, float>  $consumption28
+     * @param  array<int, float>  $consumption7
      * @return array<int, array<string, mixed>>
      */
     private function weeklyConsumptionForecast(Collection $stockRows, array $consumption28, array $consumption7): array
@@ -410,10 +417,10 @@ class ProcurementIntelligenceService
     }
 
     /**
-     * @param Collection<int, object> $stockRows
-     * @param array<int, array<string, mixed>> $priceTrends
-     * @param array<int, float> $consumption28
-     * @param array<int, string> $lastPurchaseDates
+     * @param  Collection<int, object>  $stockRows
+     * @param  array<int, array<string, mixed>>  $priceTrends
+     * @param  array<int, float>  $consumption28
+     * @param  array<int, string>  $lastPurchaseDates
      * @return array<int, array<string, mixed>>
      */
     private function procurementAlerts(Collection $stockRows, array $priceTrends, array $consumption28, array $lastPurchaseDates): array
@@ -528,7 +535,6 @@ class ProcurementIntelligenceService
     }
 
     /**
-     * @param object $row
      * @return array<string, mixed>
      */
     private function alert(string $type, string $severity, object $row, string $message): array
@@ -548,7 +554,7 @@ class ProcurementIntelligenceService
     }
 
     /**
-     * @param array<int, array<string, mixed>> $rows
+     * @param  array<int, array<string, mixed>>  $rows
      * @return array<int, array<string, mixed>>
      */
     private function filterByUrgency(array $rows, string $urgency): array
@@ -561,7 +567,7 @@ class ProcurementIntelligenceService
     }
 
     /**
-     * @param array<int, array<string, mixed>> $rows
+     * @param  array<int, array<string, mixed>>  $rows
      * @return array<int, array<string, mixed>>
      */
     private function filterByAlertType(array $rows, string $alertType): array

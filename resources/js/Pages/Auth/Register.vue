@@ -1,35 +1,35 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import Button from 'primevue/button';
-import InputText from 'primevue/inputtext';
-import Password from 'primevue/password';
-import PublicLayout from '../../Layouts/PublicLayout.vue';
-import { useConversionTracking } from '@/composables/useConversionTracking';
+import { Head, Link, useForm } from "@inertiajs/vue3";
+import Button from "primevue/button";
+import InputText from "primevue/inputtext";
+import Password from "primevue/password";
+import PublicLayout from "../../Layouts/PublicLayout.vue";
+import { useConversionTracking } from "@/composables/useConversionTracking";
 
 defineOptions({ layout: PublicLayout });
 
 const { trackCtaClick, trackFunnel } = useConversionTracking();
 
 const form = useForm({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
 });
 
 const submit = () => {
-    trackFunnel('registration.submitted', {
-        funnel: 'registration',
-        step: 'submit',
+    trackFunnel("registration.submitted", {
+        funnel: "registration",
+        step: "submit",
         metadata: {
             has_name: form.name.trim().length > 0,
             has_email: form.email.trim().length > 0,
         },
     });
 
-    form.post(route('register.store'), {
+    form.post(route("register.store"), {
         onFinish: () => {
-            form.reset('password', 'password_confirmation');
+            form.reset("password", "password_confirmation");
         },
     });
 };
@@ -86,7 +86,9 @@ const submit = () => {
             </div>
 
             <div class="space-y-2">
-                <label for="password_confirmation" class="text-sm font-medium text-bakery-dark">{{ $t("fields.password_confirmation") }}</label>
+                <label for="password_confirmation" class="text-sm font-medium text-bakery-dark">{{
+                    $t("fields.password_confirmation")
+                }}</label>
                 <Password
                     id="password_confirmation"
                     v-model="form.password_confirmation"
@@ -97,7 +99,9 @@ const submit = () => {
                     :invalid="Boolean(form.errors.password_confirmation)"
                     autocomplete="new-password"
                 />
-                <p v-if="form.errors.password_confirmation" class="text-xs text-red-700">{{ form.errors.password_confirmation }}</p>
+                <p v-if="form.errors.password_confirmation" class="text-xs text-red-700">
+                    {{ form.errors.password_confirmation }}
+                </p>
             </div>
 
             <Button
@@ -114,8 +118,8 @@ const submit = () => {
                 :href="route('login')"
                 class="font-semibold text-bakery-brown hover:underline"
                 @click="trackCtaClick('register.login_link', { funnel: 'registration', step: 'redirect_login' })"
-            >{{ $t("register.login_link") }}</Link>
+                >{{ $t("register.login_link") }}</Link
+            >
         </p>
     </div>
 </template>
-

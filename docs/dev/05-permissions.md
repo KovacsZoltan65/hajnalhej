@@ -55,4 +55,3 @@ Frontend oldalon a jogosultság csak UX segédlet. Gombot lehet elrejteni, de mi
 4. Route middleware, ha admin route.
 5. Seeder vagy sync futtatás.
 6. Teszt admin és customer hozzáférésre.
-

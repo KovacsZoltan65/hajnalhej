@@ -1,7 +1,7 @@
 <script setup>
-import { computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
-import SidebarGroup from './SidebarGroup.vue';
+import { computed } from "vue";
+import { usePage } from "@inertiajs/vue3";
+import SidebarGroup from "./SidebarGroup.vue";
 
 const page = usePage();
 
@@ -42,14 +42,7 @@ const visibleGroups = computed(() => {
 </script>
 
 <template>
-    <nav
-        aria-label="Admin menü"
-        class="flex min-h-0 w-full flex-col overflow-y-auto pr-1"
-    >
-        <SidebarGroup
-            v-for="group in visibleGroups"
-            :key="group.label"
-            :group="group"
-        />
+    <nav aria-label="Admin menü" class="flex min-h-0 w-full flex-col overflow-y-auto pr-1">
+        <SidebarGroup v-for="group in visibleGroups" :key="group.label" :group="group" />
     </nav>
 </template>

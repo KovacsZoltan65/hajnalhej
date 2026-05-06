@@ -35,15 +35,7 @@ const props = defineProps({
 
 const loading = ref(false);
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
         search: "",
@@ -98,10 +90,9 @@ const { formatCurrency } = useLocaleFormat();
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("common.search") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.search")
+                        }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
@@ -111,10 +102,9 @@ const { formatCurrency } = useLocaleFormat();
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("common.status") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.status")
+                        }}</label>
                         <Select
                             v-model="filterState.status"
                             :options="statusSelectOptions"
@@ -126,10 +116,9 @@ const { formatCurrency } = useLocaleFormat();
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("table.rows_per_page") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("table.rows_per_page")
+                        }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -142,11 +131,7 @@ const { formatCurrency } = useLocaleFormat();
                 </template>
 
                 <template #actions>
-                    <Button
-                        icon="pi pi-search"
-                        :label="$t('common.search')"
-                        @click="submitFilters"
-                    />
+                    <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
                 </template>
             </AdminTableToolbar>
 
@@ -172,9 +157,7 @@ const { formatCurrency } = useLocaleFormat();
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
                             <p>{{ $t("admin_orders.empty") }}</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
                                 <Button
                                     :label="$t('common.clear_filters')"
                                     outlined
@@ -185,16 +168,8 @@ const { formatCurrency } = useLocaleFormat();
                         </div>
                     </template>
 
-                    <Column
-                        field="order_number"
-                        :header="$t('admin_orders.columns.identifier')"
-                        sortable
-                    />
-                    <Column
-                        field="customer_name"
-                        :header="$t('admin_orders.columns.customer')"
-                        sortable
-                    >
+                    <Column field="order_number" :header="$t('admin_orders.columns.identifier')" sortable />
+                    <Column field="customer_name" :header="$t('admin_orders.columns.customer')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-medium text-bakery-dark">
@@ -206,20 +181,12 @@ const { formatCurrency } = useLocaleFormat();
                             </div>
                         </template>
                     </Column>
-                    <Column
-                        field="status"
-                        :header="$t('admin_orders.columns.status')"
-                        sortable
-                    >
+                    <Column field="status" :header="$t('admin_orders.columns.status')" sortable>
                         <template #body="{ data }">
                             <OrderStatusBadge :status="data.status" />
                         </template>
                     </Column>
-                    <Column
-                        field="pickup_date"
-                        :header="$t('admin_orders.columns.pickup')"
-                        sortable
-                    >
+                    <Column field="pickup_date" :header="$t('admin_orders.columns.pickup')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p>{{ data.pickup_date || "-" }}</p>
@@ -229,11 +196,7 @@ const { formatCurrency } = useLocaleFormat();
                             </div>
                         </template>
                     </Column>
-                    <Column
-                        field="total"
-                        :header="$t('admin_orders.columns.total')"
-                        sortable
-                    >
+                    <Column field="total" :header="$t('admin_orders.columns.total')" sortable>
                         <template #body="{ data }">
                             {{ formatCurrency(data.total) }}
                         </template>

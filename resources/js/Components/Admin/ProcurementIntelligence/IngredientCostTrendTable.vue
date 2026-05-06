@@ -20,14 +20,8 @@ const { formatCurrency } = useLocaleFormat();
     <section class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
         <div class="ui-card p-4 sm:p-5">
             <div class="flex items-center justify-between gap-3">
-                <h2
-                    class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-                >
-                    {{
-                        trans(
-                            "admin_procurement_intelligence.ingredient_cost_trends.title"
-                        )
-                    }}
+                <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
+                    {{ trans("admin_procurement_intelligence.ingredient_cost_trends.title") }}
                 </h2>
                 <span class="text-xs text-bakery-dark/60">
                     {{
@@ -47,39 +41,19 @@ const { formatCurrency } = useLocaleFormat();
                                 {{ trans("admin_procurement_intelligence.columns.date") }}
                             </th>
                             <th class="px-2 py-2">
-                                {{
-                                    trans(
-                                        "admin_procurement_intelligence.columns.ingredient"
-                                    )
-                                }}
+                                {{ trans("admin_procurement_intelligence.columns.ingredient") }}
                             </th>
                             <th class="px-2 py-2">
-                                {{
-                                    trans(
-                                        "admin_procurement_intelligence.columns.supplier"
-                                    )
-                                }}
+                                {{ trans("admin_procurement_intelligence.columns.supplier") }}
                             </th>
                             <th class="px-2 py-2 text-right">
-                                {{
-                                    trans(
-                                        "admin_procurement_intelligence.columns.average_price"
-                                    )
-                                }}
+                                {{ trans("admin_procurement_intelligence.columns.average_price") }}
                             </th>
                             <th class="px-2 py-2 text-right">
-                                {{
-                                    trans(
-                                        "admin_procurement_intelligence.columns.weighted_average"
-                                    )
-                                }}
+                                {{ trans("admin_procurement_intelligence.columns.weighted_average") }}
                             </th>
                             <th class="px-2 py-2 text-right">
-                                {{
-                                    trans(
-                                        "admin_procurement_intelligence.columns.last_price"
-                                    )
-                                }}
+                                {{ trans("admin_procurement_intelligence.columns.last_price") }}
                             </th>
                             <th class="px-2 py-2 text-right">
                                 {{ trans("common.quantity") }}
@@ -89,9 +63,7 @@ const { formatCurrency } = useLocaleFormat();
                     <tbody>
                         <tr
                             v-for="row in rows"
-                            :key="`${row.period_date}-${row.ingredient_id}-${
-                                row.supplier_id ?? 'none'
-                            }`"
+                            :key="`${row.period_date}-${row.ingredient_id}-${row.supplier_id ?? 'none'}`"
                             class="border-b border-bakery-brown/10"
                         >
                             <td class="px-2 py-3 font-medium text-bakery-dark">
@@ -106,9 +78,7 @@ const { formatCurrency } = useLocaleFormat();
                             <td class="px-2 py-3 text-right text-bakery-dark">
                                 {{ formatCurrency(row.average_unit_cost) }}
                             </td>
-                            <td
-                                class="px-2 py-3 text-right font-semibold text-bakery-dark"
-                            >
+                            <td class="px-2 py-3 text-right font-semibold text-bakery-dark">
                                 {{ formatCurrency(row.weighted_average_cost) }}
                             </td>
                             <td class="px-2 py-3 text-right text-bakery-dark">
@@ -130,9 +100,7 @@ const { formatCurrency } = useLocaleFormat();
         </div>
 
         <aside class="ui-card p-4 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ trans("admin_procurement_intelligence.recent_purchases.title") }}
             </h2>
             <div v-if="recentPurchases.length" class="mt-4 space-y-3">
@@ -142,9 +110,7 @@ const { formatCurrency } = useLocaleFormat();
                     class="rounded-lg border border-bakery-brown/15 p-3"
                 >
                     <p class="font-medium text-bakery-dark">{{ row.ingredient_name }}</p>
-                    <p class="mt-1 text-sm text-bakery-dark/70">
-                        {{ row.supplier_name }} · {{ row.purchase_date }}
-                    </p>
+                    <p class="mt-1 text-sm text-bakery-dark/70">{{ row.supplier_name }} · {{ row.purchase_date }}</p>
                     <p class="mt-2 text-sm text-bakery-dark">
                         {{ row.quantity }} {{ row.unit }} ·
                         {{ formatCurrency(row.unit_cost) }}

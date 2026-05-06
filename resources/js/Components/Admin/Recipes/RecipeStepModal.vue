@@ -1,12 +1,12 @@
 <script setup>
-import { reactive, watch } from 'vue';
-import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
-import InputNumber from 'primevue/inputnumber';
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
-import Textarea from 'primevue/textarea';
-import ToggleSwitch from 'primevue/toggleswitch';
+import { reactive, watch } from "vue";
+import Button from "primevue/button";
+import Dialog from "primevue/dialog";
+import InputNumber from "primevue/inputnumber";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
+import Textarea from "primevue/textarea";
+import ToggleSwitch from "primevue/toggleswitch";
 
 const props = defineProps({
     visible: { type: Boolean, required: true },
@@ -15,18 +15,18 @@ const props = defineProps({
     errors: { type: Object, default: () => ({}) },
 });
 
-const emit = defineEmits(['update:visible', 'submit']);
+const emit = defineEmits(["update:visible", "submit"]);
 
 const form = reactive({
     id: null,
-    title: '',
-    step_type: 'preparation',
-    description: '',
-    work_instruction: '',
-    completion_criteria: '',
-    attention_points: '',
-    required_tools: '',
-    expected_result: '',
+    title: "",
+    step_type: "preparation",
+    description: "",
+    work_instruction: "",
+    completion_criteria: "",
+    attention_points: "",
+    required_tools: "",
+    expected_result: "",
     duration_minutes: null,
     wait_minutes: null,
     temperature_celsius: null,
@@ -36,14 +36,14 @@ const form = reactive({
 
 const resetForm = () => {
     form.id = null;
-    form.title = '';
-    form.step_type = props.stepTypes[0]?.value ?? 'preparation';
-    form.description = '';
-    form.work_instruction = '';
-    form.completion_criteria = '';
-    form.attention_points = '';
-    form.required_tools = '';
-    form.expected_result = '';
+    form.title = "";
+    form.step_type = props.stepTypes[0]?.value ?? "preparation";
+    form.description = "";
+    form.work_instruction = "";
+    form.completion_criteria = "";
+    form.attention_points = "";
+    form.required_tools = "";
+    form.expected_result = "";
     form.duration_minutes = null;
     form.wait_minutes = null;
     form.temperature_celsius = null;
@@ -58,14 +58,14 @@ const fillForm = () => {
     }
 
     form.id = props.item.id;
-    form.title = props.item.title ?? '';
-    form.step_type = props.item.step_type ?? (props.stepTypes[0]?.value ?? 'preparation');
-    form.description = props.item.description ?? '';
-    form.work_instruction = props.item.work_instruction ?? '';
-    form.completion_criteria = props.item.completion_criteria ?? '';
-    form.attention_points = props.item.attention_points ?? '';
-    form.required_tools = props.item.required_tools ?? '';
-    form.expected_result = props.item.expected_result ?? '';
+    form.title = props.item.title ?? "";
+    form.step_type = props.item.step_type ?? props.stepTypes[0]?.value ?? "preparation";
+    form.description = props.item.description ?? "";
+    form.work_instruction = props.item.work_instruction ?? "";
+    form.completion_criteria = props.item.completion_criteria ?? "";
+    form.attention_points = props.item.attention_points ?? "";
+    form.required_tools = props.item.required_tools ?? "";
+    form.expected_result = props.item.expected_result ?? "";
     form.duration_minutes = props.item.duration_minutes;
     form.wait_minutes = props.item.wait_minutes;
     form.temperature_celsius = props.item.temperature_celsius;
@@ -79,11 +79,11 @@ watch(
         if (visible) {
             fillForm();
         }
-    },
+    }
 );
 
 const submit = () => {
-    emit('submit', {
+    emit("submit", {
         id: form.id,
         title: form.title,
         step_type: form.step_type,
@@ -101,7 +101,7 @@ const submit = () => {
     });
 };
 
-const close = () => emit('update:visible', false);
+const close = () => emit("update:visible", false);
 </script>
 
 <template>
@@ -122,7 +122,13 @@ const close = () => emit('update:visible', false);
 
             <div class="space-y-2">
                 <label class="text-sm font-medium text-bakery-dark">Lépés típus</label>
-                <Select v-model="form.step_type" :options="stepTypes" option-label="label" option-value="value" class="w-full" />
+                <Select
+                    v-model="form.step_type"
+                    :options="stepTypes"
+                    option-label="label"
+                    option-value="value"
+                    class="w-full"
+                />
                 <p v-if="errors.step_type" class="text-xs text-red-700">{{ errors.step_type }}</p>
             </div>
 
@@ -146,7 +152,13 @@ const close = () => emit('update:visible', false);
 
             <div class="space-y-2">
                 <label class="text-sm font-medium text-bakery-dark">Hőmérséklet (°C)</label>
-                <InputNumber v-model="form.temperature_celsius" mode="decimal" :min-fraction-digits="0" :max-fraction-digits="1" fluid />
+                <InputNumber
+                    v-model="form.temperature_celsius"
+                    mode="decimal"
+                    :min-fraction-digits="0"
+                    :max-fraction-digits="1"
+                    fluid
+                />
                 <p v-if="errors.temperature_celsius" class="text-xs text-red-700">{{ errors.temperature_celsius }}</p>
             </div>
 
@@ -199,6 +211,3 @@ const close = () => emit('update:visible', false);
         </template>
     </Dialog>
 </template>
-
-
-

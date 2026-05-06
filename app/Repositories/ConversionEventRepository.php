@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class ConversionEventRepository
 {
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function create(array $payload): ConversionEvent
     {
@@ -146,7 +146,7 @@ class ConversionEventRepository
     }
 
     /**
-     * @param array<int, string> $eventKeys
+     * @param  array<int, string>  $eventKeys
      * @return array<int, array{event_key:string,count:int}>
      */
     public function countsByEventKeys(int $days, array $eventKeys, ?string $source = null): array
@@ -169,7 +169,7 @@ class ConversionEventRepository
     }
 
     /**
-     * @param array<int, string> $variants
+     * @param  array<int, string>  $variants
      * @return array<string, array{sessions:int,events:int}>
      */
     public function heroVariantSessionOutcome(int $days, array $variants, string $outcomeEventKey): array

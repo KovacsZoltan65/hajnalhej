@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from 'vue';
-import PermissionGroupCard from './PermissionGroupCard.vue';
+import { computed } from "vue";
+import PermissionGroupCard from "./PermissionGroupCard.vue";
 
 const props = defineProps({
     groups: {
@@ -17,11 +17,9 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(["update:modelValue"]);
 
-const groupEntries = computed(() =>
-    Object.entries(props.groups).map(([name, items]) => ({ name, items }))
-);
+const groupEntries = computed(() => Object.entries(props.groups).map(([name, items]) => ({ name, items })));
 
 const togglePermission = (permissionName) => {
     const current = new Set(props.modelValue);
@@ -31,7 +29,7 @@ const togglePermission = (permissionName) => {
         current.add(permissionName);
     }
 
-    emit('update:modelValue', Array.from(current).sort());
+    emit("update:modelValue", Array.from(current).sort());
 };
 
 const toggleGroup = ({ groupName, selectAll }) => {
@@ -47,7 +45,7 @@ const toggleGroup = ({ groupName, selectAll }) => {
         current.delete(permission.name);
     });
 
-    emit('update:modelValue', Array.from(current).sort());
+    emit("update:modelValue", Array.from(current).sort());
 };
 </script>
 

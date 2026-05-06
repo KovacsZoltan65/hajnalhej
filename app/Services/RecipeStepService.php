@@ -8,12 +8,10 @@ use App\Repositories\RecipeStepRepository;
 
 class RecipeStepService
 {
-    public function __construct(private readonly RecipeStepRepository $repository)
-    {
-    }
+    public function __construct(private readonly RecipeStepRepository $repository) {}
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function create(Product $product, array $payload): RecipeStep
     {
@@ -21,7 +19,7 @@ class RecipeStepService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function update(Product $product, RecipeStep $recipeStep, array $payload): RecipeStep
     {
@@ -42,7 +40,7 @@ class RecipeStepService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      * @return array<string, mixed>
      */
     private function normalizePayload(array $payload): array

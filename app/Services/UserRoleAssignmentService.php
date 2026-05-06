@@ -16,11 +16,10 @@ class UserRoleAssignmentService
         private readonly UserRepository $userRepository,
         private readonly RoleRepository $roleRepository,
         private readonly AuthorizationAuditService $auditService,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateUsers(array $filters): LengthAwarePaginator
     {
@@ -28,7 +27,7 @@ class UserRoleAssignmentService
     }
 
     /**
-     * @param array<int, string> $roleNames
+     * @param  array<int, string>  $roleNames
      */
     public function syncUserRoles(User $targetUser, array $roleNames, User $actingUser): void
     {

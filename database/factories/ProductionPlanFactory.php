@@ -35,4 +35,3 @@ class ProductionPlanFactory extends Factory
         ];
     }
 }
-

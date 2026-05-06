@@ -6,25 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PermissionIndexRequest;
 use App\Http\Requests\Admin\SyncPermissionsRequest;
 use App\Services\PermissionManagementService;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
-    /**
-     * @param PermissionManagementService $service
-     */
-    public function __construct(private readonly PermissionManagementService $service)
-    {
-    }
+    public function __construct(private readonly PermissionManagementService $service) {}
 
-    /**
-     * @param PermissionIndexRequest $request
-     * @return \Inertia\Response
-     */
     public function index(PermissionIndexRequest $request): Response
     {
         $this->authorize('viewAny', Permission::class);
@@ -65,11 +56,6 @@ class PermissionController extends Controller
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @param string $permissionName
-     * @return \Inertia\Response
-     */
     public function show(Request $request, string $permissionName): Response
     {
         $this->authorize('viewAny', Permission::class);
@@ -90,10 +76,6 @@ class PermissionController extends Controller
         ]);
     }
 
-    /**
-     * @param SyncPermissionsRequest $request
-     * @return RedirectResponse
-     */
     public function sync(SyncPermissionsRequest $request): RedirectResponse
     {
         $this->authorize('sync', Permission::class);

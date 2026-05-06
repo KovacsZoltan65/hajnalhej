@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Database\Factories\IngredientFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id Rekord azonosító
@@ -23,37 +25,38 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property numeric $minimum_stock Minimum készletszint
  * @property bool $is_active Felhasználhatóság státusza
  * @property string|null $notes Belső megjegyzés
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at Soft delete időpontja
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BranchInventory> $branchInventoryItems
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at Soft delete időpontja
+ * @property-read Collection<int, BranchInventory> $branchInventoryItems
  * @property-read int|null $branch_inventory_items_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BranchTransfer> $branchTransfers
+ * @property-read Collection<int, BranchTransfer> $branchTransfers
  * @property-read int|null $branch_transfers_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ForecastSnapshot> $forecastSnapshots
+ * @property-read Collection<int, ForecastSnapshot> $forecastSnapshots
  * @property-read int|null $forecast_snapshots_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InventoryMovement> $inventoryMovements
+ * @property-read Collection<int, InventoryMovement> $inventoryMovements
  * @property-read int|null $inventory_movements_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PriceAlert> $priceAlerts
+ * @property-read Collection<int, PriceAlert> $priceAlerts
  * @property-read int|null $price_alerts_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProcurementAlert> $procurementAlerts
+ * @property-read Collection<int, ProcurementAlert> $procurementAlerts
  * @property-read int|null $procurement_alerts_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductIngredient> $productIngredients
+ * @property-read Collection<int, ProductIngredient> $productIngredients
  * @property-read int|null $product_ingredients_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseItem> $purchaseItems
+ * @property-read Collection<int, PurchaseItem> $purchaseItems
  * @property-read int|null $purchase_items_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseReceiptItem> $purchaseReceiptItems
+ * @property-read Collection<int, PurchaseReceiptItem> $purchaseReceiptItems
  * @property-read int|null $purchase_receipt_items_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseRecommendationItem> $purchaseRecommendationItems
+ * @property-read Collection<int, PurchaseRecommendationItem> $purchaseRecommendationItems
  * @property-read int|null $purchase_recommendation_items_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RiskEvent> $riskEvents
+ * @property-read Collection<int, RiskEvent> $riskEvents
  * @property-read int|null $risk_events_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SeasonalProfile> $seasonalProfiles
+ * @property-read Collection<int, SeasonalProfile> $seasonalProfiles
  * @property-read int|null $seasonal_profiles_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SupplierNegotiation> $supplierNegotiations
+ * @property-read Collection<int, SupplierNegotiation> $supplierNegotiations
  * @property-read int|null $supplier_negotiations_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\IngredientSupplierTerm> $supplierTerms
+ * @property-read Collection<int, IngredientSupplierTerm> $supplierTerms
  * @property-read int|null $supplier_terms_count
+ *
  * @method static \Database\Factories\IngredientFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ingredient newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ingredient newQuery()
@@ -76,6 +79,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ingredient whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ingredient withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ingredient withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Ingredient extends Model

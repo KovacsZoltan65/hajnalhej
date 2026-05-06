@@ -44,7 +44,7 @@ class ProfitDashboardService
     }
 
     /**
-     * @param array<int, array{date:string,revenue:float,estimated_cost:float,actual_material_cost:float,gross_profit:float,estimated_profit:float,margin_rate:float,orders_count:int}> $rows
+     * @param  array<int, array{date:string,revenue:float,estimated_cost:float,actual_material_cost:float,gross_profit:float,estimated_profit:float,margin_rate:float,orders_count:int}>  $rows
      * @return array<int, array{date:string,revenue:float,estimated_cost:float,actual_material_cost:float,gross_profit:float,estimated_profit:float,margin_rate:float,orders_count:int}>
      */
     private function fillTrendDates(int $days, array $rows): array

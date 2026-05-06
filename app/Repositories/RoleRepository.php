@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Role;
 class RoleRepository
 {
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {

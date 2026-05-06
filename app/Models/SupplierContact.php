@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -17,10 +18,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property bool $is_primary
  * @property bool $active
  * @property string|null $notes
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Supplier $supplier
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property-read Supplier $supplier
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierContact newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierContact newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierContact onlyTrashed()
@@ -39,6 +41,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierContact whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierContact withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SupplierContact withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class SupplierContact extends Model

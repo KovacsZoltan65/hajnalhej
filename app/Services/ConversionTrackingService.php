@@ -5,19 +5,17 @@ namespace App\Services;
 use App\Models\User;
 use App\Repositories\ConversionEventRepository;
 use App\Support\ConversionEventRegistry;
-use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Throwable;
 
 class ConversionTrackingService
 {
-    public function __construct(private readonly ConversionEventRepository $repository)
-    {
-    }
+    public function __construct(private readonly ConversionEventRepository $repository) {}
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function trackFromRequest(array $payload, Request $request): void
     {
@@ -41,7 +39,7 @@ class ConversionTrackingService
     }
 
     /**
-     * @param array<string, mixed> $metadata
+     * @param  array<string, mixed>  $metadata
      */
     public function trackBackendEvent(
         string $eventKey,
@@ -73,7 +71,7 @@ class ConversionTrackingService
     }
 
     /**
-     * @param array<string, mixed> $metadata
+     * @param  array<string, mixed>  $metadata
      */
     public function trackSystemEvent(
         string $eventKey,
@@ -105,7 +103,7 @@ class ConversionTrackingService
     }
 
     /**
-     * @param array<string, mixed> $metadata
+     * @param  array<string, mixed>  $metadata
      */
     private function track(
         string $eventKey,
@@ -159,7 +157,7 @@ class ConversionTrackingService
     }
 
     /**
-     * @param array<string, mixed> $metadata
+     * @param  array<string, mixed>  $metadata
      * @return array<string, mixed>
      */
     private function normalizeMetadata(array $metadata): array
@@ -173,6 +171,7 @@ class ConversionTrackingService
 
             if (\is_scalar($value) || $value === null) {
                 $safe[$key] = $value;
+
                 continue;
             }
 

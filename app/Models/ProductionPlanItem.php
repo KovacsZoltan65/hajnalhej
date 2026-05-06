@@ -6,6 +6,7 @@ use Database\Factories\ProductionPlanItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id Rekord azonosito
@@ -20,10 +21,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $computed_step_count Szamitott receptlépések szama
  * @property int $computed_active_minutes Szamitott aktiv ido percben
  * @property int $computed_wait_minutes Szamitott varakozasi ido percben
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Product|null $product
- * @property-read \App\Models\ProductionPlan $productionPlan
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Product|null $product
+ * @property-read ProductionPlan $productionPlan
+ *
  * @method static \Database\Factories\ProductionPlanItemFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductionPlanItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductionPlanItem newQuery()
@@ -42,6 +44,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductionPlanItem whereTargetQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductionPlanItem whereUnitLabel($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductionPlanItem whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class ProductionPlanItem extends Model
@@ -91,4 +94,3 @@ class ProductionPlanItem extends Model
         return $this->belongsTo(Product::class);
     }
 }
-

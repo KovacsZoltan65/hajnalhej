@@ -47,4 +47,3 @@ Státuszokat badge formában mutassunk:
 - draft / posted / cancelled,
 - rendelési státusz,
 - urgency: kritikus, magas, közepes, alacsony.
-

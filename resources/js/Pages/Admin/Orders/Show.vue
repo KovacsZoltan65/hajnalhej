@@ -39,9 +39,7 @@ const updateStatus = () => {
 </script>
 
 <template>
-    <Head
-        :title="trans('admin_orders.show_meta_title', { number: order.order_number })"
-    />
+    <Head :title="trans('admin_orders.show_meta_title', { number: order.order_number })" />
 
     <div class="space-y-6">
         <SectionTitle
@@ -52,9 +50,7 @@ const updateStatus = () => {
 
         <div class="grid gap-6 lg:grid-cols-[1fr_22rem]">
             <section class="space-y-4">
-                <article
-                    class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-5"
-                >
+                <article class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-5">
                     <div class="flex items-center justify-between gap-3">
                         <h2 class="font-heading text-2xl text-bakery-dark">
                             {{ $t("admin_orders.sections.customer_details") }}
@@ -98,9 +94,7 @@ const updateStatus = () => {
                     </dl>
                 </article>
 
-                <article
-                    class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-5"
-                >
+                <article class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-5">
                     <h2 class="font-heading text-2xl text-bakery-dark">
                         {{ $t("admin_orders.sections.items") }}
                     </h2>
@@ -129,9 +123,7 @@ const updateStatus = () => {
                 </article>
             </section>
 
-            <aside
-                class="h-fit space-y-4 rounded-2xl border border-bakery-brown/15 bg-[#fff9f1] p-5 shadow-sm"
-            >
+            <aside class="h-fit space-y-4 rounded-2xl border border-bakery-brown/15 bg-[#fff9f1] p-5 shadow-sm">
                 <h2 class="font-heading text-2xl text-bakery-dark">
                     {{ $t("common.actions") }}
                 </h2>
@@ -151,11 +143,7 @@ const updateStatus = () => {
                         <label class="text-sm font-medium text-bakery-dark">{{
                             $t("admin_orders.fields.status")
                         }}</label>
-                        <Select
-                            v-model="statusForm.status"
-                            :options="statusOptions"
-                            class="w-full"
-                        />
+                        <Select v-model="statusForm.status" :options="statusOptions" class="w-full" />
                         <p v-if="statusForm.errors.status" class="text-xs text-red-700">
                             {{ statusForm.errors.status }}
                         </p>
@@ -165,15 +153,8 @@ const updateStatus = () => {
                         <label class="text-sm font-medium text-bakery-dark">{{
                             $t("admin_orders.fields.internal_notes")
                         }}</label>
-                        <Textarea
-                            v-model="statusForm.internal_notes"
-                            rows="4"
-                            class="w-full"
-                        />
-                        <p
-                            v-if="statusForm.errors.internal_notes"
-                            class="text-xs text-red-700"
-                        >
+                        <Textarea v-model="statusForm.internal_notes" rows="4" class="w-full" />
+                        <p v-if="statusForm.errors.internal_notes" class="text-xs text-red-700">
                             {{ statusForm.errors.internal_notes }}
                         </p>
                     </div>
@@ -182,15 +163,8 @@ const updateStatus = () => {
                         <label class="text-sm font-medium text-bakery-dark">{{
                             $t("admin_orders.fields.pickup_date")
                         }}</label>
-                        <InputText
-                            v-model="statusForm.pickup_date"
-                            type="date"
-                            class="w-full"
-                        />
-                        <p
-                            v-if="statusForm.errors.pickup_date"
-                            class="text-xs text-red-700"
-                        >
+                        <InputText v-model="statusForm.pickup_date" type="date" class="w-full" />
+                        <p v-if="statusForm.errors.pickup_date" class="text-xs text-red-700">
                             {{ statusForm.errors.pickup_date }}
                         </p>
                     </div>
@@ -202,14 +176,9 @@ const updateStatus = () => {
                         <InputText
                             v-model="statusForm.pickup_time_slot"
                             class="w-full"
-                            :placeholder="
-                                $t('admin_orders.placeholders.pickup_time_slot')
-                            "
+                            :placeholder="$t('admin_orders.placeholders.pickup_time_slot')"
                         />
-                        <p
-                            v-if="statusForm.errors.pickup_time_slot"
-                            class="text-xs text-red-700"
-                        >
+                        <p v-if="statusForm.errors.pickup_time_slot" class="text-xs text-red-700">
                             {{ statusForm.errors.pickup_time_slot }}
                         </p>
                     </div>

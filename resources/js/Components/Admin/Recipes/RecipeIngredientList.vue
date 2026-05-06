@@ -37,21 +37,8 @@ const { formatQuantity } = useLocaleFormat();
                 >
                     Alacsony készlet
                 </span>
-                <Button
-                    icon="pi pi-pencil"
-                    text
-                    size="small"
-                    rounded
-                    @click="emit('edit', item)"
-                />
-                <Button
-                    icon="pi pi-trash"
-                    text
-                    size="small"
-                    rounded
-                    severity="danger"
-                    @click="emit('delete', item)"
-                />
+                <Button icon="pi pi-pencil" text size="small" rounded @click="emit('edit', item)" />
+                <Button icon="pi pi-trash" text size="small" rounded severity="danger" @click="emit('delete', item)" />
             </div>
         </div>
         <div

@@ -31,72 +31,121 @@ class PermissionRegistry
     ];
 
     public const ROLE_ADMIN = 'admin';
+
     public const ROLE_CUSTOMER = 'customer';
 
     public const ADMIN_PANEL_ACCESS = 'admin.panel.access';
 
     public const ORDERS_VIEW = 'orders.view';
+
     public const ORDERS_UPDATE = 'orders.update';
 
     public const PRODUCTS_VIEW = 'products.view';
+
     public const PRODUCTS_CREATE = 'products.create';
+
     public const PRODUCTS_UPDATE = 'products.update';
+
     public const PRODUCTS_DELETE = 'products.delete';
 
     public const CATEGORIES_VIEW = 'categories.view';
+
     public const CATEGORIES_CREATE = 'categories.create';
+
     public const CATEGORIES_UPDATE = 'categories.update';
+
     public const CATEGORIES_DELETE = 'categories.delete';
 
     public const ADMIN_USERS_VIEW = 'admin.users.view';
+
     public const ADMIN_USERS_CREATE = 'admin.users.create';
+
     public const ADMIN_USERS_UPDATE = 'admin.users.update';
+
     public const ADMIN_USERS_DELETE = 'admin.users.delete';
+
     public const ADMIN_USERS_MANAGE_ROLES = 'admin.users.manage_roles';
+
     public const ADMIN_USERS_MANAGE_TEMPORARY_PERMISSIONS = 'admin.users.manage_temporary_permissions';
+
     public const ADMIN_USERS_MANAGE_DISCOUNTS = 'admin.users.manage_discounts';
+
     public const ADMIN_USERS_VIEW_ORDERS = 'admin.users.view_orders';
 
     public const INGREDIENTS_VIEW = 'ingredients.view';
+
     public const INGREDIENTS_CREATE = 'ingredients.create';
+
     public const INGREDIENTS_UPDATE = 'ingredients.update';
+
     public const INGREDIENTS_DELETE = 'ingredients.delete';
 
     public const WEEKLY_MENU_VIEW = 'weekly-menu.view';
+
     public const WEEKLY_MENU_CREATE = 'weekly-menu.create';
+
     public const WEEKLY_MENU_UPDATE = 'weekly-menu.update';
+
     public const WEEKLY_MENU_DELETE = 'weekly-menu.delete';
 
     public const PRODUCTION_PLANS_VIEW = 'production-plans.view';
+
     public const PRODUCTION_PLANS_CREATE = 'production-plans.create';
+
     public const PRODUCTION_PLANS_UPDATE = 'production-plans.update';
+
     public const PRODUCTION_PLANS_DELETE = 'production-plans.delete';
 
     public const ACCOUNT_VIEW = 'account.view';
+
     public const ROLES_VIEW = 'roles.view';
+
     public const ROLES_CREATE = 'roles.create';
+
     public const ROLES_UPDATE = 'roles.update';
+
     public const ROLES_DELETE = 'roles.delete';
+
     public const ROLES_ASSIGN_PERMISSIONS = 'roles.assign-permissions';
+
     public const USERS_ASSIGN_ROLES = 'users.assign-roles';
+
     public const USERS_VIEW_PERMISSIONS = 'users.view-permissions';
+
     public const PERMISSIONS_VIEW = 'permissions.view';
+
     public const PERMISSIONS_SYNC = 'permissions.sync';
+
     public const PERMISSIONS_VIEW_USAGE = 'permissions.view-usage';
+
     public const AUDIT_LOGS_VIEW = 'audit-logs.view';
+
     public const SECURITY_DASHBOARD_VIEW = 'security-dashboard.view';
+
     public const CONVERSION_ANALYTICS_VIEW = 'conversion-analytics.view';
+
     public const PROFIT_DASHBOARD_VIEW = 'profit-dashboard.view';
+
     public const CEO_DASHBOARD_VIEW = 'ceo-dashboard.view';
+
     public const SUPPLIERS_VIEW = 'suppliers.view';
+
     public const SUPPLIERS_MANAGE = 'suppliers.manage';
+
     public const PURCHASES_VIEW = 'purchases.view';
+
     public const PURCHASES_MANAGE = 'purchases.manage';
+
     public const PROCUREMENT_INTELLIGENCE_VIEW = 'procurement-intelligence.view';
+
     public const INVENTORY_VIEW = 'inventory.view';
+
     public const INVENTORY_ADJUST = 'inventory.adjust';
+
     public const WASTE_MANAGE = 'waste.manage';
+
     public const STOCK_COUNTS_MANAGE = 'stock-counts.manage';
+
     public const INVENTORY_DASHBOARD_VIEW = 'inventory-dashboard.view';
 
     /**
@@ -751,7 +800,7 @@ class PermissionRegistry
     }
 
     /**
-     * @param array{name:string,module:string,label:string,description:string,dangerous:bool,sort:int,system:bool,audit_sensitive:bool} $definition
+     * @param  array{name:string,module:string,label:string,description:string,dangerous:bool,sort:int,system:bool,audit_sensitive:bool}  $definition
      * @return array{name:string,module:string,label:string,description:string,dangerous:bool,sort:int,system:bool,audit_sensitive:bool}
      */
     private static function localizedDefinition(array $definition): array

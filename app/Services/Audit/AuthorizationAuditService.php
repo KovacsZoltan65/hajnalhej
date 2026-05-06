@@ -10,13 +10,21 @@ class AuthorizationAuditService extends BaseAuditService
     public const LOG_NAME = 'authorization';
 
     public const ROLE_CREATED = 'role.created';
+
     public const ROLE_UPDATED = 'role.updated';
+
     public const ROLE_DELETED = 'role.deleted';
+
     public const ROLE_UPDATE_BLOCKED = 'role.update_blocked';
+
     public const ROLE_DELETE_BLOCKED = 'role.delete_blocked';
+
     public const ROLE_PERMISSIONS_SYNCED = 'role.permissions.synced';
+
     public const ROLE_PERMISSIONS_SYNC_BLOCKED = 'role.permissions.sync_blocked';
+
     public const USER_ROLES_SYNCED = 'user.roles.synced';
+
     public const USER_ROLES_SYNC_BLOCKED = 'user.roles.sync_blocked';
 
     /**
@@ -131,8 +139,8 @@ class AuthorizationAuditService extends BaseAuditService
     }
 
     /**
-     * @param array<int, string> $beforePermissions
-     * @param array<int, string> $afterPermissions
+     * @param  array<int, string>  $beforePermissions
+     * @param  array<int, string>  $afterPermissions
      */
     public function logRolePermissionsSynced(User $actor, Role $role, array $beforePermissions, array $afterPermissions): void
     {
@@ -159,8 +167,8 @@ class AuthorizationAuditService extends BaseAuditService
     }
 
     /**
-     * @param array<int, string> $beforeRoles
-     * @param array<int, string> $afterRoles
+     * @param  array<int, string>  $beforeRoles
+     * @param  array<int, string>  $afterRoles
      */
     public function logUserRolesSynced(User $actor, User $targetUser, array $beforeRoles, array $afterRoles): void
     {
@@ -187,8 +195,8 @@ class AuthorizationAuditService extends BaseAuditService
     }
 
     /**
-     * @param array<int, string> $beforeRoles
-     * @param array<int, string> $attemptedRoles
+     * @param  array<int, string>  $beforeRoles
+     * @param  array<int, string>  $attemptedRoles
      */
     public function logUserRolesSyncBlocked(
         User $actor,
@@ -228,5 +236,4 @@ class AuthorizationAuditService extends BaseAuditService
             'guard_name' => $role->guard_name,
         ];
     }
-
 }

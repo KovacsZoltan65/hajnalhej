@@ -28,4 +28,3 @@ class StoreStockCountRequest extends FormRequest
         ];
     }
 }
-

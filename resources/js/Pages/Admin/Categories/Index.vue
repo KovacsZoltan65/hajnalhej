@@ -37,15 +37,7 @@ const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const editingId = ref(null);
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
         search: "",
@@ -167,30 +159,22 @@ const confirmDelete = (category) => {
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
-            <AdminTableToolbar
-                :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-2'"
-            >
+            <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-2'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
                             {{ $t("common.search") }}
                         </label>
                         <InputText
                             v-model="filterState.search"
-                            :placeholder="
-                                $t('admin_categories.filters.search_placeholder')
-                            "
+                            :placeholder="$t('admin_categories.filters.search_placeholder')"
                             class="w-full"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
                             {{ $t("table.rows_per_page") }}
                         </label>
                         <Select
@@ -205,16 +189,8 @@ const confirmDelete = (category) => {
                 </template>
 
                 <template #actions>
-                    <Button
-                        icon="pi pi-search"
-                        :label="$t('common.search')"
-                        @click="submitFilters"
-                    />
-                    <Button
-                        icon="pi pi-plus"
-                        :label="$t('admin_categories.actions.create')"
-                        @click="openCreate"
-                    />
+                    <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
+                    <Button icon="pi pi-plus" :label="$t('admin_categories.actions.create')" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
@@ -240,9 +216,7 @@ const confirmDelete = (category) => {
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
                             <p>{{ $t("admin_categories.empty") }}</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
                                 <Button
                                     :label="$t('common.clear_filters')"
                                     outlined
@@ -264,23 +238,13 @@ const confirmDelete = (category) => {
                                 <p class="font-semibold text-bakery-dark">
                                     {{ data.name }}
                                 </p>
-                                <p class="text-xs text-bakery-dark/60">
-                                    /{{ data.slug }}
-                                </p>
+                                <p class="text-xs text-bakery-dark/60">/{{ data.slug }}</p>
                             </div>
                         </template>
                     </Column>
-                    <Column
-                        field="sort_order"
-                        :header="$t('admin_categories.columns.sort_order')"
-                        sortable
-                    />
+                    <Column field="sort_order" :header="$t('admin_categories.columns.sort_order')" sortable />
                     <Column field="products_count" :header="$t('nav.products')" />
-                    <Column
-                        field="is_active"
-                        :header="$t('admin_categories.columns.status')"
-                        sortable
-                    >
+                    <Column field="is_active" :header="$t('admin_categories.columns.status')" sortable>
                         <template #body="{ data }">
                             <CategoryStatusBadge :active="data.is_active" />
                         </template>
@@ -312,11 +276,7 @@ const confirmDelete = (category) => {
             </div>
         </div>
 
-        <CreateModal
-            v-model:visible="createModalVisible"
-            :form="form"
-            @submit="submitCreate"
-        />
+        <CreateModal v-model:visible="createModalVisible" :form="form" @submit="submitCreate" />
         <EditModal v-model:visible="editModalVisible" :form="form" @submit="submitEdit" />
         <ConfirmDialog />
     </div>

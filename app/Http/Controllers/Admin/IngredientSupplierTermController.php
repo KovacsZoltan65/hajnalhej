@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\IngredientSupplierTermIndexRequest;
+use App\Http\Requests\Admin\InlineUpdateIngredientSupplierTermRequest;
 use App\Http\Requests\Admin\StoreIngredientSupplierTermRequest;
 use App\Http\Requests\Admin\UpdateIngredientSupplierTermRequest;
 use App\Models\Ingredient;
@@ -16,17 +17,8 @@ use Inertia\Response;
 
 class IngredientSupplierTermController extends Controller
 {
-    /**
-     * @param IngredientSupplierTermService $service
-     */
-    public function __construct(private readonly IngredientSupplierTermService $service)
-    {
-    }
+    public function __construct(private readonly IngredientSupplierTermService $service) {}
 
-    /**
-     * @param IngredientSupplierTermIndexRequest $request
-     * @return \Inertia\Response
-     */
     public function index(IngredientSupplierTermIndexRequest $request): Response
     {
         $filters = $request->validated();
@@ -68,39 +60,33 @@ class IngredientSupplierTermController extends Controller
         ]);
     }
 
-    /**
-     * @param StoreIngredientSupplierTermRequest $request
-     * @return RedirectResponse
-     */
     public function store(StoreIngredientSupplierTermRequest $request): RedirectResponse
     {
         $this->service->create($request->validated());
 
-        return back()->with('success', __('admin_supplier_terms.created') . '.');
+        return back()->with('success', __('admin_supplier_terms.created').'.');
     }
 
-    /**
-     * @param UpdateIngredientSupplierTermRequest $request
-     * @param IngredientSupplierTerm $ingredientSupplierTerm
-     * @return RedirectResponse
-     */
     public function update(UpdateIngredientSupplierTermRequest $request, IngredientSupplierTerm $ingredientSupplierTerm): RedirectResponse
     {
         $this->service->update($ingredientSupplierTerm, $request->validated());
 
-        return back()->with('success', __('admin_supplier_terms.updated') . '.');
+        return back()->with('success', __('admin_supplier_terms.updated').'.');
     }
 
-    /**
-     * @param IngredientSupplierTerm $ingredientSupplierTerm
-     * @return RedirectResponse
-     */
+    public function updateInline(InlineUpdateIngredientSupplierTermRequest $request, IngredientSupplierTerm $ingredientSupplierTerm): RedirectResponse
+    {
+        $this->service->updateInline($ingredientSupplierTerm, $request->validated());
+
+        return back(303)->with('success', __('admin.common.inline_edit.saved'));
+    }
+
     public function destroy(IngredientSupplierTerm $ingredientSupplierTerm): RedirectResponse
     {
         $this->authorize('delete', $ingredientSupplierTerm);
 
         $this->service->delete($ingredientSupplierTerm);
 
-        return back()->with('success', __('admin_supplier_terms.deleted') . '.');
+        return back()->with('success', __('admin_supplier_terms.deleted').'.');
     }
 }

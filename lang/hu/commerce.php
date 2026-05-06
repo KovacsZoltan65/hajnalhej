@@ -34,5 +34,3 @@ return [
         'synced' => 'A jogosultság-registry szinkronizáció lefutott.',
     ],
 ];
-
-

@@ -1,7 +1,7 @@
 <script setup>
-import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
-import SupplierForm from './SupplierForm.vue';
+import Button from "primevue/button";
+import Dialog from "primevue/dialog";
+import SupplierForm from "./SupplierForm.vue";
 
 defineProps({
     visible: {
@@ -14,9 +14,9 @@ defineProps({
     },
 });
 
-const emit = defineEmits(['update:visible', 'submit']);
+const emit = defineEmits(["update:visible", "submit"]);
 
-const close = () => emit('update:visible', false);
+const close = () => emit("update:visible", false);
 </script>
 
 <template>
@@ -40,4 +40,3 @@ const close = () => emit('update:visible', false);
         </template>
     </Dialog>
 </template>
-

@@ -14,25 +14,13 @@ use Inertia\Response;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * @param UserActivityAuditService $auditService
-     */
-    public function __construct(private readonly UserActivityAuditService $auditService)
-    {
-    }
+    public function __construct(private readonly UserActivityAuditService $auditService) {}
 
-    /**
-     * @return \Inertia\Response
-     */
     public function create(): Response
     {
         return Inertia::render('Auth/Login');
     }
 
-    /**
-     * @param LoginRequest $request
-     * @return RedirectResponse
-     */
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
@@ -56,10 +44,6 @@ class AuthenticatedSessionController extends Controller
             ->with('success', __('auth_ui.login.success'));
     }
 
-    /**
-     * @param Request $request
-     * @return RedirectResponse
-     */
     public function destroy(Request $request): RedirectResponse
     {
         $user = $request->user();

@@ -9,8 +9,11 @@ class UserActivityAuditService extends BaseAuditService
     public const LOG_NAME = 'user-activity';
 
     public const USER_LOGIN = 'user.login';
+
     public const USER_LOGOUT = 'user.logout';
+
     public const USER_REGISTERED = 'user.registered';
+
     public const USER_EMAIL_VERIFIED = 'user.email.verified';
 
     /**
@@ -27,7 +30,7 @@ class UserActivityAuditService extends BaseAuditService
     }
 
     /**
-     * @param array<string, mixed> $context
+     * @param  array<string, mixed>  $context
      */
     public function logLogin(User $user, array $context = []): void
     {
@@ -47,7 +50,7 @@ class UserActivityAuditService extends BaseAuditService
     }
 
     /**
-     * @param array<string, mixed> $context
+     * @param  array<string, mixed>  $context
      */
     public function logLogout(User $user, array $context = []): void
     {
@@ -67,7 +70,7 @@ class UserActivityAuditService extends BaseAuditService
     }
 
     /**
-     * @param array<string, mixed> $context
+     * @param  array<string, mixed>  $context
      */
     public function logRegistered(User $user, array $context = []): void
     {
@@ -87,7 +90,7 @@ class UserActivityAuditService extends BaseAuditService
     }
 
     /**
-     * @param array<string, mixed> $context
+     * @param  array<string, mixed>  $context
      */
     public function logEmailVerified(User $user, array $context = []): void
     {

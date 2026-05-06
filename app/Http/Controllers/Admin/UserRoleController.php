@@ -13,17 +13,8 @@ use Inertia\Response;
 
 class UserRoleController extends Controller
 {
-    /**
-     * @param UserRoleAssignmentService $service
-     */
-    public function __construct(private readonly UserRoleAssignmentService $service)
-    {
-    }
+    public function __construct(private readonly UserRoleAssignmentService $service) {}
 
-    /**
-     * @param Request $request
-     * @return \Inertia\Response
-     */
     public function index(Request $request): Response
     {
         $canAssignRoles = $request->user()?->can('assignRoles', User::class) ?? false;
@@ -62,11 +53,6 @@ class UserRoleController extends Controller
         ]);
     }
 
-    /**
-     * @param SyncUserRolesRequest $request
-     * @param User $user
-     * @return RedirectResponse
-     */
     public function update(SyncUserRolesRequest $request, User $user): RedirectResponse
     {
         $this->authorize('assignRoles', User::class);

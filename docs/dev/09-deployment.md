@@ -34,13 +34,12 @@ Ha e-mail, riport vagy háttérfolyamat queue-t használ, deploy után queue wor
 2. Ha migráció érintett, rollback csak előzetes adatmentési tervvel.
 3. Cache clear.
 4. Smoke teszt:
-   - login,
-   - admin dashboard,
-   - rendelés lista,
-   - beszerzés lista,
-   - inventory dashboard.
+    - login,
+    - admin dashboard,
+    - rendelés lista,
+    - beszerzés lista,
+    - inventory dashboard.
 
 ## Adatbázis mentés
 
 Production migráció előtt adatbázis backup kötelező, különösen inventory és pénzügyi mezőket érintő változtatásnál.
-

@@ -16,11 +16,10 @@ class OrderService
         private readonly OrderRepository $repository,
         private readonly OrderAuditService $auditService,
         private readonly ProductionInventoryService $productionInventoryService,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -36,7 +35,7 @@ class OrderService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function transitionStatus(Order $order, array $payload, ?User $actor = null): Order
     {
@@ -103,7 +102,7 @@ class OrderService
     }
 
     /**
-     * @param array<int, array<string, mixed>> $lineSnapshots
+     * @param  array<int, array<string, mixed>>  $lineSnapshots
      * @return array<string, mixed>
      */
     public function buildFutureProductionMetadata(array $lineSnapshots): array

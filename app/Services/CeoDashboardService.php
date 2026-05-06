@@ -11,8 +11,7 @@ class CeoDashboardService
     public function __construct(
         private readonly CeoDashboardRepository $repository,
         private readonly ProfitDashboardRepository $profitDashboardRepository,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<string, mixed>
@@ -141,7 +140,7 @@ class CeoDashboardService
     }
 
     /**
-     * @param array{critical_alerts:int,orphan_permissions:int,dangerous_permissions:int,high_risk_users:int} $alerts
+     * @param  array{critical_alerts:int,orphan_permissions:int,dangerous_permissions:int,high_risk_users:int}  $alerts
      * @return array{
      *  critical_alerts:int,
      *  orphan_permissions:int,
@@ -225,7 +224,7 @@ class CeoDashboardService
     }
 
     /**
-     * @param array<int, array{date:string,revenue:float,estimated_cost:float,estimated_profit:float,margin_rate:float,orders_count:int}> $rows
+     * @param  array<int, array{date:string,revenue:float,estimated_cost:float,estimated_profit:float,margin_rate:float,orders_count:int}>  $rows
      * @return array<int, array{date:string,revenue:float,estimated_cost:float,estimated_profit:float,margin_rate:float,orders_count:int}>
      */
     private function fillProfitTrendDates(int $days, array $rows): array

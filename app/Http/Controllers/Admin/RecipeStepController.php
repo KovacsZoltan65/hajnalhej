@@ -13,46 +13,24 @@ use Illuminate\Http\Request;
 
 class RecipeStepController extends Controller
 {
-    /**
-     * @param RecipeStepService $service
-     */
-    public function __construct(private readonly RecipeStepService $service)
-    {
-    }
+    public function __construct(private readonly RecipeStepService $service) {}
 
-    /**
-     * @param StoreRecipeStepRequest $request
-     * @param Product $product
-     * @return RedirectResponse
-     */
     public function store(StoreRecipeStepRequest $request, Product $product): RedirectResponse
     {
         $this->service->create($product, $request->validated());
 
         return $this->redirectToOrigin($request)
-            ->with('success', __('admin_recipe_steps.added') . '.');
+            ->with('success', __('admin_recipe_steps.added').'.');
     }
 
-    /**
-     * @param UpdateRecipeStepRequest $request
-     * @param Product $product
-     * @param RecipeStep $recipeStep
-     * @return RedirectResponse
-     */
     public function update(UpdateRecipeStepRequest $request, Product $product, RecipeStep $recipeStep): RedirectResponse
     {
         $this->service->update($product, $recipeStep, $request->validated());
 
         return $this->redirectToOrigin($request)
-            ->with('success', __('admin_recipe_steps.updated') . '.');
+            ->with('success', __('admin_recipe_steps.updated').'.');
     }
 
-    /**
-     * @param Request $request
-     * @param Product $product
-     * @param RecipeStep $recipeStep
-     * @return RedirectResponse
-     */
     public function destroy(Request $request, Product $product, RecipeStep $recipeStep): RedirectResponse
     {
         $this->authorize('update', $product);
@@ -60,13 +38,9 @@ class RecipeStepController extends Controller
         $this->service->delete($product, $recipeStep);
 
         return $this->redirectToOrigin($request)
-            ->with('success', __('admin_recipe_steps.deleted') . '.');
+            ->with('success', __('admin_recipe_steps.deleted').'.');
     }
 
-    /**
-     * @param Request $request
-     * @return RedirectResponse
-     */
     private function redirectToOrigin(Request $request): RedirectResponse
     {
         $fallback = route('admin.recipes.index');
@@ -79,6 +53,3 @@ class RecipeStepController extends Controller
         return redirect()->to($fallback);
     }
 }
-
-
-

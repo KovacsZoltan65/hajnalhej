@@ -11,18 +11,10 @@ use Inertia\Response;
 
 class CeoDashboardController extends Controller
 {
-    /**
-     * @param CeoDashboardService $service
-     */
     public function __construct(
         private readonly CeoDashboardService $service,
-    ) {
-    }
+    ) {}
 
-    /**
-     * @param CeoDashboardIndexRequest $request
-     * @return \Inertia\Response
-     */
     public function index(CeoDashboardIndexRequest $request): Response
     {
         $this->authorize('viewCeoDashboard', ConversionEvent::class);
@@ -37,4 +29,3 @@ class CeoDashboardController extends Controller
         ]);
     }
 }
-

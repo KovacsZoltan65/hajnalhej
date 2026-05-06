@@ -2,18 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property int|null $supplier_id
  * @property string|null $reference_number
- * @property \Illuminate\Support\Carbon $purchase_date
- * @property \Illuminate\Support\Carbon|null $expected_delivery_date
- * @property \Illuminate\Support\Carbon|null $received_date
+ * @property Carbon $purchase_date
+ * @property Carbon|null $expected_delivery_date
+ * @property Carbon|null $received_date
  * @property string $status
  * @property string $receipt_status
  * @property numeric $subtotal
@@ -21,19 +23,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property numeric $received_total
  * @property string|null $notes
  * @property int|null $created_by
- * @property \Illuminate\Support\Carbon|null $posted_at
- * @property \Illuminate\Support\Carbon|null $ordered_at
- * @property \Illuminate\Support\Carbon|null $cancelled_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $creator
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseItem> $items
+ * @property Carbon|null $posted_at
+ * @property Carbon|null $ordered_at
+ * @property Carbon|null $cancelled_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User|null $creator
+ * @property-read Collection<int, PurchaseItem> $items
  * @property-read int|null $items_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseReceipt> $receipts
+ * @property-read Collection<int, PurchaseReceipt> $receipts
  * @property-read int|null $receipts_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseRecommendation> $recommendations
+ * @property-read Collection<int, PurchaseRecommendation> $recommendations
  * @property-read int|null $recommendations_count
- * @property-read \App\Models\Supplier|null $supplier
+ * @property-read Supplier|null $supplier
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Purchase newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Purchase newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Purchase query()
@@ -55,12 +58,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Purchase whereSupplierId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Purchase whereTotal($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Purchase whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Purchase extends Model
 {
     public const STATUS_DRAFT = 'draft';
+
     public const STATUS_POSTED = 'posted';
+
     public const STATUS_CANCELLED = 'cancelled';
 
     use HasFactory;

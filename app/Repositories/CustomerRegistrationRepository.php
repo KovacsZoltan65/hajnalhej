@@ -7,7 +7,7 @@ use App\Models\User;
 class CustomerRegistrationRepository
 {
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function createCustomer(array $payload): User
     {

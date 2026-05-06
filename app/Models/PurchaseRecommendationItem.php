@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -22,11 +23,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property numeric|null $margin_impact
  * @property string|null $reason_code
  * @property array<array-key, mixed>|null $calculation_snapshot
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Ingredient|null $ingredient
- * @property-read \App\Models\PurchaseRecommendation|null $recommendation
- * @property-read \App\Models\Supplier|null $supplier
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Ingredient|null $ingredient
+ * @property-read PurchaseRecommendation|null $recommendation
+ * @property-read Supplier|null $supplier
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem query()
@@ -47,6 +49,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereSupplierId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereUnit($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PurchaseRecommendationItem whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class PurchaseRecommendationItem extends Model

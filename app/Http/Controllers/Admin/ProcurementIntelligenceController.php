@@ -14,20 +14,11 @@ use RuntimeException;
 
 class ProcurementIntelligenceController extends Controller
 {
-    /**
-     * @param ProcurementIntelligenceService $service
-     * @param PurchaseDraftGenerationService $draftGenerationService
-     */
     public function __construct(
         private readonly ProcurementIntelligenceService $service,
         private readonly PurchaseDraftGenerationService $draftGenerationService,
-    ) {
-    }
+    ) {}
 
-    /**
-     * @param ProcurementIntelligenceIndexRequest $request
-     * @return \Inertia\Response
-     */
     public function index(ProcurementIntelligenceIndexRequest $request): Response
     {
         $this->authorize('viewProcurementIntelligence');

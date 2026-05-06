@@ -7,8 +7,7 @@ const { translate } = vi.hoisted(() => {
         "admin_permissions.meta_title": "Jogosultságok",
         "admin_permissions.eyebrow": "Admin / Szerepkörök és jogosultságok",
         "admin_permissions.title": "Jogosultságok",
-        "admin_permissions.description":
-            "Registry-alapú jogosultságlista, használatnézet és drift ellenőrzés.",
+        "admin_permissions.description": "Registry-alapú jogosultságlista, használatnézet és drift ellenőrzés.",
         "common.search": "Keresés",
         "admin_permissions.filters.search_placeholder": "Név, címke, leírás...",
         "admin_permissions.filters.module": "Modul",
@@ -34,8 +33,7 @@ const { translate } = vi.hoisted(() => {
         "admin_permissions.usage_states.used": "Használt",
         "admin_permissions.usage_states.unused": "Nem használt",
         "admin_permissions.registry_states.synced": "Szinkronizált",
-        "admin_permissions.registry_states.missing_in_db":
-            "Hiányzik az adatbázisból",
+        "admin_permissions.registry_states.missing_in_db": "Hiányzik az adatbázisból",
         "admin_permissions.registry_states.orphan_db_only": "Csak adatbázisban",
         "common.name": "Név",
         "admin_permissions.sort_fields.module": "Modul",
@@ -128,8 +126,7 @@ const stubs = {
     },
     SectionTitle: {
         props: ["eyebrow", "title", "description"],
-        template:
-            "<section>{{ eyebrow }} {{ title }} {{ description }}</section>",
+        template: "<section>{{ eyebrow }} {{ title }} {{ description }}</section>",
     },
 };
 
@@ -163,9 +160,7 @@ describe("Admin Permissions Index", () => {
             },
         });
 
-        expect(wrapper.text()).toContain(
-            "Admin / Szerepkörök és jogosultságok",
-        );
+        expect(wrapper.text()).toContain("Admin / Szerepkörök és jogosultságok");
         expect(wrapper.text()).toContain("Keresés");
         expect(wrapper.text()).toContain("Jogosultság");
         expect(wrapper.text()).toContain("permissions.view");

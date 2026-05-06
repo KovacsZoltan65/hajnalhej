@@ -46,15 +46,7 @@ const props = defineProps({
 
 const loading = ref(false);
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
         search: "",
@@ -130,10 +122,9 @@ const subjectTypeOptions = computed(() => [
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("common.search") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.search")
+                        }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
@@ -143,10 +134,9 @@ const subjectTypeOptions = computed(() => [
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("audit_logs.filters.domain") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("audit_logs.filters.domain")
+                        }}</label>
                         <Select
                             v-model="filterState.log_name"
                             :options="logNameOptions"
@@ -158,10 +148,9 @@ const subjectTypeOptions = computed(() => [
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("audit_logs.filters.event") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("audit_logs.filters.event")
+                        }}</label>
                         <Select
                             v-model="filterState.event_key"
                             :options="eventSelectOptions"
@@ -173,10 +162,9 @@ const subjectTypeOptions = computed(() => [
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("audit_logs.filters.subject_type") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("audit_logs.filters.subject_type")
+                        }}</label>
                         <Select
                             v-model="filterState.subject_type"
                             :options="subjectTypeOptions"
@@ -188,10 +176,9 @@ const subjectTypeOptions = computed(() => [
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("table.rows_per_page") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("table.rows_per_page")
+                        }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -204,11 +191,7 @@ const subjectTypeOptions = computed(() => [
                 </template>
 
                 <template #actions>
-                    <Button
-                        icon="pi pi-search"
-                        :label="$t('common.filter')"
-                        @click="submitFilters"
-                    />
+                    <Button icon="pi pi-search" :label="$t('common.filter')" @click="submitFilters" />
                 </template>
             </AdminTableToolbar>
 
@@ -231,9 +214,7 @@ const subjectTypeOptions = computed(() => [
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
                             <p>{{ $t("audit_logs.empty") }}</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
                                 <Button
                                     :label="$t('common.clear_filters')"
                                     outlined
@@ -244,17 +225,13 @@ const subjectTypeOptions = computed(() => [
                         </div>
                     </template>
 
-                    <Column
-                        :header="$t('audit_logs.columns.created_at')"
-                        field="created_at"
-                    />
+                    <Column :header="$t('audit_logs.columns.created_at')" field="created_at" />
 
                     <Column :header="$t('audit_logs.columns.domain')">
                         <template #body="{ data }">
-                            <span
-                                class="text-xs font-semibold uppercase tracking-widest text-bakery-dark/70"
-                                >{{ data.log_name }}</span
-                            >
+                            <span class="text-xs font-semibold uppercase tracking-widest text-bakery-dark/70">{{
+                                data.log_name
+                            }}</span>
                         </template>
                     </Column>
 
@@ -293,20 +270,12 @@ const subjectTypeOptions = computed(() => [
                         </template>
                     </Column>
 
-                    <Column
-                        field="description"
-                        :header="$t('audit_logs.columns.description')"
-                    />
+                    <Column field="description" :header="$t('audit_logs.columns.description')" />
 
                     <Column :header="$t('common.actions')" :style="{ width: '9rem' }">
                         <template #body="{ data }">
                             <Link :href="route('admin.audit-logs.show', data.id)">
-                                <Button
-                                    :label="$t('common.details')"
-                                    size="small"
-                                    text
-                                    class="min-h-11!"
-                                />
+                                <Button :label="$t('common.details')" size="small" text class="min-h-11!" />
                             </Link>
                         </template>
                     </Column>

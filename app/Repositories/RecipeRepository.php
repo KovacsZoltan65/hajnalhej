@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 class RecipeRepository
 {
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -44,7 +44,7 @@ class RecipeRepository
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     private function adminQuery(array $filters): Builder
     {

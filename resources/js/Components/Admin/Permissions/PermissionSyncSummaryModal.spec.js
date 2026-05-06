@@ -2,7 +2,7 @@ import { mount } from "@vue/test-utils";
 import PermissionSyncSummaryModal from "./PermissionSyncSummaryModal.vue";
 
 vi.mock("primevue/dialog", () => ({
-    default: { template: "<div><slot /><slot name=\"footer\" /></div>" },
+    default: { template: '<div><slot /><slot name="footer" /></div>' },
 }));
 
 vi.mock("primevue/button", () => ({

@@ -2,29 +2,32 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property string $run_number
  * @property string $forecast_type
  * @property string $status
- * @property \Illuminate\Support\Carbon $period_start
- * @property \Illuminate\Support\Carbon $period_end
+ * @property Carbon $period_start
+ * @property Carbon $period_end
  * @property int $horizon_days
  * @property numeric|null $confidence_percent
  * @property array<array-key, mixed>|null $parameters
- * @property \Illuminate\Support\Carbon|null $started_at
- * @property \Illuminate\Support\Carbon|null $completed_at
+ * @property Carbon|null $started_at
+ * @property Carbon|null $completed_at
  * @property int|null $created_by
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $creator
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ForecastSnapshot> $snapshots
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User|null $creator
+ * @property-read Collection<int, ForecastSnapshot> $snapshots
  * @property-read int|null $snapshots_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ForecastRun newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ForecastRun newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ForecastRun query()
@@ -42,6 +45,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ForecastRun whereStartedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ForecastRun whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ForecastRun whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class ForecastRun extends Model

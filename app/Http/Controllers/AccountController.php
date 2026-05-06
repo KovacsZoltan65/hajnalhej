@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\PermissionRegistry;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Support\PermissionRegistry;
 
 class AccountController extends Controller
 {
-    /**
-     * @param Request $request
-     * @return \Inertia\Response
-     */
     public function __invoke(Request $request): Response
     {
         abort_unless($request->user()?->can(PermissionRegistry::ACCOUNT_VIEW), 403);

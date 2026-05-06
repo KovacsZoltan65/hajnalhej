@@ -12,8 +12,7 @@ const stubs = {
     Textarea: {
         props: ["modelValue"],
         emits: ["update:modelValue"],
-        template:
-            '<textarea :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+        template: '<textarea :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
     },
     InputNumber: {
         props: ["modelValue"],
@@ -81,8 +80,6 @@ describe("CategoryForm", () => {
         await Promise.resolve();
 
         expect(form.slug).toBe("sos-pekaru");
-        expect(
-            wrapper.find("#category-slug").attributes("disabled"),
-        ).toBeDefined();
+        expect(wrapper.find("#category-slug").attributes("disabled")).toBeDefined();
     });
 });

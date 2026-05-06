@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 class PurchaseRepository
 {
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -28,7 +28,7 @@ class PurchaseRepository
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function create(array $payload): Purchase
     {
@@ -36,7 +36,7 @@ class PurchaseRepository
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function update(Purchase $purchase, array $payload): Purchase
     {
@@ -52,7 +52,7 @@ class PurchaseRepository
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     private function adminQuery(array $filters): Builder
     {
@@ -87,4 +87,3 @@ class PurchaseRepository
             ->orderByDesc('id');
     }
 }
-

@@ -41,4 +41,3 @@ order completed
 ## Audit
 
 Rendelés létrehozás, státuszfrissítés és admin módosítás auditálható esemény.
-

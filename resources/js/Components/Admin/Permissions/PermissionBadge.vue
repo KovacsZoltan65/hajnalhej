@@ -8,9 +8,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <span
-        class="ui-badge ui-badge-muted max-w-full break-all"
-    >
+    <span class="ui-badge ui-badge-muted max-w-full break-all">
         {{ props.name }}
     </span>
 </template>

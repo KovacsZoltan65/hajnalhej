@@ -44,15 +44,7 @@ const editingRole = ref(null);
 const createForm = useForm({ name: "" });
 const editForm = useForm({ name: "" });
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
         search: "",
@@ -139,13 +131,10 @@ const destroyRole = (role) => {
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
-            <AdminTableToolbar
-                :filters-grid-class="'grid gap-3 sm:grid-cols-2 lg:grid-cols-3'"
-            >
+            <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 lg:grid-cols-3'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Keresés</label
                         >
                         <InputText
@@ -157,8 +146,7 @@ const destroyRole = (role) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Találat / oldal</label
                         >
                         <Select
@@ -203,21 +191,9 @@ const destroyRole = (role) => {
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
                             <p>Nincs megjeleníthető szerepkör.</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
-                                <Button
-                                    label="Szűrők törlése"
-                                    outlined
-                                    size="small"
-                                    @click="clearFilters"
-                                />
-                                <Button
-                                    v-if="can.create"
-                                    label="Új szerepkör"
-                                    size="small"
-                                    @click="openCreate"
-                                />
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                                <Button v-if="can.create" label="Új szerepkör" size="small" @click="openCreate" />
                             </div>
                         </div>
                     </template>
@@ -236,12 +212,7 @@ const destroyRole = (role) => {
                         <template #body="{ data }">
                             <div class="flex flex-wrap gap-2">
                                 <Link :href="route('admin.roles.show', data.id)">
-                                    <Button
-                                        label="Részletek"
-                                        size="small"
-                                        text
-                                        class="min-h-11!"
-                                    />
+                                    <Button label="Részletek" size="small" text class="min-h-11!" />
                                 </Link>
                                 <Button
                                     v-if="can.update"

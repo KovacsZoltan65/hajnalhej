@@ -7,10 +7,10 @@ use App\Support\PermissionRegistry;
 use Database\Seeders\test\LoadTestCustomerSeeder;
 use Database\Seeders\test\LoadTestSeeder;
 use Database\Seeders\test\OrderLoadTestSeeder;
-//use Database\Seeders\test\ProLoadTestCustomerSeeder;
-//use Database\Seeders\test\ProLoadTestSeeder;
-//use Database\Seeders\test\ProOrderLoadTestSeeder;
-//use Database\Seeders\test\ProRequiredIngredientPurchaseSeeder;
+// use Database\Seeders\test\ProLoadTestCustomerSeeder;
+// use Database\Seeders\test\ProLoadTestSeeder;
+// use Database\Seeders\test\ProOrderLoadTestSeeder;
+// use Database\Seeders\test\ProRequiredIngredientPurchaseSeeder;
 use Database\Seeders\test\RequiredIngredientPurchaseSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
             SourdoughStarterRecipeSeeder::class,
             // Egyszerű kovászos fehérkenyér
             SourdoughBeginnerRecipeSeeder::class,
-            // 
+            //
             SourdoughArtisanRecipeSeeder::class,
             // Kovászos bagett
             SourdoughSpecialtyRecipesSeeder::class,
@@ -75,10 +75,10 @@ class DatabaseSeeder extends Seeder
             ProcurementIntelligenceSeeder::class,
 
             // TESZT SEEDEREK
-            //LoadTestCustomerSeeder::class,
-            //LoadTestSeeder::class,
-            //OrderLoadTestSeeder::class,
-            //RequiredIngredientPurchaseSeeder::class,
+            // LoadTestCustomerSeeder::class,
+            // LoadTestSeeder::class,
+            // OrderLoadTestSeeder::class,
+            // RequiredIngredientPurchaseSeeder::class,
 
             // PRO TEST SEEDERS
             ProLoadTestSeeder::class,

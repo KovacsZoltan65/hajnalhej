@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -16,12 +17,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property numeric|null $cost_change_threshold_percent
  * @property numeric|null $suggested_price
  * @property bool $active
- * @property \Illuminate\Support\Carbon|null $valid_from
- * @property \Illuminate\Support\Carbon|null $valid_until
+ * @property Carbon|null $valid_from
+ * @property Carbon|null $valid_until
  * @property array<array-key, mixed>|null $conditions
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Product|null $product
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Product|null $product
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PricingRule newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PricingRule newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PricingRule query()
@@ -39,6 +41,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PricingRule whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PricingRule whereValidFrom($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PricingRule whereValidUntil($value)
+ *
  * @mixin \Eloquent
  */
 class PricingRule extends Model

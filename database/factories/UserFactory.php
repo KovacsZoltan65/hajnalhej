@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Support\PermissionRegistry;
 use App\Models\User;
+use App\Support\PermissionRegistry;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;

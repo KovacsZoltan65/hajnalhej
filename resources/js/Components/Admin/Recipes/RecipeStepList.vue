@@ -14,11 +14,7 @@ const emit = defineEmits(["edit", "delete"]);
 
 <template>
     <div class="space-y-3">
-        <div
-            v-for="step in steps"
-            :key="step.id"
-            class="rounded-xl border border-bakery-brown/10 bg-white/80 p-3"
-        >
+        <div v-for="step in steps" :key="step.id" class="rounded-xl border border-bakery-brown/10 bg-white/80 p-3">
             <div class="flex items-start justify-between gap-3">
                 <div>
                     <div class="flex items-center gap-2">
@@ -28,57 +24,35 @@ const emit = defineEmits(["edit", "delete"]);
                     <p v-if="step.description" class="mt-1 text-xs text-bakery-dark/70">
                         {{ step.description }}
                     </p>
-                    <p
-                        v-if="step.work_instruction"
-                        class="mt-1 text-xs text-bakery-dark/80"
-                    >
+                    <p v-if="step.work_instruction" class="mt-1 text-xs text-bakery-dark/80">
                         <span class="font-semibold">Utasítás:</span>
                         {{ step.work_instruction }}
                     </p>
-                    <p
-                        v-if="step.completion_criteria"
-                        class="mt-1 text-xs text-bakery-dark/80"
-                    >
+                    <p v-if="step.completion_criteria" class="mt-1 text-xs text-bakery-dark/80">
                         <span class="font-semibold">Kész állapot:</span>
                         {{ step.completion_criteria }}
                     </p>
-                    <p
-                        v-if="step.attention_points"
-                        class="mt-1 text-xs text-bakery-dark/80"
-                    >
+                    <p v-if="step.attention_points" class="mt-1 text-xs text-bakery-dark/80">
                         <span class="font-semibold">Figyelmeztetés:</span>
                         {{ step.attention_points }}
                     </p>
-                    <p
-                        v-if="step.required_tools"
-                        class="mt-1 text-xs text-bakery-dark/80"
-                    >
+                    <p v-if="step.required_tools" class="mt-1 text-xs text-bakery-dark/80">
                         <span class="font-semibold">Eszköz:</span>
                         {{ step.required_tools }}
                     </p>
-                    <p
-                        v-if="step.expected_result"
-                        class="mt-1 text-xs text-bakery-dark/80"
-                    >
+                    <p v-if="step.expected_result" class="mt-1 text-xs text-bakery-dark/80">
                         <span class="font-semibold">Elvárt eredmény:</span>
                         {{ step.expected_result }}
                     </p>
                     <p class="mt-1 text-xs text-bakery-dark/65">
-                        Aktív: {{ step.duration_minutes ?? 0 }} p | Várakozás:
-                        {{ step.wait_minutes ?? 0 }} p
+                        Aktív: {{ step.duration_minutes ?? 0 }} p | Várakozás: {{ step.wait_minutes ?? 0 }} p
                         <span v-if="step.temperature_celsius !== null"
                             >| Hőmérséklet: {{ step.temperature_celsius }} C</span
                         >
                     </p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <Button
-                        icon="pi pi-pencil"
-                        text
-                        size="small"
-                        rounded
-                        @click="emit('edit', step)"
-                    />
+                    <Button icon="pi pi-pencil" text size="small" rounded @click="emit('edit', step)" />
                     <Button
                         icon="pi pi-trash"
                         text

@@ -16,7 +16,7 @@ use Spatie\Permission\Models\Role;
 class AuthorizationAuditRepository
 {
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateAuthorizationLogs(array $filters): LengthAwarePaginator
     {
@@ -57,10 +57,6 @@ class AuthorizationAuditRepository
             ->withQueryString();
     }
 
-    /**
-     * @param int $id
-     * @return Activity
-     */
     public function findAuthorizationLogById(int $id): Activity
     {
         return Activity::query()

@@ -22,8 +22,7 @@ class UserAdminService
         private readonly RoleRepository $roles,
         private readonly UserTemporaryPermissionRepository $temporaryPermissions,
         private readonly UserDiscountRepository $discounts,
-    ) {
-    }
+    ) {}
 
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {

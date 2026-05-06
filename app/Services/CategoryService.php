@@ -12,13 +12,10 @@ use Illuminate\Support\Str;
 
 class CategoryService
 {
-    public function __construct(private readonly CategoryRepository $repository)
-    {
-    }
+    public function __construct(private readonly CategoryRepository $repository) {}
 
     /**
-     * @param array<string, mixed> $filters
-     * @return LengthAwarePaginator
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -34,8 +31,7 @@ class CategoryService
     }
 
     /**
-     * @param array<string, mixed> $payload
-     * @return Category
+     * @param  array<string, mixed>  $payload
      */
     public function create(array $payload): Category
     {
@@ -46,8 +42,7 @@ class CategoryService
     }
 
     /**
-     * @param array<string, mixed> $payload
-     * @return Category
+     * @param  array<string, mixed>  $payload
      */
     public function update(Category $category, array $payload): Category
     {
@@ -59,8 +54,6 @@ class CategoryService
 
     /**
      * Summary of delete
-     * @param Category $category
-     * @return void
      */
     public function delete(Category $category): void
     {
@@ -68,7 +61,7 @@ class CategoryService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      * @return array<string, mixed>
      */
     private function normalizePayload(array $payload, ?Category $category = null): array
@@ -95,9 +88,8 @@ class CategoryService
 
     /**
      * Summary of resolveUniqueSlug
-     * @param string $baseSlug
-     * @param mixed $ignoreId
-     * @return string
+     *
+     * @param  mixed  $ignoreId
      */
     private function resolveUniqueSlug(string $baseSlug, ?int $ignoreId = null): string
     {

@@ -50,32 +50,24 @@ const editVisible = ref(false);
 const selectedUser = ref(null);
 const selectedDiscountId = ref(null);
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
-    search: "",
-    status: "",
-    sort_field: "created_at",
-    sort_direction: "desc",
-    per_page: 15,
-},
+        search: "",
+        status: "",
+        sort_field: "created_at",
+        sort_direction: "desc",
+        per_page: 15,
+    },
     routeName: "admin.users.index",
     loading,
     toQuery: (state) => ({
-            search: state.search || undefined,
-            status: state.status || undefined,
-            sort_field: state.sort_field,
-            sort_direction: state.sort_direction,
-            per_page: state.per_page,
-        }),
+        search: state.search || undefined,
+        status: state.status || undefined,
+        sort_field: state.sort_field,
+        sort_direction: state.sort_direction,
+        per_page: state.per_page,
+    }),
 });
 
 const perPageOptions = createPerPageOptions(trans, [15, 30, 50]);
@@ -95,9 +87,7 @@ const statusOptions = computed(() => [
     })),
 ]);
 
-const roleOptions = computed(() =>
-    props.roles.map((role) => ({ label: role.name, value: role.name }))
-);
+const roleOptions = computed(() => props.roles.map((role) => ({ label: role.name, value: role.name })));
 const permissionOptions = computed(() =>
     props.permissions.map((permission) => ({
         label: permission.name,
@@ -137,8 +127,6 @@ const discountForm = useForm({
     active: true,
     reason: "",
 });
-
-
 
 const resetUserForm = () => {
     userForm.reset();
@@ -216,27 +204,18 @@ const resetTemporaryPermissionForm = () => {
 const createTemporaryPermission = () => {
     if (!selectedUser.value) return;
 
-    temporaryPermissionForm.post(
-        route("admin.users.temporary-permissions.store", selectedUser.value.id),
-        {
-            preserveScroll: true,
-            onSuccess: () => resetTemporaryPermissionForm(),
-        }
-    );
+    temporaryPermissionForm.post(route("admin.users.temporary-permissions.store", selectedUser.value.id), {
+        preserveScroll: true,
+        onSuccess: () => resetTemporaryPermissionForm(),
+    });
 };
 
 const revokeTemporaryPermission = (permission) => {
     if (!selectedUser.value) return;
 
-    router.delete(
-        route("admin.users.temporary-permissions.destroy", [
-            selectedUser.value.id,
-            permission.id,
-        ]),
-        {
-            preserveScroll: true,
-        }
-    );
+    router.delete(route("admin.users.temporary-permissions.destroy", [selectedUser.value.id, permission.id]), {
+        preserveScroll: true,
+    });
 };
 
 const resetDiscountForm = () => {
@@ -272,36 +251,26 @@ const submitDiscount = () => {
 
     if (selectedDiscountId.value) {
         discountForm.put(
-            route("admin.users.discounts.update", [
-                selectedUser.value.id,
-                selectedDiscountId.value,
-            ]),
+            route("admin.users.discounts.update", [selectedUser.value.id, selectedDiscountId.value]),
             options
         );
         return;
     }
 
-    discountForm.post(
-        route("admin.users.discounts.store", selectedUser.value.id),
-        options
-    );
+    discountForm.post(route("admin.users.discounts.store", selectedUser.value.id), options);
 };
 
 const deactivateDiscount = (discount) => {
     if (!selectedUser.value) return;
 
-    router.delete(
-        route("admin.users.discounts.destroy", [selectedUser.value.id, discount.id]),
-        {
-            preserveScroll: true,
-        }
-    );
+    router.delete(route("admin.users.discounts.destroy", [selectedUser.value.id, discount.id]), {
+        preserveScroll: true,
+    });
 };
 
 const statusSeverity = (status) => (status === "active" ? "success" : "secondary");
 const statusLabel = (status) => (status === "active" ? "Aktív" : "Inaktív");
-const discountLabel = (discount) =>
-    discount.type === "percent" ? `${discount.value}%` : `${discount.value} Ft`;
+const discountLabel = (discount) => (discount.type === "percent" ? `${discount.value}%` : `${discount.value} Ft`);
 </script>
 
 <template>
@@ -315,13 +284,10 @@ const discountLabel = (discount) =>
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
-            <AdminTableToolbar
-                :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-3'"
-            >
+            <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-3'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Keresés</label
                         >
                         <InputText
@@ -332,8 +298,7 @@ const discountLabel = (discount) =>
                         />
                     </div>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Státusz</label
                         >
                         <Select
@@ -346,8 +311,7 @@ const discountLabel = (discount) =>
                         />
                     </div>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Találat / oldal</label
                         >
                         <Select
@@ -363,12 +327,7 @@ const discountLabel = (discount) =>
 
                 <template #actions>
                     <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button
-                        v-if="can.create"
-                        icon="pi pi-plus"
-                        label="Új felhasználó"
-                        @click="openCreate"
-                    />
+                    <Button v-if="can.create" icon="pi pi-plus" label="Új felhasználó" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
@@ -394,21 +353,9 @@ const discountLabel = (discount) =>
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
                             <p>Nincs megjeleníthető felhasználó.</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
-                                <Button
-                                    label="Szűrők törlése"
-                                    outlined
-                                    size="small"
-                                    @click="clearFilters"
-                                />
-                                <Button
-                                    v-if="can.create"
-                                    label="Új felhasználó"
-                                    size="small"
-                                    @click="openCreate"
-                                />
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                                <Button v-if="can.create" label="Új felhasználó" size="small" @click="openCreate" />
                             </div>
                         </div>
                     </template>
@@ -428,10 +375,7 @@ const discountLabel = (discount) =>
                     <Column field="phone" header="Telefon" />
                     <Column field="status" header="Státusz" sortable>
                         <template #body="{ data }">
-                            <Tag
-                                :value="statusLabel(data.status)"
-                                :severity="statusSeverity(data.status)"
-                            />
+                            <Tag :value="statusLabel(data.status)" :severity="statusSeverity(data.status)" />
                         </template>
                     </Column>
                     <Column header="Szerepkörök">
@@ -448,9 +392,7 @@ const discountLabel = (discount) =>
                     </Column>
                     <Column header="Rendelések">
                         <template #body="{ data }">
-                            <span class="text-sm text-bakery-dark/75">{{
-                                data.orders_count
-                            }}</span>
+                            <span class="text-sm text-bakery-dark/75">{{ data.orders_count }}</span>
                         </template>
                     </Column>
                     <Column header="Műveletek" :exportable="false">
@@ -523,18 +465,13 @@ const discountLabel = (discount) =>
                     </div>
                     <div class="space-y-2 md:col-span-2">
                         <label class="text-sm font-medium text-bakery-dark">Jelszó</label
-                        ><InputText
-                            v-model="userForm.password"
-                            type="password"
-                            class="w-full"
-                        />
+                        ><InputText v-model="userForm.password" type="password" class="w-full" />
                         <p v-if="userForm.errors.password" class="text-xs text-red-700">
                             {{ userForm.errors.password }}
                         </p>
                     </div>
                     <div v-if="can.manage_roles" class="space-y-2 md:col-span-2">
-                        <label class="text-sm font-medium text-bakery-dark"
-                            >Szerepkörök</label
+                        <label class="text-sm font-medium text-bakery-dark">Szerepkörök</label
                         ><MultiSelect
                             v-model="userForm.roles"
                             :options="roleOptions"
@@ -547,17 +484,8 @@ const discountLabel = (discount) =>
                 </div>
             </form>
             <template #footer>
-                <Button
-                    label="Mégse"
-                    severity="secondary"
-                    @click="createVisible = false"
-                />
-                <Button
-                    type="submit"
-                    form="user-create-form"
-                    label="Létrehozás"
-                    :loading="userForm.processing"
-                />
+                <Button label="Mégse" severity="secondary" @click="createVisible = false" />
+                <Button type="submit" form="user-create-form" label="Létrehozás" :loading="userForm.processing" />
             </template>
         </Dialog>
 
@@ -594,8 +522,7 @@ const discountLabel = (discount) =>
                         />
                     </div>
                     <div class="space-y-2 md:col-span-2">
-                        <label class="text-sm font-medium text-bakery-dark"
-                            >Új jelszó</label
+                        <label class="text-sm font-medium text-bakery-dark">Új jelszó</label
                         ><InputText
                             v-model="userForm.password"
                             type="password"
@@ -604,8 +531,7 @@ const discountLabel = (discount) =>
                         />
                     </div>
                     <div v-if="can.manage_roles" class="space-y-2 md:col-span-2">
-                        <label class="text-sm font-medium text-bakery-dark"
-                            >Szerepkörök</label
+                        <label class="text-sm font-medium text-bakery-dark">Szerepkörök</label
                         ><MultiSelect
                             v-model="userForm.roles"
                             :options="roleOptions"
@@ -619,14 +545,10 @@ const discountLabel = (discount) =>
             </form>
 
             <div v-if="selectedUser" class="mt-6 grid gap-4 xl:grid-cols-3">
-                <section
-                    class="rounded-xl border border-bakery-brown/15 p-4 xl:col-span-3"
-                >
+                <section class="rounded-xl border border-bakery-brown/15 p-4 xl:col-span-3">
                     <div class="mb-3 flex items-center justify-between">
                         <h3 class="font-semibold text-bakery-dark">Rendelések</h3>
-                        <span class="text-xs text-bakery-dark/60"
-                            >{{ selectedUser.orders_count }} rendelés</span
-                        >
+                        <span class="text-xs text-bakery-dark/60">{{ selectedUser.orders_count }} rendelés</span>
                     </div>
                     <DataTable :value="selectedUser.orders" size="small">
                         <template #empty
@@ -639,8 +561,7 @@ const discountLabel = (discount) =>
                         <Column field="total" header="Végösszeg" />
                         <Column header="Átvétel"
                             ><template #body="{ data }"
-                                >{{ data.pickup_date }}
-                                {{ data.pickup_time_slot }}</template
+                                >{{ data.pickup_date }} {{ data.pickup_time_slot }}</template
                             ></Column
                         >
                         <Column field="created_at" header="Létrehozva" />
@@ -657,12 +578,8 @@ const discountLabel = (discount) =>
                     </DataTable>
                 </section>
 
-                <section
-                    class="rounded-xl border border-bakery-brown/15 p-4 xl:col-span-1"
-                >
-                    <h3 class="mb-3 font-semibold text-bakery-dark">
-                        Időleges jogosultságok
-                    </h3>
+                <section class="rounded-xl border border-bakery-brown/15 p-4 xl:col-span-1">
+                    <h3 class="mb-3 font-semibold text-bakery-dark">Időleges jogosultságok</h3>
                     <form
                         v-if="can.manage_temporary_permissions"
                         class="space-y-3"
@@ -677,16 +594,8 @@ const discountLabel = (discount) =>
                             class="w-full"
                             placeholder="Jogosultság"
                         />
-                        <InputText
-                            v-model="temporaryPermissionForm.starts_at"
-                            type="datetime-local"
-                            class="w-full"
-                        />
-                        <InputText
-                            v-model="temporaryPermissionForm.expires_at"
-                            type="datetime-local"
-                            class="w-full"
-                        />
+                        <InputText v-model="temporaryPermissionForm.starts_at" type="datetime-local" class="w-full" />
+                        <InputText v-model="temporaryPermissionForm.expires_at" type="datetime-local" class="w-full" />
                         <Textarea
                             v-model="temporaryPermissionForm.reason"
                             rows="2"
@@ -706,26 +615,17 @@ const discountLabel = (discount) =>
                             class="rounded-lg bg-[#fcf7ef] p-3 text-sm"
                         >
                             <div class="flex items-center justify-between gap-2">
-                                <span class="font-medium">{{
-                                    permission.permission_name
-                                }}</span
+                                <span class="font-medium">{{ permission.permission_name }}</span
                                 ><Tag
-                                    :value="
-                                        permission.is_active ? 'Érvényes' : 'Nem aktív'
-                                    "
-                                    :severity="
-                                        permission.is_active ? 'success' : 'secondary'
-                                    "
+                                    :value="permission.is_active ? 'Érvényes' : 'Nem aktív'"
+                                    :severity="permission.is_active ? 'success' : 'secondary'"
                                 />
                             </div>
                             <p class="mt-1 text-xs text-bakery-dark/60">
                                 {{ permission.expires_at ?? "Nincs lejárat" }}
                             </p>
                             <Button
-                                v-if="
-                                    can.manage_temporary_permissions &&
-                                    !permission.revoked_at
-                                "
+                                v-if="can.manage_temporary_permissions && !permission.revoked_at"
                                 label="Visszavonás"
                                 text
                                 size="small"
@@ -736,9 +636,7 @@ const discountLabel = (discount) =>
                     </div>
                 </section>
 
-                <section
-                    class="rounded-xl border border-bakery-brown/15 p-4 xl:col-span-2"
-                >
+                <section class="rounded-xl border border-bakery-brown/15 p-4 xl:col-span-2">
                     <div class="mb-3 flex items-center justify-between">
                         <h3 class="font-semibold text-bakery-dark">Kedvezmények</h3>
                         <Button
@@ -769,19 +667,10 @@ const discountLabel = (discount) =>
                             :max-fraction-digits="2"
                             fluid
                         />
-                        <InputText
-                            v-model="discountForm.starts_at"
-                            type="datetime-local"
-                            class="w-full"
-                        />
-                        <InputText
-                            v-model="discountForm.expires_at"
-                            type="datetime-local"
-                            class="w-full"
-                        />
+                        <InputText v-model="discountForm.starts_at" type="datetime-local" class="w-full" />
+                        <InputText v-model="discountForm.expires_at" type="datetime-local" class="w-full" />
                         <div class="flex items-center gap-2">
-                            <ToggleSwitch v-model="discountForm.active" /><span
-                                class="text-sm text-bakery-dark/75"
+                            <ToggleSwitch v-model="discountForm.active" /><span class="text-sm text-bakery-dark/75"
                                 >Aktív</span
                             >
                         </div>
@@ -791,48 +680,28 @@ const discountLabel = (discount) =>
                             class="w-full md:col-span-2"
                             placeholder="Indok"
                         />
-                        <p
-                            v-if="discountForm.errors.value"
-                            class="text-xs text-red-700 md:col-span-2"
-                        >
+                        <p v-if="discountForm.errors.value" class="text-xs text-red-700 md:col-span-2">
                             {{ discountForm.errors.value }}
                         </p>
                         <Button
                             class="md:col-span-2"
-                            :label="
-                                selectedDiscountId
-                                    ? 'Kedvezmény mentése'
-                                    : 'Kedvezmény hozzáadása'
-                            "
+                            :label="selectedDiscountId ? 'Kedvezmény mentése' : 'Kedvezmény hozzáadása'"
                             :loading="discountForm.processing"
                         />
                     </form>
                     <DataTable class="mt-4" :value="selectedUser.discounts" size="small">
-                        <template #empty
-                            ><p class="py-3 text-sm text-bakery-dark/60">
-                                Nincs kedvezmény.
-                            </p></template
-                        >
+                        <template #empty><p class="py-3 text-sm text-bakery-dark/60">Nincs kedvezmény.</p></template>
                         <Column header="Érték"
-                            ><template #body="{ data }">{{
-                                discountLabel(data)
-                            }}</template></Column
+                            ><template #body="{ data }">{{ discountLabel(data) }}</template></Column
                         >
                         <Column field="reason" header="Indok" />
                         <Column header="Aktív"
                             ><template #body="{ data }"
-                                ><Checkbox
-                                    :model-value="data.active"
-                                    binary
-                                    disabled /></template
+                                ><Checkbox :model-value="data.active" binary disabled /></template
                         ></Column>
                         <Column header="Műveletek"
                             ><template #body="{ data }"
-                                ><Button
-                                    icon="pi pi-pencil"
-                                    text
-                                    rounded
-                                    @click="editDiscount(data)" /><Button
+                                ><Button icon="pi pi-pencil" text rounded @click="editDiscount(data)" /><Button
                                     icon="pi pi-ban"
                                     text
                                     rounded
@@ -845,12 +714,7 @@ const discountLabel = (discount) =>
 
             <template #footer>
                 <Button label="Mégse" severity="secondary" @click="editVisible = false" />
-                <Button
-                    type="submit"
-                    form="user-edit-form"
-                    label="Mentés"
-                    :loading="userForm.processing"
-                />
+                <Button type="submit" form="user-edit-form" label="Mentés" :loading="userForm.processing" />
             </template>
         </Dialog>
 

@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
@@ -24,22 +26,23 @@ use Illuminate\Support\Str;
  * @property string $stock_status Készletállapot: in_stock|preorder|out_of_stock
  * @property string|null $image_path Kép útvonala
  * @property int $sort_order Admin listázási sorrend
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at Soft delete időpontja
- * @property-read \App\Models\Category|null $category
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ForecastSnapshot> $forecastSnapshots
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at Soft delete időpontja
+ * @property-read Category|null $category
+ * @property-read Collection<int, ForecastSnapshot> $forecastSnapshots
  * @property-read int|null $forecast_snapshots_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderItem> $orderItems
+ * @property-read Collection<int, OrderItem> $orderItems
  * @property-read int|null $order_items_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PricingRule> $pricingRules
+ * @property-read Collection<int, PricingRule> $pricingRules
  * @property-read int|null $pricing_rules_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductIngredient> $productIngredients
+ * @property-read Collection<int, ProductIngredient> $productIngredients
  * @property-read int|null $product_ingredients_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RecipeStep> $recipeSteps
+ * @property-read Collection<int, RecipeStep> $recipeSteps
  * @property-read int|null $recipe_steps_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SeasonalProfile> $seasonalProfiles
+ * @property-read Collection<int, SeasonalProfile> $seasonalProfiles
  * @property-read int|null $seasonal_profiles_count
+ *
  * @method static \Database\Factories\ProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
@@ -62,12 +65,15 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Product extends Model
 {
     public const STOCK_IN_STOCK = 'in_stock';
+
     public const STOCK_PREORDER = 'preorder';
+
     public const STOCK_OUT_OF_STOCK = 'out_of_stock';
 
     /** @use HasFactory<ProductFactory> */

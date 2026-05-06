@@ -7,13 +7,14 @@ use App\Models\User;
 class PermissionAuditService
 {
     public const LOG_NAME = 'authorization';
+
     public const PERMISSIONS_SYNCED = 'permissions.synced';
 
     /**
-     * @param array<int, string> $createdPermissions
-     * @param array<int, string> $existingPermissions
-     * @param array<int, string> $orphanPermissions
-     * @param array<string, mixed> $context
+     * @param  array<int, string>  $createdPermissions
+     * @param  array<int, string>  $existingPermissions
+     * @param  array<int, string>  $orphanPermissions
+     * @param  array<string, mixed>  $context
      */
     public function logPermissionsSynced(
         User $actor,
@@ -48,4 +49,3 @@ class PermissionAuditService
             ->log('Jogosultságok szinkronizálva a registryből');
     }
 }
-

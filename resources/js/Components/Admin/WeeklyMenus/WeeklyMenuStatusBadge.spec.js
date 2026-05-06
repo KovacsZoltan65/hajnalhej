@@ -1,20 +1,20 @@
-import { mount } from '@vue/test-utils';
-import WeeklyMenuStatusBadge from './WeeklyMenuStatusBadge.vue';
+import { mount } from "@vue/test-utils";
+import WeeklyMenuStatusBadge from "./WeeklyMenuStatusBadge.vue";
 
-describe('WeeklyMenuStatusBadge', () => {
-    it('renders published label', () => {
+describe("WeeklyMenuStatusBadge", () => {
+    it("renders published label", () => {
         const wrapper = mount(WeeklyMenuStatusBadge, {
-            props: { status: 'published' },
+            props: { status: "published" },
             global: {
                 mocks: {
                     $t: (key) =>
                         ({
-                            'admin_weekly_menus.status.published': 'Közzétéve',
+                            "admin_weekly_menus.status.published": "Közzétéve",
                         })[key] ?? key,
                 },
             },
         });
 
-        expect(wrapper.text()).toContain('Közzétéve');
+        expect(wrapper.text()).toContain("Közzétéve");
     });
 });

@@ -45,4 +45,3 @@ Készlethiány akkor jelenhet meg, ha:
 ## Fontos
 
 Draft beszerzés nem növeli a készletet. Csak posted beszerzés után történik készletbevétel.
-

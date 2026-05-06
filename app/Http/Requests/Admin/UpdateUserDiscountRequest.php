@@ -2,6 +2,4 @@
 
 namespace App\Http\Requests\Admin;
 
-class UpdateUserDiscountRequest extends StoreUserDiscountRequest
-{
-}
+class UpdateUserDiscountRequest extends StoreUserDiscountRequest {}

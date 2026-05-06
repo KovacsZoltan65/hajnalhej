@@ -6,9 +6,9 @@ namespace App\Data;
 
 use App\Models\Branch;
 use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
 
 class BranchData extends Data
 {
@@ -28,7 +28,7 @@ class BranchData extends Data
         public string $address,
 
         #[BooleanType]
-        public bool $active = true,
+        public bool $active,
         public array $meta,
     ) {}
 
@@ -39,9 +39,9 @@ class BranchData extends Data
             name: $branch->name,
             code: $branch->code,
             type: $branch->type,
-            email: optional($branch->email, ""),
-            phone: optional($branch->phone, ""),
-            address: optional($branch->address, ""),
+            email: optional($branch->email, ''),
+            phone: optional($branch->phone, ''),
+            address: optional($branch->address, ''),
             active: $branch->active,
             meta: optional($branch->meta, [])
         );

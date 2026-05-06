@@ -40,10 +40,11 @@ class ProOperationalNoiseSeeder extends Seeder
             if ($orders->isEmpty()) {
                 $this->command?->warn('No load-test orders found.');
                 $this->command?->warn('Checked: order_number prefix, notes prefix, meta JSON, generated customer emails, and configured date range.');
+
                 return;
             }
 
-            $this->command?->info('Operational noise target orders: ' . $orders->count());
+            $this->command?->info('Operational noise target orders: '.$orders->count());
 
             $this->applyPaymentStatuses($orders);
             $this->applyCancelledOrders($orders);
@@ -59,20 +60,20 @@ class ProOperationalNoiseSeeder extends Seeder
     {
         $query = Order::query();
 
-        $columns = $this->columnsFor((new Order())->getTable());
+        $columns = $this->columnsFor((new Order)->getTable());
 
         $query->where(function ($q) use ($columns): void {
             if (in_array('order_number', $columns, true)) {
-                $q->orWhere('order_number', 'like', $this->prefix . '-ORD-%');
+                $q->orWhere('order_number', 'like', $this->prefix.'-ORD-%');
             }
 
             if (in_array('notes', $columns, true)) {
-                $q->orWhere('notes', 'like', '%' . $this->prefix . '%')
+                $q->orWhere('notes', 'like', '%'.$this->prefix.'%')
                     ->orWhere('notes', 'like', '%load test%');
             }
 
             if (in_array('meta', $columns, true)) {
-                $q->orWhere('meta', 'like', '%' . $this->prefix . '%')
+                $q->orWhere('meta', 'like', '%'.$this->prefix.'%')
                     ->orWhere('meta', 'like', '%load_test%')
                     ->orWhere('meta', 'like', '%load test%');
             }
@@ -105,9 +106,9 @@ class ProOperationalNoiseSeeder extends Seeder
             ->where(function ($query): void {
                 $query
                     ->where('email', 'like', 'customer%@example.com')
-                    ->orWhere('email', 'like', strtolower($this->prefix) . '.customer.%@example.test')
-                    ->orWhere('email', 'like', strtolower($this->prefix) . '-customer-%@example.test')
-                    ->orWhere('email', 'like', '%' . strtolower($this->prefix) . '%load%test%');
+                    ->orWhere('email', 'like', strtolower($this->prefix).'.customer.%@example.test')
+                    ->orWhere('email', 'like', strtolower($this->prefix).'-customer-%@example.test')
+                    ->orWhere('email', 'like', '%'.strtolower($this->prefix).'%load%test%');
             })
             ->pluck('id');
     }
@@ -153,7 +154,7 @@ class ProOperationalNoiseSeeder extends Seeder
             $this->safeUpdate($order, [
                 'payment_status' => $paymentStatus,
                 'payment_method' => $this->weightedPaymentMethod(),
-                'payment_reference' => $this->prefix . '-PAY-' . strtoupper(Str::random(10)),
+                'payment_reference' => $this->prefix.'-PAY-'.strtoupper(Str::random(10)),
                 'payment_noise_generated' => true,
             ]);
         }
@@ -216,7 +217,7 @@ class ProOperationalNoiseSeeder extends Seeder
                     'occurred_at' => $date,
                     'created_at' => $date,
                     'updated_at' => $date,
-                    'notes' => $this->prefix . ' operational noise: cancellation return',
+                    'notes' => $this->prefix.' operational noise: cancellation return',
                 ]);
             }
         }
@@ -238,9 +239,9 @@ class ProOperationalNoiseSeeder extends Seeder
 
             $this->safeUpdate($order, [
                 'pickup_date' => $date->toDateString(),
-                'pickup_time_from' => $from . ':00',
-                'pickup_time_to' => $to . ':00',
-                'pickup_slot_label' => $from . '-' . $to,
+                'pickup_time_from' => $from.':00',
+                'pickup_time_to' => $to.':00',
+                'pickup_slot_label' => $from.'-'.$to,
             ]);
         }
     }
@@ -280,7 +281,7 @@ class ProOperationalNoiseSeeder extends Seeder
                 'occurred_at' => $date,
                 'created_at' => $date,
                 'updated_at' => $date,
-                'notes' => $this->prefix . ' operational noise: stock adjustment',
+                'notes' => $this->prefix.' operational noise: stock adjustment',
             ]);
         }
     }
@@ -294,16 +295,16 @@ class ProOperationalNoiseSeeder extends Seeder
         $delayRate = (float) env('HH_NOISE_SUPPLIER_DELAY_RATE', 0.20);
         $partialRate = (float) env('HH_NOISE_PARTIAL_RECEIPT_RATE', 0.15);
 
-        $columns = $this->columnsFor((new Purchase())->getTable());
+        $columns = $this->columnsFor((new Purchase)->getTable());
 
         $purchases = Purchase::query()
             ->where(function ($query) use ($columns): void {
                 if (in_array('purchase_number', $columns, true)) {
-                    $query->orWhere('purchase_number', 'like', $this->prefix . '-PUR-%');
+                    $query->orWhere('purchase_number', 'like', $this->prefix.'-PUR-%');
                 }
 
                 if (in_array('notes', $columns, true)) {
-                    $query->orWhere('notes', 'like', '%' . $this->prefix . '%')
+                    $query->orWhere('notes', 'like', '%'.$this->prefix.'%')
                         ->orWhere('notes', 'like', '%load test%');
                 }
 
@@ -333,7 +334,7 @@ class ProOperationalNoiseSeeder extends Seeder
             if ($isPartial) {
                 $payload['status'] = 'partially_received';
                 $payload['delivery_status'] = $isDelayed ? 'delayed_partial' : 'partial';
-                $payload['notes'] = trim(($purchase->notes ?? '') . PHP_EOL . $this->prefix . ' operational noise: partial supplier fulfillment');
+                $payload['notes'] = trim(($purchase->notes ?? '').PHP_EOL.$this->prefix.' operational noise: partial supplier fulfillment');
             }
 
             $this->safeUpdate($purchase, $payload);
@@ -381,7 +382,7 @@ class ProOperationalNoiseSeeder extends Seeder
                     'quantity' => $receivedQuantity,
                     'received_quantity' => $receivedQuantity,
                     'received_at' => $this->dateValue($purchase, ['received_at', 'created_at']) ?? now(),
-                    'notes' => $this->prefix . ' operational noise: partial receipt',
+                    'notes' => $this->prefix.' operational noise: partial receipt',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -400,7 +401,7 @@ class ProOperationalNoiseSeeder extends Seeder
             return;
         }
 
-        $model = new $modelClass();
+        $model = new $modelClass;
         $columns = $this->columnsFor($model->getTable());
 
         $filtered = array_filter(

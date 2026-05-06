@@ -50,7 +50,7 @@ return new class extends Migration
                 Schema::table('products', function (Blueprint $table): void {
                     $table->unique('slug', 'products_slug_unique');
                 });
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 // Slug unique index already exists in most environments.
             }
         }
@@ -69,7 +69,7 @@ return new class extends Migration
             Schema::table('products', function (Blueprint $table): void {
                 $table->dropUnique('products_slug_unique');
             });
-        } catch (\Throwable) {
+        } catch (Throwable) {
             // Keep rollback resilient when the index does not exist.
         }
     }

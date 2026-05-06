@@ -52,12 +52,8 @@ const remove = (item) => emit("delete-item", item);
         <div class="space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <p class="text-sm text-bakery-dark/70">
-                        A heti menühöz tartozó tételek listája.
-                    </p>
-                    <p v-if="menu" class="text-xs text-bakery-dark/50">
-                        {{ menu.week_start }} - {{ menu.week_end }}
-                    </p>
+                    <p class="text-sm text-bakery-dark/70">A heti menühöz tartozó tételek listája.</p>
+                    <p v-if="menu" class="text-xs text-bakery-dark/50">{{ menu.week_start }} - {{ menu.week_end }}</p>
                 </div>
 
                 <Button icon="pi pi-plus" label="Új tétel" @click="openCreate" />
@@ -71,11 +67,7 @@ const remove = (item) => emit("delete-item", item);
                         >
                             <p>Nincs tétel a heti menühöz.</p>
                             <div class="mt-3 flex justify-center">
-                                <Button
-                                    label="Új tétel felvétele"
-                                    size="small"
-                                    @click="openCreate"
-                                />
+                                <Button label="Új tétel felvétele" size="small" @click="openCreate" />
                             </div>
                         </div>
                     </template>
@@ -93,9 +85,7 @@ const remove = (item) => emit("delete-item", item);
                     <Column field="sort_order" header="Sorrend" />
                     <Column field="is_active" header="Státusz">
                         <template #body="{ data }">
-                            <WeeklyMenuStatusBadge
-                                :status="data.is_active ? 'published' : 'draft'"
-                            />
+                            <WeeklyMenuStatusBadge :status="data.is_active ? 'published' : 'draft'" />
                         </template>
                     </Column>
                     <Column header="Műveletek">
@@ -125,11 +115,7 @@ const remove = (item) => emit("delete-item", item);
             </div>
         </div>
 
-        <CreateWeeklyMenuItemModal
-            v-model:visible="createModalVisible"
-            :products="products"
-            @save="saveItem"
-        />
+        <CreateWeeklyMenuItemModal v-model:visible="createModalVisible" :products="products" @save="saveItem" />
         <EditWeeklyMenuItemModal
             v-model:visible="editModalVisible"
             :item="editingItem"

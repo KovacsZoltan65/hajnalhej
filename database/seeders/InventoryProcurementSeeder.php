@@ -6,6 +6,7 @@ use App\Models\Ingredient;
 use App\Models\IngredientSupplierTerm;
 use App\Models\InventoryMovement;
 use App\Models\Purchase;
+use App\Models\StockCount;
 use App\Models\Supplier;
 use App\Models\User;
 use App\Services\InventoryService;
@@ -13,6 +14,7 @@ use App\Services\PurchaseService;
 use App\Services\StockCountService;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 
 class InventoryProcurementSeeder extends Seeder
 {
@@ -93,7 +95,7 @@ class InventoryProcurementSeeder extends Seeder
             ], $actor);
         }
 
-        $countExists = \App\Models\StockCount::query()
+        $countExists = StockCount::query()
             ->where('notes', 'Seeder leltár')
             ->exists();
 
@@ -120,10 +122,10 @@ class InventoryProcurementSeeder extends Seeder
     }
 
     /**
-     * @param array<int, Supplier> $suppliers
-     * @param \Illuminate\Support\Collection<int, Ingredient> $ingredients
+     * @param  array<int, Supplier>  $suppliers
+     * @param  Collection<int, Ingredient>  $ingredients
      */
-    private function seedSupplierTerms(array $suppliers, \Illuminate\Support\Collection $ingredients): void
+    private function seedSupplierTerms(array $suppliers, Collection $ingredients): void
     {
         $terms = [
             ['supplier' => $suppliers[0], 'ingredient' => $ingredients[0], 'lead_time_days' => 2, 'minimum_order_quantity' => 50, 'pack_size' => 25, 'preferred' => true],
@@ -148,7 +150,7 @@ class InventoryProcurementSeeder extends Seeder
     }
 
     /**
-     * @param array<int, array{ingredient:Ingredient,quantity:float,unit_cost:float}> $ingredients
+     * @param  array<int, array{ingredient:Ingredient,quantity:float,unit_cost:float}>  $ingredients
      */
     private function upsertPurchase(
         Supplier $supplier,

@@ -35,15 +35,7 @@ const loading = ref(false);
 const wasteModalVisible = ref(false);
 const adjustmentModalVisible = ref(false);
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
         days: 7,
@@ -104,9 +96,7 @@ const ingredientFilterOptions = computed(() => [
     { label: trans("common.all"), value: null },
     ...ingredientOptions.value,
 ]);
-const wasteReasonOptions = computed(() =>
-    props.waste_reasons.map((reason) => ({ label: reason, value: reason }))
-);
+const wasteReasonOptions = computed(() => props.waste_reasons.map((reason) => ({ label: reason, value: reason })));
 
 const wasteForm = useForm({
     waste_type: "ingredient",
@@ -126,9 +116,7 @@ const adjustmentForm = useForm({
 });
 
 const currentPage = computed(() => props.ledger.current_page ?? 1);
-const first = computed(
-    () => (currentPage.value - 1) * (props.ledger.per_page ?? filterState.per_page)
-);
+const first = computed(() => (currentPage.value - 1) * (props.ledger.per_page ?? filterState.per_page));
 
 const openWasteModal = () => {
     wasteForm.reset();
@@ -205,8 +193,7 @@ const movementTypeClass = (type) => {
     return map[type] ?? "bg-stone-100 text-stone-700";
 };
 
-const directionClass = (direction) =>
-    direction === "out" ? "text-rose-700" : "text-emerald-700";
+const directionClass = (direction) => (direction === "out" ? "text-rose-700" : "text-emerald-700");
 
 const parseDateFromYmd = (value) => {
     if (!value) {
@@ -309,25 +296,21 @@ const dateToPicker = computed({
             >
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("common.search") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.search")
+                        }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            :placeholder="
-                                $t('admin_inventory.filters.search_placeholder')
-                            "
+                            :placeholder="$t('admin_inventory.filters.search_placeholder')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("common.type") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.type")
+                        }}</label>
                         <Select
                             v-model="filterState.movement_type"
                             :options="movementTypeOptions"
@@ -339,10 +322,9 @@ const dateToPicker = computed({
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_inventory.filters.ingredient") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("admin_inventory.filters.ingredient")
+                        }}</label>
                         <Select
                             v-model="filterState.ingredient_id"
                             :options="ingredientFilterOptions"
@@ -355,10 +337,9 @@ const dateToPicker = computed({
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_inventory.filters.days") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("admin_inventory.filters.days")
+                        }}</label>
                         <Select
                             v-model="filterState.days"
                             :options="dayOptions"
@@ -372,10 +353,9 @@ const dateToPicker = computed({
 
                 <template #actions>
                     <div class="space-y-1 min-w-44">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_inventory.filters.date_from") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("admin_inventory.filters.date_from")
+                        }}</label>
                         <DatePicker
                             v-model="dateFromPicker"
                             show-icon
@@ -385,10 +365,9 @@ const dateToPicker = computed({
                         />
                     </div>
                     <div class="space-y-1 min-w-44">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("admin_inventory.filters.date_to") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("admin_inventory.filters.date_to")
+                        }}</label>
                         <DatePicker
                             v-model="dateToPicker"
                             show-icon
@@ -398,10 +377,9 @@ const dateToPicker = computed({
                         />
                     </div>
                     <div class="space-y-1 min-w-36">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >{{ $t("table.rows_per_page") }}</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("table.rows_per_page")
+                        }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -418,11 +396,7 @@ const dateToPicker = computed({
                         outlined
                         @click="clearFilters"
                     />
-                    <Button
-                        icon="pi pi-search"
-                        :label="$t('common.search')"
-                        @click="submitFilters"
-                    />
+                    <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
                     <Button
                         icon="pi pi-exclamation-triangle"
                         :label="$t('admin_inventory.actions.waste')"
@@ -455,9 +429,7 @@ const dateToPicker = computed({
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
                             <p>{{ $t("admin_inventory.empty") }}</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
                                 <Button
                                     :label="$t('common.clear_filters')"
                                     outlined
@@ -474,20 +446,12 @@ const dateToPicker = computed({
                         </div>
                     </template>
 
-                    <Column
-                        field="occurred_at"
-                        :header="$t('admin_inventory.columns.date')"
-                    >
+                    <Column field="occurred_at" :header="$t('admin_inventory.columns.date')">
                         <template #body="{ data }">
-                            <span class="text-sm text-bakery-dark">{{
-                                data.occurred_at || "-"
-                            }}</span>
+                            <span class="text-sm text-bakery-dark">{{ data.occurred_at || "-" }}</span>
                         </template>
                     </Column>
-                    <Column
-                        field="ingredient_name"
-                        :header="$t('admin_inventory.columns.ingredient')"
-                    >
+                    <Column field="ingredient_name" :header="$t('admin_inventory.columns.ingredient')">
                         <template #body="{ data }">
                             <div>
                                 <p class="font-medium text-bakery-dark">
@@ -499,10 +463,7 @@ const dateToPicker = computed({
                             </div>
                         </template>
                     </Column>
-                    <Column
-                        field="movement_type"
-                        :header="$t('admin_inventory.columns.type')"
-                    >
+                    <Column field="movement_type" :header="$t('admin_inventory.columns.type')">
                         <template #body="{ data }">
                             <span
                                 class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
@@ -514,46 +475,27 @@ const dateToPicker = computed({
                     </Column>
                     <Column field="quantity" :header="$t('common.quantity')">
                         <template #body="{ data }">
-                            <span
-                                class="font-semibold"
-                                :class="directionClass(data.direction)"
-                            >
-                                {{ data.direction === "out" ? "-" : "+"
-                                }}{{ data.quantity }}
+                            <span class="font-semibold" :class="directionClass(data.direction)">
+                                {{ data.direction === "out" ? "-" : "+" }}{{ data.quantity }}
                             </span>
                         </template>
                     </Column>
-                    <Column
-                        field="unit_cost"
-                        :header="$t('admin_inventory.columns.unit_cost')"
-                    >
+                    <Column field="unit_cost" :header="$t('admin_inventory.columns.unit_cost')">
                         <template #body="{ data }">
-                            <span>{{
-                                data.unit_cost !== null ? asCurrency(data.unit_cost) : "-"
-                            }}</span>
+                            <span>{{ data.unit_cost !== null ? asCurrency(data.unit_cost) : "-" }}</span>
                         </template>
                     </Column>
-                    <Column
-                        field="total_cost"
-                        :header="$t('admin_inventory.columns.value')"
-                    >
+                    <Column field="total_cost" :header="$t('admin_inventory.columns.value')">
                         <template #body="{ data }">
                             <span class="font-medium">{{
-                                data.total_cost !== null
-                                    ? asCurrency(data.total_cost)
-                                    : "-"
+                                data.total_cost !== null ? asCurrency(data.total_cost) : "-"
                             }}</span>
                         </template>
                     </Column>
-                    <Column
-                        field="reference_type"
-                        :header="$t('admin_inventory.columns.reference')"
-                    >
+                    <Column field="reference_type" :header="$t('admin_inventory.columns.reference')">
                         <template #body="{ data }">
                             <span class="text-sm text-bakery-dark/80"
-                                >{{ data.reference_type || "-" }} #{{
-                                    data.reference_id || "-"
-                                }}</span
+                                >{{ data.reference_type || "-" }} #{{ data.reference_id || "-" }}</span
                             >
                         </template>
                     </Column>

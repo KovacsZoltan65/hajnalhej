@@ -24,63 +24,37 @@ watch(
 <template>
     <div class="grid gap-4 md:grid-cols-2">
         <div class="space-y-2 md:col-span-2">
-            <label for="category-name" class="text-sm font-medium text-bakery-dark">{{
-                $t("common.name")
-            }}</label>
-            <InputText
-                id="category-name"
-                v-model="form.name"
-                class="w-full"
-                :invalid="Boolean(form.errors.name)"
-            />
+            <label for="category-name" class="text-sm font-medium text-bakery-dark">{{ $t("common.name") }}</label>
+            <InputText id="category-name" v-model="form.name" class="w-full" :invalid="Boolean(form.errors.name)" />
             <p v-if="form.errors.name" class="text-xs text-red-700">
                 {{ form.errors.name }}
             </p>
         </div>
 
         <div class="space-y-2 md:col-span-2">
-            <label for="category-slug" class="text-sm font-medium text-bakery-dark">{{
-                $t("common.slug")
-            }}</label>
+            <label for="category-slug" class="text-sm font-medium text-bakery-dark">{{ $t("common.slug") }}</label>
             <InputText id="category-slug" v-model="form.slug" class="w-full" disabled />
-            <p class="text-xs text-bakery-dark/60">
-                {{ $t("common.automatic_generated") }}.
-            </p>
+            <p class="text-xs text-bakery-dark/60">{{ $t("common.automatic_generated") }}.</p>
             <p v-if="form.errors.slug" class="text-xs text-red-700">
                 {{ form.errors.slug }}
             </p>
         </div>
 
         <div class="space-y-2 md:col-span-2">
-            <label
-                for="category-description"
-                class="text-sm font-medium text-bakery-dark"
-                >{{ $t("admin_permissions.fields.description") }}</label
-            >
-            <Textarea
-                id="category-description"
-                v-model="form.description"
-                rows="4"
-                class="w-full"
-                auto-resize
-            />
+            <label for="category-description" class="text-sm font-medium text-bakery-dark">{{
+                $t("admin_permissions.fields.description")
+            }}</label>
+            <Textarea id="category-description" v-model="form.description" rows="4" class="w-full" auto-resize />
             <p v-if="form.errors.description" class="text-xs text-red-700">
                 {{ form.errors.description }}
             </p>
         </div>
 
         <div class="space-y-2">
-            <label
-                for="category-sort-order"
-                class="text-sm font-medium text-bakery-dark"
-                >{{ $t("admin_categories.columns.sort_order") }}</label
-            >
-            <InputNumber
-                id="category-sort-order"
-                v-model="form.sort_order"
-                :min="0"
-                fluid
-            />
+            <label for="category-sort-order" class="text-sm font-medium text-bakery-dark">{{
+                $t("admin_categories.columns.sort_order")
+            }}</label>
+            <InputNumber id="category-sort-order" v-model="form.sort_order" :min="0" fluid />
             <p v-if="form.errors.sort_order" class="text-xs text-red-700">
                 {{ form.errors.sort_order }}
             </p>

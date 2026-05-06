@@ -2,23 +2,22 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Repositories\PermissionRepository;
 use App\Services\Audit\PermissionAuditService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Spatie\Permission\Models\Permission;
-use App\Models\User;
 
 class PermissionManagementService
 {
     public function __construct(
         private readonly PermissionRepository $permissionRepository,
         private readonly PermissionAuditService $auditService,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {

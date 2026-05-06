@@ -99,4 +99,3 @@ Read-only dashboard megtekintéseket nem logolunk, hogy ne legyen audit spam.
 ## 25. Mit ellenőrizzek zárás előtt?
 
 Rendelések státuszát, posted beszerzéseket, selejtet, készletfigyelmeztetéseket és profit dashboardot.
-

@@ -1,8 +1,8 @@
 <script setup>
-import InputNumber from 'primevue/inputnumber';
-import Select from 'primevue/select';
-import Textarea from 'primevue/textarea';
-import ToggleSwitch from 'primevue/toggleswitch';
+import InputNumber from "primevue/inputnumber";
+import Select from "primevue/select";
+import Textarea from "primevue/textarea";
+import ToggleSwitch from "primevue/toggleswitch";
 
 defineProps({
     form: {
@@ -54,26 +54,63 @@ defineProps({
 
         <div class="space-y-2">
             <label for="term-lead-time" class="text-sm font-medium text-bakery-dark">Lead time (nap)</label>
-            <InputNumber id="term-lead-time" v-model="form.lead_time_days" class="w-full" input-class="w-full" :min="0" :max="365" />
+            <InputNumber
+                id="term-lead-time"
+                v-model="form.lead_time_days"
+                class="w-full"
+                input-class="w-full"
+                :min="0"
+                :max="365"
+            />
             <p v-if="form.errors.lead_time_days" class="text-xs text-red-700">{{ form.errors.lead_time_days }}</p>
         </div>
 
         <div class="space-y-2">
-            <label for="term-minimum-order" class="text-sm font-medium text-bakery-dark">Minimum rendelési mennyiség</label>
-            <InputNumber id="term-minimum-order" v-model="form.minimum_order_quantity" class="w-full" input-class="w-full" :min="0" :min-fraction-digits="0" :max-fraction-digits="3" />
-            <p v-if="form.errors.minimum_order_quantity" class="text-xs text-red-700">{{ form.errors.minimum_order_quantity }}</p>
+            <label for="term-minimum-order" class="text-sm font-medium text-bakery-dark"
+                >Minimum rendelési mennyiség</label
+            >
+            <InputNumber
+                id="term-minimum-order"
+                v-model="form.minimum_order_quantity"
+                class="w-full"
+                input-class="w-full"
+                :min="0"
+                :min-fraction-digits="0"
+                :max-fraction-digits="3"
+            />
+            <p v-if="form.errors.minimum_order_quantity" class="text-xs text-red-700">
+                {{ form.errors.minimum_order_quantity }}
+            </p>
         </div>
 
         <div class="space-y-2">
             <label for="term-pack-size" class="text-sm font-medium text-bakery-dark">Kiszerelés</label>
-            <InputNumber id="term-pack-size" v-model="form.pack_size" class="w-full" input-class="w-full" :min="0" :min-fraction-digits="0" :max-fraction-digits="3" />
+            <InputNumber
+                id="term-pack-size"
+                v-model="form.pack_size"
+                class="w-full"
+                input-class="w-full"
+                :min="0"
+                :min-fraction-digits="0"
+                :max-fraction-digits="3"
+            />
             <p v-if="form.errors.pack_size" class="text-xs text-red-700">{{ form.errors.pack_size }}</p>
         </div>
 
         <div class="space-y-2">
             <label for="term-unit-cost" class="text-sm font-medium text-bakery-dark">Egyedi egységár</label>
-            <InputNumber id="term-unit-cost" v-model="form.unit_cost_override" class="w-full" input-class="w-full" :min="0" :min-fraction-digits="0" :max-fraction-digits="2" />
-            <p v-if="form.errors.unit_cost_override" class="text-xs text-red-700">{{ form.errors.unit_cost_override }}</p>
+            <InputNumber
+                id="term-unit-cost"
+                v-model="form.unit_cost_override"
+                class="w-full"
+                input-class="w-full"
+                :min="0"
+                :min-fraction-digits="0"
+                :max-fraction-digits="2"
+            />
+            <p v-if="form.errors.unit_cost_override" class="text-xs text-red-700">
+                {{ form.errors.unit_cost_override }}
+            </p>
         </div>
 
         <div class="flex min-h-16 items-center justify-between rounded-lg border border-bakery-brown/15 px-3">
@@ -97,7 +134,14 @@ defineProps({
 
         <div class="space-y-2 md:col-span-2">
             <label for="term-meta" class="text-sm font-medium text-bakery-dark">Meta JSON</label>
-            <Textarea id="term-meta" v-model="form.meta" rows="4" class="w-full font-mono text-sm" auto-resize placeholder='{"note":"..."}' />
+            <Textarea
+                id="term-meta"
+                v-model="form.meta"
+                rows="4"
+                class="w-full font-mono text-sm"
+                auto-resize
+                placeholder='{"note":"..."}'
+            />
             <p v-if="form.errors.meta" class="text-xs text-red-700">{{ form.errors.meta }}</p>
         </div>
     </div>

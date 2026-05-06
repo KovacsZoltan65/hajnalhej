@@ -47,34 +47,26 @@ const confirm = useConfirm();
 const loading = ref(false);
 const createModalVisible = ref(false);
 
-const {
-    filterState,
-    sortOrder,
-    load,
-    submitFilters,
-    clearFilters,
-    onSort,
-    onPage,
-} = useAdminFilterState({
+const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
-    search: "",
-    status: "",
-    supplier_id: null,
-    sort_field: "purchase_date",
-    sort_direction: "desc",
-    per_page: 10,
-},
+        search: "",
+        status: "",
+        supplier_id: null,
+        sort_field: "purchase_date",
+        sort_direction: "desc",
+        per_page: 10,
+    },
     routeName: "admin.purchases.index",
     loading,
     toQuery: (state) => ({
-            search: state.search || undefined,
-            status: state.status || undefined,
-            supplier_id: state.supplier_id || undefined,
-            sort_field: state.sort_field,
-            sort_direction: state.sort_direction,
-            per_page: state.per_page,
-        }),
+        search: state.search || undefined,
+        status: state.status || undefined,
+        supplier_id: state.supplier_id || undefined,
+        sort_field: state.sort_field,
+        sort_direction: state.sort_direction,
+        per_page: state.per_page,
+    }),
 });
 
 const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
@@ -116,10 +108,6 @@ const form = useForm({
 const currentPage = computed(() => props.purchases.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.purchases.per_page ?? 10));
 
-
-
-
-
 const openCreate = () => {
     form.reset();
     form.clearErrors();
@@ -154,11 +142,7 @@ const postNow = (purchase) => {
         rejectLabel: "Mégse",
         acceptLabel: "Könyvelés",
         accept: () => {
-            router.post(
-                route("admin.purchases.post", purchase.id),
-                {},
-                { preserveScroll: true }
-            );
+            router.post(route("admin.purchases.post", purchase.id), {}, { preserveScroll: true });
         },
     });
 };
@@ -166,18 +150,12 @@ const postNow = (purchase) => {
 const cancelPurchase = (purchase) => {
     confirm.require({
         header: "Beszerzés stornózása",
-        message: `Biztosan stornózod ezt a beszerzést? (${
-            purchase.reference_number || `#${purchase.id}`
-        })`,
+        message: `Biztosan stornózod ezt a beszerzést? (${purchase.reference_number || `#${purchase.id}`})`,
         rejectLabel: "Mégse",
         acceptLabel: "Stornó",
         acceptClass: "p-button-danger",
         accept: () => {
-            router.post(
-                route("admin.purchases.cancel", purchase.id),
-                {},
-                { preserveScroll: true }
-            );
+            router.post(route("admin.purchases.cancel", purchase.id), {}, { preserveScroll: true });
         },
     });
 };
@@ -219,8 +197,7 @@ const statusClass = (status) => {
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Keresés</label
                         >
                         <InputText
@@ -232,8 +209,7 @@ const statusClass = (status) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Státusz</label
                         >
                         <Select
@@ -247,8 +223,7 @@ const statusClass = (status) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Beszállító</label
                         >
                         <Select
@@ -263,8 +238,7 @@ const statusClass = (status) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label
-                            class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Találat / oldal</label
                         >
                         <Select
@@ -313,29 +287,16 @@ const statusClass = (status) => {
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
                             <p>Nincs megjeleníthető beszerzés.</p>
-                            <div
-                                class="mt-3 flex flex-wrap items-center justify-center gap-2"
-                            >
-                                <Button
-                                    label="Szűrők törlése"
-                                    outlined
-                                    size="small"
-                                    @click="clearFilters"
-                                />
-                                <Button
-                                    label="Új beszerzés"
-                                    size="small"
-                                    @click="openCreate"
-                                />
+                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                                <Button label="Új beszerzés" size="small" @click="openCreate" />
                             </div>
                         </div>
                     </template>
 
                     <Column field="purchase_date" header="Dátum" sortable>
                         <template #body="{ data }">
-                            <span class="text-sm text-bakery-dark">{{
-                                data.purchase_date || "-"
-                            }}</span>
+                            <span class="text-sm text-bakery-dark">{{ data.purchase_date || "-" }}</span>
                         </template>
                     </Column>
                     <Column field="reference_number" header="Referencia" sortable>
@@ -353,9 +314,7 @@ const statusClass = (status) => {
                     <Column field="items_count" header="Tételek" />
                     <Column field="total" header="Összesen" sortable>
                         <template #body="{ data }">
-                            <span class="font-medium">{{
-                                formatCurrency(data.total)
-                            }}</span>
+                            <span class="font-medium">{{ formatCurrency(data.total) }}</span>
                         </template>
                     </Column>
                     <Column field="status" header="Státusz" sortable>

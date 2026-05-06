@@ -1,7 +1,7 @@
 <script setup>
-import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
-import TermForm from './TermForm.vue';
+import Button from "primevue/button";
+import Dialog from "primevue/dialog";
+import TermForm from "./TermForm.vue";
 
 defineProps({
     visible: { type: Boolean, required: true },
@@ -10,8 +10,8 @@ defineProps({
     suppliers: { type: Array, required: true },
 });
 
-const emit = defineEmits(['update:visible', 'submit']);
-const close = () => emit('update:visible', false);
+const emit = defineEmits(["update:visible", "submit"]);
+const close = () => emit("update:visible", false);
 </script>
 
 <template>

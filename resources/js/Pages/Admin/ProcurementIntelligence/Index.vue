@@ -33,9 +33,7 @@ const selectedRecommendationIds = ref([]);
 const draftGenerationProcessing = ref(false);
 
 const selectedCount = computed(() => selectedRecommendationIds.value.length);
-const generatableCount = computed(
-    () => props.dashboard.minimum_stock_recommendations.length
-);
+const generatableCount = computed(() => props.dashboard.minimum_stock_recommendations.length);
 
 const selectionSummary = computed(() => {
     if (selectedCount.value > 0) {
@@ -69,11 +67,7 @@ const updateFilter = (key, value) => {
 const resetFilters = () => {
     selectedRecommendationIds.value = [];
 
-    router.get(
-        route("admin.procurement-intelligence.index"),
-        { days: 30 },
-        { preserveScroll: true, replace: true }
-    );
+    router.get(route("admin.procurement-intelligence.index"), { days: 30 }, { preserveScroll: true, replace: true });
 };
 
 const generatePurchaseDrafts = () => {
@@ -105,9 +99,7 @@ const generatePurchaseDrafts = () => {
         <header class="ui-card p-5 sm:p-6">
             <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
                 <div class="max-w-3xl">
-                    <p
-                        class="text-xs font-semibold uppercase tracking-[0.18em] text-bakery-brown/70"
-                    >
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-bakery-brown/70">
                         {{ trans("admin_procurement_intelligence.eyebrow") }}
                     </p>
                     <h1 class="mt-2 font-heading text-3xl text-bakery-dark">
@@ -132,9 +124,7 @@ const generatePurchaseDrafts = () => {
                         :options="filter_options.ingredients"
                         option-label="label"
                         option-value="value"
-                        :placeholder="
-                            trans('admin_procurement_intelligence.filters.ingredient')
-                        "
+                        :placeholder="trans('admin_procurement_intelligence.filters.ingredient')"
                         show-clear
                         filter
                         class="min-h-11 w-full"
@@ -145,9 +135,7 @@ const generatePurchaseDrafts = () => {
                         :options="filter_options.suppliers"
                         option-label="label"
                         option-value="value"
-                        :placeholder="
-                            trans('admin_procurement_intelligence.filters.supplier')
-                        "
+                        :placeholder="trans('admin_procurement_intelligence.filters.supplier')"
                         show-clear
                         filter
                         class="min-h-11 w-full"
@@ -158,9 +146,7 @@ const generatePurchaseDrafts = () => {
                         :options="filter_options.urgencies"
                         option-label="label"
                         option-value="value"
-                        :placeholder="
-                            trans('admin_procurement_intelligence.filters.urgency')
-                        "
+                        :placeholder="trans('admin_procurement_intelligence.filters.urgency')"
                         show-clear
                         class="min-h-11 w-full"
                         @update:model-value="updateFilter('urgency', $event)"
@@ -176,17 +162,13 @@ const generatePurchaseDrafts = () => {
                 </div>
             </div>
 
-            <div
-                class="mt-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between"
-            >
+            <div class="mt-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                 <Select
                     :model-value="filters.alert_type"
                     :options="filter_options.alert_types"
                     option-label="label"
                     option-value="value"
-                    :placeholder="
-                        trans('admin_procurement_intelligence.filters.alert_type')
-                    "
+                    :placeholder="trans('admin_procurement_intelligence.filters.alert_type')"
                     show-clear
                     class="min-h-11 w-full lg:max-w-md"
                     @update:model-value="updateFilter('alert_type', $event)"
@@ -197,11 +179,7 @@ const generatePurchaseDrafts = () => {
                     </span>
                     <Button
                         icon="pi pi-file-plus"
-                        :label="
-                            trans(
-                                'admin_procurement_intelligence.actions.generate_purchase_drafts'
-                            )
-                        "
+                        :label="trans('admin_procurement_intelligence.actions.generate_purchase_drafts')"
                         class="min-h-11!"
                         :disabled="generatableCount === 0 || draftGenerationProcessing"
                         :loading="draftGenerationProcessing"
@@ -227,9 +205,7 @@ const generatePurchaseDrafts = () => {
             <ProcurementSummaryCard
                 :label="trans('admin_procurement_intelligence.summary.price_increase')"
                 :value="dashboard.summary.price_increase_count"
-                :hint="
-                    trans('admin_procurement_intelligence.summary.price_increase_hint')
-                "
+                :hint="trans('admin_procurement_intelligence.summary.price_increase_hint')"
                 icon="pi pi-arrow-up-right"
             />
             <ProcurementSummaryCard
@@ -253,42 +229,36 @@ const generatePurchaseDrafts = () => {
         <WeeklyConsumptionForecastTable :rows="dashboard.weekly_consumption_forecast" />
 
         <section class="ui-card p-4 text-sm text-bakery-dark/70 sm:p-5">
-            <h2
-                class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80"
-            >
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
                 {{ trans("admin_procurement_intelligence.calculation.title") }}
             </h2>
             <div class="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-4">
                 <p>
                     {{
-                        trans(
-                            "admin_procurement_intelligence.calculation.consumption_window",
-                            { days: dashboard.defaults.consumption_window_days }
-                        )
+                        trans("admin_procurement_intelligence.calculation.consumption_window", {
+                            days: dashboard.defaults.consumption_window_days,
+                        })
                     }}
                 </p>
                 <p>
                     {{
-                        trans(
-                            "admin_procurement_intelligence.calculation.price_increase",
-                            { percent: dashboard.defaults.price_increase_alert_percent }
-                        )
+                        trans("admin_procurement_intelligence.calculation.price_increase", {
+                            percent: dashboard.defaults.price_increase_alert_percent,
+                        })
                     }}
                 </p>
                 <p>
                     {{
-                        trans(
-                            "admin_procurement_intelligence.calculation.stockout_risk",
-                            { days: dashboard.defaults.stockout_warning_days }
-                        )
+                        trans("admin_procurement_intelligence.calculation.stockout_risk", {
+                            days: dashboard.defaults.stockout_warning_days,
+                        })
                     }}
                 </p>
                 <p>
                     {{
-                        trans(
-                            "admin_procurement_intelligence.calculation.reorder_target",
-                            { days: dashboard.defaults.safety_stock_days }
-                        )
+                        trans("admin_procurement_intelligence.calculation.reorder_target", {
+                            days: dashboard.defaults.safety_stock_days,
+                        })
                     }}
                 </p>
             </div>

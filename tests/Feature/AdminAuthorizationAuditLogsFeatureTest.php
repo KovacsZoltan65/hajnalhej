@@ -2,10 +2,10 @@
 
 use App\Models\User;
 use App\Services\Audit\AuthorizationAuditService;
+use App\Support\PermissionRegistry;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Role;
-use App\Support\PermissionRegistry;
 
 beforeEach(function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);

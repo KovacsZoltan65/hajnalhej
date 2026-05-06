@@ -1,8 +1,8 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link } from "@inertiajs/vue3";
 
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import SectionTitle from '@/Components/SectionTitle.vue';
+import AdminLayout from "@/Layouts/AdminLayout.vue";
+import SectionTitle from "@/Components/SectionTitle.vue";
 
 defineOptions({ layout: AdminLayout });
 
@@ -32,7 +32,7 @@ const props = defineProps({
                 </div>
                 <div>
                     <p class="text-xs uppercase tracking-widest text-bakery-dark/60">Esemény kulcs</p>
-                    <p class="text-sm font-semibold text-bakery-dark">{{ event.event_key || '-' }}</p>
+                    <p class="text-sm font-semibold text-bakery-dark">{{ event.event_key || "-" }}</p>
                 </div>
                 <div>
                     <p class="text-xs uppercase tracking-widest text-bakery-dark/60">Idopont</p>
@@ -46,7 +46,9 @@ const props = defineProps({
 
             <div class="mt-4 rounded-xl border border-bakery-brown/15 bg-[#fdf8f1] p-4">
                 <p class="text-xs uppercase tracking-widest text-bakery-dark/60">Tulajdonságok JSON</p>
-                <pre class="mt-2 overflow-auto whitespace-pre-wrap text-xs text-bakery-dark">{{ JSON.stringify(event.properties, null, 2) }}</pre>
+                <pre class="mt-2 overflow-auto whitespace-pre-wrap text-xs text-bakery-dark">{{
+                    JSON.stringify(event.properties, null, 2)
+                }}</pre>
             </div>
 
             <div class="mt-4">
@@ -60,5 +62,3 @@ const props = defineProps({
         </div>
     </div>
 </template>
-
-

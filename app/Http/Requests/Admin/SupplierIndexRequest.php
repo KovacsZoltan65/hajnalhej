@@ -25,4 +25,3 @@ class SupplierIndexRequest extends FormRequest
         ];
     }
 }
-

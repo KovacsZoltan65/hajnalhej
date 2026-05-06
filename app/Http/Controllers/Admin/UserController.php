@@ -21,9 +21,7 @@ use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
-    public function __construct(private readonly UserAdminService $service)
-    {
-    }
+    public function __construct(private readonly UserAdminService $service) {}
 
     public function index(Request $request): Response
     {
@@ -83,7 +81,7 @@ class UserController extends Controller
         $this->service->create($request->validated(), $request->user());
 
         return redirect()->route('admin.users.index')
-            ->with('success', __('admin_user.created') . '.');
+            ->with('success', __('admin_user.created').'.');
     }
 
     public function update(UpdateAdminUserRequest $request, User $user): RedirectResponse
@@ -95,7 +93,7 @@ class UserController extends Controller
         $this->service->update($user, $request->validated(), $request->user());
 
         return redirect()->route('admin.users.index')
-            ->with('success', __('admin_user.updated') . '.');
+            ->with('success', __('admin_user.updated').'.');
     }
 
     public function destroy(User $user): RedirectResponse
@@ -105,14 +103,14 @@ class UserController extends Controller
         $this->service->deactivate($user);
 
         return redirect()->route('admin.users.index')
-            ->with('success', __('admin_user.deleted') . '.');
+            ->with('success', __('admin_user.deleted').'.');
     }
 
     public function storeTemporaryPermission(StoreUserTemporaryPermissionRequest $request, User $user): RedirectResponse
     {
         $this->service->createTemporaryPermission($user, $request->validated(), $request->user());
 
-        return back()->with('success', __('admin_user.temporary_authorization_recorded') . '.');
+        return back()->with('success', __('admin_user.temporary_authorization_recorded').'.');
     }
 
     public function revokeTemporaryPermission(User $user, UserTemporaryPermission $temporaryPermission): RedirectResponse
@@ -123,14 +121,14 @@ class UserController extends Controller
         $this->service->revokeTemporaryPermission($temporaryPermission);
 
         return back()
-            ->with('success', __('admin_user.temporary_authorization_revoked') . '.');
+            ->with('success', __('admin_user.temporary_authorization_revoked').'.');
     }
 
     public function storeDiscount(StoreUserDiscountRequest $request, User $user): RedirectResponse
     {
         $this->service->createDiscount($user, $request->validated(), $request->user());
 
-        return back()->with('success', __('admin_user.discount_recorded') . '.');
+        return back()->with('success', __('admin_user.discount_recorded').'.');
     }
 
     public function updateDiscount(UpdateUserDiscountRequest $request, User $user, UserDiscount $discount): RedirectResponse
@@ -140,7 +138,7 @@ class UserController extends Controller
 
         $this->service->updateDiscount($discount, $request->validated());
 
-        return back()->with('success', __('admin_user.updated') . '.');
+        return back()->with('success', __('admin_user.updated').'.');
     }
 
     public function destroyDiscount(User $user, UserDiscount $discount): RedirectResponse
@@ -150,6 +148,6 @@ class UserController extends Controller
 
         $this->service->deactivateDiscount($discount);
 
-        return back()->with('success', __('admin_user.discount_deactivated') . '.');
+        return back()->with('success', __('admin_user.discount_deactivated').'.');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -22,15 +23,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property numeric|null $average_unit_cost
  * @property int|null $payment_term_days
  * @property string $currency
- * @property \Illuminate\Support\Carbon|null $valid_from
- * @property \Illuminate\Support\Carbon|null $valid_until
+ * @property Carbon|null $valid_from
+ * @property Carbon|null $valid_until
  * @property numeric|null $quality_threshold_percent
  * @property array<array-key, mixed>|null $meta
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Ingredient|null $ingredient
- * @property-read \App\Models\Supplier $supplier
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property-read Ingredient|null $ingredient
+ * @property-read Supplier $supplier
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IngredientSupplierTerm newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IngredientSupplierTerm newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IngredientSupplierTerm onlyTrashed()
@@ -59,6 +61,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IngredientSupplierTerm whereValidUntil($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IngredientSupplierTerm withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IngredientSupplierTerm withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class IngredientSupplierTerm extends Model

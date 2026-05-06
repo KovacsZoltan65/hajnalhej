@@ -8,8 +8,7 @@ vi.mock("laravel-vue-i18n", () => ({
             "admin_production_plans.form.status": "Státusz",
             "admin_production_plans.form.lock_plan": "Terv lezárása",
             "admin_production_plans.form.notes": "Megjegyzés",
-            "admin_production_plans.form.items_title":
-                "Termékek és mennyiségek",
+            "admin_production_plans.form.items_title": "Termékek és mennyiségek",
             "admin_production_plans.form.add_item": "Új tétel",
             "common.product": "Termék",
             "common.quantity": "Mennyiség",
@@ -28,8 +27,7 @@ const stubs = {
     Textarea: {
         props: ["modelValue"],
         emits: ["update:modelValue"],
-        template:
-            '<textarea :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+        template: '<textarea :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
     },
     ToggleSwitch: {
         props: ["modelValue"],
@@ -40,13 +38,11 @@ const stubs = {
     Select: {
         props: ["modelValue", "options", "optionLabel", "optionValue"],
         emits: ["update:modelValue"],
-        template:
-            "<select @change=\"$emit('update:modelValue', $event.target.value)\"></select>",
+        template: "<select @change=\"$emit('update:modelValue', $event.target.value)\"></select>",
     },
     Button: {
         emits: ["click"],
-        template:
-            '<button type="button" @click="$emit(\'click\')"><slot /></button>',
+        template: '<button type="button" @click="$emit(\'click\')"><slot /></button>',
     },
 };
 

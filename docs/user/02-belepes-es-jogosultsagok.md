@@ -35,4 +35,3 @@ Példák:
 - Admin jogosultságot csak annak adj, akinek tényleg szükséges.
 - Jogosultság módosítás után ellenőrizd a Security Dashboardot.
 - Gyanús audit eseményt jelezz a rendszer felelősének.
-

@@ -9,10 +9,6 @@ use Inertia\Response;
 
 class EmailVerificationPromptController extends Controller
 {
-    /**
-     * @param Request $request
-     * @return \Inertia\Response
-     */
     public function __invoke(Request $request): Response
     {
         return Inertia::render('Auth/VerifyEmail', [

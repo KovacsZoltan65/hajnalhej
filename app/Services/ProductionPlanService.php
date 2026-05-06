@@ -21,12 +21,10 @@ use Illuminate\Support\Str;
  */
 class ProductionPlanService
 {
-    public function __construct(private readonly ProductionPlanRepository $repository)
-    {
-    }
+    public function __construct(private readonly ProductionPlanRepository $repository) {}
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function paginateForAdmin(array $filters): LengthAwarePaginator
     {
@@ -42,6 +40,14 @@ class ProductionPlanService
     }
 
     /**
+     * @return Collection<int, array<string, mixed>>
+     */
+    public function listActiveProductsForCreateFlow(): Collection
+    {
+        return $this->repository->listActiveProductsForCreateFlow();
+    }
+
+    /**
      * @return Collection<int, array{value:string,label:string}>
      */
     public function listStatuses(): Collection
@@ -54,7 +60,7 @@ class ProductionPlanService
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function create(array $data, int $userId): ProductionPlan
     {
@@ -81,7 +87,7 @@ class ProductionPlanService
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function update(ProductionPlan $productionPlan, array $data): ProductionPlan
     {
@@ -175,7 +181,7 @@ class ProductionPlanService
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      */
     public function buildIndexSummary(array $filters = []): array
     {
@@ -190,7 +196,7 @@ class ProductionPlanService
     }
 
     /**
-     * @param array<int, array<string, mixed>> $items
+     * @param  array<int, array<string, mixed>>  $items
      */
     private function syncItems(ProductionPlan $productionPlan, array $items): void
     {
@@ -294,7 +300,7 @@ class ProductionPlanService
     }
 
     /**
-     * @param Collection<int, ProductionPlanItem> $items
+     * @param  Collection<int, ProductionPlanItem>  $items
      * @return Collection<int, array{product:Product,target_quantity:float,unit_label:string,sort_order:int,ingredient_count:int,step_count:int,active_minutes:int,wait_minutes:int,suggested_start_at:string}>
      */
     private function loadProductsForItems(ProductionPlan $plan, Collection $items): Collection
@@ -342,7 +348,7 @@ class ProductionPlanService
     }
 
     /**
-     * @param Collection<int, array{product:Product,target_quantity:float,unit_label:string,sort_order:int,ingredient_count:int,step_count:int,active_minutes:int,wait_minutes:int,suggested_start_at:string}> $items
+     * @param  Collection<int, array{product:Product,target_quantity:float,unit_label:string,sort_order:int,ingredient_count:int,step_count:int,active_minutes:int,wait_minutes:int,suggested_start_at:string}>  $items
      * @return array<int, array{ingredient_id:int,name:string,unit:string,total_required:float,current_stock:float,minimum_stock:float,shortage:float,is_low_stock:bool}>
      */
     private function buildIngredientRequirements(Collection $items): array
@@ -397,7 +403,7 @@ class ProductionPlanService
     }
 
     /**
-     * @param Collection<int, array{product:Product,target_quantity:float,unit_label:string,sort_order:int,ingredient_count:int,step_count:int,active_minutes:int,wait_minutes:int,suggested_start_at:string}> $items
+     * @param  Collection<int, array{product:Product,target_quantity:float,unit_label:string,sort_order:int,ingredient_count:int,step_count:int,active_minutes:int,wait_minutes:int,suggested_start_at:string}>  $items
      * @return array{items_count:int,products_count:int,total_active_minutes:int,total_wait_minutes:int,total_recipe_minutes:int,ingredients_count:int,shortage_ingredients_count:int}
      */
     private function buildSummary(ProductionPlan $plan, Collection $items): array
@@ -476,7 +482,7 @@ class ProductionPlanService
             $rightStart = (string) $right['starts_at'];
 
             if ($leftStart === $rightStart) {
-                return ($left['is_dependency'] <=> $right['is_dependency']);
+                return $left['is_dependency'] <=> $right['is_dependency'];
             }
 
             return $leftStart <=> $rightStart;

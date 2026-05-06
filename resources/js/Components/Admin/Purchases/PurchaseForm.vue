@@ -1,10 +1,10 @@
 <script setup>
-import { computed } from 'vue';
-import Button from 'primevue/button';
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
-import Textarea from 'primevue/textarea';
-import { useLocaleFormat } from '@/composables/useLocaleFormat';
+import { computed } from "vue";
+import Button from "primevue/button";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
+import Textarea from "primevue/textarea";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 const props = defineProps({
     form: {
@@ -22,16 +22,16 @@ const props = defineProps({
 });
 
 const unitOptions = [
-    { label: 'g', value: 'g' },
-    { label: 'kg', value: 'kg' },
-    { label: 'ml', value: 'ml' },
-    { label: 'l', value: 'l' },
-    { label: 'db', value: 'db' },
+    { label: "g", value: "g" },
+    { label: "kg", value: "kg" },
+    { label: "ml", value: "ml" },
+    { label: "l", value: "l" },
+    { label: "db", value: "db" },
 ];
 
-const supplierOptions = computed(() => [{ id: null, name: 'Nincs megadva' }, ...props.suppliers]);
+const supplierOptions = computed(() => [{ id: null, name: "Nincs megadva" }, ...props.suppliers]);
 
-const newItem = () => ({ ingredient_id: null, quantity: 1, unit: 'db', unit_cost: 0 });
+const newItem = () => ({ ingredient_id: null, quantity: 1, unit: "db", unit_cost: 0 });
 
 const addItem = () => {
     props.form.items.push(newItem());
@@ -57,10 +57,7 @@ const onIngredientChange = (index) => {
 const itemError = (index, field) => props.form.errors[`items.${index}.${field}`];
 
 const total = computed(() =>
-    props.form.items.reduce(
-        (sum, item) => sum + Number(item.quantity || 0) * Number(item.unit_cost || 0),
-        0,
-    ),
+    props.form.items.reduce((sum, item) => sum + Number(item.quantity || 0) * Number(item.unit_cost || 0), 0)
 );
 
 const { formatCurrency } = useLocaleFormat();
@@ -91,7 +88,9 @@ const { formatCurrency } = useLocaleFormat();
             <div class="space-y-2 md:col-span-2">
                 <label for="purchase-reference" class="text-sm font-medium text-bakery-dark">Referencia szám</label>
                 <InputText id="purchase-reference" v-model="form.reference_number" class="w-full" />
-                <p v-if="form.errors.reference_number" class="text-xs text-red-700">{{ form.errors.reference_number }}</p>
+                <p v-if="form.errors.reference_number" class="text-xs text-red-700">
+                    {{ form.errors.reference_number }}
+                </p>
             </div>
 
             <div class="space-y-2 md:col-span-2">
@@ -125,30 +124,44 @@ const { formatCurrency } = useLocaleFormat();
                         class="w-full"
                         @update:model-value="onIngredientChange(index)"
                     />
-                    <p v-if="itemError(index, 'ingredient_id')" class="text-xs text-red-700">{{ itemError(index, 'ingredient_id') }}</p>
+                    <p v-if="itemError(index, 'ingredient_id')" class="text-xs text-red-700">
+                        {{ itemError(index, "ingredient_id") }}
+                    </p>
                 </div>
 
                 <div class="space-y-1 md:col-span-2">
                     <label class="text-xs font-medium text-bakery-dark/80">Mennyiség</label>
                     <InputText v-model="item.quantity" type="number" min="0.001" step="0.001" class="w-full" />
-                    <p v-if="itemError(index, 'quantity')" class="text-xs text-red-700">{{ itemError(index, 'quantity') }}</p>
+                    <p v-if="itemError(index, 'quantity')" class="text-xs text-red-700">
+                        {{ itemError(index, "quantity") }}
+                    </p>
                 </div>
 
                 <div class="space-y-1 md:col-span-2">
                     <label class="text-xs font-medium text-bakery-dark/80">Egység</label>
-                    <Select v-model="item.unit" :options="unitOptions" option-label="label" option-value="value" class="w-full" />
-                    <p v-if="itemError(index, 'unit')" class="text-xs text-red-700">{{ itemError(index, 'unit') }}</p>
+                    <Select
+                        v-model="item.unit"
+                        :options="unitOptions"
+                        option-label="label"
+                        option-value="value"
+                        class="w-full"
+                    />
+                    <p v-if="itemError(index, 'unit')" class="text-xs text-red-700">{{ itemError(index, "unit") }}</p>
                 </div>
 
                 <div class="space-y-1 md:col-span-2">
                     <label class="text-xs font-medium text-bakery-dark/80">Egységár (Ft)</label>
                     <InputText v-model="item.unit_cost" type="number" min="0" step="0.0001" class="w-full" />
-                    <p v-if="itemError(index, 'unit_cost')" class="text-xs text-red-700">{{ itemError(index, 'unit_cost') }}</p>
+                    <p v-if="itemError(index, 'unit_cost')" class="text-xs text-red-700">
+                        {{ itemError(index, "unit_cost") }}
+                    </p>
                 </div>
 
                 <div class="space-y-1 md:col-span-2">
                     <label class="text-xs font-medium text-bakery-dark/80">Sor összesen</label>
-                    <div class="flex min-h-11 items-center rounded-md border border-bakery-brown/15 px-3 text-sm font-medium text-bakery-dark">
+                    <div
+                        class="flex min-h-11 items-center rounded-md border border-bakery-brown/15 px-3 text-sm font-medium text-bakery-dark"
+                    >
                         {{ formatCurrency(Number(item.quantity || 0) * Number(item.unit_cost || 0)) }}
                     </div>
                 </div>

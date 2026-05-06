@@ -5,21 +5,31 @@ namespace App\Support;
 class ConversionEventRegistry
 {
     public const CTA_CLICK = 'cta.click';
+
     public const HERO_ASSIGNED = 'hero.assigned';
+
     public const HERO_VIEWED = 'hero.viewed';
 
     public const CART_VIEWED = 'cart.viewed';
+
     public const CART_ITEM_ADDED = 'cart.item_added';
+
     public const CART_ITEM_UPDATED = 'cart.item_updated';
+
     public const CART_ITEM_REMOVED = 'cart.item_removed';
+
     public const CART_CLEARED = 'cart.cleared';
 
     public const CHECKOUT_VIEWED = 'checkout.viewed';
+
     public const CHECKOUT_SUBMITTED = 'checkout.submitted';
+
     public const CHECKOUT_COMPLETED = 'checkout.completed';
 
     public const REGISTRATION_VIEWED = 'registration.viewed';
+
     public const REGISTRATION_SUBMITTED = 'registration.submitted';
+
     public const REGISTRATION_COMPLETED = 'registration.completed';
 
     /**
@@ -81,4 +91,3 @@ class ConversionEventRegistry
         ];
     }
 }
-

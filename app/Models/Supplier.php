@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Database\Factories\SupplierFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -19,28 +21,29 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $currency
  * @property string|null $notes
  * @property array<array-key, mixed>|null $meta
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SupplierContact> $contacts
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, SupplierContact> $contacts
  * @property-read int|null $contacts_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\IngredientSupplierTerm> $ingredientTerms
+ * @property-read Collection<int, IngredientSupplierTerm> $ingredientTerms
  * @property-read int|null $ingredient_terms_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SupplierNegotiation> $negotiations
+ * @property-read Collection<int, SupplierNegotiation> $negotiations
  * @property-read int|null $negotiations_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PriceAlert> $priceAlerts
+ * @property-read Collection<int, PriceAlert> $priceAlerts
  * @property-read int|null $price_alerts_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProcurementAlert> $procurementAlerts
+ * @property-read Collection<int, ProcurementAlert> $procurementAlerts
  * @property-read int|null $procurement_alerts_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseRecommendation> $purchaseRecommendations
+ * @property-read Collection<int, PurchaseRecommendation> $purchaseRecommendations
  * @property-read int|null $purchase_recommendations_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Purchase> $purchases
+ * @property-read Collection<int, Purchase> $purchases
  * @property-read int|null $purchases_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseRecommendationItem> $recommendationItems
+ * @property-read Collection<int, PurchaseRecommendationItem> $recommendationItems
  * @property-read int|null $recommendation_items_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RiskEvent> $riskEvents
+ * @property-read Collection<int, RiskEvent> $riskEvents
  * @property-read int|null $risk_events_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SupplierScore> $scores
+ * @property-read Collection<int, SupplierScore> $scores
  * @property-read int|null $scores_count
+ *
  * @method static \Database\Factories\SupplierFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier newQuery()
@@ -58,6 +61,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier whereTaxNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Supplier extends Model
