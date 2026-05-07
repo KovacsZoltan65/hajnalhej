@@ -128,9 +128,7 @@ watch(
         </div>
 
         <div class="space-y-2 md:col-span-2">
-            <label for="ingredient-notes" class="text-sm font-medium text-bakery-dark">{{
-                $t("admin_production_plans.form.notes")
-            }}</label>
+            <label for="ingredient-notes" class="text-sm font-medium text-bakery-dark">{{ $t("common.notes") }}</label>
             <Textarea id="ingredient-notes" v-model="form.notes" rows="4" auto-resize class="w-full" />
             <p v-if="form.errors.notes" class="text-xs text-red-700">
                 {{ form.errors.notes }}

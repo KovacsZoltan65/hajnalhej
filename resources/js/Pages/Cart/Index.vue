@@ -134,7 +134,7 @@ const clearCart = () => {
                 </h2>
                 <dl class="mt-4 space-y-2 text-sm">
                     <div class="flex justify-between">
-                        <dt>{{ $t("admin_weekly_menus.columns.items") }}</dt>
+                        <dt>{{ $t("common.items") }}</dt>
                         <dd>{{ cart.summary.total_quantity }} db</dd>
                     </div>
                     <div class="flex justify-between font-semibold text-bakery-dark">

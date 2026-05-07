@@ -14,7 +14,7 @@ defineEmits(["back", "next", "submit"]);
 <template>
     <div class="flex flex-wrap items-center justify-between gap-3 border-t border-bakery-brown/10 pt-4">
         <Button
-            :label="$t('admin.products.flow.actions.previous')"
+            :label="$t('common.previous')"
             icon="pi pi-arrow-left"
             outlined
             :disabled="!canGoBack || saving"

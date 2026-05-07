@@ -38,19 +38,21 @@ defineProps({
         </div>
 
         <div class="space-y-2">
-            <label class="text-sm font-medium text-bakery-dark">Egységár (opcionális)</label>
+            <label class="text-sm font-medium text-bakery-dark"
+                >{{ $t("common.unit_cost") }} ({{ $t("common.optional") }})</label
+            >
             <InputText v-model="form.unit_cost" type="number" min="0" step="0.0001" class="w-full" />
             <p v-if="form.errors.unit_cost" class="text-xs text-red-700">{{ form.errors.unit_cost }}</p>
         </div>
 
         <div class="space-y-2">
-            <label class="text-sm font-medium text-bakery-dark">Dátum</label>
+            <label class="text-sm font-medium text-bakery-dark">{{ $t("common.date") }}</label>
             <BaseDatePicker v-model="form.occurred_at" class="w-full" />
             <p v-if="form.errors.occurred_at" class="text-xs text-red-700">{{ form.errors.occurred_at }}</p>
         </div>
 
         <div class="space-y-2">
-            <label class="text-sm font-medium text-bakery-dark">Megjegyzés</label>
+            <label class="text-sm font-medium text-bakery-dark">{{ $t("common.notes") }}</label>
             <Textarea v-model="form.notes" rows="3" class="w-full" auto-resize />
             <p v-if="form.errors.notes" class="text-xs text-red-700">{{ form.errors.notes }}</p>
         </div>

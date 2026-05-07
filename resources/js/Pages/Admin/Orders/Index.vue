@@ -60,14 +60,6 @@ const first = computed(() => (currentPage.value - 1) * (props.orders.per_page ??
 
 const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
 
-/*
-const perPageOptions = [
-    { label: trans("common.page_count", { count: 15 }), value: 15 },
-    { label: trans("common.page_count", { count: 30 }), value: 30 },
-    { label: trans("common.page_count", { count: 50 }), value: 50 },
-];
-*/
-
 const statusSelectOptions = computed(() => [
     { label: trans("common.all"), value: "" },
     ...props.statusOptions.map((status) => ({ label: status, value: status })),
@@ -89,6 +81,7 @@ const { formatCurrency } = useLocaleFormat();
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar>
                 <template #filters>
+                    <!-- KERESÉS -->
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                             $t("common.search")
@@ -101,6 +94,7 @@ const { formatCurrency } = useLocaleFormat();
                         />
                     </div>
 
+                    <!-- STÁTUSZ -->
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                             $t("common.status")
@@ -115,6 +109,7 @@ const { formatCurrency } = useLocaleFormat();
                         />
                     </div>
 
+                    <!-- PER PAGE -->
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
                             $t("table.rows_per_page")
@@ -181,7 +176,7 @@ const { formatCurrency } = useLocaleFormat();
                             </div>
                         </template>
                     </Column>
-                    <Column field="status" :header="$t('admin_orders.columns.status')" sortable>
+                    <Column field="status" :header="$t('common.status')" sortable>
                         <template #body="{ data }">
                             <OrderStatusBadge :status="data.status" />
                         </template>

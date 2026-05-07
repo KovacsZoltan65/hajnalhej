@@ -14,7 +14,7 @@ import RecipeSummaryCard from "@/Components/Admin/Recipes/RecipeSummaryCard.vue"
 import RecipeTable from "@/Components/Admin/Recipes/RecipeTable.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import { pageOptions } from "@/Utils/functions.js";
+import { pageOptions, activeOptions as createActiveOptions } from "@/Utils/functions.js";
 import { trans } from "laravel-vue-i18n";
 
 defineOptions({ layout: AdminLayout });
@@ -70,31 +70,27 @@ const filterState = reactive({
 });
 
 const perPageOptions = pageOptions(trans, [10, 20, 50]);
+const activeOptions = createActiveOptions(trans);
 /*
-const perPageOptions = [
-    { label: "10 / oldal", value: 10 },
-    { label: "20 / oldal", value: 20 },
-    { label: "50 / oldal", value: 50 },
+const activeOptions = [
+    { label: trans("common.all"), value: "" },
+    { label: trans("common.active"), value: "1" },
+    { label: trans("common.inactive"), value: "0" },
 ];
 */
-const activeOptions = [
-    { label: "Mind", value: "" },
-    { label: "Aktív", value: "1" },
-    { label: "Inaktív", value: "0" },
-];
 
 const recipePresenceOptions = [
-    { label: "Mind", value: "all" },
-    { label: "Recepttel", value: "with_recipe" },
-    { label: "Recept nélkül", value: "without_recipe" },
+    { label: trans("common.all"), value: "all" },
+    { label: trans("admin_recipes.filters.with_recipe"), value: "with_recipe" },
+    { label: trans("admin_recipes.filters.without_recipe"), value: "without_recipe" },
 ];
 
 const lowStockOptions = [
-    { label: "Mind", value: "" },
-    { label: "Alacsony készlet érintett", value: "1" },
+    { label: trans("common.all"), value: "" },
+    { label: trans("admin_recipes.filters.low_stock_affected"), value: "1" },
 ];
 
-const categoryOptions = computed(() => [{ id: null, name: "Mind" }, ...props.categories]);
+const categoryOptions = computed(() => [{ id: null, name: trans("common.all") }, ...props.categories]);
 const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
 const currentPage = computed(() => props.recipes.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.recipes.per_page ?? 10));
@@ -233,10 +229,12 @@ const deleteRecipeItem = (item) => {
     }
 
     confirm.require({
-        header: "Recept tétel törlése",
-        message: `Biztosan törlöd ezt a recept tételt: ${item.ingredient_name}?`,
-        rejectLabel: "Mégse",
-        acceptLabel: "Törlés",
+        header: trans("admin_recipes.confirm_delete_item_header"),
+        message: trans("admin_recipes.confirm_delete_item_message", {
+            ingredient: item.ingredient_name,
+        }),
+        rejectLabel: trans("common.cancel"),
+        acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(route("admin.products.ingredients.destroy", [editorRecipe.value.id, item.id]), {
@@ -254,10 +252,12 @@ const deleteRecipeStep = (step) => {
     }
 
     confirm.require({
-        header: "Receptlépés törlése",
-        message: `Biztosan törlöd ezt a receptlépést: ${step.title}?`,
-        rejectLabel: "Mégse",
-        acceptLabel: "Törlés",
+        header: trans("admin_recipes.confirm_delete_step_header"),
+        message: trans("admin_recipes.confirm_delete_step_message", {
+            step: step.title,
+        }),
+        rejectLabel: trans("common.cancel"),
+        acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(route("admin.products.recipe-steps.destroy", [editorRecipe.value.id, step.id]), {
@@ -313,13 +313,13 @@ watch(
 </script>
 
 <template>
-    <Head title="Receptek" />
+    <Head :title="trans('admin_recipes.meta_title')" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Receptek"
-            title="Receptek"
-            description="Dedikált recept/BOM folyamat, ahol termékenként átlátható a receptállapot és gyorsan szerkeszthetők a tételek."
+            :eyebrow="trans('admin_recipes.eyebrow')"
+            :title="trans('admin_recipes.title')"
+            :description="trans('admin_recipes.description')"
         />
 
         <RecipeSummaryCard :summary="summary" />
@@ -329,27 +329,29 @@ watch(
                 v-if="filterState.product_id"
                 class="mb-3 flex items-center justify-between rounded-lg border border-bakery-gold/40 bg-[#fdf8ec] px-3 py-2"
             >
-                <p class="text-sm text-bakery-dark/80">Termékre fókuszált receptnézet aktív.</p>
-                <Button size="small" text label="Fókusz törlése" @click="clearProductFocus" />
+                <p class="text-sm text-bakery-dark/80">
+                    {{ trans("admin_recipes.focus.active") }}
+                </p>
+                <Button size="small" text :label="trans('admin_recipes.focus.clear')" @click="clearProductFocus" />
             </div>
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-5'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Keresés</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
+                            {{ trans("common.search") }}
+                        </label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Terméknév vagy slug"
+                            :placeholder="trans('admin_recipes.filters.search_placeholder')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Kategória</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
+                            {{ trans("admin_recipes.filters.category") }}
+                        </label>
                         <Select
                             v-model="filterState.category_id"
                             :options="categoryOptions"
@@ -361,9 +363,9 @@ watch(
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Státusz</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
+                            {{ trans("common.status") }}
+                        </label>
                         <Select
                             v-model="filterState.is_active"
                             :options="activeOptions"
@@ -375,9 +377,9 @@ watch(
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Receptállapot</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
+                            {{ trans("admin_recipes.filters.recipe_presence") }}
+                        </label>
                         <Select
                             v-model="filterState.recipe_presence"
                             :options="recipePresenceOptions"
@@ -389,9 +391,9 @@ watch(
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Alacsony készlet</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
+                            {{ trans("admin_recipes.filters.low_stock") }}
+                        </label>
                         <Select
                             v-model="filterState.has_low_stock_ingredient"
                             :options="lowStockOptions"
@@ -412,7 +414,7 @@ watch(
                         class="w-36"
                         @change="submitFilters"
                     />
-                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
+                    <Button icon="pi pi-search" :label="trans('common.search')" @click="submitFilters" />
                 </template>
             </AdminTableToolbar>
 

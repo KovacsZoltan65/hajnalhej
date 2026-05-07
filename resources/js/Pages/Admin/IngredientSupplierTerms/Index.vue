@@ -19,7 +19,7 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
 import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
 import { useLocaleFormat } from "@/composables/useLocaleFormat";
-import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
+import { pageOptions as createPerPageOptions, activeOptions as createActiveOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -58,19 +58,14 @@ const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPag
 });
 
 const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
+const activeOptions = createActiveOptions(trans);
 /*
-const perPageOptions = [
-    { label: trans("common.page_count", { count: 10 }), value: 10 },
-    { label: trans("common.page_count", { count: 20 }), value: 20 },
-    { label: trans("common.page_count", { count: 50 }), value: 50 },
-];
-*/
-
 const activeOptions = [
     { label: trans("common.all"), value: "" },
     { label: trans("common.active"), value: "1" },
     { label: trans("common.inactive"), value: "0" },
 ];
+*/
 
 const form = useForm({
     ingredient_id: null,
@@ -282,7 +277,7 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                             </div>
                         </template>
                     </Column>
-                    <Column field="supplier" :header="$t('admin_supplier_terms.columns.supplier')" sortable>
+                    <Column field="supplier" :header="$t('common.supplier')" sortable>
                         <template #body="{ data }">
                             <span class="font-medium text-bakery-dark">{{ data.supplier_name }}</span>
                         </template>
@@ -339,7 +334,7 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                             />
                         </template>
                     </Column>
-                    <Column field="active" :header="$t('admin_supplier_terms.columns.status')" sortable>
+                    <Column field="active" :header="$t('common.status')" sortable>
                         <template #body="{ data }">
                             <InlineEditableToggle
                                 :model-value="Boolean(data.active)"

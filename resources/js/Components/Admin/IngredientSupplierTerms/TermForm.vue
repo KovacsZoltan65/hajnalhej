@@ -23,7 +23,9 @@ defineProps({
 <template>
     <div class="grid gap-4 md:grid-cols-2">
         <div class="space-y-2">
-            <label for="term-ingredient" class="text-sm font-medium text-bakery-dark">Alapanyag</label>
+            <label for="term-ingredient" class="text-sm font-medium text-bakery-dark">{{
+                $t("common.ingredient")
+            }}</label>
             <Select
                 id="term-ingredient"
                 v-model="form.ingredient_id"
@@ -34,11 +36,15 @@ defineProps({
                 class="w-full"
                 :invalid="Boolean(form.errors.ingredient_id)"
             />
-            <p v-if="form.errors.ingredient_id" class="text-xs text-red-700">{{ form.errors.ingredient_id }}</p>
+            <p v-if="form.errors.ingredient_id" class="text-xs text-red-700">
+                {{ form.errors.ingredient_id }}
+            </p>
         </div>
 
         <div class="space-y-2">
-            <label for="term-supplier" class="text-sm font-medium text-bakery-dark">Beszállító</label>
+            <label for="term-supplier" class="text-sm font-medium text-bakery-dark">
+                {{ $t("common.supplier") }}
+            </label>
             <Select
                 id="term-supplier"
                 v-model="form.supplier_id"
@@ -49,11 +55,15 @@ defineProps({
                 class="w-full"
                 :invalid="Boolean(form.errors.supplier_id)"
             />
-            <p v-if="form.errors.supplier_id" class="text-xs text-red-700">{{ form.errors.supplier_id }}</p>
+            <p v-if="form.errors.supplier_id" class="text-xs text-red-700">
+                {{ form.errors.supplier_id }}
+            </p>
         </div>
 
         <div class="space-y-2">
-            <label for="term-lead-time" class="text-sm font-medium text-bakery-dark">Lead time (nap)</label>
+            <label for="term-lead-time" class="text-sm font-medium text-bakery-dark">
+                {{ $t("admin_supplier_terms.form.lead_time_days") }}
+            </label>
             <InputNumber
                 id="term-lead-time"
                 v-model="form.lead_time_days"
@@ -62,13 +72,15 @@ defineProps({
                 :min="0"
                 :max="365"
             />
-            <p v-if="form.errors.lead_time_days" class="text-xs text-red-700">{{ form.errors.lead_time_days }}</p>
+            <p v-if="form.errors.lead_time_days" class="text-xs text-red-700">
+                {{ form.errors.lead_time_days }}
+            </p>
         </div>
 
         <div class="space-y-2">
-            <label for="term-minimum-order" class="text-sm font-medium text-bakery-dark"
-                >Minimum rendelési mennyiség</label
-            >
+            <label for="term-minimum-order" class="text-sm font-medium text-bakery-dark">
+                {{ $t("admin_supplier_terms.form.minimum_order_quantity") }}
+            </label>
             <InputNumber
                 id="term-minimum-order"
                 v-model="form.minimum_order_quantity"
@@ -84,7 +96,9 @@ defineProps({
         </div>
 
         <div class="space-y-2">
-            <label for="term-pack-size" class="text-sm font-medium text-bakery-dark">Kiszerelés</label>
+            <label for="term-pack-size" class="text-sm font-medium text-bakery-dark">
+                {{ $t("admin_supplier_terms.form.pack_size") }}
+            </label>
             <InputNumber
                 id="term-pack-size"
                 v-model="form.pack_size"
@@ -94,11 +108,15 @@ defineProps({
                 :min-fraction-digits="0"
                 :max-fraction-digits="3"
             />
-            <p v-if="form.errors.pack_size" class="text-xs text-red-700">{{ form.errors.pack_size }}</p>
+            <p v-if="form.errors.pack_size" class="text-xs text-red-700">
+                {{ form.errors.pack_size }}
+            </p>
         </div>
 
         <div class="space-y-2">
-            <label for="term-unit-cost" class="text-sm font-medium text-bakery-dark">Egyedi egységár</label>
+            <label for="term-unit-cost" class="text-sm font-medium text-bakery-dark">{{
+                $t("common.individual_unit_price")
+            }}</label>
             <InputNumber
                 id="term-unit-cost"
                 v-model="form.unit_cost_override"
@@ -115,25 +133,43 @@ defineProps({
 
         <div class="flex min-h-16 items-center justify-between rounded-lg border border-bakery-brown/15 px-3">
             <div>
-                <p class="text-sm font-medium text-bakery-dark">Aktív</p>
-                <p class="text-xs text-bakery-dark/60">Listázásban és ajánlásokban használható.</p>
+                <p class="text-sm font-medium text-bakery-dark">
+                    {{ $t("common.active") }}
+                </p>
+                <p class="text-xs text-bakery-dark/60">
+                    {{ $t("admin_supplier_terms.form.active_helper") }}
+                </p>
             </div>
-            <ToggleSwitch v-model="form.active" aria-label="Aktív" />
+            <ToggleSwitch v-model="form.active" :aria-label="$t('common.active')" />
         </div>
 
         <div class="flex min-h-16 items-center justify-between rounded-lg border border-bakery-brown/15 px-3">
             <div>
-                <p class="text-sm font-medium text-bakery-dark">Preferált</p>
-                <p class="text-xs text-bakery-dark/60">Egy alapanyaghoz csak egy aktív lehet.</p>
+                <p class="text-sm font-medium text-bakery-dark">
+                    {{ $t("admin_supplier_terms.form.preferred") }}
+                </p>
+                <p class="text-xs text-bakery-dark/60">
+                    {{ $t("admin_supplier_terms.form.preferred_helper") }}
+                </p>
             </div>
-            <ToggleSwitch v-model="form.preferred" :disabled="!form.active" aria-label="Preferált" />
+            <ToggleSwitch
+                v-model="form.preferred"
+                :disabled="!form.active"
+                :aria-label="$t('admin_supplier_terms.form.preferred')"
+            />
         </div>
 
-        <p v-if="form.errors.active" class="text-xs text-red-700 md:col-span-2">{{ form.errors.active }}</p>
-        <p v-if="form.errors.preferred" class="text-xs text-red-700 md:col-span-2">{{ form.errors.preferred }}</p>
+        <p v-if="form.errors.active" class="text-xs text-red-700 md:col-span-2">
+            {{ form.errors.active }}
+        </p>
+        <p v-if="form.errors.preferred" class="text-xs text-red-700 md:col-span-2">
+            {{ form.errors.preferred }}
+        </p>
 
         <div class="space-y-2 md:col-span-2">
-            <label for="term-meta" class="text-sm font-medium text-bakery-dark">Meta JSON</label>
+            <label for="term-meta" class="text-sm font-medium text-bakery-dark">
+                {{ $t("admin_supplier_terms.form.meta") }}
+            </label>
             <Textarea
                 id="term-meta"
                 v-model="form.meta"
@@ -142,7 +178,9 @@ defineProps({
                 auto-resize
                 placeholder='{"note":"..."}'
             />
-            <p v-if="form.errors.meta" class="text-xs text-red-700">{{ form.errors.meta }}</p>
+            <p v-if="form.errors.meta" class="text-xs text-red-700">
+                {{ form.errors.meta }}
+            </p>
         </div>
     </div>
 </template>

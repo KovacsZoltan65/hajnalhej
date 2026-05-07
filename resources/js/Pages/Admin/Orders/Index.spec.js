@@ -14,7 +14,7 @@ const { translate } = vi.hoisted(() => {
         "table.rows_per_page": "Találat / oldal",
         "admin_orders.columns.identifier": "Azonosító",
         "admin_orders.columns.customer": "Vásárló",
-        "admin_orders.columns.status": "Státusz",
+        "common.status": "Státusz",
         "admin_orders.columns.pickup": "Átvétel",
         "admin_orders.columns.total": "Végösszeg",
         "common.search": "Keresés",

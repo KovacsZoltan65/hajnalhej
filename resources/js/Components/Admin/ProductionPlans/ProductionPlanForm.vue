@@ -159,9 +159,7 @@ const ingredientRequirements = computed(() => {
             </div>
 
             <div v-if="mode === 'edit'" class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">{{
-                    trans("admin_production_plans.form.status")
-                }}</label>
+                <label class="text-sm font-medium text-bakery-dark">{{ trans("common.status") }}</label>
                 <Select
                     v-model="form.status"
                     :options="statuses"
@@ -180,9 +178,7 @@ const ingredientRequirements = computed(() => {
             </div>
 
             <div class="space-y-2 md:col-span-2">
-                <label class="text-sm font-medium text-bakery-dark">{{
-                    trans("admin_production_plans.form.notes")
-                }}</label>
+                <label class="text-sm font-medium text-bakery-dark">{{ trans("common.notes") }}</label>
                 <Textarea v-model="form.notes" rows="3" auto-resize class="w-full" />
                 <p v-if="form.errors.notes" class="text-xs text-red-700">
                     {{ form.errors.notes }}
@@ -240,7 +236,7 @@ const ingredientRequirements = computed(() => {
                 <!-- MENNYISÉG -->
                 <div class="space-y-1">
                     <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
-                        trans("admin_production_plans.form.unit")
+                        trans("common.unit")
                     }}</label>
                     <InputText v-model="item.unit_label" class="w-full" />
                     <p v-if="form.errors[`items.${index}.unit_label`]" class="text-xs text-red-700">

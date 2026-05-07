@@ -119,13 +119,6 @@ const sortDirectionOptions = [
 ];
 
 const perPageOptions = createPerPageOptions(trans, [20, 50, 100]);
-/*
-const perPageOptions = [
-    { label: trans("common.page_count", { count: 20 }), value: 20 },
-    { label: trans("common.page_count", { count: 50 }), value: 50 },
-    { label: trans("common.page_count", { count: 100 }), value: 100 },
-];
-*/
 
 const runSync = () => {
     syncing.value = true;

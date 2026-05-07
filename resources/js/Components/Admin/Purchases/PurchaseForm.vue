@@ -6,6 +6,7 @@ import Select from "primevue/select";
 import Textarea from "primevue/textarea";
 import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 import { useLocaleFormat } from "@/composables/useLocaleFormat";
+import { trans } from "laravel-vue-i18n";
 
 const props = defineProps({
     form: {
@@ -30,7 +31,7 @@ const unitOptions = [
     { label: "db", value: "db" },
 ];
 
-const supplierOptions = computed(() => [{ id: null, name: "Nincs megadva" }, ...props.suppliers]);
+const supplierOptions = computed(() => [{ id: null, name: trans("common.not_specified") }, ...props.suppliers]);
 
 const newItem = () => ({ ingredient_id: null, quantity: 1, unit: "db", unit_cost: 0 });
 
@@ -77,17 +78,23 @@ const { formatCurrency } = useLocaleFormat();
                     option-value="id"
                     class="w-full"
                 />
-                <p v-if="form.errors.supplier_id" class="text-xs text-red-700">{{ form.errors.supplier_id }}</p>
+                <p v-if="form.errors.supplier_id" class="text-xs text-red-700">
+                    {{ form.errors.supplier_id }}
+                </p>
             </div>
 
             <div class="space-y-2">
-                <label for="purchase-date" class="text-sm font-medium text-bakery-dark">Dátum</label>
+                <label for="purchase-date" class="text-sm font-medium text-bakery-dark">{{ $t("common.date") }}</label>
                 <BaseDatePicker input-id="purchase-date" v-model="form.purchase_date" class="w-full" />
-                <p v-if="form.errors.purchase_date" class="text-xs text-red-700">{{ form.errors.purchase_date }}</p>
+                <p v-if="form.errors.purchase_date" class="text-xs text-red-700">
+                    {{ form.errors.purchase_date }}
+                </p>
             </div>
 
             <div class="space-y-2 md:col-span-2">
-                <label for="purchase-reference" class="text-sm font-medium text-bakery-dark">Referencia szám</label>
+                <label for="purchase-reference" class="text-sm font-medium text-bakery-dark">{{
+                    $t("common.reference_number")
+                }}</label>
                 <InputText id="purchase-reference" v-model="form.reference_number" class="w-full" />
                 <p v-if="form.errors.reference_number" class="text-xs text-red-700">
                     {{ form.errors.reference_number }}
@@ -95,19 +102,27 @@ const { formatCurrency } = useLocaleFormat();
             </div>
 
             <div class="space-y-2 md:col-span-2">
-                <label for="purchase-notes" class="text-sm font-medium text-bakery-dark">Megjegyzés</label>
+                <label for="purchase-notes" class="text-sm font-medium text-bakery-dark">{{
+                    $t("common.notes")
+                }}</label>
                 <Textarea id="purchase-notes" v-model="form.notes" rows="3" class="w-full" auto-resize />
-                <p v-if="form.errors.notes" class="text-xs text-red-700">{{ form.errors.notes }}</p>
+                <p v-if="form.errors.notes" class="text-xs text-red-700">
+                    {{ form.errors.notes }}
+                </p>
             </div>
         </div>
 
         <div class="space-y-3 rounded-xl border border-bakery-brown/15 bg-[#fcf8f2] p-3">
             <div class="flex items-center justify-between">
-                <h3 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">Tételek</h3>
-                <Button label="Tétel hozzáadása" icon="pi pi-plus" outlined class="min-h-11!" @click="addItem" />
+                <h3 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
+                    {{ $t("common.items") }}
+                </h3>
+                <Button :label="$t('common.add_item')" icon="pi pi-plus" outlined class="min-h-11!" @click="addItem" />
             </div>
 
-            <p v-if="form.errors.items" class="text-xs text-red-700">{{ form.errors.items }}</p>
+            <p v-if="form.errors.items" class="text-xs text-red-700">
+                {{ form.errors.items }}
+            </p>
 
             <div
                 v-for="(item, index) in form.items"
@@ -115,7 +130,7 @@ const { formatCurrency } = useLocaleFormat();
                 class="grid gap-3 rounded-lg border border-bakery-brown/10 bg-white p-3 md:grid-cols-12"
             >
                 <div class="space-y-1 md:col-span-4">
-                    <label class="text-xs font-medium text-bakery-dark/80">Alapanyag</label>
+                    <label class="text-xs font-medium text-bakery-dark/80">{{ $t("common.ingredient") }}</label>
                     <Select
                         v-model="item.ingredient_id"
                         :options="ingredientOptions"
@@ -131,7 +146,7 @@ const { formatCurrency } = useLocaleFormat();
                 </div>
 
                 <div class="space-y-1 md:col-span-2">
-                    <label class="text-xs font-medium text-bakery-dark/80">Mennyiség</label>
+                    <label class="text-xs font-medium text-bakery-dark/80">{{ $t("common.quantity") }}</label>
                     <InputText v-model="item.quantity" type="number" min="0.001" step="0.001" class="w-full" />
                     <p v-if="itemError(index, 'quantity')" class="text-xs text-red-700">
                         {{ itemError(index, "quantity") }}
@@ -139,7 +154,7 @@ const { formatCurrency } = useLocaleFormat();
                 </div>
 
                 <div class="space-y-1 md:col-span-2">
-                    <label class="text-xs font-medium text-bakery-dark/80">Egység</label>
+                    <label class="text-xs font-medium text-bakery-dark/80">{{ $t("common.unit") }}</label>
                     <Select
                         v-model="item.unit"
                         :options="unitOptions"
@@ -147,19 +162,21 @@ const { formatCurrency } = useLocaleFormat();
                         option-value="value"
                         class="w-full"
                     />
-                    <p v-if="itemError(index, 'unit')" class="text-xs text-red-700">{{ itemError(index, "unit") }}</p>
+                    <p v-if="itemError(index, 'unit')" class="text-xs text-red-700">
+                        {{ itemError(index, "unit") }}
+                    </p>
                 </div>
 
                 <div class="space-y-1 md:col-span-2">
-                    <label class="text-xs font-medium text-bakery-dark/80">Egységár (Ft)</label>
-                    <InputText v-model="item.unit_cost" type="number" min="0" step="0.0001" class="w-full" />
+                    <label class="text-xs font-medium text-bakery-dark/80">{{ $t("common.unit_cost") }} (Ft)</label>
+                    <InputText v-model="item.unit_cost" type="number" min="0" step="1" class="w-full" />
                     <p v-if="itemError(index, 'unit_cost')" class="text-xs text-red-700">
                         {{ itemError(index, "unit_cost") }}
                     </p>
                 </div>
 
                 <div class="space-y-1 md:col-span-2">
-                    <label class="text-xs font-medium text-bakery-dark/80">Sor összesen</label>
+                    <label class="text-xs font-medium text-bakery-dark/80">{{ $t("common.row_total") }}</label>
                     <div
                         class="flex min-h-11 items-center rounded-md border border-bakery-brown/15 px-3 text-sm font-medium text-bakery-dark"
                     >
@@ -169,7 +186,7 @@ const { formatCurrency } = useLocaleFormat();
 
                 <div class="md:col-span-12 flex justify-end">
                     <Button
-                        label="Sor törlése"
+                        :label="$t('common.delete_row')"
                         icon="pi pi-trash"
                         severity="danger"
                         text
@@ -182,8 +199,10 @@ const { formatCurrency } = useLocaleFormat();
         </div>
 
         <div class="flex items-center justify-between border-t border-bakery-brown/10 pt-3">
-            <p class="text-sm text-bakery-dark/80">Összesen</p>
-            <p class="text-base font-semibold text-bakery-dark">{{ formatCurrency(total) }}</p>
+            <p class="text-sm text-bakery-dark/80">{{ $t("common.total") }}</p>
+            <p class="text-base font-semibold text-bakery-dark">
+                {{ formatCurrency(total) }}
+            </p>
         </div>
     </div>
 </template>

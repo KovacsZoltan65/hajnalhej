@@ -70,13 +70,6 @@ const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPag
 });
 
 const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
-/*
-const perPageOptions = [
-    { label: '10 / oldal', value: 10 },
-    { label: '20 / oldal', value: 20 },
-    { label: '50 / oldal', value: 50 },
-];
-*/
 
 const statusOptions = computed(() => [
     { label: "Mind", value: "" },
@@ -134,13 +127,13 @@ const submitCreate = () => {
 };
 
 const postNow = (purchase) => {
+    const ref = purchase.reference_number || `#${purchase.id}`;
+
     confirm.require({
-        header: "Beszerzés könyvelése",
-        message: `Könyvelés után a készlet azonnal frissül. Folytatod? (${
-            purchase.reference_number || `#${purchase.id}`
-        })`,
-        rejectLabel: "Mégse",
-        acceptLabel: "Könyvelés",
+        header: trans("admin_purchases.header"),
+        message: trans("admin_purchases.message", { id: ref }),
+        rejectLabel: trans("common.cancel"),
+        acceptLabel: trans("admin_purchases.accounting"),
         accept: () => {
             router.post(route("admin.purchases.post", purchase.id), {}, { preserveScroll: true });
         },
@@ -148,11 +141,13 @@ const postNow = (purchase) => {
 };
 
 const cancelPurchase = (purchase) => {
+    const ret = purchase.reference_number || `#${purchase.id}`;
+
     confirm.require({
-        header: "Beszerzés stornózása",
-        message: `Biztosan stornózod ezt a beszerzést? (${purchase.reference_number || `#${purchase.id}`})`,
-        rejectLabel: "Mégse",
-        acceptLabel: "Stornó",
+        header: trans("admin_purchases.cancel_purchase"),
+        message: trans("admin_purchases.cancel_purchase_message", { id: ref }),
+        rejectLabel: trans("common.cancel"),
+        acceptLabel: trans("admin_purchases.storno"),
         acceptClass: "p-button-danger",
         accept: () => {
             router.post(route("admin.purchases.cancel", purchase.id), {}, { preserveScroll: true });
@@ -164,9 +159,9 @@ const { formatCurrency } = useLocaleFormat();
 
 const statusLabel = (status) => {
     const map = {
-        draft: "Piszkozat",
-        posted: "Könyvelt",
-        cancelled: "Stornózott",
+        draft: trans("common.draft"),
+        posted: trans("admin_purchases.booked"),
+        cancelled: trans("admin_purchases.canceled"),
     };
 
     return map[status] ?? status;
@@ -184,34 +179,36 @@ const statusClass = (status) => {
 </script>
 
 <template>
-    <Head title="Beszerzések" />
+    <Head :title="$t('admin_procurements.title')" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Beszerzések"
-            title="Beszerzések"
-            description="Termékek mintájára egységes táblás, szűrhető és modal alapú beszerzéskezelés."
+            :eyebrow="$t('admin_procurements.eyebrow')"
+            :title="$t('admin_procurements.title')"
+            :description="$t('admin_procurements.description')"
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar>
                 <template #filters>
+                    <!-- KERESÉS -->
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Keresés</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.search")
+                        }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Referencia vagy megjegyzés"
+                            :placeholder="$t('admin_procurements.reference_or_comment')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
+                    <!-- ÁLLAPOT -->
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Státusz</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.status")
+                        }}</label>
                         <Select
                             v-model="filterState.status"
                             :options="statusOptions"
@@ -222,10 +219,11 @@ const statusClass = (status) => {
                         />
                     </div>
 
+                    <!-- SZÁLLÍTÓ -->
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Beszállító</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.supplier")
+                        }}</label>
                         <Select
                             v-model="filterState.supplier_id"
                             :options="supplierOptions"
@@ -237,10 +235,11 @@ const statusClass = (status) => {
                         />
                     </div>
 
+                    <!-- SOR / OLDAL -->
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Találat / oldal</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("table.rows_per_page")
+                        }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -255,13 +254,13 @@ const statusClass = (status) => {
                 <template #actions>
                     <Button
                         icon="pi pi-filter-slash"
-                        label="Szűrők törlése"
+                        :label="$t('common.clear_filters')"
                         severity="secondary"
                         outlined
                         @click="clearFilters"
                     />
-                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Új beszerzés" @click="openCreate" />
+                    <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
+                    <Button icon="pi pi-plus" :label="$t('admin_procurements.create')" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
@@ -286,38 +285,43 @@ const statusClass = (status) => {
                         <div
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
-                            <p>Nincs megjeleníthető beszerzés.</p>
+                            <p>{{ $t("admin_procurements.empty") }}.</p>
                             <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
-                                <Button label="Új beszerzés" size="small" @click="openCreate" />
+                                <Button
+                                    :label="$t('common.clear_filters')"
+                                    outlined
+                                    size="small"
+                                    @click="clearFilters"
+                                />
+                                <Button :label="$t('admin_procurements.create')" size="small" @click="openCreate" />
                             </div>
                         </div>
                     </template>
 
-                    <Column field="purchase_date" header="Dátum" sortable>
+                    <Column field="purchase_date" :header="$t('common.date')" sortable>
                         <template #body="{ data }">
                             <span class="text-sm text-bakery-dark">{{ data.purchase_date || "-" }}</span>
                         </template>
                     </Column>
-                    <Column field="reference_number" header="Referencia" sortable>
+                    <Column field="reference_number" :header="$t('common.reference')" sortable>
                         <template #body="{ data }">
                             <span class="font-medium text-bakery-dark">{{
                                 data.reference_number || `#${data.id}`
                             }}</span>
                         </template>
                     </Column>
-                    <Column field="supplier_name" header="Beszállító">
+                    <Column field="supplier_name" :header="$t('common.supplier')">
                         <template #body="{ data }">
-                            <span>{{ data.supplier_name || "Nincs megadva" }}</span>
+                            <span>{{ data.supplier_name || $t("common.not_specified") }}</span>
                         </template>
                     </Column>
-                    <Column field="items_count" header="Tételek" />
-                    <Column field="total" header="Összesen" sortable>
+                    <Column field="items_count" :header="$t('common.items')" />
+                    <Column field="total" :header="$t('common.total')" sortable>
                         <template #body="{ data }">
                             <span class="font-medium">{{ formatCurrency(data.total) }}</span>
                         </template>
                     </Column>
-                    <Column field="status" header="Státusz" sortable>
+                    <Column field="status" :header="$t('common.status')" sortable>
                         <template #body="{ data }">
                             <span
                                 class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
@@ -327,7 +331,7 @@ const statusClass = (status) => {
                             </span>
                         </template>
                     </Column>
-                    <Column header="Műveletek" :exportable="false">
+                    <Column :header="$t('common.actions')" :exportable="false">
                         <template #body="{ data }">
                             <div class="flex items-center gap-2">
                                 <Link
@@ -342,7 +346,7 @@ const statusClass = (status) => {
                                     text
                                     rounded
                                     class="h-11! w-11!"
-                                    aria-label="Beszerzés könyvelése"
+                                    :aria-label="$t('admin_purchases.header')"
                                     @click="postNow(data)"
                                 />
                                 <Button
@@ -352,7 +356,7 @@ const statusClass = (status) => {
                                     rounded
                                     severity="danger"
                                     class="h-11! w-11!"
-                                    aria-label="Beszerzés stornózása"
+                                    :aria-label="$t('admin_purchases.cancel_purchase')"
                                     @click="cancelPurchase(data)"
                                 />
                             </div>

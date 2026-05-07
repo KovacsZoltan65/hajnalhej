@@ -11,11 +11,12 @@ const { translate } = vi.hoisted(() => {
         "admin_orders.sections.customer_details": "Ügyfél adatok",
         "admin_orders.sections.items": "Rendelési tételek",
         "common.actions": "Műveletek",
+        "common.back_to_list": "Vissza a listára",
         "admin_orders.fields.name": "Név",
         "admin_orders.fields.email": "Email",
         "admin_orders.fields.phone": "Telefon",
         "admin_orders.fields.pickup": "Átvétel",
-        "admin_orders.fields.status": "Státusz",
+        "common.status": "Státusz",
         "admin_orders.fields.internal_notes": "Belső megjegyzés",
         "admin_orders.fields.pickup_date": "Átvétel dátuma",
         "admin_orders.fields.pickup_time_slot": "Átvételi idősáv",
@@ -38,6 +39,7 @@ const { translate } = vi.hoisted(() => {
 
 vi.mock("@inertiajs/vue3", () => ({
     Head: { name: "Head", template: "<span />" },
+    Link: { name: "Link", props: ["href"], template: '<a :href="href"><slot /></a>' },
     usePage: () => ({
         props: {
             locale: "hu-HU",
@@ -118,6 +120,8 @@ describe("Admin Orders Show", () => {
         expect(wrapper.text()).toContain("Rendelés: ORD-001");
         expect(wrapper.text()).toContain("Ügyfél adatok");
         expect(wrapper.text()).toContain("Rendelési tételek");
+        expect(wrapper.text()).toContain("Vissza a listára");
+        expect(wrapper.find('a[href="/admin/orders"]').exists()).toBe(true);
         expect(wrapper.text()).toContain("Státusz frissítése");
     });
 });

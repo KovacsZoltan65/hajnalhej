@@ -19,7 +19,7 @@ import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 import { createDayOptions, pageOptions as createPerPageOptions } from "@/Utils/functions";
 
-defineOptions({ layout: AdminLayout });
+defineOptions({ layout: AdminLayout, inheritAttrs: false });
 
 const props = defineProps({
     dashboard: { type: Object, required: true },
@@ -62,13 +62,6 @@ const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPag
 const dayOptions = createDayOptions(trans, [7, 14, 30, 90]);
 
 const perPageOptions = createPerPageOptions(trans, [15, 30, 50]);
-/*
-const perPageOptions = [
-    { label: trans("common.page_count", { count: 15 }), value: 15 },
-    { label: trans("common.page_count", { count: 30 }), value: 30 },
-    { label: trans("common.page_count", { count: 50 }), value: 50 },
-];
-*/
 
 const movementTypeOptions = computed(() => [
     { label: trans("common.all"), value: "" },
@@ -403,7 +396,7 @@ const directionClass = (direction) => (direction === "out" ? "text-rose-700" : "
                         </div>
                     </template>
 
-                    <Column field="occurred_at" :header="$t('admin_inventory.columns.date')">
+                    <Column field="occurred_at" :header="$t('common.date')">
                         <template #body="{ data }">
                             <span class="text-sm text-bakery-dark">{{ data.occurred_at || "-" }}</span>
                         </template>
@@ -437,7 +430,7 @@ const directionClass = (direction) => (direction === "out" ? "text-rose-700" : "
                             </span>
                         </template>
                     </Column>
-                    <Column field="unit_cost" :header="$t('admin_inventory.columns.unit_cost')">
+                    <Column field="unit_cost" :header="$t('common.unit_cost')">
                         <template #body="{ data }">
                             <span>{{ data.unit_cost !== null ? asCurrency(data.unit_cost) : "-" }}</span>
                         </template>
@@ -449,7 +442,7 @@ const directionClass = (direction) => (direction === "out" ? "text-rose-700" : "
                             }}</span>
                         </template>
                     </Column>
-                    <Column field="reference_type" :header="$t('admin_inventory.columns.reference')">
+                    <Column field="reference_type" :header="$t('common.reference')">
                         <template #body="{ data }">
                             <span class="text-sm text-bakery-dark/80"
                                 >{{ data.reference_type || "-" }} #{{ data.reference_id || "-" }}</span

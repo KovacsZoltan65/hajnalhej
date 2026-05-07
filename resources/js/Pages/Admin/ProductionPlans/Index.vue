@@ -461,7 +461,7 @@ const confirmDelete = (plan) => {
                         :header="trans('admin_production_plans.columns.planned_start')"
                         sortable
                     />
-                    <Column field="status" :header="trans('admin_production_plans.columns.status')" sortable />
+                    <Column field="status" :header="trans('common.status')" sortable />
                     <Column
                         field="total_recipe_minutes"
                         :header="trans('admin_production_plans.columns.total_time_minutes')"

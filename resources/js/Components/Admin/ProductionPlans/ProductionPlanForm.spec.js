@@ -6,14 +6,15 @@ vi.mock("laravel-vue-i18n", () => ({
         let value =
             {
                 "admin_production_plans.form.target_ready_at": "Kész legyen ekkor",
-                "admin_production_plans.form.status": "Státusz",
+                "common.status": "Státusz",
                 "admin_production_plans.form.lock_plan": "Terv lezárása",
                 "admin_production_plans.form.notes": "Megjegyzés",
                 "admin_production_plans.form.items_title": "Termékek és mennyiségek",
                 "admin_production_plans.form.add_item": "Új tétel",
+                "common.notes": "Megjegyzés",
                 "common.product": "Termék",
                 "common.quantity": "Mennyiség",
-                "admin_production_plans.form.unit": "Egység",
+                "common.unit": "Egység",
                 "admin_production_plans.form.sort_order": "Sorrend",
                 "admin_production_plans.requirements.title": "Összesített alapanyag igény",
                 "admin_production_plans.requirements.ingredient": "Alapanyag",

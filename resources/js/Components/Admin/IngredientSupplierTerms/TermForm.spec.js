@@ -2,6 +2,22 @@ import { mount } from "@vue/test-utils";
 import { reactive } from "vue";
 import TermForm from "./TermForm.vue";
 
+const translations = {
+    "admin_supplier_terms.form.active_helper": "Listázásban és ajánlásokban használható.",
+    "admin_supplier_terms.form.lead_time_days": "Lead time (nap)",
+    "admin_supplier_terms.form.meta": "Meta JSON",
+    "admin_supplier_terms.form.minimum_order_quantity": "Minimum rendelési mennyiség",
+    "admin_supplier_terms.form.pack_size": "Kiszerelés",
+    "admin_supplier_terms.form.preferred": "Preferált",
+    "admin_supplier_terms.form.preferred_helper": "Egy alapanyaghoz csak egy aktív lehet.",
+    "common.active": "Aktív",
+    "common.ingredient": "Alapanyag",
+    "common.individual_unit_price": "Egyedi egységár",
+    "common.supplier": "Beszállító",
+};
+
+const translate = (key) => translations[key] ?? key;
+
 const stubs = {
     InputNumber: {
         props: ["modelValue"],
@@ -53,12 +69,22 @@ describe("IngredientSupplierTerms TermForm", () => {
                 ingredients: [{ id: 1, name: "Buzaliszt", unit: "kg" }],
                 suppliers: [{ id: 1, name: "Malom Kft." }],
             },
-            global: { stubs },
+            global: {
+                stubs,
+                mocks: { $t: translate },
+            },
         });
 
         expect(wrapper.text()).toContain("Alapanyag");
         expect(wrapper.text()).toContain("Beszállító");
+        expect(wrapper.text()).toContain("Lead time (nap)");
+        expect(wrapper.text()).toContain("Minimum rendelési mennyiség");
+        expect(wrapper.text()).toContain("Kiszerelés");
+        expect(wrapper.text()).toContain("Egyedi egységár");
+        expect(wrapper.text()).toContain("Listázásban és ajánlásokban használható.");
         expect(wrapper.text()).toContain("Preferált");
+        expect(wrapper.text()).toContain("Egy alapanyaghoz csak egy aktív lehet.");
+        expect(wrapper.text()).toContain("Meta JSON");
         expect(wrapper.text()).toContain("A beszállító kötelező.");
     });
 });

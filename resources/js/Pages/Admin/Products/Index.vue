@@ -20,7 +20,7 @@ import CategoryStatusBadge from "@/Components/Admin/Categories/CategoryStatusBad
 import ProductPrice from "@/Components/Admin/Products/ProductPrice.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
+import { pageOptions as createPerPageOptions, activeOptions as createActiveOptions } from "@/Utils/functions.js";
 import { trans } from "laravel-vue-i18n";
 import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
 
@@ -75,18 +75,15 @@ const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPag
 });
 
 const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
+const activeOptions = createActiveOptions(trans);
+
 /*
-const perPageOptions = [
-    { label: "10 / oldal", value: 10 },
-    { label: "20 / oldal", value: 20 },
-    { label: "50 / oldal", value: 50 },
-];
-*/
 const activeOptions = [
     { label: "Mind", value: "" },
     { label: "Aktív", value: "1" },
     { label: "Inaktív", value: "0" },
 ];
+*/
 
 const form = useForm({
     category_id: null,
@@ -208,6 +205,7 @@ const confirmDelete = (product) => {
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar>
                 <template #filters>
+                    <!-- KERESÉS -->
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Keresés</label
@@ -220,6 +218,7 @@ const confirmDelete = (product) => {
                         />
                     </div>
 
+                    <!-- KATEGÓRIA -->
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
                             >Kategória</label

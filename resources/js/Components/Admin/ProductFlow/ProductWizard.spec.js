@@ -98,7 +98,7 @@ describe("ProductWizard", () => {
 
         await wrapper
             .findAll("button")
-            .find((button) => button.text().includes("admin.products.flow.actions.previous"))
+            .find((button) => button.text().includes("common.previous"))
             .trigger("click");
 
         expect(wrapper.text()).toContain("Country loaf");

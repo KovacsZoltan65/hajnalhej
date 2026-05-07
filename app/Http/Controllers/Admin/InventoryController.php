@@ -66,7 +66,7 @@ class InventoryController extends Controller
             'movement_types' => InventoryMovement::movementTypes(),
             'ingredient_options' => $this->ingredientService->listSelectableActive()->values()->all(),
             'product_options' => $this->productService->listSelectableActiveProducts()->values()->all(),
-            'movement_types' => [
+            'waste_reasons' => [
                 __('admin_inventory.waste_reason_expired'),
                 __('admin_inventory.waste_reason_damaged'),
                 __('admin_inventory.waste_reason_manufacturing_defect'),

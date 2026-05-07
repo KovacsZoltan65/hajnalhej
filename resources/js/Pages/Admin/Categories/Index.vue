@@ -244,7 +244,7 @@ const confirmDelete = (category) => {
                     </Column>
                     <Column field="sort_order" :header="$t('admin_categories.columns.sort_order')" sortable />
                     <Column field="products_count" :header="$t('nav.products')" />
-                    <Column field="is_active" :header="$t('admin_categories.columns.status')" sortable>
+                    <Column field="is_active" :header="$t('common.status')" sortable>
                         <template #body="{ data }">
                             <CategoryStatusBadge :active="data.is_active" />
                         </template>

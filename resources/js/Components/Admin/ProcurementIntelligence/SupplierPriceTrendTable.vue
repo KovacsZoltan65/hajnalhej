@@ -38,7 +38,7 @@ const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
                             {{ trans("admin_procurement_intelligence.columns.ingredient") }}
                         </th>
                         <th class="px-2 py-2">
-                            {{ trans("admin_procurement_intelligence.columns.supplier") }}
+                            {{ trans("common.supplier") }}
                         </th>
                         <th class="px-2 py-2 text-right">
                             {{ trans("admin_procurement_intelligence.columns.last_price") }}

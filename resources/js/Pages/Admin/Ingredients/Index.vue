@@ -20,7 +20,7 @@ import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
 import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
 import { useLocaleFormat } from "@/composables/useLocaleFormat";
-import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
+import { pageOptions as createPerPageOptions, activeOptions as createActiveOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
 
@@ -69,19 +69,15 @@ const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPag
 });
 
 const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
-/*
-const perPageOptions = [
-    { label: trans("common.page_count", { count: 10 }), value: 10 },
-    { label: trans("common.page_count", { count: 20 }), value: 20 },
-    { label: trans("common.page_count", { count: 50 }), value: 50 },
-];
-*/
+const activeOptions = createActiveOptions(trans);
 
+/*
 const activeOptions = [
     { label: trans("common.all"), value: "" },
     { label: trans("common.active"), value: "1" },
     { label: trans("common.inactive"), value: "0" },
 ];
+*/
 
 const unitOptions = computed(() => [
     { label: trans("common.all"), value: "" },
@@ -300,7 +296,7 @@ const confirmDelete = (ingredient) => {
                     @clear-selection="selectedIngredients = []"
                 >
                     <Column selection-mode="multiple" header-style="width:3rem" />
-                    <Column field="name" :header="$t('admin_ingredients.columns.name')" sortable>
+                    <Column field="name" :header="$t('common.ingredient')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">
@@ -363,7 +359,7 @@ const confirmDelete = (ingredient) => {
                             </div>
                         </template>
                     </Column>
-                    <Column field="is_active" :header="$t('admin_ingredients.columns.status')" sortable>
+                    <Column field="is_active" :header="$t('common.status')" sortable>
                         <template #body="{ data }">
                             <IngredientStatusBadge :active="data.is_active" />
                         </template>

@@ -14,7 +14,7 @@ const { confirmRequire, translate } = vi.hoisted(() => {
         "common.name": "Név",
         "admin_categories.columns.sort_order": "Sorrend",
         "nav.products": "Termékek",
-        "admin_categories.columns.status": "Státusz",
+        "common.status": "Státusz",
         "common.search": "Keresés",
         "admin_categories.actions.create": "Új kategória",
         "admin_categories.actions.edit": "Kategória szerkesztése",

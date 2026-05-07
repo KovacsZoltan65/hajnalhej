@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
+use Inertia\Testing\AssertableInertia as Assert;
 
 beforeEach(function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);
@@ -50,6 +51,36 @@ it('purchase posting creates inventory movements and updates stock summary field
     expect((float) $ingredient->current_stock)->toBe(10.0)
         ->and((float) $ingredient->average_unit_cost)->toBe(320.0)
         ->and((float) $ingredient->stock_value)->toBe(3200.0);
+});
+
+it('inventory index exposes movement types and waste reasons separately', function (): void {
+    $admin = User::factory()->admin()->create();
+
+    $ingredient = Ingredient::factory()->create([
+        'name' => 'Liszt',
+        'is_active' => true,
+    ]);
+    $product = Product::factory()->create([
+        'name' => 'Kifli',
+        'is_active' => true,
+    ]);
+    $product->productIngredients()->create([
+        'ingredient_id' => $ingredient->id,
+        'quantity' => 1,
+        'sort_order' => 1,
+    ]);
+
+    $this->actingAs($admin)
+        ->get('/admin/inventory')
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Admin/Inventory/Index')
+            ->has('movement_types')
+            ->where('movement_types.0', 'purchase_in')
+            ->has('ingredient_options', 1)
+            ->has('product_options', 1)
+            ->has('waste_reasons', 5)
+        );
 });
 
 it('order completion books bom consumption as production_out and updates material cost', function (): void {
@@ -218,7 +249,7 @@ it('stock count close creates correction movement', function (): void {
         ],
     ])->assertRedirect();
 
-    $stockCountId = (int) \DB::table('stock_counts')->value('id');
+    $stockCountId = (int) DB::table('stock_counts')->value('id');
 
     $this->actingAs($admin)->post("/admin/stock-counts/{$stockCountId}/close")
         ->assertRedirect();

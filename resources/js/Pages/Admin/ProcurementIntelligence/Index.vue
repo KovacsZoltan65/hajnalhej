@@ -135,7 +135,7 @@ const generatePurchaseDrafts = () => {
                         :options="filter_options.suppliers"
                         option-label="label"
                         option-value="value"
-                        :placeholder="trans('admin_procurement_intelligence.filters.supplier')"
+                        :placeholder="trans('common.supplier')"
                         show-clear
                         filter
                         class="min-h-11 w-full"

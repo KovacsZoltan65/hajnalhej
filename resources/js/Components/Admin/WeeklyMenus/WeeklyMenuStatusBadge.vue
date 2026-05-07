@@ -9,7 +9,7 @@ const props = defineProps({
 });
 
 const map = {
-    draft: { labelKey: "admin_weekly_menus.status.draft", className: "bg-stone-200 text-stone-700" },
+    draft: { labelKey: "common.draft", className: "bg-stone-200 text-stone-700" },
     published: { labelKey: "admin_weekly_menus.status.published", className: "bg-green-100 text-green-800" },
     archived: { labelKey: "admin_weekly_menus.status.archived", className: "bg-amber-100 text-amber-800" },
 };

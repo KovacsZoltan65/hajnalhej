@@ -1,5 +1,5 @@
 <script setup>
-import { Head, useForm } from "@inertiajs/vue3";
+import { Head, Link, useForm } from "@inertiajs/vue3";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
@@ -43,11 +43,17 @@ const updateStatus = () => {
     <Head :title="trans('admin_orders.show_meta_title', { number: order.order_number })" />
 
     <div class="space-y-6">
-        <SectionTitle
-            :eyebrow="$t('admin_orders.eyebrow')"
-            :title="trans('admin_orders.show_title', { number: order.order_number })"
-            :description="$t('admin_orders.show_description')"
-        />
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <SectionTitle
+                :eyebrow="$t('admin_orders.eyebrow')"
+                :title="trans('admin_orders.show_title', { number: order.order_number })"
+                :description="$t('admin_orders.show_description')"
+            />
+
+            <Link :href="route('admin.orders.index')">
+                <Button :label="$t('common.back_to_list')" icon="pi pi-arrow-left" text />
+            </Link>
+        </div>
 
         <div class="grid gap-6 lg:grid-cols-[1fr_22rem]">
             <section class="space-y-4">
@@ -141,9 +147,7 @@ const updateStatus = () => {
 
                 <form class="space-y-3" @submit.prevent="updateStatus">
                     <div class="space-y-2">
-                        <label class="text-sm font-medium text-bakery-dark">{{
-                            $t("admin_orders.fields.status")
-                        }}</label>
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("common.status") }}</label>
                         <Select v-model="statusForm.status" :options="statusOptions" class="w-full" />
                         <p v-if="statusForm.errors.status" class="text-xs text-red-700">
                             {{ statusForm.errors.status }}

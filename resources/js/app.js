@@ -13,22 +13,26 @@ import ConfirmationService from "primevue/confirmationservice";
 import { i18nVue } from "laravel-vue-i18n";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy";
 
+const normalizeLocale = (locale) => String(locale || "hu").split(/[-_]/)[0] || "hu";
+
 createInertiaApp({
     title: (title) => (title ? `${title} | Hajnalhej` : "Hajnalhej"),
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob("./Pages/**/*.vue")),
     setup({ el, App, props, plugin }) {
+        const locale = normalizeLocale(
+            props?.initialPage?.props?.preferences?.locale || document.documentElement.getAttribute("lang") || "hu"
+        );
+
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
             .use(i18nVue, {
-                locale:
-                    props?.initialPage?.props?.preferences?.locale ||
-                    document.documentElement.getAttribute("lang") ||
-                    "hu",
-                falbackLocale: "hu",
+                locale,
+                fallbackLocale: "hu",
                 resolve: async (lang) => {
+                    const normalizedLang = normalizeLocale(lang);
                     const messages = import.meta.glob("../../lang/*.json"); // */
-                    return await messages[`../../lang/${lang}.json`]();
+                    return await messages[`../../lang/${normalizedLang}.json`]();
                 },
             })
             .use(ToastService)

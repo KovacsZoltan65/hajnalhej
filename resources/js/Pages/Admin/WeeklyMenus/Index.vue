@@ -70,13 +70,6 @@ const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPag
 const statusOptions = computed(() => [{ value: "", label: trans("common.all") }, ...props.statuses]);
 
 const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
-/*
-const perPageOptions = computed(() => [
-    { label: trans("common.page_count", { count: 10 }), value: 10 },
-    { label: trans("common.page_count", { count: 20 }), value: 20 },
-    { label: trans("common.page_count", { count: 50 }), value: 50 },
-]);
-*/
 
 const form = useForm({
     title: "",
@@ -366,7 +359,7 @@ const refreshMenus = () => {
                             </div>
                         </template>
                     </Column>
-                    <Column field="items_count" :header="$t('admin_weekly_menus.columns.items')" />
+                    <Column field="items_count" :header="$t('common.items')" />
                     <Column :header="$t('common.actions')">
                         <template #body="{ data }">
                             <div class="flex flex-wrap items-center gap-2">

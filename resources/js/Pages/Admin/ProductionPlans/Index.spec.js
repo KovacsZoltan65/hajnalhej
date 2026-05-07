@@ -28,7 +28,7 @@ const { translate, routerGet, routerDelete, confirmRequire, formPost, formPut } 
         "admin_production_plans.columns.plan": "Terv",
         "admin_production_plans.columns.target_time": "Célidő",
         "admin_production_plans.columns.planned_start": "Javasolt kezdés",
-        "admin_production_plans.columns.status": "Státusz",
+        "common.status": "Státusz",
         "admin_production_plans.columns.total_time_minutes": "Teljes idő (perc)",
         "admin_production_plans.columns.items_count": "Tétel db",
         "admin_production_plans.actions.create": "Új gyártási terv",

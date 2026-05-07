@@ -398,7 +398,7 @@ const submit = () => {
                         </div>
                         <div class="space-y-1 md:col-span-2">
                             <label class="text-xs font-semibold uppercase text-bakery-brown/80">
-                                {{ trans("admin.production_plans.flow.fields.notes") }}
+                                {{ trans("common.notes") }}
                             </label>
                             <Textarea v-model="form.notes" rows="4" class="w-full" />
                         </div>
@@ -483,7 +483,7 @@ const submit = () => {
                     class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-bakery-brown/10 pt-4"
                 >
                     <Button
-                        :label="trans('admin.production_plans.flow.actions.previous')"
+                        :label="trans('common.previous')"
                         icon="pi pi-arrow-left"
                         outlined
                         :disabled="step === 1 || form.processing"
