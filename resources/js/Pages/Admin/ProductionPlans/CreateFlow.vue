@@ -384,9 +384,8 @@ const submit = () => {
                             </label>
                             <BaseDatePicker
                                 v-model="form.target_ready_at"
-                                show-time
-                                hour-format="24"
-                                update-model-type="date"
+                                mode="datetime"
+                                output-type="date"
                                 :min-date="minTargetReadyAt"
                                 class="w-full"
                             />
