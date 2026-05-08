@@ -42,6 +42,8 @@ use Illuminate\Support\Str;
  * @property-read int|null $recipe_steps_count
  * @property-read Collection<int, SeasonalProfile> $seasonalProfiles
  * @property-read int|null $seasonal_profiles_count
+ * @property-read Collection<int, WeeklyMenuItem> $weeklyMenuItems
+ * @property-read int|null $weekly_menu_items_count
  *
  * @method static \Database\Factories\ProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
@@ -138,6 +140,11 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function weeklyMenuItems(): HasMany
+    {
+        return $this->hasMany(WeeklyMenuItem::class);
     }
 
     public function forecastSnapshots(): HasMany

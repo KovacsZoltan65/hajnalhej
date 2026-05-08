@@ -91,6 +91,7 @@ it('logs order placement with structured snapshots', function (): void {
         'stock_status' => Product::STOCK_IN_STOCK,
         'price' => 1200,
     ]);
+    publishProductForOrdering($product);
 
     $this->post('/cart/items', [
         'product_id' => $product->id,

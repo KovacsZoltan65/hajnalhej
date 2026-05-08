@@ -8,6 +8,7 @@ it('guest can add product to cart', function (): void {
         'stock_status' => Product::STOCK_IN_STOCK,
         'price' => 1200,
     ]);
+    publishProductForOrdering($product);
 
     $response = $this->post('/cart/items', [
         'product_id' => $product->id,
@@ -26,6 +27,7 @@ it('cart quantity update works', function (): void {
         'is_active' => true,
         'stock_status' => Product::STOCK_IN_STOCK,
     ]);
+    publishProductForOrdering($product);
 
     $this->withSession([
         'cart.items' => [
@@ -47,6 +49,7 @@ it('cart item removal works', function (): void {
         'is_active' => true,
         'stock_status' => Product::STOCK_IN_STOCK,
     ]);
+    publishProductForOrdering($product);
 
     $this->withSession([
         'cart.items' => [

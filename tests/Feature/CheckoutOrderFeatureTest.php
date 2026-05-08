@@ -2,6 +2,9 @@
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\WeeklyMenu;
+use App\Models\WeeklyMenuItem;
+use Illuminate\Support\Carbon;
 
 it('checkout page loads with non-empty cart', function (): void {
     $product = Product::factory()->create([
@@ -9,6 +12,7 @@ it('checkout page loads with non-empty cart', function (): void {
         'stock_status' => Product::STOCK_IN_STOCK,
         'price' => 1250,
     ]);
+    publishProductForOrdering($product);
 
     $response = $this->withSession([
         'cart.items' => [
@@ -46,6 +50,8 @@ it('valid checkout creates order and items with server-calculated totals', funct
         'stock_status' => Product::STOCK_IN_STOCK,
         'price' => 1500,
     ]);
+    publishProductForOrdering($productA);
+    publishProductForOrdering($productB);
 
     $payload = [
         'customer_name' => 'Teszt Elek',
@@ -77,4 +83,66 @@ it('valid checkout creates order and items with server-calculated totals', funct
 
     $response->assertRedirect("/orders/success/{$order?->id}");
     expect(session('cart.items'))->toBeNull();
+});
+
+it('cannot place order for product outside published menu', function (): void {
+    $product = Product::factory()->create([
+        'is_active' => true,
+        'stock_status' => Product::STOCK_IN_STOCK,
+        'price' => 1250,
+    ]);
+
+    $response = $this->withSession([
+        'cart.items' => [
+            ['product_id' => $product->id, 'quantity' => 1],
+        ],
+    ])->post('/checkout', [
+        'customer_name' => 'Teszt Elek',
+        'customer_email' => 'teszt@example.com',
+        'customer_phone' => '+36123456789',
+        'accept_privacy' => true,
+        'accept_terms' => true,
+    ]);
+
+    $response->assertRedirect('/cart');
+    $response->assertSessionHas('error');
+    expect(Order::query()->count())->toBe(0);
+});
+
+it('cannot place order for inactive weekly menu item', function (): void {
+    $product = Product::factory()->create([
+        'is_active' => true,
+        'stock_status' => Product::STOCK_IN_STOCK,
+        'price' => 1250,
+    ]);
+
+    $menu = WeeklyMenu::factory()->create([
+        'status' => WeeklyMenu::STATUS_PUBLISHED,
+        'week_start' => Carbon::today()->startOfWeek(),
+        'week_end' => Carbon::today()->endOfWeek(),
+        'published_at' => Carbon::now(),
+    ]);
+
+    WeeklyMenuItem::factory()->create([
+        'weekly_menu_id' => $menu->id,
+        'product_id' => $product->id,
+        'category_id' => $product->category_id,
+        'is_active' => false,
+    ]);
+
+    $response = $this->withSession([
+        'cart.items' => [
+            ['product_id' => $product->id, 'quantity' => 1],
+        ],
+    ])->post('/checkout', [
+        'customer_name' => 'Teszt Elek',
+        'customer_email' => 'teszt@example.com',
+        'customer_phone' => '+36123456789',
+        'accept_privacy' => true,
+        'accept_terms' => true,
+    ]);
+
+    $response->assertRedirect('/cart');
+    $response->assertSessionHas('error');
+    expect(Order::query()->count())->toBe(0);
 });

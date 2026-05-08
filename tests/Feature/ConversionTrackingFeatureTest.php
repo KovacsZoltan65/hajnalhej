@@ -51,6 +51,7 @@ it('cart funnel backend events are stored', function (): void {
         'stock_status' => Product::STOCK_IN_STOCK,
         'price' => 1800,
     ]);
+    publishProductForOrdering($product);
 
     $this->post('/cart/items', [
         'product_id' => $product->id,
@@ -78,6 +79,7 @@ it('checkout completion logs conversion event', function (): void {
         'stock_status' => Product::STOCK_IN_STOCK,
         'price' => 2000,
     ]);
+    publishProductForOrdering($product);
 
     $response = $this->withSession([
         'cart.items' => [
@@ -129,4 +131,3 @@ it('successful registration logs conversion completion event', function (): void
 
     Notification::assertSentTo($user, VerifyEmail::class);
 });
-

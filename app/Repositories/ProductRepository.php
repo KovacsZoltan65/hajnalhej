@@ -6,6 +6,7 @@ use App\Data\Products\ProductIndexData;
 use App\Data\Products\ProductListItemData;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\WeeklyMenu;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -103,6 +104,13 @@ class ProductRepository
             ->whereIn('id', $ids)
             ->where('is_active', true)
             ->where('stock_status', '!=', Product::STOCK_OUT_OF_STOCK)
+            ->whereHas('weeklyMenuItems', function (Builder $query): void {
+                $query
+                    ->where('is_active', true)
+                    ->whereHas('weeklyMenu', fn (Builder $menuQuery): Builder => $menuQuery
+                        ->where('status', WeeklyMenu::STATUS_PUBLISHED)
+                        ->whereNotNull('published_at'));
+            })
             ->with([
                 'productIngredients.ingredient:id,name,unit,is_active,deleted_at',
             ])
