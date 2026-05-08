@@ -29,9 +29,7 @@ watch(
 <template>
     <div class="grid gap-4 md:grid-cols-2">
         <div class="space-y-2 md:col-span-2">
-            <label for="ingredient-name" class="text-sm font-medium text-bakery-dark">{{
-                $t("admin_orders.fields.name")
-            }}</label>
+            <label for="ingredient-name" class="text-sm font-medium text-bakery-dark">{{ $t("common.name") }}</label>
             <InputText id="ingredient-name" v-model="form.name" class="w-full" :invalid="Boolean(form.errors.name)" />
             <p v-if="form.errors.name" class="text-xs text-red-700">
                 {{ form.errors.name }}
@@ -56,9 +54,7 @@ watch(
         </div>
 
         <div class="space-y-2">
-            <label for="ingredient-unit" class="text-sm font-medium text-bakery-dark">{{
-                $t("admin_ingredients.filters.unit")
-            }}</label>
+            <label for="ingredient-unit" class="text-sm font-medium text-bakery-dark">{{ $t("common.unit") }}</label>
             <Select
                 id="ingredient-unit"
                 v-model="form.unit"

@@ -1,12 +1,13 @@
 import { mount } from "@vue/test-utils";
 import CreateModal from "./CreateModal.vue";
+import { trans } from "laravel-vue-i18n";
 
 vi.mock("laravel-vue-i18n", () => ({
     trans: (key) =>
         ({
-            "common.cancel": "Mégse",
+            "common.cancel": "common.cancel",
             "admin_production_plans.modals.create_title": "Új gyártási terv",
-            "admin_production_plans.actions.store": "Létrehozás",
+            "common.creation": "Létrehozás",
         })[key] ?? key,
 }));
 

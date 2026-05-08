@@ -42,7 +42,7 @@ const close = () => emit("update:visible", false);
                 <Button
                     type="submit"
                     form="ingredient-edit-form"
-                    :label="$t('admin_production_plans.actions.save')"
+                    :label="$t('common.save')"
                     :loading="form.processing"
                 />
             </div>

@@ -40,7 +40,7 @@ const timelineSteps = computed(() => props.selectedPlan?.details?.timeline_steps
             >
                 <div class="rounded-lg bg-white p-3">
                     <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/70">
-                        {{ trans("admin_production_plans.summary.active_minutes") }}
+                        {{ trans("common.active_minutes") }}
                     </p>
                     <p class="mt-1 text-lg font-semibold text-bakery-dark">
                         {{ trans("admin_production_plans.units.minutes", { count: summary.total_active_minutes }) }}
@@ -48,7 +48,7 @@ const timelineSteps = computed(() => props.selectedPlan?.details?.timeline_steps
                 </div>
                 <div class="rounded-lg bg-white p-3">
                     <p class="text-xs uppercase tracking-[0.14em] text-bakery-brown/70">
-                        {{ trans("admin_production_plans.summary.wait_minutes") }}
+                        {{ trans("common.wait_minutes") }}
                     </p>
                     <p class="mt-1 text-lg font-semibold text-bakery-dark">
                         {{ trans("admin_production_plans.units.minutes", { count: summary.total_wait_minutes }) }}
@@ -97,7 +97,7 @@ const timelineSteps = computed(() => props.selectedPlan?.details?.timeline_steps
                 <Button
                     type="submit"
                     form="production-plan-edit-form"
-                    :label="trans('admin_production_plans.actions.save')"
+                    :label="trans('common.save')"
                     :loading="form.processing"
                 />
             </div>

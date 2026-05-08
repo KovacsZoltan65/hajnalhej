@@ -167,7 +167,7 @@ const confirmDelete = (category) => {
                         </label>
                         <InputText
                             v-model="filterState.search"
-                            :placeholder="$t('admin_categories.filters.search_placeholder')"
+                            :placeholder="$t('common.search_placeholder')"
                             class="w-full"
                             @keyup.enter="submitFilters"
                         />
@@ -175,7 +175,7 @@ const confirmDelete = (category) => {
 
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
-                            {{ $t("table.rows_per_page") }}
+                            {{ $t("common.rows_per_page") }}
                         </label>
                         <Select
                             v-model="filterState.per_page"
@@ -242,8 +242,8 @@ const confirmDelete = (category) => {
                             </div>
                         </template>
                     </Column>
-                    <Column field="sort_order" :header="$t('admin_categories.columns.sort_order')" sortable />
-                    <Column field="products_count" :header="$t('nav.products')" />
+                    <Column field="sort_order" :header="$t('common.sort_order')" sortable />
+                    <Column field="products_count" :header="$t('common.products')" />
                     <Column field="is_active" :header="$t('common.status')" sortable>
                         <template #body="{ data }">
                             <CategoryStatusBadge :active="data.is_active" />

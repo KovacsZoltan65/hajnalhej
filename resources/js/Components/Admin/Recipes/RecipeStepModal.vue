@@ -108,20 +108,20 @@ const close = () => emit("update:visible", false);
     <Dialog
         :visible="visible"
         modal
-        :header="item ? 'Receptlépés szerkesztése' : 'Új receptlépés'"
+        :header="item ? $t('admin_recipe_steps.edit') : $t('admin_recipe_steps.new')"
         :style="{ width: '48rem', maxWidth: '97vw' }"
         :content-style="{ maxHeight: '70vh', overflowY: 'auto' }"
         @update:visible="(value) => emit('update:visible', value)"
     >
         <form id="recipe-step-form" class="grid gap-4 md:grid-cols-2" @submit.prevent="submit">
             <div class="space-y-2 md:col-span-2">
-                <label class="text-sm font-medium text-bakery-dark">Lépés cím</label>
+                <label class="text-sm font-medium text-bakery-dark">{{ $t("common.step_title") }}</label>
                 <InputText v-model="form.title" class="w-full" />
                 <p v-if="errors.title" class="text-xs text-red-700">{{ errors.title }}</p>
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Lépés típus</label>
+                <label class="text-sm font-medium text-bakery-dark">{{ $t("common.step_type") }}</label>
                 <Select
                     v-model="form.step_type"
                     :options="stepTypes"
@@ -129,29 +129,37 @@ const close = () => emit("update:visible", false);
                     option-value="value"
                     class="w-full"
                 />
-                <p v-if="errors.step_type" class="text-xs text-red-700">{{ errors.step_type }}</p>
+                <p v-if="errors.step_type" class="text-xs text-red-700">
+                    {{ errors.step_type }}
+                </p>
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Sorrend</label>
+                <label class="text-sm font-medium text-bakery-dark">{{ $t("common.sort_order") }}</label>
                 <InputNumber v-model="form.sort_order" :min="0" fluid />
-                <p v-if="errors.sort_order" class="text-xs text-red-700">{{ errors.sort_order }}</p>
+                <p v-if="errors.sort_order" class="text-xs text-red-700">
+                    {{ errors.sort_order }}
+                </p>
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Aktív idő (perc)</label>
+                <label class="text-sm font-medium text-bakery-dark">{{ $t("common.active_minutes") }} (perc)</label>
                 <InputNumber v-model="form.duration_minutes" :min="0" fluid />
-                <p v-if="errors.duration_minutes" class="text-xs text-red-700">{{ errors.duration_minutes }}</p>
+                <p v-if="errors.duration_minutes" class="text-xs text-red-700">
+                    {{ errors.duration_minutes }}
+                </p>
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Várakozási idő (perc)</label>
+                <label class="text-sm font-medium text-bakery-dark">{{ $t("common.wait_minutes") }} (perc)</label>
                 <InputNumber v-model="form.wait_minutes" :min="0" fluid />
-                <p v-if="errors.wait_minutes" class="text-xs text-red-700">{{ errors.wait_minutes }}</p>
+                <p v-if="errors.wait_minutes" class="text-xs text-red-700">
+                    {{ errors.wait_minutes }}
+                </p>
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Hőmérséklet (°C)</label>
+                <label class="text-sm font-medium text-bakery-dark">{{ $t("common.temperature") }} (°C)</label>
                 <InputNumber
                     v-model="form.temperature_celsius"
                     mode="decimal"
@@ -159,54 +167,80 @@ const close = () => emit("update:visible", false);
                     :max-fraction-digits="1"
                     fluid
                 />
-                <p v-if="errors.temperature_celsius" class="text-xs text-red-700">{{ errors.temperature_celsius }}</p>
+                <p v-if="errors.temperature_celsius" class="text-xs text-red-700">
+                    {{ errors.temperature_celsius }}
+                </p>
             </div>
 
             <div class="flex items-center gap-2 pt-7">
                 <ToggleSwitch v-model="form.is_active" />
-                <label class="text-sm text-bakery-dark/80">Aktív lépés</label>
+                <label class="text-sm text-bakery-dark/80">{{ $t("common.active_step") }}</label>
             </div>
 
             <div class="space-y-2 md:col-span-2">
-                <label class="text-sm font-medium text-bakery-dark">Leírás</label>
+                <label class="text-sm font-medium text-bakery-dark">{{ $t("common.description") }}</label>
                 <Textarea v-model="form.description" rows="4" class="w-full" auto-resize />
-                <p v-if="errors.description" class="text-xs text-red-700">{{ errors.description }}</p>
+                <p v-if="errors.description" class="text-xs text-red-700">
+                    {{ errors.description }}
+                </p>
             </div>
 
             <div class="space-y-2 md:col-span-2">
-                <label class="text-sm font-medium text-bakery-dark">Mit kell csinálni?</label>
+                <label class="text-sm font-medium text-bakery-dark"
+                    >{{ $t("admin_production_plans.timeline.work_instruction") }}?</label
+                >
                 <Textarea v-model="form.work_instruction" rows="3" class="w-full" auto-resize />
-                <p v-if="errors.work_instruction" class="text-xs text-red-700">{{ errors.work_instruction }}</p>
+                <p v-if="errors.work_instruction" class="text-xs text-red-700">
+                    {{ errors.work_instruction }}
+                </p>
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Miből látszik, hogy kész?</label>
+                <label class="text-sm font-medium text-bakery-dark"
+                    >{{ $t("admin_production_plans.timeline.show_is_ready") }}?</label
+                >
                 <Textarea v-model="form.completion_criteria" rows="3" class="w-full" auto-resize />
-                <p v-if="errors.completion_criteria" class="text-xs text-red-700">{{ errors.completion_criteria }}</p>
+                <p v-if="errors.completion_criteria" class="text-xs text-red-700">
+                    {{ errors.completion_criteria }}
+                </p>
             </div>
 
             <div class="space-y-2">
                 <label class="text-sm font-medium text-bakery-dark">Mire figyelj?</label>
                 <Textarea v-model="form.attention_points" rows="3" class="w-full" auto-resize />
-                <p v-if="errors.attention_points" class="text-xs text-red-700">{{ errors.attention_points }}</p>
+                <p v-if="errors.attention_points" class="text-xs text-red-700">
+                    {{ errors.attention_points }}
+                </p>
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Szükséges eszköz</label>
+                <label class="text-sm font-medium text-bakery-dark">{{
+                    $t("admin_production_plans.timeline.required_tools")
+                }}</label>
                 <Textarea v-model="form.required_tools" rows="3" class="w-full" auto-resize />
-                <p v-if="errors.required_tools" class="text-xs text-red-700">{{ errors.required_tools }}</p>
+                <p v-if="errors.required_tools" class="text-xs text-red-700">
+                    {{ errors.required_tools }}
+                </p>
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">Elvárt eredmény</label>
+                <label class="text-sm font-medium text-bakery-dark">{{
+                    $t("admin_production_plans.timeline.expected_result")
+                }}</label>
                 <Textarea v-model="form.expected_result" rows="3" class="w-full" auto-resize />
-                <p v-if="errors.expected_result" class="text-xs text-red-700">{{ errors.expected_result }}</p>
+                <p v-if="errors.expected_result" class="text-xs text-red-700">
+                    {{ errors.expected_result }}
+                </p>
             </div>
         </form>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Mégse" @click="close" />
-                <Button type="submit" form="recipe-step-form" :label="item ? 'Mentés' : 'Hozzáadás'" />
+                <Button type="button" severity="secondary" :label="$t('common.cancel')" @click="close" />
+                <Button
+                    type="submit"
+                    form="recipe-step-form"
+                    :label="item ? $t('common.save') : $t('common.common.add')"
+                />
             </div>
         </template>
     </Dialog>

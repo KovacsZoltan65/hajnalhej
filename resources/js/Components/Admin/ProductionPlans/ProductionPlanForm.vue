@@ -298,7 +298,7 @@ const ingredientRequirements = computed(() => {
                                     {{ trans("admin.production_plans.flow.warnings.insufficient") }}
                                 </span>
                                 <span v-else-if="row.is_low_stock" class="ml-2 text-xs font-semibold text-amber-700">
-                                    {{ trans("admin.production_plans.flow.warnings.low_stock") }}
+                                    {{ trans("common.low_stock_count") }}
                                 </span>
                             </td>
                             <td class="py-2 pr-2 text-bakery-dark/80">{{ row.total_required }} {{ row.unit }}</td>

@@ -428,7 +428,7 @@ const submit = () => {
                                     {{ trans("admin.production_plans.flow.warnings.insufficient") }}
                                 </EntityStatusBadge>
                                 <EntityStatusBadge v-else-if="row.is_low_stock" status="draft">
-                                    {{ trans("admin.production_plans.flow.warnings.low_stock") }}
+                                    {{ trans("common.low_stock_count") }}
                                 </EntityStatusBadge>
                             </div>
                             <span>{{ row.total_required }} {{ row.unit }}</span>
@@ -521,7 +521,7 @@ const submit = () => {
                     </p>
                     <p>
                         <strong class="text-bakery-dark">{{ ingredientRequirements.length }}</strong>
-                        {{ trans("admin.production_plans.flow.summary.ingredients") }}
+                        {{ trans("common.ingredient") }}
                     </p>
                     <p>
                         <strong class="text-bakery-dark">{{ warningsCount }}</strong>

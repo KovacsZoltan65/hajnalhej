@@ -30,7 +30,12 @@ const close = () => emit("update:visible", false);
         <template #footer>
             <div class="flex justify-end gap-2">
                 <Button type="button" severity="secondary" :label="$t('common.cancel')" @click="close" />
-                <Button type="submit" form="supplier-term-edit-form" label="Mentés" :loading="form.processing" />
+                <Button
+                    type="submit"
+                    form="supplier-term-edit-form"
+                    :label="$t('common.save')"
+                    :loading="form.processing"
+                />
             </div>
         </template>
     </Dialog>

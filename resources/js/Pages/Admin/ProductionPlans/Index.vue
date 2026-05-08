@@ -387,7 +387,7 @@ const confirmDelete = (plan) => {
                     <!-- SOROK / OLDAL -->
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
-                            trans("table.rows_per_page")
+                            trans("common.rows_per_page")
                         }}</label>
                         <Select
                             v-model="filterState.per_page"

@@ -24,7 +24,7 @@ const resendVerification = () => {
 </script>
 
 <template>
-    <Head :title="ui.account?.title ?? 'Fiókom'" />
+    <Head :title="ui.account?.title ?? $t('account.title')" />
 
     <section class="mx-auto max-w-3xl space-y-6">
         <header class="rounded-3xl border border-bakery-brown/15 bg-[#fff9f1] p-6 shadow-sm sm:p-8">
@@ -56,15 +56,17 @@ const resendVerification = () => {
         <article class="rounded-2xl border border-bakery-brown/15 bg-[#fff9f1] p-5">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <p class="text-xs uppercase tracking-[0.18em] text-bakery-dark/60">Email státusz</p>
+                    <p class="text-xs uppercase tracking-[0.18em] text-bakery-dark/60">
+                        {{ $t("account.email_status") }}
+                    </p>
                     <p
                         class="mt-2 text-sm font-semibold"
                         :class="props.account.is_verified ? 'text-emerald-700' : 'text-amber-700'"
                     >
                         {{
                             props.account.is_verified
-                                ? (ui.account?.email_status_verified ?? "Email megerositve")
-                                : (ui.account?.email_status_pending ?? "Email megerősítés folyamatban")
+                                ? (ui.account?.email_status_verified ?? t$("account.email_status_verified"))
+                                : (ui.account?.email_status_pending ?? $t("account.email_status_pending"))
                         }}
                     </p>
                 </div>
@@ -72,7 +74,7 @@ const resendVerification = () => {
                 <Button
                     v-if="!props.account.is_verified"
                     type="button"
-                    :label="ui.verification?.send_again ?? 'Megerősítő email újraküldése'"
+                    :label="ui.verification?.send_again ?? $t('account.resend_confirmation_email')"
                     :loading="verificationForm.processing"
                     :disabled="verificationForm.processing"
                     @click="resendVerification"

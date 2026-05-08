@@ -79,7 +79,7 @@ defineProps({
                     {{ step.attention_points }}
                 </p>
                 <p v-if="step.required_tools" class="mt-1 text-xs text-bakery-dark/75">
-                    <span class="font-semibold">{{ trans("admin_production_plans.timeline.required_tools") }}:</span>
+                    <span class="font-semibold">{{ trans("admin_production_plans.timeline.required_tool") }}:</span>
                     {{ step.required_tools }}
                 </p>
                 <p v-if="step.expected_result" class="mt-1 text-xs text-bakery-dark/75">

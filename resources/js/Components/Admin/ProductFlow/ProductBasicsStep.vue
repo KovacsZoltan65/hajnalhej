@@ -41,9 +41,7 @@ watch(
             <InputText v-model="model.slug" class="w-full" />
         </div>
         <div class="space-y-1">
-            <label class="text-xs font-semibold uppercase text-bakery-brown/80">{{
-                $t("admin.products.flow.fields.category")
-            }}</label>
+            <label class="text-xs font-semibold uppercase text-bakery-brown/80">{{ $t("common.category") }}</label>
             <Select
                 v-model="model.category_id"
                 :options="categories"

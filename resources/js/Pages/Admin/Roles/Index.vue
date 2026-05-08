@@ -59,13 +59,6 @@ const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPag
 });
 
 const perPageOptions = createPerPageOptions(trans, [15, 30, 50]);
-/*
-const perPageOptions = [
-    { label: '15 / oldal', value: 15 },
-    { label: '30 / oldal', value: 30 },
-    { label: '50 / oldal', value: 50 },
-];
-*/
 
 const currentPage = computed(() => props.roles.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.roles.per_page ?? 15));
@@ -106,10 +99,10 @@ const submitEdit = () => {
 
 const destroyRole = (role) => {
     confirm.require({
-        message: `Biztosan törlöd a(z) ${role.name} szerepkört?`,
-        header: "Szerepkör törlése",
-        rejectLabel: "Mégse",
-        acceptLabel: "Törlés",
+        message: trans("admin_roles.delete_message", { name: role.name }),
+        header: trans("admin_roles.delete_header"),
+        rejectLabel: trans("common.cancel"),
+        acceptLabel: trnas("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(route("admin.roles.destroy", role.id), {
@@ -121,34 +114,34 @@ const destroyRole = (role) => {
 </script>
 
 <template>
-    <Head title="Szerepkörök" />
+    <Head :title="$t('common.roles')" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Szerepkörök és jogosultságok"
-            title="Szerepkörök"
-            description="Szerepkörlista, átnevezés és jogosultságmátrix kezelése biztonságosan."
+            :eyebrow="$t('admin_permissions.eyebrow')"
+            :title="$t('common.roles')"
+            :description="$t('admin_roles.description')"
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 lg:grid-cols-3'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Keresés</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.search")
+                        }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Szerepkör neve..."
+                            :placeholder="$t('admin_roles.role_name_placeholder')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Találat / oldal</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.rows_per_page")
+                        }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -161,11 +154,11 @@ const destroyRole = (role) => {
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
+                    <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
                     <Button
                         v-if="can.create"
                         icon="pi pi-plus"
-                        label="Új szerepkör"
+                        :label="$t('admin_roles.new')"
                         severity="contrast"
                         @click="openCreate"
                     />
@@ -190,33 +183,43 @@ const destroyRole = (role) => {
                         <div
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
-                            <p>Nincs megjeleníthető szerepkör.</p>
+                            <p>{{ $t("admin_roles.empty") }}.</p>
                             <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
-                                <Button v-if="can.create" label="Új szerepkör" size="small" @click="openCreate" />
+                                <Button
+                                    :label="$t('common.clear_filters')"
+                                    outlined
+                                    size="small"
+                                    @click="clearFilters"
+                                />
+                                <Button
+                                    v-if="can.create"
+                                    :label="$t('admin_roles.new')"
+                                    size="small"
+                                    @click="openCreate"
+                                />
                             </div>
                         </div>
                     </template>
 
-                    <Column field="name" header="Szerepkör">
+                    <Column field="name" :header="$t('admin_roles.role')">
                         <template #body="{ data }">
                             <RoleBadge :role="data.name" :system="data.is_system_role" />
                         </template>
                     </Column>
 
-                    <Column field="guard_name" header="Guard" />
-                    <Column field="permissions_count" header="Jogosultságok" />
-                    <Column field="users_count" header="Felhasználók" />
+                    <Column field="guard_name" :header="$t('admin_permissions.columns.guard')" />
+                    <Column field="permissions_count" :header="$t('admin_permissions.meta_title')" />
+                    <Column field="users_count" :header="$t('common.users')" />
 
-                    <Column header="Műveletek" :style="{ width: '17rem' }">
+                    <Column :header="$t('common.actions')" :style="{ width: '17rem' }">
                         <template #body="{ data }">
                             <div class="flex flex-wrap gap-2">
                                 <Link :href="route('admin.roles.show', data.id)">
-                                    <Button label="Részletek" size="small" text class="min-h-11!" />
+                                    <Button :label="$t('common.details')" size="small" text class="min-h-11!" />
                                 </Link>
                                 <Button
                                     v-if="can.update"
-                                    label="Átnevezés"
+                                    :label="$t('common.rename')"
                                     size="small"
                                     outlined
                                     class="min-h-11!"
@@ -225,7 +228,7 @@ const destroyRole = (role) => {
                                 />
                                 <Button
                                     v-if="can.delete"
-                                    label="Törlés"
+                                    :label="$t('common.delete')"
                                     size="small"
                                     severity="danger"
                                     text
@@ -246,16 +249,16 @@ const destroyRole = (role) => {
     <RoleFormModal
         v-model:visible="createVisible"
         :form="createForm"
-        title="Új szerepkör létrehozása"
-        submit-label="Létrehozás"
+        :title="$t('admin_roles.new_title')"
+        :submit-label="$t('common.creation')"
         @submit="submitCreate"
     />
 
     <RoleFormModal
         v-model:visible="editVisible"
         :form="editForm"
-        title="Szerepkör átnevezése"
-        submit-label="Mentés"
+        :title="$t('admin_roles.rename')"
+        :submit-label="$t('common.save')"
         @submit="submitEdit"
     />
 </template>

@@ -11,10 +11,10 @@ vi.mock("primevue/button", () => ({
 
 const translations = {
     "admin_permissions.sync_summary.title": "Jogosultság szinkron összegzés",
-    "admin_permissions.sync_summary.created": "Létrehozva",
+    "common.create": "Létrehozva",
     "admin_permissions.sync_summary.existing": "Már létezett",
     "admin_permissions.sync_summary.orphans": "Árvák",
-    "admin_permissions.sync_summary.created_permissions": "Létrehozott jogosultságok:",
+    "common.create_permissions": "Létrehozott jogosultságok:",
     "admin_permissions.sync_summary.orphan_permissions": "Árva jogosultságok:",
     "admin_permissions.sync_summary.none": "Nincs",
     "admin_permissions.actions.ok": "Rendben",

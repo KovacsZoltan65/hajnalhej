@@ -40,7 +40,7 @@ const moduleLabel = (moduleName) => moduleName;
         <div class="grid gap-4 rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:grid-cols-2 sm:p-5">
             <div class="space-y-2">
                 <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">
-                    {{ $t("admin_permissions.fields.permission") }}
+                    {{ $t("common.permission") }}
                 </p>
                 <PermissionBadge :name="props.permission.name" />
             </div>
@@ -85,11 +85,7 @@ const moduleLabel = (moduleName) => moduleName;
                     {{ $t("admin_permissions.fields.audit_sensitive") }}
                 </p>
                 <p class="mt-2 text-sm font-semibold text-bakery-dark">
-                    {{
-                        props.permission.audit_sensitive
-                            ? $t("admin_permissions.values.yes")
-                            : $t("admin_permissions.values.no")
-                    }}
+                    {{ props.permission.audit_sensitive ? $t("common.yes") : $t("common.no") }}
                 </p>
             </div>
         </div>

@@ -41,7 +41,7 @@ const { formatCurrency } = useLocaleFormat();
                                 {{ trans("common.date") }}
                             </th>
                             <th class="px-2 py-2">
-                                {{ trans("admin_procurement_intelligence.columns.ingredient") }}
+                                {{ trans("common.ingredient") }}
                             </th>
                             <th class="px-2 py-2">
                                 {{ trans("common.supplier") }}

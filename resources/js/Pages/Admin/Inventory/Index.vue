@@ -210,7 +210,7 @@ const directionClass = (direction) => (direction === "out" ? "text-rose-700" : "
             </article>
             <article class="ui-card p-4">
                 <p class="text-xs uppercase text-bakery-dark/60">
-                    {{ $t("admin_inventory.summary.low_stock_count") }}
+                    {{ $t("common.low_stock_count") }}
                 </p>
                 <p class="mt-2 font-heading text-3xl">
                     {{ dashboard.summary.low_stock_count }}
@@ -277,7 +277,7 @@ const directionClass = (direction) => (direction === "out" ? "text-rose-700" : "
 
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
-                            $t("admin_inventory.filters.ingredient")
+                            $t("common.ingredient")
                         }}</label>
                         <Select
                             v-model="filterState.ingredient_id"
@@ -328,7 +328,7 @@ const directionClass = (direction) => (direction === "out" ? "text-rose-700" : "
                     </div>
                     <div class="space-y-1 min-w-36">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
-                            $t("table.rows_per_page")
+                            $t("common.rows_per_page")
                         }}</label>
                         <Select
                             v-model="filterState.per_page"
@@ -401,7 +401,7 @@ const directionClass = (direction) => (direction === "out" ? "text-rose-700" : "
                             <span class="text-sm text-bakery-dark">{{ data.occurred_at || "-" }}</span>
                         </template>
                     </Column>
-                    <Column field="ingredient_name" :header="$t('admin_inventory.columns.ingredient')">
+                    <Column field="ingredient_name" :header="$t('common.ingredient')">
                         <template #body="{ data }">
                             <div>
                                 <p class="font-medium text-bakery-dark">

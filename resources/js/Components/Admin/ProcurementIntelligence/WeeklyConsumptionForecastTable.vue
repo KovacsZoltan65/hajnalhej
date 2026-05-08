@@ -25,7 +25,7 @@ defineProps({
                     class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60"
                 >
                     <tr>
-                        <th class="px-2 py-2">{{ trans("admin_procurement_intelligence.columns.ingredient") }}</th>
+                        <th class="px-2 py-2">{{ trans("common.ingredient") }}</th>
                         <th class="px-2 py-2 text-right">
                             {{ trans("admin_procurement_intelligence.columns.last_week_consumption") }}
                         </th>

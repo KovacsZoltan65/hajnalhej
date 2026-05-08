@@ -279,7 +279,7 @@ const refreshMenus = () => {
                     </div>
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
-                            $t("table.rows_per_page")
+                            $t("common.rows_per_page")
                         }}</label>
                         <Select
                             v-model="filterState.per_page"
@@ -376,7 +376,7 @@ const refreshMenus = () => {
                                     text
                                     rounded
                                     class="h-11! w-11!"
-                                    :aria-label="$t('admin_weekly_menus.actions.edit')"
+                                    :aria-label="$t('common.weekly_menu_edit')"
                                     @click="openEdit(data)"
                                 />
                                 <Button

@@ -56,13 +56,6 @@ const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPag
 });
 
 const perPageOptions = createPerPageOptions(trans, [15, 30, 50]);
-/*
-const perPageOptions = [
-    { label: '10 / oldal', value: 10 },
-    { label: '20 / oldal', value: 20 },
-    { label: '50 / oldal', value: 50 },
-];
-*/
 
 const form = useForm({
     name: "",
@@ -144,10 +137,10 @@ const submitEdit = () => {
 
 const confirmDelete = (supplier) => {
     confirm.require({
-        header: "Beszállító törlése",
-        message: `Biztosan törlöd ezt a beszállítót: ${supplier.name}?`,
-        rejectLabel: "Mégse",
-        acceptLabel: "Törlés",
+        header: $t("admin_supplier.delete"),
+        message: trans("admin_supplier.delete_message", { name: supplier.name }),
+        rejectLabel: trans("common.cancel"),
+        acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(route("admin.suppliers.destroy", supplier.id), {
@@ -170,22 +163,22 @@ const formatDateTime = (value) => {
 </script>
 
 <template>
-    <Head title="Beszállítók" />
+    <Head :title="$t('admin_supplier.title')" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Beszállítók"
-            title="Beszállítók"
-            description="Beszállító törzskezelés egységes admin táblás és modal alapú működéssel."
+            :eyebrow="$t('admin_supplier.eyebrow')"
+            :title="$t('admin_supplier.title')"
+            :description="$t('admin_supplier.description')"
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar>
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Keresés</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.search")
+                        }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
@@ -195,9 +188,9 @@ const formatDateTime = (value) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Találat / oldal</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.rows_per_page")
+                        }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -210,8 +203,8 @@ const formatDateTime = (value) => {
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Új beszállító" @click="openCreate" />
+                    <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
+                    <Button icon="pi pi-plus" :label="$t('admin_supplier.new')" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
@@ -236,22 +229,27 @@ const formatDateTime = (value) => {
                         <div
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
-                            <p>Nincs megjeleníthető beszállító.</p>
+                            <p>{{ $t("admin_supplier.empty") }}.</p>
                             <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
-                                <Button label="Új beszállító" size="small" @click="openCreate" />
+                                <Button
+                                    :label="$t('common.clear_filters')"
+                                    outlined
+                                    size="small"
+                                    @click="clearFilters"
+                                />
+                                <Button :label="$t('admin_supplier.new')" size="small" @click="openCreate" />
                             </div>
                         </div>
                     </template>
 
-                    <Column field="name" header="Beszállító" sortable>
+                    <Column field="name" :header="$t('common.name')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">
                                     {{ data.name }}
                                 </p>
                                 <p class="text-xs text-bakery-dark/60">
-                                    {{ data.tax_number || "Nincs adószám" }}
+                                    {{ data.tax_number || $t("common.no_tax_number") }}
                                 </p>
                             </div>
                         </template>
@@ -260,28 +258,32 @@ const formatDateTime = (value) => {
                         <template #body="{ data }">
                             <div>
                                 <p class="text-sm text-bakery-dark">
-                                    {{ data.email || "Nincs email" }}
+                                    {{ data.email || $t("common.no_email") }}
                                 </p>
                                 <p class="text-xs text-bakery-dark/60">
-                                    {{ data.phone || "Nincs telefonszám" }}
+                                    {{ data.phone || $t("common.no_phone") }}
                                 </p>
                             </div>
                         </template>
                     </Column>
-                    <Column field="purchases_count" header="Beszerzések" />
-                    <Column field="lead_time_days" header="Lead time" sortable>
+                    <Column field="purchases_count" :header="$t('admin_procurements.title')" />
+                    <Column
+                        field="lead_time_days"
+                        :header="$t('admin_procurement_intelligence.columns.lead_time')"
+                        sortable
+                    >
                         <template #body="{ data }">
                             <span class="text-sm text-bakery-dark">{{
-                                data.lead_time_days !== null ? `${data.lead_time_days} nap` : "-"
+                                data.lead_time_days !== null ? `${data.lead_time_days} ` + $t("common.day") : "-"
                             }}</span>
                         </template>
                     </Column>
-                    <Column field="created_at" header="Létrehozva" sortable>
+                    <Column field="created_at" :header="$t('common.create')" sortable>
                         <template #body="{ data }">
                             <span class="text-xs text-bakery-dark/70">{{ formatDateTime(data.created_at) }}</span>
                         </template>
                     </Column>
-                    <Column header="Műveletek" :exportable="false">
+                    <Column :header="$t('common.actions')" :exportable="false">
                         <template #body="{ data }">
                             <div class="flex items-center gap-2">
                                 <Button
@@ -289,7 +291,7 @@ const formatDateTime = (value) => {
                                     text
                                     rounded
                                     class="h-11! w-11!"
-                                    aria-label="Beszállító szerkesztése"
+                                    :aria-label="$t('admin_supplier.edit')"
                                     @click="openEdit(data)"
                                 />
                                 <Button
@@ -298,7 +300,7 @@ const formatDateTime = (value) => {
                                     rounded
                                     severity="danger"
                                     class="h-11! w-11!"
-                                    aria-label="Beszállító törlése"
+                                    :aria-label="$t('admin_supplier.delete')"
                                     @click="confirmDelete(data)"
                                 />
                             </div>

@@ -18,7 +18,7 @@ const close = () => emit("update:visible", false);
     <Dialog
         :visible="visible"
         modal
-        header="Heti menu szerkesztese"
+        :header="$t('common.weekly_menu_edit')"
         :style="{ width: '52rem', maxWidth: '97vw' }"
         :content-style="{ maxHeight: '70vh', overflowY: 'auto' }"
         @update:visible="(value) => emit('update:visible', value)"
@@ -29,8 +29,13 @@ const close = () => emit("update:visible", false);
 
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Mégse" @click="close" />
-                <Button type="submit" form="weekly-menu-edit-form" label="Mentés" :loading="form.processing" />
+                <Button type="button" severity="secondary" :label="$t('common.cancel')" @click="close" />
+                <Button
+                    type="submit"
+                    form="weekly-menu-edit-form"
+                    :label="$t('common.save')"
+                    :loading="form.processing"
+                />
             </div>
         </template>
     </Dialog>

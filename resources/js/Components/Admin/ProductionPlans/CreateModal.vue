@@ -35,7 +35,7 @@ const close = () => emit("update:visible", false);
                 <Button
                     type="submit"
                     form="production-plan-create-form"
-                    :label="trans('admin_production_plans.actions.store')"
+                    :label="trans('common.creation')"
                     :loading="form.processing"
                 />
             </div>

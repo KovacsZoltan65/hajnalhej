@@ -18,7 +18,7 @@ const props = defineProps({
             v-if="props.system"
             class="ml-1 rounded-full bg-bakery-brown/10 px-1.5 py-0.5 text-[10px] uppercase tracking-[0.08em]"
         >
-            rendszer
+            {{ $t("common.system") }}
         </span>
     </span>
 </template>

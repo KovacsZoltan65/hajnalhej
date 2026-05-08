@@ -56,7 +56,7 @@ const menuGroups = computed(() => {
             label: trans("nav.catalog"),
             items: [
                 {
-                    label: trans("nav.products"),
+                    label: trans("common.products"),
                     route: route("admin.products.index"),
                     icon: "pi pi-box",
                 },

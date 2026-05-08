@@ -170,7 +170,7 @@ const subjectTypeOptions = computed(() => [
 
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
-                            $t("table.rows_per_page")
+                            $t("common.rows_per_page")
                         }}</label>
                         <Select
                             v-model="filterState.per_page"
@@ -263,7 +263,7 @@ const subjectTypeOptions = computed(() => [
                         </template>
                     </Column>
 
-                    <Column field="description" :header="$t('audit_logs.columns.description')" />
+                    <Column field="description" :header="$t('common.description')" />
 
                     <Column :header="$t('common.actions')" :style="{ width: '9rem' }">
                         <template #body="{ data }">

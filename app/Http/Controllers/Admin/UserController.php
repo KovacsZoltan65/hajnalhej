@@ -103,7 +103,7 @@ class UserController extends Controller
         $this->service->deactivate($user);
 
         return redirect()->route('admin.users.index')
-            ->with('success', __('admin_user.deleted').'.');
+            ->with('success', __('admin_user.inactivated').'.');
     }
 
     public function storeTemporaryPermission(StoreUserTemporaryPermissionRequest $request, User $user): RedirectResponse

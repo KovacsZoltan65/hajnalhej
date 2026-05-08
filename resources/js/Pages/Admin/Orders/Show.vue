@@ -67,7 +67,7 @@ const updateStatus = () => {
                     <dl class="mt-4 grid gap-3 text-sm sm:grid-cols-2">
                         <div>
                             <dt class="text-bakery-dark/60">
-                                {{ $t("admin_orders.fields.name") }}
+                                {{ $t("common.name") }}
                             </dt>
                             <dd class="font-semibold text-bakery-dark">
                                 {{ order.customer_name }}
@@ -75,7 +75,7 @@ const updateStatus = () => {
                         </div>
                         <div>
                             <dt class="text-bakery-dark/60">
-                                {{ $t("admin_orders.fields.email") }}
+                                {{ $t("common.email") }}
                             </dt>
                             <dd class="font-semibold text-bakery-dark">
                                 {{ order.customer_email }}
@@ -83,7 +83,7 @@ const updateStatus = () => {
                         </div>
                         <div>
                             <dt class="text-bakery-dark/60">
-                                {{ $t("admin_orders.fields.phone") }}
+                                {{ $t("common.phone") }}
                             </dt>
                             <dd class="font-semibold text-bakery-dark">
                                 {{ order.customer_phone }}
@@ -91,7 +91,7 @@ const updateStatus = () => {
                         </div>
                         <div>
                             <dt class="text-bakery-dark/60">
-                                {{ $t("admin_orders.fields.pickup") }}
+                                {{ $t("common.pickup") }}
                             </dt>
                             <dd class="font-semibold text-bakery-dark">
                                 {{ order.pickup_date || "-" }}
@@ -165,9 +165,7 @@ const updateStatus = () => {
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-sm font-medium text-bakery-dark">{{
-                            $t("admin_orders.fields.pickup_date")
-                        }}</label>
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("common.pickup_date") }}</label>
                         <BaseDatePicker v-model="statusForm.pickup_date" class="w-full" />
                         <p v-if="statusForm.errors.pickup_date" class="text-xs text-red-700">
                             {{ statusForm.errors.pickup_date }}
@@ -175,9 +173,7 @@ const updateStatus = () => {
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-sm font-medium text-bakery-dark">{{
-                            $t("admin_orders.fields.pickup_time_slot")
-                        }}</label>
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("common.pickup_time_slot") }}</label>
                         <InputText
                             v-model="statusForm.pickup_time_slot"
                             class="w-full"

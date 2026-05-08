@@ -40,7 +40,7 @@ const close = () => emit("update:visible", false);
     <Dialog
         :visible="props.visible"
         modal
-        header="Felhasznalo szerepkorok"
+        :header="$t('admin_roles.user_roles')"
         :style="{ width: '38rem', maxWidth: '96vw' }"
         @update:visible="(value) => emit('update:visible', value)"
     >
@@ -53,7 +53,9 @@ const close = () => emit("update:visible", false);
             </div>
 
             <div class="space-y-2">
-                <p class="text-sm font-semibold text-bakery-dark">Szerepkörök</p>
+                <p class="text-sm font-semibold text-bakery-dark">
+                    {{ $t("common.roles") }}
+                </p>
                 <ul class="space-y-2">
                     <li
                         v-for="role in props.roleOptions"
@@ -82,7 +84,7 @@ const close = () => emit("update:visible", false);
                 <p class="text-sm font-semibold text-bakery-dark">Effektiv jogosultsagok</p>
                 <div class="max-h-32 overflow-y-auto rounded-lg border border-bakery-brown/10 bg-white/80 p-3">
                     <p v-if="props.user.permissions.length === 0" class="text-xs text-bakery-dark/60">
-                        Nincs jogosultság.
+                        {{ $t("admin_permissions.no_permission") }}.
                     </p>
                     <ul v-else class="grid gap-1 sm:grid-cols-2">
                         <li
@@ -99,10 +101,10 @@ const close = () => emit("update:visible", false);
 
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Mégse" @click="close" />
+                <Button type="button" severity="secondary" :label="$t('common.cancel')" @click="close" />
                 <Button
                     type="button"
-                    label="Szerepkörök mentése"
+                    :label="$t('common.save')"
                     :loading="props.loading"
                     :disabled="props.loading"
                     @click="emit('save')"

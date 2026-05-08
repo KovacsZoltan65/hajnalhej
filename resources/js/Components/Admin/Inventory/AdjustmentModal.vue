@@ -27,7 +27,7 @@ const close = () => emit("update:visible", false);
     <Dialog
         :visible="visible"
         modal
-        header="Készletkorrekció"
+        :header="$t('admin_inventory.stock_correction')"
         :style="{ width: '38rem', maxWidth: '97vw' }"
         :content-style="{ maxHeight: '70vh', overflowY: 'auto' }"
         @update:visible="(value) => emit('update:visible', value)"
@@ -38,8 +38,13 @@ const close = () => emit("update:visible", false);
 
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Mégse" @click="close" />
-                <Button type="submit" form="inventory-adjustment-form" label="Könyvelés" :loading="form.processing" />
+                <Button type="button" severity="secondary" :label="$t('common.cancel')" @click="close" />
+                <Button
+                    type="submit"
+                    form="inventory-adjustment-form"
+                    :label="$t('common.accounting')"
+                    :loading="form.processing"
+                />
             </div>
         </template>
     </Dialog>

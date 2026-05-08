@@ -112,7 +112,7 @@ const { formatCurrency } = useLocaleFormat();
                     <!-- PER PAGE -->
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
-                            $t("table.rows_per_page")
+                            $t("common.rows_per_page")
                         }}</label>
                         <Select
                             v-model="filterState.per_page"
@@ -181,7 +181,7 @@ const { formatCurrency } = useLocaleFormat();
                             <OrderStatusBadge :status="data.status" />
                         </template>
                     </Column>
-                    <Column field="pickup_date" :header="$t('admin_orders.columns.pickup')" sortable>
+                    <Column field="pickup_date" :header="$t('common.pickup')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p>{{ data.pickup_date || "-" }}</p>
@@ -202,7 +202,7 @@ const { formatCurrency } = useLocaleFormat();
                                 :href="route('admin.orders.show', data.id)"
                                 class="inline-flex min-h-11 items-center rounded-md border border-bakery-brown/20 px-3 py-2 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10"
                             >
-                                {{ $t("admin_orders.actions.details") }}
+                                {{ $t("common.details") }}
                             </Link>
                         </template>
                     </Column>

@@ -213,7 +213,7 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
 
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
-                            {{ $t("table.rows_per_page") }}
+                            {{ $t("common.rows_per_page") }}
                         </label>
                         <Select
                             v-model="filterState.per_page"
@@ -265,7 +265,7 @@ const { formatCurrency, formatQuantity } = useLocaleFormat();
                     @clear-selection="selectedTerms = []"
                 >
                     <Column selection-mode="multiple" header-style="width:3rem" />
-                    <Column field="ingredient" :header="$t('admin_supplier_terms.columns.ingredient')" sortable>
+                    <Column field="ingredient" :header="$t('common.ingredient')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">

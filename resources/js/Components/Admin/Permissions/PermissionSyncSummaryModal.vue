@@ -30,7 +30,7 @@ const close = () => emit("update:visible", false);
             <div class="grid gap-3 sm:grid-cols-3">
                 <div class="rounded-lg bg-emerald-50 p-3">
                     <p class="text-xs uppercase tracking-[0.12em] text-emerald-700">
-                        {{ $t("admin_permissions.sync_summary.created") }}
+                        {{ $t("common.create") }}
                     </p>
                     <p class="text-xl font-semibold text-emerald-800">{{ props.summary.created_count ?? 0 }}</p>
                 </div>
@@ -50,7 +50,7 @@ const close = () => emit("update:visible", false);
 
             <div class="space-y-2 rounded-lg border border-bakery-brown/15 bg-[#fff9f1] p-3 text-sm text-bakery-dark">
                 <p>
-                    <span class="font-medium">{{ $t("admin_permissions.sync_summary.created_permissions") }}</span>
+                    <span class="font-medium">{{ $t("common.create_permissions") }}</span>
                     {{
                         (props.summary.created_permissions ?? []).join(", ") ||
                         $t("admin_permissions.sync_summary.none")

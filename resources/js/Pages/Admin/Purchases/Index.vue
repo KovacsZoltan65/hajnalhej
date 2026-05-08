@@ -133,7 +133,7 @@ const postNow = (purchase) => {
         header: trans("admin_purchases.header"),
         message: trans("admin_purchases.message", { id: ref }),
         rejectLabel: trans("common.cancel"),
-        acceptLabel: trans("admin_purchases.accounting"),
+        acceptLabel: trans("common.accounting"),
         accept: () => {
             router.post(route("admin.purchases.post", purchase.id), {}, { preserveScroll: true });
         },
@@ -238,7 +238,7 @@ const statusClass = (status) => {
                     <!-- SOR / OLDAL -->
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
-                            $t("table.rows_per_page")
+                            $t("common.rows_per_page")
                         }}</label>
                         <Select
                             v-model="filterState.per_page"

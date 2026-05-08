@@ -79,7 +79,7 @@ const submit = () => {
     <Dialog
         :visible="visible"
         modal
-        header="Heti menü tétel szerkesztése"
+        :header="$t('admin_weekly_menus.item_edit')"
         :style="{ width: '48rem', maxWidth: '96vw' }"
         @update:visible="(value) => emit('update:visible', value)"
     >
@@ -87,8 +87,8 @@ const submit = () => {
             <WeeklyMenuItemForm :form="form" :products="products" />
 
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Mégse" @click="close" />
-                <Button type="submit" label="Tétel frissítése" />
+                <Button type="button" severity="secondary" :label="$t('common.cancel')" @click="close" />
+                <Button type="submit" :label="$t('common.save')" />
             </div>
         </form>
     </Dialog>

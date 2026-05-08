@@ -22,7 +22,7 @@ vi.mock("laravel-vue-i18n", () => ({
                 "admin_production_plans.requirements.stock": "Készlet",
                 "admin_production_plans.requirements.shortage": "Hiány",
                 "admin.production_plans.flow.warnings.insufficient": "Nincs elég készlet",
-                "admin.production_plans.flow.warnings.low_stock": "Alacsony készlet",
+                "common.low_stock_count": "Alacsony készlet",
                 "admin.production_plans.flow.target.earliest_ready_at":
                     "A kiválasztott termékek alapján a legkorábbi elkészülési idő: :datetime",
             }[key] ?? key;

@@ -73,7 +73,7 @@ const dayLabel = (days) => trans("admin_procurement_intelligence.units.days", { 
                             />
                         </th>
                         <th class="px-2 py-2">
-                            {{ trans("admin_procurement_intelligence.columns.ingredient") }}
+                            {{ trans("common.ingredient") }}
                         </th>
                         <th class="px-2 py-2 text-right">
                             {{ trans("admin_procurement_intelligence.columns.current_stock") }}

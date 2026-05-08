@@ -37,7 +37,9 @@ const close = () => emit("update:visible", false);
     >
         <form id="role-form" class="space-y-4" @submit.prevent="emit('submit')">
             <div class="space-y-2">
-                <label for="role-name" class="text-sm font-medium text-bakery-dark">Szerepkör neve</label>
+                <label for="role-name" class="text-sm font-medium text-bakery-dark">{{
+                    $t("admin_roles.role_name")
+                }}</label>
                 <InputText
                     id="role-name"
                     v-model="props.form.name"
@@ -45,7 +47,7 @@ const close = () => emit("update:visible", false);
                     :invalid="Boolean(props.form.errors.name)"
                     placeholder="pl. bakery-manager"
                 />
-                <p class="text-xs text-bakery-dark/65">Kisbetü, szám, pont, kötőjel vagy aláhúzás használható.</p>
+                <p class="text-xs text-bakery-dark/65">{{ $t("admin_roles.used_characters") }}.</p>
                 <p v-if="props.form.errors.name" class="text-xs text-red-700">
                     {{ props.form.errors.name }}
                 </p>
@@ -54,7 +56,7 @@ const close = () => emit("update:visible", false);
 
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Mégse" @click="close" />
+                <Button type="button" severity="secondary" :label="$t('common.cancel')" @click="close" />
                 <Button
                     type="submit"
                     form="role-form"

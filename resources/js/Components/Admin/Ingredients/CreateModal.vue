@@ -42,7 +42,7 @@ const close = () => emit("update:visible", false);
                 <Button
                     type="submit"
                     form="ingredient-create-form"
-                    :label="$t('admin_production_plans.actions.store')"
+                    :label="$t('common.creation')"
                     :loading="form.processing"
                 />
             </div>

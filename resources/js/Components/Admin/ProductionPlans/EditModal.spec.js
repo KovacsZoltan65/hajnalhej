@@ -6,9 +6,9 @@ vi.mock("laravel-vue-i18n", () => ({
         const translations = {
             "common.cancel": "Mégse",
             "admin_production_plans.modals.edit_title": "Gyártási terv szerkesztése",
-            "admin_production_plans.actions.save": "Mentés",
-            "admin_production_plans.summary.active_minutes": "Aktív idő",
-            "admin_production_plans.summary.wait_minutes": "Várakozási idő",
+            "common.save": "Mentés",
+            "common.active_minutes": "Aktív idő",
+            "common.wait_minutes": "Várakozási idő",
             "admin_production_plans.summary.recipe_minutes": "Teljes receptidő",
             "admin_production_plans.summary.shortage_ingredients": "Hiányos alapanyagok",
             "admin_production_plans.units.minutes": ":count perc",

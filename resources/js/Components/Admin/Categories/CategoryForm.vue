@@ -52,7 +52,7 @@ watch(
 
         <div class="space-y-2">
             <label for="category-sort-order" class="text-sm font-medium text-bakery-dark">{{
-                $t("admin_categories.columns.sort_order")
+                $t("common.sort_order")
             }}</label>
             <InputNumber id="category-sort-order" v-model="form.sort_order" :min="0" fluid />
             <p v-if="form.errors.sort_order" class="text-xs text-red-700">

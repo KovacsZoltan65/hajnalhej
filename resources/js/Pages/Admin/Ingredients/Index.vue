@@ -230,7 +230,7 @@ const confirmDelete = (ingredient) => {
 
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
-                            $t("admin_ingredients.filters.unit")
+                            $t("common.unit")
                         }}</label>
                         <Select
                             v-model="filterState.unit"
@@ -244,7 +244,7 @@ const confirmDelete = (ingredient) => {
 
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
-                            $t("table.rows_per_page")
+                            $t("common.rows_per_page")
                         }}</label>
                         <Select
                             v-model="filterState.per_page"
@@ -309,7 +309,7 @@ const confirmDelete = (ingredient) => {
                             </div>
                         </template>
                     </Column>
-                    <Column field="unit" :header="$t('admin_ingredients.columns.unit')" sortable>
+                    <Column field="unit" :header="$t('common.unit')" sortable>
                         <template #body="{ data }">
                             <InlineEditableSelect
                                 :model-value="data.unit"

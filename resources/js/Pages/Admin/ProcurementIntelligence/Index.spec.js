@@ -10,7 +10,7 @@ const { translate } = vi.hoisted(() => {
         "admin_procurement_intelligence.title": "Beszerzési intelligencia",
         "admin_procurement_intelligence.description":
             "Valós beszerzési tételek, készletmozgások és BOM használat alapján számolt ártrendek, fogyási előrejelzés és minimum készlet alapú utánrendelési jelzések.",
-        "admin_procurement_intelligence.filters.ingredient": "Alapanyag",
+        "common.ingredient": "Alapanyag",
         "common.supplier": "Beszállító",
         "admin_procurement_intelligence.filters.urgency": "Sürgősség",
         "admin_procurement_intelligence.filters.alert_type": "Figyelmeztetés típusa",
@@ -29,7 +29,7 @@ const { translate } = vi.hoisted(() => {
         "admin_procurement_intelligence.counts.points": ":count pont",
         "admin_procurement_intelligence.counts.ingredients": ":count alapanyag",
         "admin_procurement_intelligence.counts.alerts": ":count jelzés",
-        "admin_procurement_intelligence.columns.ingredient": "Alapanyag",
+        "common.ingredient": "Alapanyag",
         "common.supplier": "Beszállító",
         "admin_procurement_intelligence.columns.last_price": "Utolsó ár",
         "admin_procurement_intelligence.columns.previous_price": "Előző ár",

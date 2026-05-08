@@ -83,7 +83,7 @@ const close = () => emit("update:visible", false);
     <Dialog
         :visible="visible"
         modal
-        :header="item ? 'Hozzávaló szerkesztése' : 'Új hozzávaló'"
+        :header="item ? $t('admin_ingredients.actions.edit') : $t('admin_ingredients.actions.create')"
         :style="{ width: '44rem', maxWidth: '97vw' }"
         :content-style="{ maxHeight: '70vh', overflowY: 'auto' }"
         @update:visible="(value) => emit('update:visible', value)"
@@ -99,7 +99,7 @@ const close = () => emit("update:visible", false);
                     :options="ingredientOptions"
                     option-label="name"
                     option-value="id"
-                    placeholder="Alapanyag"
+                    :placeholder="$t('common.ingredient')"
                     class="w-full"
                     filter
                 >
@@ -119,7 +119,7 @@ const close = () => emit("update:visible", false);
                                         : 'bg-emerald-100 text-emerald-800'
                                 "
                             >
-                                {{ slotProps.option.is_low_stock ? "Alacsony készlet" : "OK" }}
+                                {{ slotProps.option.is_low_stock ? $t("common.low_stock_count") : "OK" }}
                             </span>
                         </div>
                     </template>
@@ -136,11 +136,11 @@ const close = () => emit("update:visible", false);
                     :min="0.001"
                     :min-fraction-digits="0"
                     :max-fraction-digits="3"
-                    placeholder="Mennyiség"
+                    :placeholder="$t('common.unit')"
                     fluid
                 />
                 <p class="mt-1 text-xs text-bakery-dark/65">
-                    {{ selectedIngredient ? selectedIngredient.unit : "Mertekegyseg" }}
+                    {{ selectedIngredient ? selectedIngredient.unit : $t("common.unit") }}
                 </p>
                 <p v-if="errors.quantity" class="text-xs text-red-700">
                     {{ errors.quantity }}
@@ -155,7 +155,7 @@ const close = () => emit("update:visible", false);
             </div>
 
             <div class="md:col-span-4">
-                <InputText v-model="form.notes" placeholder="Megjegyzés" class="w-full" />
+                <InputText v-model="form.notes" :placeholder="$t('common.notes')" class="w-full" />
                 <p v-if="errors.notes" class="mt-1 text-xs text-red-700">
                     {{ errors.notes }}
                 </p>
@@ -163,8 +163,12 @@ const close = () => emit("update:visible", false);
         </form>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Mégse" @click="close" />
-                <Button type="submit" form="recipe-ingredient-form" :label="item ? 'Mentés' : 'Hozzáadás'" />
+                <Button type="button" severity="secondary" :label="$t('common.cancel')" @click="close" />
+                <Button
+                    type="submit"
+                    form="recipe-ingredient-form"
+                    :label="item ? $t('common.save') : $t('common.add')"
+                />
             </div>
         </template>
     </Dialog>

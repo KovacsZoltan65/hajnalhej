@@ -124,7 +124,7 @@ const generatePurchaseDrafts = () => {
                         :options="filter_options.ingredients"
                         option-label="label"
                         option-value="value"
-                        :placeholder="trans('admin_procurement_intelligence.filters.ingredient')"
+                        :placeholder="trans('common.ingredient')"
                         show-clear
                         filter
                         class="min-h-11 w-full"

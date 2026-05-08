@@ -8,7 +8,7 @@ const { translate } = vi.hoisted(() => {
         "admin_permissions.show_title": "Jogosultság: :name",
         "admin_permissions.show_description": "Registry metadata, használat és drift állapot áttekintése.",
         "common.back_to_list": "Vissza a listára",
-        "admin_permissions.fields.permission": "Jogosultság",
+        "common.permission": "Jogosultság",
         "admin_permissions.fields.registry_state": "Registry állapot",
         "admin_permissions.fields.label": "Label",
         "admin_permissions.fields.module": "Modul",
@@ -16,8 +16,8 @@ const { translate } = vi.hoisted(() => {
         "admin_permissions.fields.dangerous": "Veszélyes",
         "admin_permissions.fields.guard": "Guard",
         "admin_permissions.fields.audit_sensitive": "Auditérzékeny",
-        "admin_permissions.values.yes": "Igen",
-        "admin_permissions.values.no": "Nem",
+        "common.yes": "Igen",
+        "common.no": "Nem",
     };
 
     return {

@@ -19,7 +19,7 @@ defineProps({
 
     <div class="space-y-8">
         <SectionTitle
-            :eyebrow="$t('dashboard.eyebrow')"
+            :eyebrow="$t('common.admin')"
             :title="$t('nav.dashboard')"
             :description="$t('dashboard.description')"
         />

@@ -77,14 +77,6 @@ const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPag
 const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
 const activeOptions = createActiveOptions(trans);
 
-/*
-const activeOptions = [
-    { label: "Mind", value: "" },
-    { label: "Aktív", value: "1" },
-    { label: "Inaktív", value: "0" },
-];
-*/
-
 const form = useForm({
     category_id: null,
     name: "",
@@ -178,10 +170,10 @@ const submitEdit = () => {
 
 const confirmDelete = (product) => {
     confirm.require({
-        header: "Termék törlése",
-        message: `Biztosan törlöd ezt a terméket: ${product.name}?`,
-        rejectLabel: "Mégse",
-        acceptLabel: "Törlés",
+        header: trans("admin_product.delete.header"),
+        message: trans("admin_product.delete.message", { name: product.name }) + "?",
+        rejectLabel: trans("common.cancel"),
+        acceptLabel: trans("common.delete"),
         acceptClass: "p-button-danger",
         accept: () => {
             router.delete(route("admin.products.destroy", product.id), {
@@ -193,13 +185,13 @@ const confirmDelete = (product) => {
 </script>
 
 <template>
-    <Head title="Termékek" />
+    <Head :title="$t('common.products')" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Termékek"
-            title="Termékek"
-            description="A Kategóriák referencia modul mintájára épített teljes termékkezelés."
+            :eyebrow="$t('common.admin_products')"
+            :title="$t('common.products')"
+            :description="$t('admin_product.description') + '.'"
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
@@ -207,22 +199,22 @@ const confirmDelete = (product) => {
                 <template #filters>
                     <!-- KERESÉS -->
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Keresés</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.search")
+                        }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Név vagy slug"
+                            :placeholder="$t('common.search_placeholder')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <!-- KATEGÓRIA -->
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Kategória</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.category")
+                        }}</label>
                         <Select
                             v-model="filterState.category_id"
                             :options="[{ id: null, name: 'Mind' }, ...categories]"
@@ -234,9 +226,9 @@ const confirmDelete = (product) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Státusz</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.status")
+                        }}</label>
                         <Select
                             v-model="filterState.is_active"
                             :options="activeOptions"
@@ -248,9 +240,9 @@ const confirmDelete = (product) => {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Találat / oldal</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.rows_per_page")
+                        }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -326,7 +318,7 @@ const confirmDelete = (product) => {
                             </div>
                         </template>
                     </Column>
-                    <Column field="category_id" :header="$t('admin.products.flow.fields.category')" sortable>
+                    <Column field="category_id" :header="$t('common.category')" sortable>
                         <template #body="{ data }">
                             <InlineEditableSelect
                                 :model-value="data.category_id"

@@ -233,7 +233,7 @@ const runSync = () => {
 
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
-                            $t("table.rows_per_page")
+                            $t("common.rows_per_page")
                         }}</label>
                         <Select
                             v-model="filterState.per_page"
@@ -313,7 +313,7 @@ const runSync = () => {
                         </div>
                     </template>
 
-                    <Column field="name" :header="$t('admin_permissions.columns.permission')">
+                    <Column field="name" :header="$t('common.permission')">
                         <template #body="{ data }">
                             <PermissionBadge :name="data.name" />
                         </template>
@@ -337,8 +337,8 @@ const runSync = () => {
                         </template>
                     </Column>
 
-                    <Column field="roles_count" :header="$t('admin_permissions.columns.roles')" />
-                    <Column field="users_count" :header="$t('admin_permissions.columns.users')" />
+                    <Column field="roles_count" :header="$t('common.roles')" />
+                    <Column field="users_count" :header="$t('common.users')" />
                     <Column field="guard_name" :header="$t('admin_permissions.columns.guard')" />
 
                     <Column :header="$t('common.actions')" :style="{ width: '9rem' }">

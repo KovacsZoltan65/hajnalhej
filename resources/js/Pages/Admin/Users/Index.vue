@@ -22,7 +22,7 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 
 import { trans } from "laravel-vue-i18n";
 import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
-import { pageOptions as createPerPageOptions } from "@/Utils/functions";
+import { pageOptions as createPerPageOptions, activeOptions as createActiveOptions } from "@/Utils/functions";
 
 defineOptions({ layout: AdminLayout });
 
@@ -37,12 +37,7 @@ const props = defineProps({
 });
 
 const title = computed(() => props.item?.title ?? trans("nav.users"));
-/*
-const title = computed(() => {
-    get: () => {}
-    set: () => {}
-});
-*/
+
 const confirm = useConfirm();
 const loading = ref(false);
 const createVisible = ref(false);
@@ -71,14 +66,8 @@ const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPag
 });
 
 const perPageOptions = createPerPageOptions(trans, [15, 30, 50]);
+const statusOptions = createActiveOptions(trans);
 /*
-const perPageOptions = [
-    { label: "15 / oldal", value: 15 },
-    { label: "30 / oldal", value: 30 },
-    { label: "50 / oldal", value: 50 },
-];
-*/
-
 const statusOptions = computed(() => [
     { label: "Mind", value: "" },
     ...props.status_options.map((status) => ({
@@ -86,7 +75,7 @@ const statusOptions = computed(() => [
         value: status,
     })),
 ]);
-
+*/
 const roleOptions = computed(() => props.roles.map((role) => ({ label: role.name, value: role.name })));
 const permissionOptions = computed(() =>
     props.permissions.map((permission) => ({
@@ -96,7 +85,7 @@ const permissionOptions = computed(() =>
 );
 const discountTypeOptions = computed(() =>
     props.discount_types.map((type) => ({
-        label: type === "percent" ? "Százalék" : "Fix összeg",
+        label: type === "percent" ? trans("common.percent") : trans("common.fixed_amount"),
         value: type,
     }))
 );
@@ -180,10 +169,10 @@ const submitEdit = () => {
 
 const confirmDeactivate = (user) => {
     confirm.require({
-        header: "Felhasználó inaktiválása",
-        message: `Biztosan inaktiválod ezt a felhasználót: ${user.name}?`,
-        rejectLabel: "Mégse",
-        acceptLabel: "Inaktiválás",
+        header: trans("admin_user.inactivate"),
+        message: trans("admin_user.inactivate_message", { name: user.name }),
+        rejectLabel: trans("common.cancel"),
+        acceptLabel: trans("admin_user.inactivate"),
         acceptClass: "p-button-danger",
         accept: () =>
             router.delete(route("admin.users.destroy", user.id), {
@@ -269,7 +258,7 @@ const deactivateDiscount = (discount) => {
 };
 
 const statusSeverity = (status) => (status === "active" ? "success" : "secondary");
-const statusLabel = (status) => (status === "active" ? "Aktív" : "Inaktív");
+const statusLabel = (status) => (status === "active" ? trans("common.active") : trans("common.inactive"));
 const discountLabel = (discount) => (discount.type === "percent" ? `${discount.value}%` : `${discount.value} Ft`);
 </script>
 
@@ -278,22 +267,22 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Felhasználók"
-            title="Felhasználók"
-            description="Felhasználói adatok, szerepkörök, rendelési előzmények és kedvezmények kezelése."
+            :eyebrow="$t('common.admin_users')"
+            :title="$t('common.users')"
+            :description="$t('admin_users.description')"
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 xl:grid-cols-3'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Keresés</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.search")
+                        }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Név, email vagy telefon"
+                            :placeholder="$t('common.search_placeholder_02')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
@@ -311,9 +300,9 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                         />
                     </div>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Találat / oldal</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.rows_per_page")
+                        }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -326,8 +315,8 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button v-if="can.create" icon="pi pi-plus" label="Új felhasználó" @click="openCreate" />
+                    <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
+                    <Button v-if="can.create" icon="pi pi-plus" :label="$t('admin_user.new')" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
@@ -352,15 +341,20 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                         <div
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
-                            <p>Nincs megjeleníthető felhasználó.</p>
+                            <p>{{ $t("admin_user.empty") }}</p>
                             <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
                                 <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
-                                <Button v-if="can.create" label="Új felhasználó" size="small" @click="openCreate" />
+                                <Button
+                                    v-if="can.create"
+                                    :label="$t('admin_user.new')"
+                                    size="small"
+                                    @click="openCreate"
+                                />
                             </div>
                         </div>
                     </template>
 
-                    <Column field="name" header="Név" sortable>
+                    <Column field="name" :header="$t('common.name')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">
@@ -372,13 +366,13 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                             </div>
                         </template>
                     </Column>
-                    <Column field="phone" header="Telefon" />
-                    <Column field="status" header="Státusz" sortable>
+                    <Column field="phone" :header="$t('common.phone')" />
+                    <Column field="status" :header="$t('common.status')" sortable>
                         <template #body="{ data }">
                             <Tag :value="statusLabel(data.status)" :severity="statusSeverity(data.status)" />
                         </template>
                     </Column>
-                    <Column header="Szerepkörök">
+                    <Column :header="$t('common.roles')">
                         <template #body="{ data }">
                             <div class="flex flex-wrap gap-1.5">
                                 <Tag
@@ -390,12 +384,12 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                             </div>
                         </template>
                     </Column>
-                    <Column header="Rendelések">
+                    <Column :header="$t('nav.orders')">
                         <template #body="{ data }">
                             <span class="text-sm text-bakery-dark/75">{{ data.orders_count }}</span>
                         </template>
                     </Column>
-                    <Column header="Műveletek" :exportable="false">
+                    <Column :header="$t('common.actions')" :exportable="false">
                         <template #body="{ data }">
                             <div class="flex items-center gap-2">
                                 <Button
@@ -403,7 +397,7 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                                     text
                                     rounded
                                     class="h-11! w-11!"
-                                    aria-label="Felhasználó szerkesztése"
+                                    :aria-label="$t('admin_user.edit')"
                                     @click="openEdit(data)"
                                 />
                                 <Button
@@ -413,7 +407,7 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                                     rounded
                                     severity="danger"
                                     class="h-11! w-11!"
-                                    aria-label="Felhasználó inaktiválása"
+                                    :aria-label="$t('admin_user.inactivate')"
                                     @click="confirmDeactivate(data)"
                                 />
                             </div>
@@ -433,28 +427,28 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
             <form id="user-create-form" class="space-y-4" @submit.prevent="submitCreate">
                 <div class="grid gap-4 md:grid-cols-2">
                     <div class="space-y-2">
-                        <label class="text-sm font-medium text-bakery-dark">Név</label
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("common.name") }}</label
                         ><InputText v-model="userForm.name" class="w-full" />
                         <p v-if="userForm.errors.name" class="text-xs text-red-700">
                             {{ userForm.errors.name }}
                         </p>
                     </div>
                     <div class="space-y-2">
-                        <label class="text-sm font-medium text-bakery-dark">Email</label
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("common.email") }}</label
                         ><InputText v-model="userForm.email" class="w-full" />
                         <p v-if="userForm.errors.email" class="text-xs text-red-700">
                             {{ userForm.errors.email }}
                         </p>
                     </div>
                     <div class="space-y-2">
-                        <label class="text-sm font-medium text-bakery-dark">Telefon</label
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("common.phone") }}</label
                         ><InputText v-model="userForm.phone" class="w-full" />
                         <p v-if="userForm.errors.phone" class="text-xs text-red-700">
                             {{ userForm.errors.phone }}
                         </p>
                     </div>
                     <div class="space-y-2">
-                        <label class="text-sm font-medium text-bakery-dark">Státusz</label
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("common.status") }}</label
                         ><Select
                             v-model="userForm.status"
                             :options="statusOptions.filter((item) => item.value)"
@@ -464,14 +458,14 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                         />
                     </div>
                     <div class="space-y-2 md:col-span-2">
-                        <label class="text-sm font-medium text-bakery-dark">Jelszó</label
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("admin_user.password") }}</label
                         ><InputText v-model="userForm.password" type="password" class="w-full" />
                         <p v-if="userForm.errors.password" class="text-xs text-red-700">
                             {{ userForm.errors.password }}
                         </p>
                     </div>
                     <div v-if="can.manage_roles" class="space-y-2 md:col-span-2">
-                        <label class="text-sm font-medium text-bakery-dark">Szerepkörök</label
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("common.roles") }}</label
                         ><MultiSelect
                             v-model="userForm.roles"
                             :options="roleOptions"
@@ -484,8 +478,13 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                 </div>
             </form>
             <template #footer>
-                <Button label="Mégse" severity="secondary" @click="createVisible = false" />
-                <Button type="submit" form="user-create-form" label="Létrehozás" :loading="userForm.processing" />
+                <Button :label="$t('common.cancel')" severity="secondary" @click="createVisible = false" />
+                <Button
+                    type="submit"
+                    form="user-create-form"
+                    :label="$t('common.creation')"
+                    :loading="userForm.processing"
+                />
             </template>
         </Dialog>
 
@@ -493,26 +492,26 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
         <Dialog
             v-model:visible="editVisible"
             modal
-            header="Felhasználó szerkesztése"
+            :header="$t('admin_user.edit')"
             :style="{ width: '70rem', maxWidth: '96vw' }"
             :content-style="{ maxHeight: '76vh', overflowY: 'auto' }"
         >
             <form id="user-edit-form" class="space-y-4" @submit.prevent="submitEdit">
                 <div class="grid gap-4 md:grid-cols-2">
                     <div class="space-y-2">
-                        <label class="text-sm font-medium text-bakery-dark">Név</label
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("common.name") }}</label
                         ><InputText v-model="userForm.name" class="w-full" />
                     </div>
                     <div class="space-y-2">
-                        <label class="text-sm font-medium text-bakery-dark">Email</label
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("common.email") }}</label
                         ><InputText v-model="userForm.email" class="w-full" />
                     </div>
                     <div class="space-y-2">
-                        <label class="text-sm font-medium text-bakery-dark">Telefon</label
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("common.phone") }}</label
                         ><InputText v-model="userForm.phone" class="w-full" />
                     </div>
                     <div class="space-y-2">
-                        <label class="text-sm font-medium text-bakery-dark">Státusz</label
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("common.status") }}</label
                         ><Select
                             v-model="userForm.status"
                             :options="statusOptions.filter((item) => item.value)"
@@ -522,16 +521,16 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                         />
                     </div>
                     <div class="space-y-2 md:col-span-2">
-                        <label class="text-sm font-medium text-bakery-dark">Új jelszó</label
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("admin_user.new_password") }}</label
                         ><InputText
                             v-model="userForm.password"
                             type="password"
                             class="w-full"
-                            placeholder="Csak akkor módosul, ha kitöltöd"
+                            :placeholder="$t('admin_user.new_password_placeholder')"
                         />
                     </div>
                     <div v-if="can.manage_roles" class="space-y-2 md:col-span-2">
-                        <label class="text-sm font-medium text-bakery-dark">Szerepkörök</label
+                        <label class="text-sm font-medium text-bakery-dark">{{ $t("common.roles") }}</label
                         ><MultiSelect
                             v-model="userForm.roles"
                             :options="roleOptions"
@@ -547,31 +546,33 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
             <div v-if="selectedUser" class="mt-6 grid gap-4 xl:grid-cols-3">
                 <section class="rounded-xl border border-bakery-brown/15 p-4 xl:col-span-3">
                     <div class="mb-3 flex items-center justify-between">
-                        <h3 class="font-semibold text-bakery-dark">Rendelések</h3>
-                        <span class="text-xs text-bakery-dark/60">{{ selectedUser.orders_count }} rendelés</span>
+                        <h3 class="font-semibold text-bakery-dark">
+                            {{ $t("nav.orders") }}
+                        </h3>
+                        <span class="text-xs text-bakery-dark/60"
+                            >{{ selectedUser.orders_count }} {{ $t("audit_logs.subject_types.order") }}</span
+                        >
                     </div>
                     <DataTable :value="selectedUser.orders" size="small">
                         <template #empty
-                            ><p class="py-3 text-sm text-bakery-dark/60">
-                                Nincs rendelés ehhez a felhasználóhoz.
-                            </p></template
+                            ><p class="py-3 text-sm text-bakery-dark/60">{{ $t("admin_users.empty") }}.</p></template
                         >
-                        <Column field="order_number" header="Rendelés" />
-                        <Column field="status" header="Státusz" />
-                        <Column field="total" header="Végösszeg" />
-                        <Column header="Átvétel"
+                        <Column field="order_number" :header="$t('audit_logs.subject_types.order')" />
+                        <Column field="status" :header="$t('common.status')" />
+                        <Column field="total" :header="$t('admin_orders.columns.total')" />
+                        <Column :header="$t('common.pickup')"
                             ><template #body="{ data }"
                                 >{{ data.pickup_date }} {{ data.pickup_time_slot }}</template
                             ></Column
                         >
-                        <Column field="created_at" header="Létrehozva" />
+                        <Column field="created_at" :header="$t('common.create')" />
                         <Column header=""
                             ><template #body="{ data }"
                                 ><Link
                                     v-if="can.view_orders"
                                     :href="data.show_url"
                                     class="text-sm font-semibold text-bakery-brown"
-                                    >Részletek</Link
+                                    >{{ $t("common.details") }}</Link
                                 ></template
                             ></Column
                         >
@@ -579,7 +580,9 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                 </section>
 
                 <section class="rounded-xl border border-bakery-brown/15 p-4 xl:col-span-1">
-                    <h3 class="mb-3 font-semibold text-bakery-dark">Időleges jogosultságok</h3>
+                    <h3 class="mb-3 font-semibold text-bakery-dark">
+                        {{ $t("admin_roles.temporary_permissions") }}
+                    </h3>
                     <form
                         v-if="can.manage_temporary_permissions"
                         class="space-y-3"
@@ -592,7 +595,7 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                             option-value="value"
                             filter
                             class="w-full"
-                            placeholder="Jogosultság"
+                            :placeholder="$t('common.permission')"
                         />
                         <InputText v-model="temporaryPermissionForm.starts_at" type="datetime-local" class="w-full" />
                         <InputText v-model="temporaryPermissionForm.expires_at" type="datetime-local" class="w-full" />
@@ -600,10 +603,10 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                             v-model="temporaryPermissionForm.reason"
                             rows="2"
                             class="w-full"
-                            placeholder="Indok"
+                            :placeholder="$t('common.reason')"
                         />
                         <Button
-                            label="Jogosultság hozzáadása"
+                            :label="$t('admin_permissions.add')"
                             size="small"
                             :loading="temporaryPermissionForm.processing"
                         />
@@ -617,12 +620,12 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                             <div class="flex items-center justify-between gap-2">
                                 <span class="font-medium">{{ permission.permission_name }}</span
                                 ><Tag
-                                    :value="permission.is_active ? 'Érvényes' : 'Nem aktív'"
+                                    :value="permission.is_active ? $t('common.valid') : $t('common.not_valid')"
                                     :severity="permission.is_active ? 'success' : 'secondary'"
                                 />
                             </div>
                             <p class="mt-1 text-xs text-bakery-dark/60">
-                                {{ permission.expires_at ?? "Nincs lejárat" }}
+                                {{ permission.expires_at ?? $t("common.no_expiration_date") }}
                             </p>
                             <Button
                                 v-if="can.manage_temporary_permissions && !permission.revoked_at"
@@ -638,10 +641,12 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
 
                 <section class="rounded-xl border border-bakery-brown/15 p-4 xl:col-span-2">
                     <div class="mb-3 flex items-center justify-between">
-                        <h3 class="font-semibold text-bakery-dark">Kedvezmények</h3>
+                        <h3 class="font-semibold text-bakery-dark">
+                            {{ $t("admin_discounts.title") }}
+                        </h3>
                         <Button
                             v-if="selectedDiscountId"
-                            label="Új kedvezmény"
+                            :label="$t('admin_discounts.new')"
                             text
                             size="small"
                             @click="resetDiscountForm"
@@ -670,36 +675,40 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
                         <InputText v-model="discountForm.starts_at" type="datetime-local" class="w-full" />
                         <InputText v-model="discountForm.expires_at" type="datetime-local" class="w-full" />
                         <div class="flex items-center gap-2">
-                            <ToggleSwitch v-model="discountForm.active" /><span class="text-sm text-bakery-dark/75"
-                                >Aktív</span
-                            >
+                            <ToggleSwitch v-model="discountForm.active" /><span class="text-sm text-bakery-dark/75">{{
+                                $t("common.active")
+                            }}</span>
                         </div>
                         <Textarea
                             v-model="discountForm.reason"
                             rows="2"
                             class="w-full md:col-span-2"
-                            placeholder="Indok"
+                            :placeholder="$t('common.reason')"
                         />
                         <p v-if="discountForm.errors.value" class="text-xs text-red-700 md:col-span-2">
                             {{ discountForm.errors.value }}
                         </p>
                         <Button
                             class="md:col-span-2"
-                            :label="selectedDiscountId ? 'Kedvezmény mentése' : 'Kedvezmény hozzáadása'"
+                            :label="selectedDiscountId ? $t('admin_discounts.save') : $t('admin_discounts.add')"
                             :loading="discountForm.processing"
                         />
                     </form>
                     <DataTable class="mt-4" :value="selectedUser.discounts" size="small">
-                        <template #empty><p class="py-3 text-sm text-bakery-dark/60">Nincs kedvezmény.</p></template>
-                        <Column header="Érték"
+                        <template #empty
+                            ><p class="py-3 text-sm text-bakery-dark/60">
+                                {{ $t("admin_discounts.no_discount") }}.
+                            </p></template
+                        >
+                        <Column :header="$t('admin_inventory.columns.value')"
                             ><template #body="{ data }">{{ discountLabel(data) }}</template></Column
                         >
-                        <Column field="reason" header="Indok" />
-                        <Column header="Aktív"
+                        <Column field="reason" :header="$t('common.reason')" />
+                        <Column :header="$t('common.active')"
                             ><template #body="{ data }"
                                 ><Checkbox :model-value="data.active" binary disabled /></template
                         ></Column>
-                        <Column header="Műveletek"
+                        <Column header="$t('common.actions')"
                             ><template #body="{ data }"
                                 ><Button icon="pi pi-pencil" text rounded @click="editDiscount(data)" /><Button
                                     icon="pi pi-ban"
@@ -713,8 +722,8 @@ const discountLabel = (discount) => (discount.type === "percent" ? `${discount.v
             </div>
 
             <template #footer>
-                <Button label="Mégse" severity="secondary" @click="editVisible = false" />
-                <Button type="submit" form="user-edit-form" label="Mentés" :loading="userForm.processing" />
+                <Button :label="$t('common.cancel')" severity="secondary" @click="editVisible = false" />
+                <Button type="submit" form="user-edit-form" :label="$t('common.save')" :loading="userForm.processing" />
             </template>
         </Dialog>
 

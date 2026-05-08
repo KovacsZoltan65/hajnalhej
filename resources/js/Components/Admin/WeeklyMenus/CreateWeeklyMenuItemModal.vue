@@ -66,7 +66,7 @@ const submit = () => {
     <Dialog
         :visible="visible"
         modal
-        header="Új heti menü tétel"
+        :header="$t('common.new_weekly_menu_item')"
         :style="{ width: '48rem', maxWidth: '96vw' }"
         @update:visible="(value) => emit('update:visible', value)"
     >
@@ -74,8 +74,8 @@ const submit = () => {
             <WeeklyMenuItemForm :form="form" :products="products" />
 
             <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" label="Mégse" @click="close" />
-                <Button type="submit" label="Tétel hozzáadása" />
+                <Button type="button" severity="secondary" :label="$t('common.cancel')" @click="close" />
+                <Button type="submit" :label="$t('common.add_item')" />
             </div>
         </form>
     </Dialog>

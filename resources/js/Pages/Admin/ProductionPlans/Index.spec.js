@@ -23,7 +23,7 @@ const { translate, routerGet, routerDelete, confirmRequire, formPost, formPut } 
         "common.status": "Státusz",
         "admin_production_plans.filters.target_from": "Célidő -tól",
         "admin_production_plans.filters.target_to": "Célidő -ig",
-        "table.rows_per_page": "Találat / oldal",
+        "common.rows_per_page": "Találat / oldal",
         "admin_production_plans.filters.per_page_option": ":count / oldal",
         "admin_production_plans.columns.plan": "Terv",
         "admin_production_plans.columns.target_time": "Célidő",

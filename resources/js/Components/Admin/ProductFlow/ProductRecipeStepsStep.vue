@@ -60,7 +60,7 @@ const removeStep = (index) => {
         <div
             class="grid gap-3 rounded-lg border border-bakery-brown/15 bg-[#fcf7ef] p-3 lg:grid-cols-[minmax(0,1fr)_9rem_auto]"
         >
-            <InputText v-model="draft.title" :placeholder="$t('admin.products.flow.fields.step_title')" />
+            <InputText v-model="draft.title" :placeholder="$t('common.step_title')" />
             <InputNumber v-model="draft.duration_minutes" :min="0" suffix=" min" />
             <Button icon="pi pi-plus" :label="$t('admin.products.flow.actions.add_step')" @click="addStep" />
             <Textarea

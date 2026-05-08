@@ -1,5 +1,6 @@
 import { mount } from "@vue/test-utils";
 import EditModal from "./EditModal.vue";
+import { trans } from "laravel-vue-i18n";
 
 const stubs = {
     Button: { props: ["label"], template: "<button>{{ label }}</button>" },
@@ -22,7 +23,7 @@ describe("IngredientSupplierTerms EditModal", () => {
             global: { stubs },
         });
 
-        expect(wrapper.text()).toContain("Beszállítói feltétel szerkesztése");
-        expect(wrapper.text()).toContain("Mentés");
+        expect(wrapper.text()).toContain(trans("admin_supplier_terms.actions.edit"));
+        expect(wrapper.text()).toContain(trans("common.save"));
     });
 });
