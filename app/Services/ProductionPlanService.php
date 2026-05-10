@@ -2,6 +2,12 @@
 
 namespace App\Services;
 
+use App\Data\ProductionPlans\ProductionPlanDetailData;
+use App\Data\ProductionPlans\ProductionPlanIndexData;
+use App\Data\ProductionPlans\ProductionPlanItemData;
+use App\Data\ProductionPlans\ProductionPlanStepData;
+use App\Data\ProductionPlans\ProductionPlanStoreData;
+use App\Data\ProductionPlans\ProductionPlanUpdateData;
 use App\Models\Ingredient;
 use App\Models\Product;
 use App\Models\ProductIngredient;
@@ -24,10 +30,7 @@ class ProductionPlanService
 {
     public function __construct(private readonly ProductionPlanRepository $repository) {}
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(ProductionPlanIndexData $filters): LengthAwarePaginator
     {
         return $this->repository->paginateForAdmin($filters);
     }
@@ -60,27 +63,25 @@ class ProductionPlanService
             ]);
     }
 
-    /**
-     * @param  array<string, mixed>  $data
-     */
-    public function create(array $data, int $userId): ProductionPlan
+    public function create(ProductionPlanStoreData $data, int $userId): ProductionPlan
     {
-        $this->ensureTargetReadyAtCanFitRecipe($data);
+        $payload = $data->toPayload();
+        $this->ensureTargetReadyAtCanFitRecipe($payload);
 
         /** @var ProductionPlan $productionPlan */
-        $productionPlan = DB::transaction(function () use ($data, $userId): ProductionPlan {
-            $targetAt = Carbon::parse((string) ($data['target_ready_at'] ?? $data['target_at']));
+        $productionPlan = DB::transaction(function () use ($payload, $userId): ProductionPlan {
+            $targetAt = Carbon::parse((string) ($payload['target_ready_at'] ?? $payload['target_at']));
 
             $plan = $this->repository->create([
                 'plan_number' => $this->buildPlanNumber(),
                 'target_at' => $targetAt,
-                'status' => $data['status'] ?? ProductionPlan::STATUS_DRAFT,
-                'notes' => $data['notes'] ?? null,
+                'status' => $payload['status'] ?? ProductionPlan::STATUS_DRAFT,
+                'notes' => $payload['notes'] ?? null,
                 'is_locked' => false,
                 'created_by' => $userId,
             ]);
 
-            $this->syncItems($plan, $data['items'] ?? []);
+            $this->syncItems($plan, $payload['items'] ?? []);
             $this->recalculate($plan);
 
             return $plan;
@@ -89,23 +90,21 @@ class ProductionPlanService
         return $this->repository->loadForEditor($productionPlan);
     }
 
-    /**
-     * @param  array<string, mixed>  $data
-     */
-    public function update(ProductionPlan $productionPlan, array $data): ProductionPlan
+    public function update(ProductionPlan $productionPlan, ProductionPlanUpdateData $data): ProductionPlan
     {
-        $this->ensureTargetReadyAtCanFitRecipe($data);
+        $payload = $data->toPayload();
+        $this->ensureTargetReadyAtCanFitRecipe($payload);
 
         /** @var ProductionPlan $updated */
-        $updated = DB::transaction(function () use ($productionPlan, $data): ProductionPlan {
+        $updated = DB::transaction(function () use ($productionPlan, $payload): ProductionPlan {
             $plan = $this->repository->update($productionPlan, [
-                'target_at' => Carbon::parse((string) ($data['target_ready_at'] ?? $data['target_at'])),
-                'status' => (string) ($data['status'] ?? $productionPlan->status),
-                'notes' => $data['notes'] ?? null,
-                'is_locked' => (bool) ($data['is_locked'] ?? false),
+                'target_at' => Carbon::parse((string) ($payload['target_ready_at'] ?? $payload['target_at'])),
+                'status' => (string) ($payload['status'] ?? $productionPlan->status),
+                'notes' => $payload['notes'] ?? null,
+                'is_locked' => (bool) ($payload['is_locked'] ?? false),
             ]);
 
-            $this->syncItems($plan, $data['items'] ?? []);
+            $this->syncItems($plan, $payload['items'] ?? []);
             $this->recalculate($plan);
 
             return $plan;
@@ -179,7 +178,7 @@ class ProductionPlanService
         $requirements = $this->buildIngredientRequirements($detailed);
         $summary = $this->buildSummary($plan, $detailed);
 
-        return [
+        return ProductionPlanDetailData::from([
             'id' => $plan->id,
             'plan_number' => $plan->plan_number,
             'target_at' => $plan->target_at?->toDateTimeString(),
@@ -194,7 +193,7 @@ class ProductionPlanService
             'items_count' => $plan->items->count(),
             'timeline_steps_count' => $plan->steps->count(),
             'items' => $detailed
-                ->map(fn (array $item): array => [
+                ->map(fn (array $item): array => ProductionPlanItemData::from([
                     'product_id' => $item['product']->id,
                     'product_name' => $item['product']->name,
                     'product_slug' => $item['product']->slug,
@@ -207,43 +206,22 @@ class ProductionPlanService
                     'total_wait_minutes' => $item['wait_minutes'],
                     'total_recipe_minutes' => $item['active_minutes'] + $item['wait_minutes'],
                     'suggested_start_at' => $item['suggested_start_at'],
-                ])
+                ])->toArray())
                 ->values()
                 ->all(),
             'timeline_steps' => $plan->steps
-                ->map(fn (ProductionPlanStep $step): array => [
-                    'id' => $step->id,
-                    'title' => $step->title,
-                    'step_type' => $step->step_type,
-                    'description' => $step->description,
-                    'work_instruction' => $step->work_instruction,
-                    'completion_criteria' => $step->completion_criteria,
-                    'attention_points' => $step->attention_points,
-                    'required_tools' => $step->required_tools,
-                    'expected_result' => $step->expected_result,
-                    'starts_at' => $step->starts_at?->toDateTimeString(),
-                    'ends_at' => $step->ends_at?->toDateTimeString(),
-                    'duration_minutes' => $step->duration_minutes,
-                    'wait_minutes' => $step->wait_minutes,
-                    'sort_order' => $step->sort_order,
-                    'timeline_group' => $step->timeline_group,
-                    'is_dependency' => $step->is_dependency,
-                    'product_name' => $step->product?->name,
-                    'depends_on_product_name' => $step->dependsOnProduct?->name,
-                ])
+                ->map(fn (ProductionPlanStep $step): array => ProductionPlanStepData::from($step)->toArray())
                 ->values()
                 ->all(),
             'ingredient_requirements' => $requirements,
             'summary' => $summary,
-        ];
+        ])->toArray();
     }
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function buildIndexSummary(array $filters = []): array
+    public function buildIndexSummary(?ProductionPlanIndexData $filters = null): array
     {
-        $plans = collect($this->paginateForAdmin(array_merge($filters, ['per_page' => 50]))->items());
+        $payload = $filters?->toPayload() ?? [];
+        $plans = collect($this->paginateForAdmin(ProductionPlanIndexData::from([...$payload, 'per_page' => 50]))->items());
 
         return [
             'total_plans' => $plans->count(),

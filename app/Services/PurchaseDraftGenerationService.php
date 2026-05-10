@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Data\Purchases\PurchaseStoreData;
 use App\Models\Ingredient;
 use App\Models\Purchase;
 use App\Models\User;
@@ -85,12 +86,12 @@ class PurchaseDraftGenerationService
                 continue;
             }
 
-            $drafts[] = $this->purchaseService->create([
+            $drafts[] = $this->purchaseService->create(PurchaseStoreData::from([
                 'supplier_id' => $first['supplier_id'],
                 'purchase_date' => now()->toDateString(),
                 'notes' => self::GENERATED_NOTE,
                 'items' => $items,
-            ], $actor);
+            ]), $actor);
         }
 
         if ($drafts === []) {

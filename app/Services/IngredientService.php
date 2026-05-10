@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use App\Data\Ingredients\IngredientIndexData;
+use App\Data\Ingredients\IngredientInlineUpdateData;
+use App\Data\Ingredients\IngredientStoreData;
+use App\Data\Ingredients\IngredientUpdateData;
 use App\Models\Ingredient;
 use App\Repositories\IngredientRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -12,10 +16,7 @@ class IngredientService
 {
     public function __construct(private readonly IngredientRepository $repository) {}
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(IngredientIndexData $filters): LengthAwarePaginator
     {
         return $this->repository->paginateForAdmin($filters);
     }
@@ -28,40 +29,30 @@ class IngredientService
         return $this->repository->listSelectableActive();
     }
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    public function create(array $payload): Ingredient
+    public function create(IngredientStoreData $payload): Ingredient
     {
-        $normalized = $this->normalizePayload($payload);
+        $normalized = $payload->toPayload();
+        $normalized['slug'] = $normalized['slug'] !== '' ? $normalized['slug'] : Str::slug((string) $normalized['name']);
         $normalized['slug'] = $this->resolveUniqueSlug((string) $normalized['slug']);
 
         return $this->repository->create($normalized);
     }
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    public function update(Ingredient $ingredient, array $payload): Ingredient
+    public function update(Ingredient $ingredient, IngredientUpdateData $payload): Ingredient
     {
-        $normalized = $this->normalizePayload($payload, $ingredient);
+        $normalized = $payload->toPayload();
+        $normalized['slug'] = $normalized['slug'] !== '' ? $normalized['slug'] : $ingredient->slug;
         $normalized['slug'] = $this->resolveUniqueSlug((string) $normalized['slug'], $ingredient->id);
 
         return $this->repository->update($ingredient, $normalized);
     }
 
-    /**
-     * @param  array{field:string,value:mixed}  $payload
-     */
-    public function updateInline(Ingredient $ingredient, array $payload): Ingredient
+    public function updateInline(Ingredient $ingredient, IngredientInlineUpdateData $payload): Ingredient
     {
-        $field = (string) $payload['field'];
-        $value = $payload['value'];
-
-        $normalized = match ($field) {
-            'current_stock' => ['current_stock' => number_format((float) $value, 3, '.', '')],
-            'minimum_stock' => ['minimum_stock' => number_format((float) $value, 3, '.', '')],
-            'unit' => ['unit' => (string) $value],
+        $normalized = match ($payload->field) {
+            'current_stock' => ['current_stock' => number_format((float) $payload->value, 3, '.', '')],
+            'minimum_stock' => ['minimum_stock' => number_format((float) $payload->value, 3, '.', '')],
+            'unit' => ['unit' => (string) $payload->value],
             default => [],
         };
 
@@ -74,38 +65,6 @@ class IngredientService
     public function delete(Ingredient $ingredient): void
     {
         $this->repository->delete($ingredient);
-    }
-
-    /**
-     * @param  array<string, mixed>  $payload
-     * @return array<string, mixed>
-     */
-    private function normalizePayload(array $payload, ?Ingredient $ingredient = null): array
-    {
-        $name = trim((string) ($payload['name'] ?? ''));
-        $slugInput = trim((string) ($payload['slug'] ?? ''));
-
-        if ($slugInput === '') {
-            $slugInput = Str::slug($name);
-        }
-
-        if ($slugInput === '') {
-            $slugInput = $ingredient?->slug ?? 'ingredient';
-        }
-
-        $sku = trim((string) ($payload['sku'] ?? ''));
-
-        return [
-            'name' => $name,
-            'slug' => $slugInput,
-            'sku' => $sku !== '' ? $sku : null,
-            'unit' => (string) ($payload['unit'] ?? 'db'),
-            'estimated_unit_cost' => number_format((float) ($payload['estimated_unit_cost'] ?? 0), 4, '.', ''),
-            'current_stock' => number_format((float) ($payload['current_stock'] ?? 0), 3, '.', ''),
-            'minimum_stock' => number_format((float) ($payload['minimum_stock'] ?? 0), 3, '.', ''),
-            'is_active' => (bool) ($payload['is_active'] ?? true),
-            'notes' => $payload['notes'] ?? null,
-        ];
     }
 
     /**

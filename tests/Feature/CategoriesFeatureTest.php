@@ -1,5 +1,9 @@
 <?php
 
+use App\Data\Categories\CategoryIndexData;
+use App\Data\Categories\CategoryListItemData;
+use App\Data\Categories\CategoryStoreData;
+use App\Data\Categories\CategoryUpdateData;
 use App\Models\Category;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -110,4 +114,98 @@ it('category lapozas mukodik', function (): void {
         ->component('Admin/Categories/Index')
         ->where('categories.current_page', 2)
         ->has('categories.data', 2));
+});
+
+it('category create data flow slugot general es egyedive tesz', function (): void {
+    $user = User::factory()->create();
+    Category::factory()->create(['name' => 'Kenyerek', 'slug' => 'kenyerek']);
+
+    $response = $this->actingAs($user)->post('/admin/categories', [
+        'name' => 'Kenyerek kovaszos',
+        'slug' => '',
+        'description' => null,
+        'is_active' => true,
+        'sort_order' => 3,
+    ]);
+
+    $response->assertRedirect('/admin/categories');
+
+    $this->assertDatabaseHas('categories', [
+        'name' => 'Kenyerek kovaszos',
+        'slug' => 'kenyerek-kovaszos',
+    ]);
+});
+
+it('category store data normalizalja a payloadot', function (): void {
+    $data = CategoryStoreData::from([
+        'name' => '  Kenyerek  ',
+        'slug' => '',
+        'description' => 'Kovaszos termekek',
+        'is_active' => true,
+        'sort_order' => 4,
+    ]);
+
+    expect($data->toPayload())->toBe([
+        'name' => 'Kenyerek',
+        'slug' => '',
+        'description' => 'Kovaszos termekek',
+        'is_active' => true,
+        'sort_order' => 4,
+    ]);
+});
+
+it('category update data kezeli az opcionális mezoket', function (): void {
+    $data = CategoryUpdateData::from([
+        'name' => 'Pizza',
+        'slug' => null,
+        'description' => null,
+        'is_active' => false,
+        'sort_order' => 0,
+    ]);
+
+    expect($data->toPayload())->toMatchArray([
+        'name' => 'Pizza',
+        'slug' => '',
+        'description' => null,
+        'is_active' => false,
+        'sort_order' => 0,
+    ]);
+});
+
+it('category index data stabil frontend filter payloadot ad', function (): void {
+    $filters = CategoryIndexData::from([
+        'search' => '  keny  ',
+        'sort_field' => 'name',
+        'sort_direction' => 'desc',
+        'per_page' => 20,
+    ]);
+
+    expect($filters->toFrontendFilters())->toBe([
+        'search' => 'keny',
+        'sort_field' => 'name',
+        'sort_direction' => 'desc',
+        'per_page' => 20,
+    ]);
+});
+
+it('category list item data frontend kompatibilis mezoket ad', function (): void {
+    $category = Category::factory()->create([
+        'name' => 'Édes Pékáru',
+        'slug' => 'edes-pekaru',
+        'description' => 'Kalacsok es csigak',
+        'is_active' => true,
+        'sort_order' => 7,
+    ]);
+    $category->setAttribute('products_count', 5);
+
+    $data = CategoryListItemData::from($category)->toArray();
+
+    expect($data)->toMatchArray([
+        'name' => 'Édes Pékáru',
+        'slug' => 'edes-pekaru',
+        'description' => 'Kalacsok es csigak',
+        'is_active' => true,
+        'sort_order' => 7,
+        'products_count' => 5,
+    ]);
 });

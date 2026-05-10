@@ -1,5 +1,9 @@
 <?php
 
+use App\Data\IngredientSupplierTerms\IngredientSupplierTermIndexData;
+use App\Data\IngredientSupplierTerms\IngredientSupplierTermListItemData;
+use App\Data\IngredientSupplierTerms\IngredientSupplierTermStoreData;
+use App\Data\IngredientSupplierTerms\IngredientSupplierTermUpdateData;
 use App\Models\Ingredient;
 use App\Models\IngredientSupplierTerm;
 use App\Models\Supplier;
@@ -152,4 +156,90 @@ it('enforces policy access for customers', function (): void {
     $this->actingAs($customer)
         ->post('/admin/ingredient-supplier-terms', supplierTermPayload($ingredient, $supplier))
         ->assertForbidden();
+});
+
+it('ingredient supplier term store data normalizes validated payload', function (): void {
+    $data = IngredientSupplierTermStoreData::from([
+        'ingredient_id' => 5,
+        'supplier_id' => 9,
+        'lead_time_days' => 4,
+        'minimum_order_quantity' => '25.500',
+        'pack_size' => '',
+        'unit_cost_override' => 1200,
+        'preferred' => true,
+        'active' => true,
+        'meta' => '{"note":"teszt"}',
+    ]);
+
+    expect($data->toPayload())->toMatchArray([
+        'ingredient_id' => 5,
+        'supplier_id' => 9,
+        'lead_time_days' => 4,
+        'minimum_order_quantity' => '25.500',
+        'pack_size' => null,
+        'unit_cost_override' => '1200',
+        'preferred' => true,
+        'active' => true,
+        'meta' => ['note' => 'teszt'],
+    ]);
+});
+
+it('ingredient supplier term update data handles optional fields', function (): void {
+    $data = IngredientSupplierTermUpdateData::from([
+        'ingredient_id' => 5,
+        'supplier_id' => 9,
+        'lead_time_days' => null,
+        'minimum_order_quantity' => null,
+        'pack_size' => '',
+        'unit_cost_override' => '',
+        'preferred' => true,
+        'active' => false,
+        'meta' => '',
+    ]);
+
+    expect($data->toPayload())->toMatchArray([
+        'lead_time_days' => null,
+        'minimum_order_quantity' => null,
+        'pack_size' => null,
+        'unit_cost_override' => null,
+        'preferred' => false,
+        'active' => false,
+        'meta' => null,
+    ]);
+});
+
+it('ingredient supplier term index data exposes stable frontend filters', function (): void {
+    $filters = IngredientSupplierTermIndexData::from([
+        'search' => '  liszt  ',
+        'active' => '1',
+        'sort_field' => 'supplier',
+        'sort_direction' => 'desc',
+        'per_page' => 20,
+    ]);
+
+    expect($filters->toFrontendFilters())->toBe([
+        'search' => 'liszt',
+        'active' => '1',
+        'sort_field' => 'supplier',
+        'sort_direction' => 'desc',
+        'per_page' => 20,
+    ]);
+});
+
+it('ingredient supplier term list item data maps relation fields', function (): void {
+    $ingredient = Ingredient::factory()->create(['name' => 'BL80 liszt', 'unit' => 'kg']);
+    $supplier = Supplier::factory()->create(['name' => 'Malom Kft.']);
+    $term = IngredientSupplierTerm::query()
+        ->create(supplierTermPayload($ingredient, $supplier, ['meta' => ['quality' => 'premium']]))
+        ->load(['ingredient', 'supplier']);
+
+    $data = IngredientSupplierTermListItemData::from($term)->toArray();
+
+    expect($data)
+        ->toMatchArray([
+            'ingredient_name' => 'BL80 liszt',
+            'ingredient_unit' => 'kg',
+            'supplier_name' => 'Malom Kft.',
+            'meta' => ['quality' => 'premium'],
+        ]);
 });

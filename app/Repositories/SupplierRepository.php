@@ -2,21 +2,17 @@
 
 namespace App\Repositories;
 
+use App\Data\Suppliers\SupplierIndexData;
 use App\Models\Supplier;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 
 class SupplierRepository
 {
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(SupplierIndexData $filters): LengthAwarePaginator
     {
-        $perPage = (int) ($filters['per_page'] ?? 10);
-
         return $this->adminQuery($filters)
-            ->paginate($perPage)
+            ->paginate($filters->per_page)
             ->withQueryString();
     }
 
@@ -43,38 +39,22 @@ class SupplierRepository
         $supplier->delete();
     }
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    private function adminQuery(array $filters): Builder
+    private function adminQuery(SupplierIndexData $filters): Builder
     {
-        $search = trim((string) ($filters['search'] ?? ''));
-        $sortField = (string) ($filters['sort_field'] ?? 'name');
-        $sortDirection = (string) ($filters['sort_direction'] ?? 'asc');
-
-        $allowedSorts = ['name', 'lead_time_days', 'created_at'];
-        if (! \in_array($sortField, $allowedSorts, true)) {
-            $sortField = 'name';
-        }
-
-        if (! \in_array($sortDirection, ['asc', 'desc'], true)) {
-            $sortDirection = 'asc';
-        }
-
         $query = Supplier::query()
-            ->when($search !== '', function (Builder $query) use ($search): void {
-                $query->where(function (Builder $inner) use ($search): void {
+            ->when($filters->search !== null, function (Builder $query) use ($filters): void {
+                $query->where(function (Builder $inner) use ($filters): void {
                     $inner
-                        ->where('name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%")
-                        ->orWhere('phone', 'like', "%{$search}%")
-                        ->orWhere('tax_number', 'like', "%{$search}%");
+                        ->where('name', 'like', "%{$filters->search}%")
+                        ->orWhere('email', 'like', "%{$filters->search}%")
+                        ->orWhere('phone', 'like', "%{$filters->search}%")
+                        ->orWhere('tax_number', 'like', "%{$filters->search}%");
                 });
             })
             ->withCount('purchases');
 
         $query
-            ->orderBy($sortField, $sortDirection)
+            ->orderBy($filters->sort_field, $filters->sort_direction)
             ->orderBy('id');
 
         return $query;

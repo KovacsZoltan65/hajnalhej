@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Data\ProductionPlans\ProductionPlanStoreData;
 use App\Models\ProductionPlan;
 use Illuminate\Support\Carbon;
 
@@ -9,14 +10,12 @@ class ProductionPlanCreateFlowService
 {
     public function __construct(private readonly ProductionPlanService $productionPlanService) {}
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    public function create(array $payload, int $userId): ProductionPlan
+    public function create(ProductionPlanStoreData $data, int $userId): ProductionPlan
     {
+        $payload = $data->toPayload();
         $payload['status'] = ProductionPlan::STATUS_CALCULATED;
 
-        return $this->productionPlanService->create($payload, $userId);
+        return $this->productionPlanService->create(ProductionPlanStoreData::from($payload), $userId);
     }
 
     /**

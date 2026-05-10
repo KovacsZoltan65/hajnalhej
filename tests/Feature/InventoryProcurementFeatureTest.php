@@ -1,9 +1,18 @@
 <?php
 
+use App\Data\Inventory\InventoryAdjustmentData;
+use App\Data\Inventory\InventoryLedgerIndexData;
+use App\Data\Inventory\InventoryMovementListItemData;
+use App\Data\StockCounts\StockCountIndexData;
+use App\Data\StockCounts\StockCountItemData;
+use App\Data\StockCounts\StockCountListItemData;
+use App\Data\StockCounts\StockCountStoreData;
 use App\Models\Ingredient;
+use App\Models\InventoryMovement;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Purchase;
+use App\Models\StockCount;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -81,6 +90,78 @@ it('inventory index exposes movement types and waste reasons separately', functi
             ->has('product_options', 1)
             ->has('waste_reasons', 5)
         );
+});
+
+it('inventory ledger index data stabil frontend filter payloadot ad', function (): void {
+    $data = InventoryLedgerIndexData::from([
+        'days' => 30,
+        'date_from' => '2026-05-01',
+        'date_to' => '2026-05-10',
+        'ingredient_id' => '12',
+        'movement_type' => InventoryMovement::TYPE_WASTE_OUT,
+        'search' => '  selejt  ',
+        'per_page' => 50,
+    ]);
+
+    expect($data->search)->toBe('selejt')
+        ->and($data->ingredient_id)->toBe(12)
+        ->and($data->toFrontendFilters())->toBe([
+            'days' => 30,
+            'date_from' => '2026-05-01',
+            'date_to' => '2026-05-10',
+            'ingredient_id' => 12,
+            'movement_type' => InventoryMovement::TYPE_WASTE_OUT,
+            'search' => 'selejt',
+            'per_page' => 50,
+        ]);
+});
+
+it('inventory movement list item data explicit decimal payloadot ad', function (): void {
+    $admin = User::factory()->admin()->create();
+    $ingredient = Ingredient::factory()->create(['name' => 'Liszt', 'unit' => 'kg']);
+    $movement = InventoryMovement::query()->create([
+        'ingredient_id' => $ingredient->id,
+        'movement_type' => InventoryMovement::TYPE_ADJUSTMENT_IN,
+        'direction' => InventoryMovement::DIRECTION_IN,
+        'quantity' => '2.500',
+        'unit_cost' => '120.2500',
+        'total_cost' => '300.63',
+        'occurred_at' => now(),
+        'reference_type' => 'adjustment',
+        'reference_id' => null,
+        'notes' => 'Korrekció',
+        'created_by' => $admin->id,
+    ]);
+
+    $movement->load(['ingredient:id,name,unit', 'creator:id,name,email']);
+    $data = InventoryMovementListItemData::fromModel($movement)->toArray();
+
+    expect($data)->toMatchArray([
+        'ingredient_name' => 'Liszt',
+        'ingredient_unit' => 'kg',
+        'quantity' => 2.5,
+        'unit_cost' => 120.25,
+        'total_cost' => 300.63,
+        'created_by' => $admin->name,
+    ]);
+});
+
+it('inventory adjustment data explicit quantity contractot ad', function (): void {
+    $data = InventoryAdjustmentData::from([
+        'ingredient_id' => 5,
+        'difference' => '-1.23456',
+        'unit_cost' => '99.12345',
+        'occurred_at' => '2026-05-10',
+        'notes' => '',
+    ]);
+
+    expect($data->toPayload())->toBe([
+        'ingredient_id' => 5,
+        'difference' => -1.235,
+        'unit_cost' => 99.1235,
+        'occurred_at' => '2026-05-10',
+        'notes' => '',
+    ]);
 });
 
 it('order completion books bom consumption as production_out and updates material cost', function (): void {
@@ -259,6 +340,72 @@ it('stock count close creates correction movement', function (): void {
         'reference_id' => $stockCountId,
         'movement_type' => 'count_correction',
         'direction' => 'out',
+    ]);
+});
+
+it('stock count index data stabil frontend filter payloadot ad', function (): void {
+    $data = StockCountIndexData::from([
+        'status' => StockCount::STATUS_DRAFT,
+        'date_from' => '2026-05-01',
+        'date_to' => '2026-05-10',
+        'per_page' => 25,
+    ]);
+
+    expect($data->toFrontendFilters())->toBe([
+        'status' => StockCount::STATUS_DRAFT,
+        'date_from' => '2026-05-01',
+        'date_to' => '2026-05-10',
+        'per_page' => 25,
+    ]);
+});
+
+it('stock count store data nested item contractot ad', function (): void {
+    $data = StockCountStoreData::from([
+        'count_date' => '2026-05-10',
+        'notes' => 'Havi leltár',
+        'items' => [
+            [
+                'ingredient_id' => 7,
+                'expected_quantity' => '10.1234',
+                'counted_quantity' => '9.9999',
+            ],
+        ],
+    ]);
+
+    expect($data->items[0])->toBeInstanceOf(StockCountItemData::class)
+        ->and($data->toPayload()['items'][0])->toBe([
+            'ingredient_id' => 7,
+            'expected_quantity' => 10.123,
+            'counted_quantity' => 10.0,
+        ]);
+});
+
+it('stock count list item data stabil admin lista payloadot ad', function (): void {
+    $admin = User::factory()->admin()->create();
+    $stockCount = StockCount::query()->create([
+        'count_date' => '2026-05-10',
+        'status' => StockCount::STATUS_DRAFT,
+        'notes' => 'Teszt',
+        'created_by' => $admin->id,
+        'closed_at' => null,
+    ]);
+    $stockCount->items()->create([
+        'ingredient_id' => Ingredient::factory()->create()->id,
+        'expected_quantity' => '10.000',
+        'counted_quantity' => '8.000',
+        'difference' => '-2.000',
+    ]);
+    $stockCount->load(['creator:id,name,email'])->loadCount('items');
+
+    $data = StockCountListItemData::fromModel($stockCount)->toArray();
+
+    expect($data)->toMatchArray([
+        'id' => $stockCount->id,
+        'count_date' => '2026-05-10',
+        'status' => StockCount::STATUS_DRAFT,
+        'notes' => 'Teszt',
+        'items_count' => 1,
+        'created_by' => $admin->name,
     ]);
 });
 

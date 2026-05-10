@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Data\Orders\OrderDetailData;
+use App\Data\Orders\OrderIndexData;
+use App\Data\Orders\OrderListItemData;
+use App\Data\Orders\OrderStatusUpdateData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\OrderIndexRequest;
 use App\Http\Requests\Admin\UpdateOrderStatusRequest;
@@ -20,35 +24,16 @@ class OrderController extends Controller
     {
         $this->authorize('viewAny', Order::class);
 
-        $filters = $request->validated();
+        $filters = OrderIndexData::from($request->validated());
 
         $orders = $this->service
             ->paginateForAdmin($filters)
-            ->through(fn (Order $order): array => [
-                'id' => $order->id,
-                'order_number' => $order->order_number,
-                'customer_name' => $order->customer_name,
-                'customer_email' => $order->customer_email,
-                'customer_phone' => $order->customer_phone,
-                'status' => $order->status,
-                'total' => (float) $order->total,
-                'currency' => $order->currency,
-                'pickup_date' => $order->pickup_date?->toDateString(),
-                'pickup_time_slot' => $order->pickup_time_slot,
-                'placed_at' => $order->placed_at?->toDateTimeString(),
-                'items_count' => $order->items_count,
-            ]);
+            ->through(fn (Order $order): array => OrderListItemData::fromModel($order)->toArray());
 
         return Inertia::render('Admin/Orders/Index', [
             'orders' => $orders,
             'statusOptions' => $this->service->statuses(),
-            'filters' => [
-                'search' => (string) ($filters['search'] ?? ''),
-                'status' => (string) ($filters['status'] ?? ''),
-                'sort_field' => (string) ($filters['sort_field'] ?? 'placed_at'),
-                'sort_direction' => (string) ($filters['sort_direction'] ?? 'desc'),
-                'per_page' => (int) ($filters['per_page'] ?? 15),
-            ],
+            'filters' => $filters->toFrontendFilters(),
         ]);
     }
 
@@ -59,33 +44,7 @@ class OrderController extends Controller
         $order->load(['items.product:id,name,slug']);
 
         return Inertia::render('Admin/Orders/Show', [
-            'order' => [
-                'id' => $order->id,
-                'order_number' => $order->order_number,
-                'status' => $order->status,
-                'customer_name' => $order->customer_name,
-                'customer_email' => $order->customer_email,
-                'customer_phone' => $order->customer_phone,
-                'pickup_date' => $order->pickup_date?->toDateString(),
-                'pickup_time_slot' => $order->pickup_time_slot,
-                'notes' => $order->notes,
-                'internal_notes' => $order->internal_notes,
-                'subtotal' => (float) $order->subtotal,
-                'total' => (float) $order->total,
-                'currency' => $order->currency,
-                'placed_at' => $order->placed_at?->toDateTimeString(),
-                'confirmed_at' => $order->confirmed_at?->toDateTimeString(),
-                'completed_at' => $order->completed_at?->toDateTimeString(),
-                'cancelled_at' => $order->cancelled_at?->toDateTimeString(),
-                'items' => $order->items->map(fn ($item): array => [
-                    'id' => $item->id,
-                    'product_id' => $item->product_id,
-                    'product_name_snapshot' => $item->product_name_snapshot,
-                    'unit_price' => (float) $item->unit_price,
-                    'quantity' => (int) $item->quantity,
-                    'line_total' => (float) $item->line_total,
-                ])->values()->all(),
-            ],
+            'order' => OrderDetailData::fromModel($order)->toArray(),
             'statusOptions' => $this->service->statuses(),
         ]);
     }
@@ -95,7 +54,7 @@ class OrderController extends Controller
         $this->authorize('update', $order);
 
         try {
-            $this->service->transitionStatus($order, $request->validated(), $request->user());
+            $this->service->transitionStatus($order, OrderStatusUpdateData::from($request->validated()), $request->user());
         } catch (RuntimeException $exception) {
             return back()->with('error', $exception->getMessage());
         }

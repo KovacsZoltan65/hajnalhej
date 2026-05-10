@@ -1,5 +1,9 @@
 <?php
 
+use App\Data\ProductionPlans\ProductionPlanDetailData;
+use App\Data\ProductionPlans\ProductionPlanIndexData;
+use App\Data\ProductionPlans\ProductionPlanItemData;
+use App\Data\ProductionPlans\ProductionPlanStoreData;
 use App\Models\Category;
 use App\Models\Ingredient;
 use App\Models\Product;
@@ -35,6 +39,106 @@ it('production plans auth user hozzafer', function (): void {
     $response
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page->component('Admin/ProductionPlans/Index'));
+});
+
+it('production plan index data stabil frontend filter payloadot ad', function (): void {
+    $data = ProductionPlanIndexData::from([
+        'search' => ' PLAN ',
+        'status' => ProductionPlan::STATUS_CALCULATED,
+        'target_from' => '2026-05-01',
+        'target_to' => '2026-05-31',
+        'per_page' => '100',
+        'sort_field' => 'invalid',
+        'sort_direction' => 'sideways',
+    ]);
+
+    expect($data->search)->toBe('PLAN')
+        ->and($data->per_page)->toBe(50)
+        ->and($data->sort_field)->toBe('target_at')
+        ->and($data->sort_direction)->toBe('asc')
+        ->and($data->toFrontendFilters())->toMatchArray([
+            'search' => 'PLAN',
+            'status' => ProductionPlan::STATUS_CALCULATED,
+            'target_from' => '2026-05-01',
+            'target_to' => '2026-05-31',
+        ]);
+});
+
+it('production plan store data nested item szerzodest ad', function (): void {
+    $data = ProductionPlanStoreData::from([
+        'target_ready_at' => '2026-05-10 08:00:00',
+        'status' => ProductionPlan::STATUS_DRAFT,
+        'notes' => 'Teszt terv',
+        'items' => [
+            [
+                'product_id' => 10,
+                'target_quantity' => '2.500',
+                'unit_label' => 'db',
+                'sort_order' => 1,
+            ],
+        ],
+    ]);
+
+    expect($data->items[0])->toBeInstanceOf(ProductionPlanItemData::class)
+        ->and($data->toPayload()['items'][0])->toMatchArray([
+            'product_id' => 10,
+            'target_quantity' => '2.500',
+            'unit_label' => 'db',
+        ]);
+});
+
+it('production plan detail data nem szamol ujra timeline-t csak payloadot formal', function (): void {
+    $data = ProductionPlanDetailData::from([
+        'id' => 1,
+        'plan_number' => 'PLAN-TEST',
+        'target_at' => '2026-05-10 08:00:00',
+        'target_ready_at' => '2026-05-10 08:00:00',
+        'status' => ProductionPlan::STATUS_CALCULATED,
+        'is_locked' => false,
+        'notes' => null,
+        'total_active_minutes' => 20,
+        'total_wait_minutes' => 40,
+        'total_recipe_minutes' => 60,
+        'planned_start_at' => '2026-05-10 07:00:00',
+        'items_count' => 1,
+        'timeline_steps_count' => 1,
+        'items' => [
+            [
+                'product_id' => 10,
+                'product_name' => 'Kenyér',
+                'product_slug' => 'kenyer',
+                'target_quantity' => 2,
+                'unit_label' => 'db',
+                'sort_order' => 0,
+            ],
+        ],
+        'timeline_steps' => [
+            [
+                'id' => 1,
+                'title' => 'Dagasztás',
+                'step_type' => 'mixing',
+                'description' => null,
+                'work_instruction' => 'Keverd össze',
+                'completion_criteria' => null,
+                'attention_points' => null,
+                'required_tools' => null,
+                'expected_result' => null,
+                'starts_at' => '2026-05-10 07:00:00',
+                'ends_at' => '2026-05-10 08:00:00',
+                'duration_minutes' => 20,
+                'wait_minutes' => 40,
+                'sort_order' => 0,
+                'timeline_group' => 'product:kenyer',
+                'is_dependency' => false,
+            ],
+        ],
+        'ingredient_requirements' => [],
+        'summary' => ['timeline_steps_count' => 1],
+    ]);
+
+    expect($data->items[0])->toBeInstanceOf(ProductionPlanItemData::class)
+        ->and($data->timeline_steps[0]->title)->toBe('Dagasztás')
+        ->and($data->summary['timeline_steps_count'])->toBe(1);
 });
 
 it('production plan create flow get route elerheto', function (): void {

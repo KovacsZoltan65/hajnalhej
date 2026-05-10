@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Data\Ingredients\IngredientIndexData;
 use App\Models\Ingredient;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -9,15 +10,10 @@ use Illuminate\Support\Collection;
 
 class IngredientRepository
 {
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(IngredientIndexData $filters): LengthAwarePaginator
     {
-        $perPage = (int) ($filters['per_page'] ?? 10);
-
         return $this->adminQuery($filters)
-            ->paginate($perPage)
+            ->paginate($filters->per_page)
             ->withQueryString();
     }
 
@@ -80,45 +76,26 @@ class IngredientRepository
             ->exists();
     }
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    private function adminQuery(array $filters): Builder
+    private function adminQuery(IngredientIndexData $filters): Builder
     {
-        $search = trim((string) ($filters['search'] ?? ''));
-        $isActive = $filters['is_active'] ?? '';
-        $unit = trim((string) ($filters['unit'] ?? ''));
-        $sortField = (string) ($filters['sort_field'] ?? 'name');
-        $sortDirection = (string) ($filters['sort_direction'] ?? 'asc');
-
-        $sortableFields = ['name', 'unit', 'estimated_unit_cost', 'current_stock', 'minimum_stock', 'is_active'];
-
-        if (! \in_array($sortField, $sortableFields, true)) {
-            $sortField = 'name';
-        }
-
-        if (! \in_array($sortDirection, ['asc', 'desc'], true)) {
-            $sortDirection = 'asc';
-        }
-
         $query = Ingredient::query()
-            ->when($search !== '', function (Builder $query) use ($search): void {
-                $query->where(function (Builder $innerQuery) use ($search): void {
+            ->when($filters->search !== null, function (Builder $query) use ($filters): void {
+                $query->where(function (Builder $innerQuery) use ($filters): void {
                     $innerQuery
-                        ->where('name', 'like', "%{$search}%")
-                        ->orWhere('slug', 'like', "%{$search}%")
-                        ->orWhere('sku', 'like', "%{$search}%");
+                        ->where('name', 'like', "%{$filters->search}%")
+                        ->orWhere('slug', 'like', "%{$filters->search}%")
+                        ->orWhere('sku', 'like', "%{$filters->search}%");
                 });
             })
-            ->when($isActive !== null && $isActive !== '', function (Builder $query) use ($isActive): void {
-                $query->where('is_active', (bool) $isActive);
+            ->when($filters->is_active !== null, function (Builder $query) use ($filters): void {
+                $query->where('is_active', $filters->is_active);
             })
-            ->when($unit !== '', function (Builder $query) use ($unit): void {
-                $query->where('unit', $unit);
+            ->when($filters->unit !== null, function (Builder $query) use ($filters): void {
+                $query->where('unit', $filters->unit);
             });
 
         $query
-            ->orderBy($sortField, $sortDirection)
+            ->orderBy($filters->sort_field, $filters->sort_direction)
             ->orderBy('id');
 
         return $query;

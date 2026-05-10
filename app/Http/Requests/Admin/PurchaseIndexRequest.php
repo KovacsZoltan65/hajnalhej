@@ -25,6 +25,7 @@ class PurchaseIndexRequest extends FormRequest
             'sort_field' => ['nullable', Rule::in(['purchase_date', 'total', 'status', 'created_at'])],
             'sort_direction' => ['nullable', Rule::in(['asc', 'desc'])],
             'per_page' => ['nullable', 'integer', 'min:5', 'max:50'],
+            'page' => ['nullable', 'integer', 'min:1'],
         ];
     }
 }

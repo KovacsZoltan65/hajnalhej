@@ -1,6 +1,7 @@
 <?php
 
 use App\Data\Products\ProductIndexData;
+use App\Data\Products\ProductInlineUpdateData;
 use App\Data\Products\ProductListItemData;
 use App\Models\Category;
 use App\Models\Product;
@@ -278,6 +279,16 @@ it('product index data normalizalja a legacy es uj aktiv szuroket', function ():
         ->and($newFilters->active)->toBeTrue()
         ->and($newFilters->category_id)->toBe(12)
         ->and($newFilters->search)->toBe('bagett');
+});
+
+it('product inline update data validalt payloadbol epul', function (): void {
+    $data = ProductInlineUpdateData::from([
+        'field' => 'price',
+        'value' => '1450.5',
+    ]);
+
+    expect($data->field)->toBe('price')
+        ->and($data->value)->toBe('1450.5');
 });
 
 it('product active index filter mukodik', function (): void {

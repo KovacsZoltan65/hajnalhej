@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Data\ProductionPlans\ProductionPlanIndexData;
 use App\Models\Product;
 use App\Models\ProductIngredient;
 use App\Models\ProductionPlan;
@@ -12,20 +13,15 @@ use Illuminate\Support\Collection;
 
 class ProductionPlanRepository
 {
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(ProductionPlanIndexData $filters): LengthAwarePaginator
     {
-        $perPage = (int) ($filters['per_page'] ?? 10);
-
         return $this->adminQuery($filters)
             ->with([
                 'items:id,production_plan_id,product_id,product_name_snapshot,product_slug_snapshot,target_quantity,unit_label,sort_order,computed_ingredient_count,computed_step_count,computed_active_minutes,computed_wait_minutes',
                 'items.product:id,name,slug',
                 'steps:id,production_plan_id,production_plan_item_id,product_id,depends_on_product_id,title,step_type,description,work_instruction,completion_criteria,attention_points,required_tools,expected_result,starts_at,ends_at,duration_minutes,wait_minutes,sort_order,is_dependency',
             ])
-            ->paginate($perPage)
+            ->paginate($filters->per_page)
             ->withQueryString();
     }
 
@@ -178,39 +174,12 @@ class ProductionPlanRepository
             ]);
     }
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    private function adminQuery(array $filters): Builder
+    private function adminQuery(ProductionPlanIndexData $filters): Builder
     {
-        $search = trim((string) ($filters['search'] ?? ''));
-        $status = (string) ($filters['status'] ?? '');
-        $targetFrom = $filters['target_from'] ?? null;
-        $targetTo = $filters['target_to'] ?? null;
-        $sortField = (string) ($filters['sort_field'] ?? 'target_at');
-        $sortDirection = (string) ($filters['sort_direction'] ?? 'asc');
-
-        $sortableFields = [
-            'plan_number',
-            'target_at',
-            'status',
-            'total_active_minutes',
-            'total_wait_minutes',
-            'total_recipe_minutes',
-            'planned_start_at',
-            'created_at',
-        ];
-
-        if (! \in_array($sortField, $sortableFields, true)) {
-            $sortField = 'target_at';
-        }
-
-        if (! \in_array($sortDirection, ['asc', 'desc'], true)) {
-            $sortDirection = 'asc';
-        }
-
         $query = ProductionPlan::query()
-            ->when($search !== '', function (Builder $builder) use ($search): void {
+            ->when($filters->search !== null, function (Builder $builder) use ($filters): void {
+                $search = (string) $filters->search;
+
                 $builder->where(function (Builder $innerQuery) use ($search): void {
                     $innerQuery
                         ->where('plan_number', 'like', "%{$search}%")
@@ -221,20 +190,20 @@ class ProductionPlanRepository
                         });
                 });
             })
-            ->when($status !== '', function (Builder $builder) use ($status): void {
-                $builder->where('status', $status);
+            ->when($filters->status !== null, function (Builder $builder) use ($filters): void {
+                $builder->where('status', $filters->status);
             })
-            ->when($targetFrom, function (Builder $builder) use ($targetFrom): void {
-                $builder->whereDate('target_at', '>=', $targetFrom);
+            ->when($filters->target_from !== null, function (Builder $builder) use ($filters): void {
+                $builder->whereDate('target_at', '>=', $filters->target_from);
             })
-            ->when($targetTo, function (Builder $builder) use ($targetTo): void {
-                $builder->whereDate('target_at', '<=', $targetTo);
+            ->when($filters->target_to !== null, function (Builder $builder) use ($filters): void {
+                $builder->whereDate('target_at', '<=', $filters->target_to);
             });
 
         $query->withCount('items');
 
         $query
-            ->orderBy($sortField, $sortDirection)
+            ->orderBy($filters->sort_field, $filters->sort_direction)
             ->orderBy('id');
 
         return $query;

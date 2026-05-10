@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Data\WeeklyMenu\WeeklyMenuIndexData;
+use App\Data\WeeklyMenu\WeeklyMenuInlineUpdateData;
 use App\Data\WeeklyMenu\WeeklyMenuStoreData;
 use App\Data\WeeklyMenu\WeeklyMenuUpdateData;
 use App\Data\WeeklyMenuItem\WeeklyMenuItemStoreData;
@@ -34,18 +35,22 @@ class WeeklyMenuController extends Controller
     {
         $this->authorize('viewAny', WeeklyMenu::class);
 
-        $request->validate([
+        $validated = $request->validate([
             'search' => ['nullable', 'string', 'max:160'],
             'status' => ['nullable', 'in:draft,published,archived'],
             'active' => ['nullable', 'boolean'],
+            'is_active' => ['nullable', 'boolean'],
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'sort_field' => ['nullable', 'in:week_start,week_end,status,title'],
             'sort_direction' => ['nullable', 'in:asc,desc'],
             'per_page' => ['nullable', 'integer', 'min:5', 'max:50'],
+            'page' => ['nullable', 'integer', 'min:1'],
         ]);
 
-        $filters = WeeklyMenuIndexData::from($request->all());
+        $filters = WeeklyMenuIndexData::from($validated);
         $paginator = $this->service->paginate($filters);
 
         return Inertia::render('Admin/WeeklyMenus/Index', [
@@ -62,7 +67,7 @@ class WeeklyMenuController extends Controller
 
     public function store(StoreWeeklyMenuRequest $request): RedirectResponse
     {
-        $this->service->store(WeeklyMenuStoreData::from($request));
+        $this->service->store(WeeklyMenuStoreData::from($request->validated()));
 
         return redirect()->route('admin.weekly-menus.index')
             ->with('success', __('weekly_menu.created').'.');
@@ -70,7 +75,7 @@ class WeeklyMenuController extends Controller
 
     public function update(UpdateWeeklyMenuRequest $request, WeeklyMenu $weeklyMenu): RedirectResponse
     {
-        $this->service->update($weeklyMenu, WeeklyMenuUpdateData::from($request));
+        $this->service->update($weeklyMenu, WeeklyMenuUpdateData::from($request->validated()));
 
         return redirect()->route('admin.weekly-menus.index')
             ->with('success', __('weekly_menu.updated').'.');
@@ -79,7 +84,7 @@ class WeeklyMenuController extends Controller
     public function updateInline(InlineUpdateWeeklyMenuRequest $request, WeeklyMenu $weeklyMenu): RedirectResponse
     {
         try {
-            $this->service->updateInline($weeklyMenu, $request->validated());
+            $this->service->updateInline($weeklyMenu, WeeklyMenuInlineUpdateData::from($request->validated()));
         } catch (RuntimeException $exception) {
             return redirect()->route('admin.weekly-menus.index')
                 ->with('error', $exception->getMessage());
@@ -126,7 +131,7 @@ class WeeklyMenuController extends Controller
     public function storeItem(StoreWeeklyMenuItemRequest $request, WeeklyMenu $weeklyMenu): RedirectResponse
     {
         try {
-            $this->itemService->addItem($weeklyMenu, WeeklyMenuItemStoreData::from($request));
+            $this->itemService->addItem($weeklyMenu, WeeklyMenuItemStoreData::from($request->validated()));
         } catch (RuntimeException $exception) {
             return redirect()->route('admin.weekly-menus.index')
                 ->with('error', $exception->getMessage());
@@ -143,7 +148,7 @@ class WeeklyMenuController extends Controller
         }
 
         try {
-            $this->itemService->updateItem($weeklyMenu, $item, WeeklyMenuItemUpdateData::from($request));
+            $this->itemService->updateItem($weeklyMenu, $item, WeeklyMenuItemUpdateData::from($request->validated()));
         } catch (RuntimeException $exception) {
             return redirect()->route('admin.weekly-menus.index')->with('error', $exception->getMessage());
         }

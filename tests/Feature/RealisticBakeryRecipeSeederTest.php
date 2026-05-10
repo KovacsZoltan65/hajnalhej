@@ -1,5 +1,6 @@
 <?php
 
+use App\Data\ProductionPlans\ProductionPlanStoreData;
 use App\Models\Product;
 use App\Models\ProductionPlan;
 use App\Models\User;
@@ -96,7 +97,7 @@ it('production plan ingredient aggregation works with seeded recipe data', funct
     $classicBread = Product::query()->where('slug', 'klasszikus-kovaszos-kenyer')->firstOrFail();
     $seededLoaf = Product::query()->where('slug', 'magvas-vekni')->firstOrFail();
 
-    $plan = app(ProductionPlanService::class)->create([
+    $plan = app(ProductionPlanService::class)->create(ProductionPlanStoreData::from([
         'target_ready_at' => Carbon::now()->addDays(2)->toDateTimeString(),
         'status' => ProductionPlan::STATUS_DRAFT,
         'is_locked' => false,
@@ -105,7 +106,7 @@ it('production plan ingredient aggregation works with seeded recipe data', funct
             ['product_id' => $classicBread->id, 'target_quantity' => 2, 'unit_label' => 'db', 'sort_order' => 0],
             ['product_id' => $seededLoaf->id, 'target_quantity' => 3, 'unit_label' => 'db', 'sort_order' => 1],
         ],
-    ], $user->id);
+    ]), $user->id);
 
     $requirements = collect(app(ProductionPlanService::class)->buildPlanPayload($plan)['ingredient_requirements']);
     $flour = $requirements->firstWhere('name', 'BL80 kenyérliszt');

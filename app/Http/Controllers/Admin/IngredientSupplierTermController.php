@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Data\IngredientSupplierTerms\IngredientSupplierTermIndexData;
+use App\Data\IngredientSupplierTerms\IngredientSupplierTermInlineUpdateData;
+use App\Data\IngredientSupplierTerms\IngredientSupplierTermListItemData;
+use App\Data\IngredientSupplierTerms\IngredientSupplierTermStoreData;
+use App\Data\IngredientSupplierTerms\IngredientSupplierTermUpdateData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\IngredientSupplierTermIndexRequest;
 use App\Http\Requests\Admin\InlineUpdateIngredientSupplierTermRequest;
@@ -21,34 +26,14 @@ class IngredientSupplierTermController extends Controller
 
     public function index(IngredientSupplierTermIndexRequest $request): Response
     {
-        $filters = $request->validated();
-        $terms = $this->service->paginateForAdmin($filters)->through(static fn (IngredientSupplierTerm $term): array => [
-            'id' => $term->id,
-            'ingredient_id' => $term->ingredient_id,
-            'supplier_id' => $term->supplier_id,
-            'ingredient_name' => $term->ingredient?->name,
-            'ingredient_unit' => $term->ingredient?->unit,
-            'supplier_name' => $term->supplier?->name,
-            'lead_time_days' => $term->lead_time_days,
-            'minimum_order_quantity' => $term->minimum_order_quantity,
-            'pack_size' => $term->pack_size,
-            'unit_cost_override' => $term->unit_cost_override,
-            'preferred' => $term->preferred,
-            'active' => $term->active,
-            'meta' => $term->meta,
-            'created_at' => $term->created_at?->toDateTimeString(),
-            'updated_at' => $term->updated_at?->toDateTimeString(),
-        ]);
+        $filters = IngredientSupplierTermIndexData::from($request->validated());
+        $terms = $this->service
+            ->paginateForAdmin($filters)
+            ->through(static fn (IngredientSupplierTerm $term): array => IngredientSupplierTermListItemData::from($term)->toArray());
 
         return Inertia::render('Admin/IngredientSupplierTerms/Index', [
             'terms' => $terms,
-            'filters' => [
-                'search' => (string) ($filters['search'] ?? ''),
-                'active' => (string) ($filters['active'] ?? ''),
-                'sort_field' => (string) ($filters['sort_field'] ?? 'ingredient'),
-                'sort_direction' => (string) ($filters['sort_direction'] ?? 'asc'),
-                'per_page' => (int) ($filters['per_page'] ?? 10),
-            ],
+            'filters' => $filters->toFrontendFilters(),
             'ingredients' => Ingredient::query()
                 ->where('is_active', true)
                 ->orderBy('name')
@@ -62,21 +47,21 @@ class IngredientSupplierTermController extends Controller
 
     public function store(StoreIngredientSupplierTermRequest $request): RedirectResponse
     {
-        $this->service->create($request->validated());
+        $this->service->create(IngredientSupplierTermStoreData::from($request->validated()));
 
         return back()->with('success', __('admin_supplier_terms.created').'.');
     }
 
     public function update(UpdateIngredientSupplierTermRequest $request, IngredientSupplierTerm $ingredientSupplierTerm): RedirectResponse
     {
-        $this->service->update($ingredientSupplierTerm, $request->validated());
+        $this->service->update($ingredientSupplierTerm, IngredientSupplierTermUpdateData::from($request->validated()));
 
         return back()->with('success', __('admin_supplier_terms.updated').'.');
     }
 
     public function updateInline(InlineUpdateIngredientSupplierTermRequest $request, IngredientSupplierTerm $ingredientSupplierTerm): RedirectResponse
     {
-        $this->service->updateInline($ingredientSupplierTerm, $request->validated());
+        $this->service->updateInline($ingredientSupplierTerm, IngredientSupplierTermInlineUpdateData::from($request->validated()));
 
         return back(303)->with('success', __('admin.common.inline_edit.saved'));
     }

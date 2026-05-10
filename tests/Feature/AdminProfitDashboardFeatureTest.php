@@ -96,4 +96,3 @@ it('profit dashboard computes bom cost margin and order profit trend', function 
             ->where('dashboard.top_profit_products.0.estimated_profit', 2100)
             ->has('dashboard.order_profit_trend.points'));
 });
-

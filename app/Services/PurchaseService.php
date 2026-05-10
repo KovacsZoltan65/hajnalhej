@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Data\Purchases\PurchaseIndexData;
+use App\Data\Purchases\PurchaseStoreData;
+use App\Data\Purchases\PurchaseUpdateData;
 use App\Models\InventoryMovement;
 use App\Models\Purchase;
 use App\Models\User;
@@ -22,10 +25,7 @@ class PurchaseService
         private readonly InventoryAuditService $auditService,
     ) {}
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(PurchaseIndexData $filters): LengthAwarePaginator
     {
         return $this->repository->paginateForAdmin($filters);
     }
@@ -35,12 +35,10 @@ class PurchaseService
         return $this->repository->findWithItems($purchaseId);
     }
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    public function create(array $payload, ?User $actor = null): Purchase
+    public function create(PurchaseStoreData $data, ?User $actor = null): Purchase
     {
-        return DB::transaction(function () use ($payload, $actor): Purchase {
+        return DB::transaction(function () use ($data, $actor): Purchase {
+            $payload = $data->toPayload();
             $items = $this->normalizeItems($payload['items'] ?? []);
             if ($items === []) {
                 throw new RuntimeException(__('admin_purchase_draft.least_one_item').'.');
@@ -68,16 +66,14 @@ class PurchaseService
         });
     }
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    public function update(Purchase $purchase, array $payload, ?User $actor = null): Purchase
+    public function update(Purchase $purchase, PurchaseUpdateData $data, ?User $actor = null): Purchase
     {
         if ($purchase->status !== Purchase::STATUS_DRAFT) {
             throw new RuntimeException(__('admin_purchase_draft.only_draft_purchases_modified').'.');
         }
 
-        return DB::transaction(function () use ($purchase, $payload): Purchase {
+        return DB::transaction(function () use ($purchase, $data): Purchase {
+            $payload = $data->toPayload();
             $items = $this->normalizeItems($payload['items'] ?? []);
             if ($items === []) {
                 throw new RuntimeException(__('admin_purchase_draft.least_one_item').'.');

@@ -1,7 +1,9 @@
 <?php
 
 use App\Data\WeeklyMenu\WeeklyMenuIndexData;
+use App\Data\WeeklyMenu\WeeklyMenuInlineUpdateData;
 use App\Data\WeeklyMenu\WeeklyMenuListItemData;
+use App\Data\WeeklyMenuItem\WeeklyMenuItemStoreData;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
@@ -200,6 +202,16 @@ it('weekly menu index data normalizalja az aktiv es datum szuroket', function ()
         ->and($filters->sort_direction)->toBe('desc');
 });
 
+it('weekly menu inline update data validalt payloadbol epul', function (): void {
+    $data = WeeklyMenuInlineUpdateData::from([
+        'field' => 'status',
+        'value' => WeeklyMenu::STATUS_PUBLISHED,
+    ]);
+
+    expect($data->field)->toBe('status')
+        ->and($data->value)->toBe(WeeklyMenu::STATUS_PUBLISHED);
+});
+
 it('weekly menu date range filter mukodik', function (): void {
     $user = User::factory()->create();
 
@@ -337,6 +349,21 @@ it('weekly menu item store data flow price fallbacket ad listazashoz', function 
     expect($data['items'][0]['price'])->toBe(1890.0)
         ->and($data['items'][0]['price_override'])->toBeNull()
         ->and($data['items'][0]['is_available'])->toBeTrue();
+});
+
+it('weekly menu item store data kezeli a validalt numeric string arat', function (): void {
+    $data = WeeklyMenuItemStoreData::from([
+        'product_id' => 12,
+        'price_override' => '2090.5',
+        'is_available' => true,
+    ]);
+
+    expect($data->toPayload())
+        ->toMatchArray([
+            'product_id' => 12,
+            'override_price' => '2090.50',
+            'is_active' => true,
+        ]);
 });
 
 it('weekly menu item duplicate product nem adhato', function (): void {

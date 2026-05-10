@@ -23,9 +23,9 @@ class BranchData extends Data
 
         #[Required, StringType]
         public string $type,
-        public string $email,
-        public string $phone,
-        public string $address,
+        public ?string $email,
+        public ?string $phone,
+        public ?string $address,
 
         #[BooleanType]
         public bool $active,
@@ -39,11 +39,11 @@ class BranchData extends Data
             name: $branch->name,
             code: $branch->code,
             type: $branch->type,
-            email: optional($branch->email, ''),
-            phone: optional($branch->phone, ''),
-            address: optional($branch->address, ''),
+            email: $branch->email,
+            phone: $branch->phone,
+            address: $branch->address,
             active: $branch->active,
-            meta: optional($branch->meta, [])
+            meta: $branch->meta ?? []
         );
     }
 }
