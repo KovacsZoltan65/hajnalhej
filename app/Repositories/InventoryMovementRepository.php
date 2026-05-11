@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Data\Inventory\InventoryLedgerIndexData;
 use App\Models\InventoryMovement;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,15 +28,10 @@ class InventoryMovementRepository
             ->exists();
     }
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function paginateLedger(array $filters): LengthAwarePaginator
+    public function paginateLedger(InventoryLedgerIndexData $filters): LengthAwarePaginator
     {
-        $perPage = (int) ($filters['per_page'] ?? 15);
-
         return $this->ledgerQuery($filters)
-            ->paginate($perPage)
+            ->paginate($filters->per_page)
             ->withQueryString();
     }
 
@@ -100,24 +96,17 @@ class InventoryMovementRepository
             ]);
     }
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    private function ledgerQuery(array $filters): Builder
+    private function ledgerQuery(InventoryLedgerIndexData $filters): Builder
     {
-        $dateFrom = $filters['date_from'] ?? null;
-        $dateTo = $filters['date_to'] ?? null;
-        $ingredientId = $filters['ingredient_id'] ?? null;
-        $movementType = trim((string) ($filters['movement_type'] ?? ''));
-        $search = trim((string) ($filters['search'] ?? ''));
-
         return InventoryMovement::query()
             ->with(['ingredient:id,name,unit', 'creator:id,name,email'])
-            ->when($dateFrom !== null && $dateFrom !== '', fn (Builder $query): Builder => $query->whereDate('occurred_at', '>=', (string) $dateFrom))
-            ->when($dateTo !== null && $dateTo !== '', fn (Builder $query): Builder => $query->whereDate('occurred_at', '<=', (string) $dateTo))
-            ->when($ingredientId !== null && $ingredientId !== '', fn (Builder $query): Builder => $query->where('ingredient_id', (int) $ingredientId))
-            ->when($movementType !== '', fn (Builder $query): Builder => $query->where('movement_type', $movementType))
-            ->when($search !== '', function (Builder $query) use ($search): void {
+            ->when($filters->date_from !== null, fn (Builder $query): Builder => $query->whereDate('occurred_at', '>=', $filters->date_from))
+            ->when($filters->date_to !== null, fn (Builder $query): Builder => $query->whereDate('occurred_at', '<=', $filters->date_to))
+            ->when($filters->ingredient_id !== null, fn (Builder $query): Builder => $query->where('ingredient_id', $filters->ingredient_id))
+            ->when($filters->movement_type !== null, fn (Builder $query): Builder => $query->where('movement_type', $filters->movement_type))
+            ->when($filters->search !== null, function (Builder $query) use ($filters): void {
+                $search = $filters->search;
+
                 $query->where(function (Builder $inner) use ($search): void {
                     $inner
                         ->where('notes', 'like', "%{$search}%")

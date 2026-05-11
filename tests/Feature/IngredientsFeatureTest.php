@@ -1,5 +1,9 @@
 <?php
 
+use App\Data\Ingredients\IngredientIndexData;
+use App\Data\Ingredients\IngredientListItemData;
+use App\Data\Ingredients\IngredientStoreData;
+use App\Data\Ingredients\IngredientUpdateData;
 use App\Models\Ingredient;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -152,4 +156,119 @@ it('ingredient low stock logika ellenorizheto', function (): void {
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Admin/Ingredients/Index')
         ->where('ingredients.data.0.is_low_stock', true));
+});
+
+it('ingredient inline update mukodik', function (): void {
+    $user = User::factory()->create();
+    $ingredient = Ingredient::factory()->create([
+        'current_stock' => 3,
+        'minimum_stock' => 5,
+    ]);
+
+    $response = $this->actingAs($user)->patch("/admin/ingredients/{$ingredient->id}/inline", [
+        'field' => 'current_stock',
+        'value' => 12.75,
+    ]);
+
+    $response->assertRedirect();
+
+    $this->assertDatabaseHas('ingredients', [
+        'id' => $ingredient->id,
+        'current_stock' => '12.750',
+    ]);
+});
+
+it('ingredient store data keeps typed normalized payload', function (): void {
+    $data = IngredientStoreData::from([
+        'name' => '  BL80 liszt  ',
+        'slug' => '',
+        'sku' => '  LISZT-80  ',
+        'unit' => 'kg',
+        'estimated_unit_cost' => 185.5,
+        'current_stock' => 12,
+        'minimum_stock' => '5.25',
+        'is_active' => true,
+        'notes' => 'Teszt',
+    ]);
+
+    expect($data->toPayload())->toMatchArray([
+        'name' => 'BL80 liszt',
+        'slug' => '',
+        'sku' => 'LISZT-80',
+        'unit' => 'kg',
+        'estimated_unit_cost' => '185.5000',
+        'current_stock' => '12.000',
+        'minimum_stock' => '5.250',
+        'is_active' => true,
+        'notes' => 'Teszt',
+    ]);
+});
+
+it('ingredient update data handles optional fields', function (): void {
+    $data = IngredientUpdateData::from([
+        'name' => 'Vaj',
+        'slug' => null,
+        'sku' => '',
+        'unit' => 'kg',
+        'estimated_unit_cost' => null,
+        'current_stock' => null,
+        'minimum_stock' => null,
+        'is_active' => false,
+        'notes' => null,
+    ]);
+
+    expect($data->toPayload())->toMatchArray([
+        'name' => 'Vaj',
+        'slug' => '',
+        'sku' => null,
+        'estimated_unit_cost' => '0.0000',
+        'current_stock' => '0.000',
+        'minimum_stock' => '0.000',
+        'is_active' => false,
+        'notes' => null,
+    ]);
+});
+
+it('ingredient list item data exposes stock fields', function (): void {
+    $ingredient = Ingredient::factory()->create([
+        'name' => 'Friss eleszto',
+        'slug' => 'friss-eleszto',
+        'unit' => 'g',
+        'estimated_unit_cost' => 12.3456,
+        'current_stock' => 2,
+        'minimum_stock' => 3,
+        'is_active' => true,
+    ]);
+
+    $data = IngredientListItemData::from($ingredient)->toArray();
+
+    expect($data)->toMatchArray([
+        'name' => 'Friss eleszto',
+        'unit' => 'g',
+        'estimated_unit_cost' => 12.3456,
+        'current_stock' => 2.0,
+        'minimum_stock' => 3.0,
+        'is_low_stock' => true,
+        'is_active' => true,
+    ]);
+});
+
+it('ingredient index data exposes stable filter payload', function (): void {
+    $filters = IngredientIndexData::from([
+        'search' => '  liszt  ',
+        'is_active' => '0',
+        'unit' => 'kg',
+        'sort_field' => 'current_stock',
+        'sort_direction' => 'desc',
+        'per_page' => 20,
+    ]);
+
+    expect($filters->toFrontendFilters())->toBe([
+        'search' => 'liszt',
+        'is_active' => '0',
+        'unit' => 'kg',
+        'sort_field' => 'current_stock',
+        'sort_direction' => 'desc',
+        'per_page' => 20,
+    ]);
 });

@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Data\ProductionPlans\ProductionPlanDetailData;
+use App\Data\ProductionPlans\ProductionPlanIndexData;
+use App\Data\ProductionPlans\ProductionPlanListItemData;
+use App\Data\ProductionPlans\ProductionPlanStoreData;
+use App\Data\ProductionPlans\ProductionPlanUpdateData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreProductionPlanCreateFlowRequest;
 use App\Http\Requests\StoreProductionPlanRequest;
@@ -25,7 +30,7 @@ class ProductionPlanController extends Controller
     {
         $this->authorize('viewAny', ProductionPlan::class);
 
-        $filters = $request->validate([
+        $validated = $request->validate([
             'search' => ['nullable', 'string', 'max:180'],
             'status' => ['nullable', 'string', 'in:draft,calculated,ready,archived'],
             'target_from' => ['nullable', 'date'],
@@ -33,49 +38,22 @@ class ProductionPlanController extends Controller
             'sort_field' => ['nullable', 'in:plan_number,target_at,status,total_active_minutes,total_wait_minutes,total_recipe_minutes,planned_start_at,created_at'],
             'sort_direction' => ['nullable', 'in:asc,desc'],
             'per_page' => ['nullable', 'integer', 'min:5', 'max:50'],
+            'page' => ['nullable', 'integer', 'min:1'],
         ]);
+        $filters = ProductionPlanIndexData::from($validated);
 
         $paginator = $this->service->paginateForAdmin($filters);
 
-        $plans = $paginator->through(fn (ProductionPlan $plan): array => [
-            'id' => $plan->id,
-            'plan_number' => $plan->plan_number,
-            'target_at' => $plan->target_at?->toDateTimeString(),
-            'target_ready_at' => $plan->target_at?->toDateTimeString(),
-            'status' => $plan->status,
-            'is_locked' => $plan->is_locked,
-            'total_active_minutes' => $plan->total_active_minutes,
-            'total_wait_minutes' => $plan->total_wait_minutes,
-            'total_recipe_minutes' => $plan->total_recipe_minutes,
-            'planned_start_at' => $plan->planned_start_at?->toDateTimeString(),
-            'items_count' => (int) ($plan->items_count ?? $plan->items->count()),
-            'items' => $plan->items
-                ->map(fn ($item): array => [
-                    'product_id' => $item->product_id,
-                    'product_name' => $item->product_name_snapshot,
-                    'product_slug' => $item->product_slug_snapshot,
-                    'target_quantity' => (float) $item->target_quantity,
-                    'unit_label' => $item->unit_label,
-                    'sort_order' => $item->sort_order,
-                ])
-                ->values()
-                ->all(),
-            'details' => $this->service->buildPlanPayload($plan),
-        ]);
+        $plans = $paginator->through(fn (ProductionPlan $plan): array => ProductionPlanListItemData::fromModel(
+            $plan,
+            $this->service->buildPlanPayload($plan),
+        )->toArray());
 
         return Inertia::render('Admin/ProductionPlans/Index', [
             'productionPlans' => $plans,
             'products' => $this->service->listSelectableProducts(),
             'statuses' => $this->service->listStatuses(),
-            'filters' => [
-                'search' => (string) ($filters['search'] ?? ''),
-                'status' => (string) ($filters['status'] ?? ''),
-                'target_from' => $filters['target_from'] ?? null,
-                'target_to' => $filters['target_to'] ?? null,
-                'sort_field' => (string) ($filters['sort_field'] ?? 'target_at'),
-                'sort_direction' => (string) ($filters['sort_direction'] ?? 'asc'),
-                'per_page' => (int) ($filters['per_page'] ?? 10),
-            ],
+            'filters' => $filters->toFrontendFilters(),
             'summary' => $this->service->buildIndexSummary($filters),
         ]);
     }
@@ -92,7 +70,7 @@ class ProductionPlanController extends Controller
 
     public function storeFlow(StoreProductionPlanCreateFlowRequest $request): RedirectResponse
     {
-        $plan = $this->createFlowService->create($request->validated(), (int) $request->user()->id);
+        $plan = $this->createFlowService->create(ProductionPlanStoreData::from($request->validated()), (int) $request->user()->id);
 
         return redirect()
             ->route('admin.production-plans.show', $plan)
@@ -104,7 +82,7 @@ class ProductionPlanController extends Controller
         $this->authorize('view', $productionPlan);
 
         return Inertia::render('Admin/ProductionPlans/Show', [
-            'plan' => $this->service->buildPlanPayload($productionPlan),
+            'plan' => ProductionPlanDetailData::from($this->service->buildPlanPayload($productionPlan))->toArray(),
         ]);
     }
 
@@ -112,7 +90,7 @@ class ProductionPlanController extends Controller
     {
         $this->authorize('create', ProductionPlan::class);
 
-        $this->service->create($request->validated(), (int) $request->user()->id);
+        $this->service->create(ProductionPlanStoreData::from($request->validated()), (int) $request->user()->id);
 
         return redirect()
             ->route('admin.production-plans.index')
@@ -123,7 +101,7 @@ class ProductionPlanController extends Controller
     {
         $this->authorize('update', $productionPlan);
 
-        $this->service->update($productionPlan, $request->validated());
+        $this->service->update($productionPlan, ProductionPlanUpdateData::from($request->validated()));
 
         return redirect()
             ->route('admin.production-plans.index')

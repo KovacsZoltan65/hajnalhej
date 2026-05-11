@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Data\Orders\OrderIndexData;
+use App\Data\Orders\OrderStatusUpdateData;
 use App\Models\Order;
 use App\Models\User;
 use App\Repositories\OrderRepository;
@@ -18,10 +20,7 @@ class OrderService
         private readonly ProductionInventoryService $productionInventoryService,
     ) {}
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(OrderIndexData $filters): LengthAwarePaginator
     {
         return $this->repository->paginateForAdmin($filters);
     }
@@ -34,12 +33,10 @@ class OrderService
         return Order::statuses();
     }
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    public function transitionStatus(Order $order, array $payload, ?User $actor = null): Order
+    public function transitionStatus(Order $order, OrderStatusUpdateData $data, ?User $actor = null): Order
     {
-        $targetStatus = (string) ($payload['status'] ?? '');
+        $payload = $data->toPayload();
+        $targetStatus = $data->status;
         $beforeStatus = $order->status;
         $beforeNotes = $this->normalizeText($order->internal_notes);
         $beforePickupDate = $order->pickup_date?->toDateString();

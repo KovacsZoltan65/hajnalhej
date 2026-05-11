@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Data\Orders\OrderIndexData;
 use App\Models\Order;
 use Carbon\CarbonInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -11,16 +12,11 @@ use Illuminate\Support\Facades\DB;
 
 class OrderRepository
 {
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(OrderIndexData $filters): LengthAwarePaginator
     {
-        $perPage = (int) ($filters['per_page'] ?? 15);
-
         return $this->adminQuery($filters)
             ->withCount('items')
-            ->paginate($perPage)
+            ->paginate($filters->per_page)
             ->withQueryString();
     }
 
@@ -144,28 +140,12 @@ class OrderRepository
         ])->all();
     }
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    private function adminQuery(array $filters): EloquentBuilder
+    private function adminQuery(OrderIndexData $filters): EloquentBuilder
     {
-        $search = trim((string) ($filters['search'] ?? ''));
-        $status = trim((string) ($filters['status'] ?? ''));
-        $sortField = (string) ($filters['sort_field'] ?? 'placed_at');
-        $sortDirection = (string) ($filters['sort_direction'] ?? 'desc');
-
-        $sortable = ['placed_at', 'total', 'status', 'customer_name', 'pickup_date'];
-
-        if (! \in_array($sortField, $sortable, true)) {
-            $sortField = 'placed_at';
-        }
-
-        if (! \in_array($sortDirection, ['asc', 'desc'], true)) {
-            $sortDirection = 'desc';
-        }
-
         return Order::query()
-            ->when($search !== '', function (EloquentBuilder $query) use ($search): void {
+            ->when($filters->search !== null, function (EloquentBuilder $query) use ($filters): void {
+                $search = $filters->search;
+
                 $query->where(function (EloquentBuilder $inner) use ($search): void {
                     $inner
                         ->where('order_number', 'like', "%{$search}%")
@@ -174,9 +154,9 @@ class OrderRepository
                         ->orWhere('customer_phone', 'like', "%{$search}%");
                 });
             })
-            ->when($status !== '', fn (EloquentBuilder $query): EloquentBuilder => $query->where('status', $status))
+            ->when($filters->status !== null, fn (EloquentBuilder $query): EloquentBuilder => $query->where('status', $filters->status))
             ->with('user:id,name,email')
-            ->orderBy($sortField, $sortDirection)
+            ->orderBy($filters->sort_field, $filters->sort_direction)
             ->orderByDesc('id');
     }
 

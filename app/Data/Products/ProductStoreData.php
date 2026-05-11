@@ -12,7 +12,7 @@ class ProductStoreData extends Data
     public function __construct(
         public int $category_id,
         public string $name,
-        public int|float $price,
+        public int|float|string $price,
         public ?string $slug = null,
         public ?string $short_description = null,
         public ?string $description = null,

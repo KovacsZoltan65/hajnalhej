@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Data\WeeklyMenu\WeeklyMenuIndexData;
+use App\Data\WeeklyMenu\WeeklyMenuInlineUpdateData;
 use App\Data\WeeklyMenu\WeeklyMenuStoreData;
 use App\Data\WeeklyMenu\WeeklyMenuUpdateData;
 use App\Data\WeeklyMenuItem\WeeklyMenuItemStoreData;
@@ -93,12 +94,9 @@ class WeeklyMenuService
         return $this->repository->unpublish($weeklyMenu);
     }
 
-    /**
-     * @param  array{field:string,value:mixed}  $payload
-     */
-    public function updateInline(WeeklyMenu $weeklyMenu, array $payload): WeeklyMenu
+    public function updateInline(WeeklyMenu $weeklyMenu, WeeklyMenuInlineUpdateData $payload): WeeklyMenu
     {
-        $status = (string) $payload['value'];
+        $status = (string) $payload->value;
 
         if ($status === WeeklyMenu::STATUS_PUBLISHED) {
             return $this->publish($weeklyMenu);

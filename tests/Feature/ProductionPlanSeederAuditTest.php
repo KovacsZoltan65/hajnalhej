@@ -40,4 +40,3 @@ it('seedelt plan timeline relacioja nem ures betolteskor', function (): void {
 
     expect($plan->steps->isNotEmpty())->toBeTrue();
 });
-

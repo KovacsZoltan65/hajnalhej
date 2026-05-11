@@ -2,21 +2,17 @@
 
 namespace App\Repositories;
 
+use App\Data\Purchases\PurchaseIndexData;
 use App\Models\Purchase;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 
 class PurchaseRepository
 {
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(PurchaseIndexData $filters): LengthAwarePaginator
     {
-        $perPage = (int) ($filters['per_page'] ?? 10);
-
         return $this->adminQuery($filters)
-            ->paginate($perPage)
+            ->paginate($filters->per_page)
             ->withQueryString();
     }
 
@@ -51,39 +47,23 @@ class PurchaseRepository
         $purchase->items()->createMany($items);
     }
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    private function adminQuery(array $filters): Builder
+    private function adminQuery(PurchaseIndexData $filters): Builder
     {
-        $search = trim((string) ($filters['search'] ?? ''));
-        $status = trim((string) ($filters['status'] ?? ''));
-        $supplierId = $filters['supplier_id'] ?? null;
-        $sortField = (string) ($filters['sort_field'] ?? 'purchase_date');
-        $sortDirection = (string) ($filters['sort_direction'] ?? 'desc');
-
-        $allowedSorts = ['purchase_date', 'total', 'status', 'created_at'];
-        if (! \in_array($sortField, $allowedSorts, true)) {
-            $sortField = 'purchase_date';
-        }
-
-        if (! \in_array($sortDirection, ['asc', 'desc'], true)) {
-            $sortDirection = 'desc';
-        }
-
         return Purchase::query()
             ->with(['supplier:id,name', 'creator:id,name,email'])
             ->withCount('items')
-            ->when($search !== '', function (Builder $query) use ($search): void {
+            ->when($filters->search !== null, function (Builder $query) use ($filters): void {
+                $search = (string) $filters->search;
+
                 $query->where(function (Builder $inner) use ($search): void {
                     $inner
                         ->where('reference_number', 'like', "%{$search}%")
                         ->orWhere('notes', 'like', "%{$search}%");
                 });
             })
-            ->when($status !== '', fn (Builder $query): Builder => $query->where('status', $status))
-            ->when($supplierId !== null && $supplierId !== '', fn (Builder $query): Builder => $query->where('supplier_id', (int) $supplierId))
-            ->orderBy($sortField, $sortDirection)
+            ->when($filters->status !== null, fn (Builder $query): Builder => $query->where('status', $filters->status))
+            ->when($filters->supplier_id !== null, fn (Builder $query): Builder => $query->where('supplier_id', $filters->supplier_id))
+            ->orderBy($filters->sort_field, $filters->sort_direction)
             ->orderByDesc('id');
     }
 }

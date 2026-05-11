@@ -10,7 +10,7 @@ class WeeklyMenuItemUpdateData extends Data
 {
     public function __construct(
         public int $product_id,
-        public ?float $price_override = null,
+        public int|float|string|null $price_override = null,
         public bool $is_available = true,
         public int $sort_order = 0,
         public ?string $override_name = null,
@@ -28,7 +28,7 @@ class WeeklyMenuItemUpdateData extends Data
             'product_id' => $this->product_id,
             'override_name' => $this->override_name,
             'override_short_description' => $this->override_short_description,
-            'override_price' => $this->price_override !== null ? number_format($this->price_override, 2, '.', '') : null,
+            'override_price' => $this->price_override !== null ? number_format((float) $this->price_override, 2, '.', '') : null,
             'sort_order' => $this->sort_order,
             'is_active' => $this->is_available,
             'badge_text' => $this->badge_text,

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Data\Products\ProductIndexData;
+use App\Data\Products\ProductInlineUpdateData;
 use App\Data\Products\ProductStoreData;
 use App\Data\Products\ProductUpdateData;
 use App\Models\Product;
@@ -53,13 +54,10 @@ class ProductService
         return DB::transaction(fn (): Product => $this->repository->update($product, $normalized));
     }
 
-    /**
-     * @param  array{field:string,value:mixed}  $payload
-     */
-    public function updateInline(Product $product, array $payload): Product
+    public function updateInline(Product $product, ProductInlineUpdateData $payload): Product
     {
-        $field = (string) $payload['field'];
-        $value = $payload['value'];
+        $field = $payload->field;
+        $value = $payload->value;
 
         $normalized = match ($field) {
             'price' => ['price' => number_format((float) $value, 2, '.', '')],

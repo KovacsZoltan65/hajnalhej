@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Data\Inventory\InventoryAdjustmentData;
 use App\Models\Ingredient;
 use App\Models\InventoryMovement;
 use App\Models\Product;
@@ -177,12 +178,10 @@ class InventoryService
         return $firstMovement;
     }
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    public function recordAdjustment(array $payload, ?User $actor = null): InventoryMovement
+    public function recordAdjustment(InventoryAdjustmentData $data, ?User $actor = null): InventoryMovement
     {
-        $difference = (float) ($payload['difference'] ?? 0);
+        $payload = $data->toPayload();
+        $difference = $data->difference;
         $direction = $difference >= 0 ? InventoryMovement::DIRECTION_IN : InventoryMovement::DIRECTION_OUT;
         $movementType = $difference >= 0 ? InventoryMovement::TYPE_ADJUSTMENT_IN : InventoryMovement::TYPE_ADJUSTMENT_OUT;
 

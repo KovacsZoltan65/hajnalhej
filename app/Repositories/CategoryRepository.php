@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Data\Categories\CategoryIndexData;
 use App\Models\Category;
 use App\Services\CacheService;
 use App\Traits\Functions;
@@ -21,16 +22,12 @@ class CategoryRepository
 
     /**
      * Admin oldalon megjelenítendő adatokat szolgáltatja
-     *
-     * @param  array<string, mixed>  $filters
      */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(CategoryIndexData $filters): LengthAwarePaginator
     {
-        $perPage = (int) ($filters['per_page'] ?? 10);
-
         return $this->adminQuery($filters)
             ->withCount('products')
-            ->paginate($perPage)
+            ->paginate($filters->per_page)
             ->withQueryString();
     }
 
@@ -88,36 +85,19 @@ class CategoryRepository
             ->exists();
     }
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    private function adminQuery(array $filters): Builder
+    private function adminQuery(CategoryIndexData $filters): Builder
     {
-        $search = trim((string) ($filters['search'] ?? ''));
-        $sortField = (string) ($filters['sort_field'] ?? 'sort_order');
-        $sortDirection = (string) ($filters['sort_direction'] ?? 'asc');
-
-        $sortableFields = ['name', 'sort_order', 'is_active'];
-
-        if (! \in_array($sortField, $sortableFields, true)) {
-            $sortField = 'sort_order';
-        }
-
-        if (! \in_array($sortDirection, ['asc', 'desc'], true)) {
-            $sortDirection = 'asc';
-        }
-
         $query = Category::query()
-            ->when($search !== '', function (Builder $query) use ($search): void {
-                $query->where(function (Builder $innerQuery) use ($search): void {
+            ->when($filters->search !== null, function (Builder $query) use ($filters): void {
+                $query->where(function (Builder $innerQuery) use ($filters): void {
                     $innerQuery
-                        ->where('name', 'like', "%{$search}%")
-                        ->orWhere('slug', 'like', "%{$search}%");
+                        ->where('name', 'like', "%{$filters->search}%")
+                        ->orWhere('slug', 'like', "%{$filters->search}%");
                 });
             });
 
         $query
-            ->orderBy($sortField, $sortDirection)
+            ->orderBy($filters->sort_field, $filters->sort_direction)
             ->orderBy('id');
 
         return $query;

@@ -147,6 +147,20 @@ Never duplicate validation elsewhere.
 
 ---
 
+## Laravel Data Rules
+
+- Complex input contracts MUST use spatie/laravel-data.
+- Controllers SHOULD pass typed Data objects to services.
+- Services SHOULD NOT accept raw validated arrays for complex domains.
+- Data objects MUST NOT contain:
+    - DB writes
+    - transactions
+    - query builders
+    - authorization
+    - policies
+
+---
+
 # 5. Frontend Rules
 
 ## Vue Pages
@@ -310,6 +324,43 @@ Minimum:
 - enums or controlled statuses
 - decimals for money
 - timestamps
+
+## Migration table comments
+
+Minden új adatbázis tábla létrehozásakor kötelező magyar nyelvű tábla kommentet megadni.
+
+Laravel migrációban:
+
+```php
+Schema::create('products', function (Blueprint $table) {
+    $table->id();
+
+    // columns...
+
+    $table->comment('Értékesíthető termékek törzsadatai');
+});
+```
+
+Szabályok:
+
+- A komment magyar nyelvű legyen.
+- Rövid, üzleti/domain jelentést írjon le.
+- Ne technikai magyarázat legyen.
+- Ne ismételje feleslegesen a tábla nevét.
+- Új migráció review során ellenőrizni kell, hogy minden Schema::create() tartalmaz-e $table->comment(...) hívást.
+
+Jó példák:
+
+- Termék kategóriák
+- Gyártási tervek
+- Beszerzési átvételi tételek
+- Rendszer aktivitási és audit napló
+
+Rossz példák:
+
+- Products table
+- Ez a tábla adatokat tárol
+- Táblázat a product rekordokhoz
 
 ---
 

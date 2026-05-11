@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Data\ProductionPlans\ProductionPlanStoreData;
+use App\Data\ProductionPlans\ProductionPlanUpdateData;
 use App\Models\Product;
 use App\Models\ProductionPlan;
 use App\Models\User;
@@ -107,12 +109,12 @@ class ProductionPlanSeeder extends Seeder
                 ->first();
 
             if ($existing instanceof ProductionPlan) {
-                $service->update($existing, $payload);
+                $service->update($existing, ProductionPlanUpdateData::from($payload));
 
                 continue;
             }
 
-            $created = $service->create($payload, (int) $user->id);
+            $created = $service->create(ProductionPlanStoreData::from($payload), (int) $user->id);
             $created->update([
                 'plan_number' => $blueprint['plan_number'],
             ]);

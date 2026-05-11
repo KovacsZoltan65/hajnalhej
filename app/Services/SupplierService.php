@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Data\Suppliers\SupplierIndexData;
+use App\Data\Suppliers\SupplierStoreData;
+use App\Data\Suppliers\SupplierUpdateData;
 use App\Models\Supplier;
 use App\Models\User;
 use App\Repositories\SupplierRepository;
@@ -15,32 +18,23 @@ class SupplierService
         private readonly InventoryAuditService $auditService,
     ) {}
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(SupplierIndexData $filters): LengthAwarePaginator
     {
         return $this->repository->paginateForAdmin($filters);
     }
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    public function create(array $payload, ?User $actor = null): Supplier
+    public function create(SupplierStoreData $payload, ?User $actor = null): Supplier
     {
-        $supplier = $this->repository->create($this->normalizePayload($payload));
+        $supplier = $this->repository->create($payload->toPayload());
         $this->auditService->logSupplierCreated($supplier, $actor);
 
         return $supplier;
     }
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    public function update(Supplier $supplier, array $payload, ?User $actor = null): Supplier
+    public function update(Supplier $supplier, SupplierUpdateData $payload, ?User $actor = null): Supplier
     {
         $before = ['supplier' => $supplier->toArray()];
-        $updated = $this->repository->update($supplier, $this->normalizePayload($payload));
+        $updated = $this->repository->update($supplier, $payload->toPayload());
         $this->auditService->logSupplierUpdated($updated, $actor, $before, ['supplier' => $updated->toArray()]);
 
         return $updated;
@@ -50,37 +44,5 @@ class SupplierService
     {
         $this->auditService->logSupplierDeleted($supplier, $actor);
         $this->repository->delete($supplier);
-    }
-
-    /**
-     * @param  array<string, mixed>  $payload
-     * @return array<string, mixed>
-     */
-    private function normalizePayload(array $payload): array
-    {
-        return [
-            'name' => trim((string) ($payload['name'] ?? '')),
-            'email' => $this->emptyToNull($payload['email'] ?? null),
-            'phone' => $this->emptyToNull($payload['phone'] ?? null),
-            'tax_number' => $this->emptyToNull($payload['tax_number'] ?? null),
-            'lead_time_days' => $this->nullableInteger($payload['lead_time_days'] ?? null),
-            'notes' => $this->emptyToNull($payload['notes'] ?? null),
-        ];
-    }
-
-    private function emptyToNull(mixed $value): ?string
-    {
-        $normalized = trim((string) $value);
-
-        return $normalized === '' ? null : $normalized;
-    }
-
-    private function nullableInteger(mixed $value): ?int
-    {
-        if ($value === null || $value === '') {
-            return null;
-        }
-
-        return (int) $value;
     }
 }

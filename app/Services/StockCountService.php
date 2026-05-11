@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Data\StockCounts\StockCountIndexData;
+use App\Data\StockCounts\StockCountStoreData;
+use App\Data\StockCounts\StockCountUpdateData;
 use App\Models\InventoryMovement;
 use App\Models\StockCount;
 use App\Models\User;
@@ -20,10 +23,7 @@ class StockCountService
         private readonly InventoryAuditService $auditService,
     ) {}
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
-    public function paginateForAdmin(array $filters): LengthAwarePaginator
+    public function paginateForAdmin(StockCountIndexData $filters): LengthAwarePaginator
     {
         return $this->repository->paginateForAdmin($filters);
     }
@@ -33,12 +33,10 @@ class StockCountService
         return $this->repository->findWithItems($id);
     }
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    public function create(array $payload, ?User $actor = null): StockCount
+    public function create(StockCountStoreData $data, ?User $actor = null): StockCount
     {
-        return DB::transaction(function () use ($payload, $actor): StockCount {
+        return DB::transaction(function () use ($data, $actor): StockCount {
+            $payload = $data->toPayload();
             $items = $this->normalizeItems($payload['items'] ?? []);
             if ($items === []) {
                 throw new RuntimeException('Leltárhoz legalább egy tétel szükséges.');
@@ -57,16 +55,14 @@ class StockCountService
         });
     }
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    public function update(StockCount $stockCount, array $payload): StockCount
+    public function update(StockCount $stockCount, StockCountUpdateData $data): StockCount
     {
         if ($stockCount->status !== StockCount::STATUS_DRAFT) {
             throw new RuntimeException('Lezárt leltár nem módosítható.');
         }
 
-        return DB::transaction(function () use ($stockCount, $payload): StockCount {
+        return DB::transaction(function () use ($stockCount, $data): StockCount {
+            $payload = $data->toPayload();
             $items = $this->normalizeItems($payload['items'] ?? []);
             if ($items === []) {
                 throw new RuntimeException('Leltárhoz legalább egy tétel szükséges.');

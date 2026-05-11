@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Data\StockCounts\StockCountStoreData;
 use App\Models\Ingredient;
 use App\Models\IngredientSupplierTerm;
 use App\Models\InventoryMovement;
@@ -100,7 +101,7 @@ class InventoryProcurementSeeder extends Seeder
             ->exists();
 
         if (! $countExists) {
-            $stockCount = $stockCountService->create([
+            $stockCount = $stockCountService->create(StockCountStoreData::from([
                 'count_date' => Carbon::today()->toDateString(),
                 'notes' => 'Seeder leltár',
                 'items' => [
@@ -115,7 +116,7 @@ class InventoryProcurementSeeder extends Seeder
                         'counted_quantity' => (float) $ingredients[1]->current_stock + 0.5,
                     ],
                 ],
-            ], $actor);
+            ]), $actor);
 
             $stockCountService->close($stockCount, $actor);
         }
