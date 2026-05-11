@@ -8,6 +8,7 @@ import Select from "primevue/select";
 import Button from "primevue/button";
 
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import OrderFulfillmentBadge from "@/Components/Orders/OrderFulfillmentBadge.vue";
 import OrderStatusBadge from "@/Components/Orders/OrderStatusBadge.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
@@ -179,6 +180,11 @@ const { formatCurrency } = useLocaleFormat();
                     <Column field="status" :header="$t('common.status')" sortable>
                         <template #body="{ data }">
                             <OrderStatusBadge :status="data.status" />
+                        </template>
+                    </Column>
+                    <Column field="fulfillment_method" :header="$t('orders.fulfillment.method')">
+                        <template #body="{ data }">
+                            <OrderFulfillmentBadge :method="data.fulfillment_method" :label="data.fulfillment_label" />
                         </template>
                     </Column>
                     <Column field="pickup_date" :header="$t('common.pickup')" sortable>

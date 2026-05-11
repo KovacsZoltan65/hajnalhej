@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Orders\FulfillmentMethod;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -29,6 +30,25 @@ class OrderFactory extends Factory
             'notes' => null,
             'pickup_date' => now()->toDateString(),
             'pickup_time_slot' => '08:00-10:00',
+            'fulfillment_method' => FulfillmentMethod::PICKUP->value,
+            'pickup_branch_id' => null,
+            'billing_address_snapshot' => [
+                'name' => 'Teszt Elek',
+                'country' => 'Magyarország',
+                'postal_code' => '1111',
+                'city' => 'Budapest',
+                'street' => 'Kovász utca',
+                'house_number' => '1',
+                'floor' => null,
+                'door' => null,
+                'company_name' => null,
+                'tax_number' => null,
+                'phone' => '+36301234567',
+                'notes' => null,
+            ],
+            'shipping_address_snapshot' => null,
+            'delivery_notes' => null,
+            'delivery_fee' => 0,
             'placed_at' => now(),
             'confirmed_at' => null,
             'completed_at' => null,

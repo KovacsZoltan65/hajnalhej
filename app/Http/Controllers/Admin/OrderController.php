@@ -41,7 +41,7 @@ class OrderController extends Controller
     {
         $this->authorize('view', $order);
 
-        $order->load(['items.product:id,name,slug']);
+        $order->load(['items.product:id,name,slug', 'pickupBranch:id,name,code,type,address']);
 
         return Inertia::render('Admin/Orders/Show', [
             'order' => OrderDetailData::fromModel($order)->toArray(),

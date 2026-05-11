@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Data\Branches\BranchIndexData;
+use App\Data\Branches\BranchType;
 use App\Models\Branch;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class BranchRepository
 {
@@ -39,6 +41,24 @@ class BranchRepository
     public function delete(Branch $branch): void
     {
         $branch->delete();
+    }
+
+    /**
+     * @return Collection<int, Branch>
+     */
+    public function activePickupOptions(): Collection
+    {
+        return Branch::query()
+            ->select(['id', 'name', 'code', 'type', 'address'])
+            ->where('active', true)
+            ->whereIn('type', [
+                BranchType::BAKERY,
+                BranchType::SHOP,
+                BranchType::PICKUP_POINT,
+            ])
+            ->orderBy('name')
+            ->orderBy('id')
+            ->get();
     }
 
     private function adminQuery(BranchIndexData $filters): Builder

@@ -10,6 +10,7 @@ use App\Data\Branches\BranchUpdateData;
 use App\Models\Branch;
 use App\Repositories\BranchRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class BranchService
 {
@@ -33,5 +34,13 @@ class BranchService
     public function delete(Branch $branch): void
     {
         $this->repository->delete($branch);
+    }
+
+    /**
+     * @return Collection<int, Branch>
+     */
+    public function activePickupOptions(): Collection
+    {
+        return $this->repository->activePickupOptions();
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Data\Orders;
 
+use App\Enums\Orders\FulfillmentMethod;
 use App\Models\Order;
 use Spatie\LaravelData\Data;
 
@@ -21,6 +22,13 @@ class OrderDetailData extends Data
         public string $customer_phone,
         public ?string $pickup_date,
         public ?string $pickup_time_slot,
+        public string $fulfillment_method,
+        public string $fulfillment_label,
+        public ?array $pickup_branch,
+        public ?array $billing_address_snapshot,
+        public ?array $shipping_address_snapshot,
+        public ?string $delivery_notes,
+        public float $delivery_fee,
         public ?string $notes,
         public ?string $internal_notes,
         public float $subtotal,
@@ -35,6 +43,9 @@ class OrderDetailData extends Data
 
     public static function fromModel(Order $order): self
     {
+        $fulfillmentMethod = FulfillmentMethod::tryFrom($order->fulfillment_method)
+            ?? FulfillmentMethod::PICKUP;
+
         return new self(
             id: $order->id,
             order_number: $order->order_number,
@@ -44,6 +55,19 @@ class OrderDetailData extends Data
             customer_phone: $order->customer_phone,
             pickup_date: $order->pickup_date?->toDateString(),
             pickup_time_slot: $order->pickup_time_slot,
+            fulfillment_method: $fulfillmentMethod->value,
+            fulfillment_label: __($fulfillmentMethod->labelKey()),
+            pickup_branch: $order->pickupBranch === null ? null : [
+                'id' => $order->pickupBranch->id,
+                'name' => $order->pickupBranch->name,
+                'code' => $order->pickupBranch->code,
+                'type' => $order->pickupBranch->type,
+                'address' => $order->pickupBranch->address,
+            ],
+            billing_address_snapshot: $order->billing_address_snapshot,
+            shipping_address_snapshot: $order->shipping_address_snapshot,
+            delivery_notes: $order->delivery_notes,
+            delivery_fee: (float) $order->delivery_fee,
             notes: $order->notes,
             internal_notes: $order->internal_notes,
             subtotal: (float) $order->subtotal,

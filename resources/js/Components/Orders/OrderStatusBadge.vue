@@ -1,4 +1,6 @@
 <script setup>
+import { trans } from "laravel-vue-i18n";
+
 const props = defineProps({
     status: {
         type: String,
@@ -7,12 +9,12 @@ const props = defineProps({
 });
 
 const labels = {
-    pending: "Függőben",
-    confirmed: "Megerősítve",
-    in_preparation: "Előkészítés alatt",
-    ready_for_pickup: "Átvételre kész",
-    completed: "Teljesítve",
-    cancelled: "Törölve",
+    pending: trans("order_status.pending"),
+    confirmed: trans("order_status.confirmed"),
+    in_preparation: trans("order_status.under_preparation"),
+    ready_for_pickup: trans("order_status.ready_for_pickup"),
+    completed: trans("order_status.completed"),
+    cancelled: trans("order_status.deleted"),
 };
 
 const classes = {

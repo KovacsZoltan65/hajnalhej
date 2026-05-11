@@ -6,6 +6,7 @@ import Select from "primevue/select";
 import Textarea from "primevue/textarea";
 
 import BaseDatePicker from "@/Components/BaseDatePicker.vue";
+import OrderFulfillmentBadge from "@/Components/Orders/OrderFulfillmentBadge.vue";
 import OrderStatusBadge from "@/Components/Orders/OrderStatusBadge.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
@@ -36,6 +37,24 @@ const { formatCurrency } = useLocaleFormat();
 
 const updateStatus = () => {
     statusForm.patch(route("admin.orders.status.update", props.order.id));
+};
+
+const addressRows = (address) => {
+    if (!address) {
+        return [];
+    }
+
+    return [
+        ["common.name", address.name],
+        ["orders.address.company_name", address.company_name],
+        ["orders.address.tax_number", address.tax_number],
+        ["orders.address.address", [address.country, address.postal_code, address.city].filter(Boolean).join(", ")],
+        ["orders.address.street", [address.street, address.house_number].filter(Boolean).join(" ")],
+        ["orders.address.floor", address.floor],
+        ["orders.address.door", address.door],
+        ["common.phone", address.phone],
+        ["orders.address.notes", address.notes],
+    ].filter(([, value]) => value !== null && value !== undefined && value !== "");
 };
 </script>
 
@@ -91,6 +110,17 @@ const updateStatus = () => {
                         </div>
                         <div>
                             <dt class="text-bakery-dark/60">
+                                {{ $t("orders.fulfillment.method") }}
+                            </dt>
+                            <dd>
+                                <OrderFulfillmentBadge
+                                    :method="order.fulfillment_method"
+                                    :label="order.fulfillment_label"
+                                />
+                            </dd>
+                        </div>
+                        <div v-if="order.fulfillment_method === 'pickup'">
+                            <dt class="text-bakery-dark/60">
                                 {{ $t("common.pickup") }}
                             </dt>
                             <dd class="font-semibold text-bakery-dark">
@@ -98,7 +128,49 @@ const updateStatus = () => {
                                 {{ order.pickup_time_slot || "" }}
                             </dd>
                         </div>
+                        <div v-if="order.pickup_branch">
+                            <dt class="text-bakery-dark/60">
+                                {{ $t("orders.fulfillment.pickup_branch") }}
+                            </dt>
+                            <dd class="font-semibold text-bakery-dark">
+                                {{ order.pickup_branch.name }}
+                                <span class="block text-xs font-normal text-bakery-dark/65">
+                                    {{ order.pickup_branch.address || order.pickup_branch.code }}
+                                </span>
+                            </dd>
+                        </div>
                     </dl>
+                </article>
+
+                <article class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-5">
+                    <h2 class="font-heading text-2xl text-bakery-dark">
+                        {{ $t("orders.address.billing") }}
+                    </h2>
+                    <dl class="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                        <div v-for="[label, value] in addressRows(order.billing_address_snapshot)" :key="label">
+                            <dt class="text-bakery-dark/60">{{ $t(label) }}</dt>
+                            <dd class="font-semibold text-bakery-dark">{{ value }}</dd>
+                        </div>
+                    </dl>
+                </article>
+
+                <article
+                    v-if="order.fulfillment_method === 'delivery'"
+                    class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-5"
+                >
+                    <h2 class="font-heading text-2xl text-bakery-dark">
+                        {{ $t("orders.address.shipping") }}
+                    </h2>
+                    <dl class="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                        <div v-for="[label, value] in addressRows(order.shipping_address_snapshot)" :key="label">
+                            <dt class="text-bakery-dark/60">{{ $t(label) }}</dt>
+                            <dd class="font-semibold text-bakery-dark">{{ value }}</dd>
+                        </div>
+                    </dl>
+                    <div v-if="order.delivery_notes" class="mt-4 text-sm">
+                        <p class="text-bakery-dark/60">{{ $t("orders.fulfillment.delivery_notes") }}</p>
+                        <p class="font-semibold text-bakery-dark">{{ order.delivery_notes }}</p>
+                    </div>
                 </article>
 
                 <article class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-5">
@@ -138,6 +210,10 @@ const updateStatus = () => {
                     <p class="flex justify-between">
                         <span>{{ $t("admin_orders.fields.subtotal") }}</span
                         ><span>{{ formatCurrency(order.subtotal) }}</span>
+                    </p>
+                    <p class="flex justify-between">
+                        <span>{{ $t("orders.fulfillment.delivery_fee") }}</span
+                        ><span>{{ formatCurrency(order.delivery_fee) }}</span>
                     </p>
                     <p class="flex justify-between font-semibold text-bakery-dark">
                         <span>{{ $t("admin_orders.fields.total") }}</span

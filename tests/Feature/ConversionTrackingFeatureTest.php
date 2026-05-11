@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Branch;
 use App\Models\ConversionEvent;
 use App\Models\Product;
 use App\Models\User;
@@ -80,6 +81,10 @@ it('checkout completion logs conversion event', function (): void {
         'price' => 2000,
     ]);
     publishProductForOrdering($product);
+    $branch = Branch::factory()->create([
+        'type' => 'shop',
+        'active' => true,
+    ]);
 
     $response = $this->withSession([
         'cart.items' => [
@@ -91,6 +96,17 @@ it('checkout completion logs conversion event', function (): void {
         'customer_phone' => '+36123456789',
         'pickup_date' => now()->addDay()->toDateString(),
         'pickup_time_slot' => '08:00-10:00',
+        'fulfillment_method' => 'pickup',
+        'pickup_branch_id' => $branch->id,
+        'billing_address' => [
+            'name' => 'Teszt Elek',
+            'country' => 'Magyarorszag',
+            'postal_code' => '1111',
+            'city' => 'Budapest',
+            'street' => 'Kovaszos utca',
+            'house_number' => '12',
+        ],
+        'same_as_billing' => true,
         'accept_privacy' => true,
         'accept_terms' => true,
     ]);
