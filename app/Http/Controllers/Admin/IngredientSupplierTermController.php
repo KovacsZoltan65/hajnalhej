@@ -16,6 +16,7 @@ use App\Models\Ingredient;
 use App\Models\IngredientSupplierTerm;
 use App\Models\Supplier;
 use App\Services\IngredientSupplierTermService;
+use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -31,7 +32,7 @@ class IngredientSupplierTermController extends Controller
             ->paginateForAdmin($filters)
             ->through(static fn (IngredientSupplierTerm $term): array => IngredientSupplierTermListItemData::from($term)->toArray());
 
-        return Inertia::render('Admin/IngredientSupplierTerms/Index', [
+        return Inertia::render(InertiaPage::ADMIN_INGREDIENT_SUPPLIER_TERMS_INDEX->value, [
             'terms' => $terms,
             'filters' => $filters->toFrontendFilters(),
             'ingredients' => Ingredient::query()

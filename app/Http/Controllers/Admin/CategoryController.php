@@ -11,6 +11,7 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Services\CategoryService;
+use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -35,7 +36,7 @@ class CategoryController extends Controller
             ->paginateForAdmin($filters)
             ->through(fn (Category $category): array => CategoryListItemData::from($category)->toArray());
 
-        return Inertia::render('Admin/Categories/Index', [
+        return Inertia::render(InertiaPage::ADMIN_CATEGORIES_INDEX->value, [
             'categories' => $paginator,
             'filters' => $filters->toFrontendFilters(),
         ]);

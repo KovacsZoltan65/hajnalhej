@@ -18,6 +18,7 @@ class PermissionRegistry
         'Analytics' => 'analytics',
         'Beszerzés' => 'procurement',
         'Branches' => 'branches',
+        'Couriers' => 'couriers',
         'Categories' => 'categories',
         'Felhasználók' => 'users',
         'Ingredients' => 'ingredients',
@@ -68,6 +69,18 @@ class PermissionRegistry
     public const BRANCHES_DELETE = 'branches.delete';
 
     public const BRANCHES_DELETE_ANY = 'branches.deleteAny';
+
+    public const COURIERS_VIEW_ANY = 'couriers.viewAny';
+
+    public const COURIERS_VIEW = 'couriers.view';
+
+    public const COURIERS_CREATE = 'couriers.create';
+
+    public const COURIERS_UPDATE = 'couriers.update';
+
+    public const COURIERS_DELETE = 'couriers.delete';
+
+    public const COURIERS_DELETE_ANY = 'couriers.deleteAny';
 
     public const ADMIN_USERS_VIEW = 'admin.users.view';
 
@@ -399,6 +412,66 @@ class PermissionRegistry
                 'description' => 'Telephely törlési műveletek engedélyezése adminban.',
                 'dangerous' => true,
                 'sort' => 116,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::COURIERS_VIEW_ANY,
+                'module' => 'Couriers',
+                'label' => 'Futárok listázása',
+                'description' => 'Futár törzsadatok listázása adminban.',
+                'dangerous' => false,
+                'sort' => 117,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::COURIERS_VIEW,
+                'module' => 'Couriers',
+                'label' => 'Futár megtekintése',
+                'description' => 'Egy futár admin adatainak megtekintése.',
+                'dangerous' => false,
+                'sort' => 118,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::COURIERS_CREATE,
+                'module' => 'Couriers',
+                'label' => 'Futár létrehozása',
+                'description' => 'Új futár létrehozása.',
+                'dangerous' => false,
+                'sort' => 119,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::COURIERS_UPDATE,
+                'module' => 'Couriers',
+                'label' => 'Futár szerkesztése',
+                'description' => 'Futár admin adatainak módosítása.',
+                'dangerous' => false,
+                'sort' => 120,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::COURIERS_DELETE,
+                'module' => 'Couriers',
+                'label' => 'Futár törlése',
+                'description' => 'Egy futár törlése.',
+                'dangerous' => true,
+                'sort' => 121,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::COURIERS_DELETE_ANY,
+                'module' => 'Couriers',
+                'label' => 'Futárok tömeges törlése',
+                'description' => 'Futár törlési műveletek engedélyezése adminban.',
+                'dangerous' => true,
+                'sort' => 122,
                 'system' => true,
                 'audit_sensitive' => true,
             ],

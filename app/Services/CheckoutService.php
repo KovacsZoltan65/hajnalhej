@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Data\Orders\OrderCheckoutData;
+use App\Enums\Delivery\DeliveryStatus;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -53,6 +54,7 @@ class CheckoutService
                 'pickup_time_slot' => $payload->pickup_time_slot,
                 'fulfillment_method' => $payload->fulfillment_method,
                 'pickup_branch_id' => $payload->method()->isPickup() ? $payload->pickup_branch_id : null,
+                'delivery_status' => $payload->method()->isDelivery() ? DeliveryStatus::PENDING->value : null,
                 'billing_address_snapshot' => $payload->billingSnapshot(),
                 'shipping_address_snapshot' => $payload->shippingSnapshot(),
                 'delivery_notes' => $payload->normalizedDeliveryNotes(),

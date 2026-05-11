@@ -11,6 +11,7 @@ use App\Services\CartService;
 use App\Services\CheckoutService;
 use App\Services\ConversionTrackingService;
 use App\Support\ConversionEventRegistry;
+use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -44,7 +45,7 @@ class CheckoutController extends Controller
             ],
         );
 
-        return Inertia::render('Checkout/Index', [
+        return Inertia::render(InertiaPage::CHECKOUT_INDEX->value, [
             'cart' => $this->cartService->getCartPayload(),
             'fulfillmentOptions' => FulfillmentMethod::options(),
             'pickupBranches' => $this->branchService

@@ -1,0 +1,36 @@
+<script setup>
+import Button from "primevue/button";
+import Dialog from "primevue/dialog";
+import CourierForm from "./CourierForm.vue";
+
+defineProps({
+    visible: { type: Boolean, required: true },
+    form: { type: Object, required: true },
+    vehicleTypeOptions: { type: Array, required: true },
+});
+
+const emit = defineEmits(["update:visible", "submit"]);
+const close = () => emit("update:visible", false);
+</script>
+
+<template>
+    <Dialog
+        :visible="visible"
+        modal
+        :header="$t('admin_couriers.actions.edit')"
+        :style="{ width: '44rem', maxWidth: '95vw' }"
+        :content-style="{ maxHeight: '70vh', overflowY: 'auto' }"
+        @update:visible="(value) => emit('update:visible', value)"
+    >
+        <form id="courier-edit-form" class="space-y-4" @submit.prevent="emit('submit')">
+            <CourierForm :form="form" :vehicle-type-options="vehicleTypeOptions" />
+        </form>
+
+        <template #footer>
+            <div class="flex justify-end gap-2">
+                <Button type="button" severity="secondary" :label="$t('common.cancel')" @click="close" />
+                <Button type="submit" form="courier-edit-form" :label="$t('common.save')" :loading="form.processing" />
+            </div>
+        </template>
+    </Dialog>
+</template>

@@ -15,6 +15,7 @@ use App\Http\Requests\Admin\Branch\StoreBranchRequest;
 use App\Http\Requests\Admin\Branch\UpdateBranchRequest;
 use App\Models\Branch;
 use App\Services\BranchService;
+use App\Support\InertiaPage;
 use App\Support\PermissionRegistry;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -32,7 +33,7 @@ class BranchController extends Controller
             ->paginateForAdmin($filters)
             ->through(fn (Branch $branch): array => BranchListItemData::from($branch)->toArray());
 
-        return Inertia::render('Admin/Branches/Index', [
+        return Inertia::render(InertiaPage::ADMIN_BRANCHES_INDEX->value, [
             'branches' => $paginator,
             'filters' => $filters->toFrontendFilters(),
             'options' => BranchFormOptionsData::make()->toArray(),

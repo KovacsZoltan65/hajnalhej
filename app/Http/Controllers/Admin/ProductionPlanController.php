@@ -14,6 +14,7 @@ use App\Http\Requests\UpdateProductionPlanRequest;
 use App\Models\ProductionPlan;
 use App\Services\ProductionPlanCreateFlowService;
 use App\Services\ProductionPlanService;
+use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -49,7 +50,7 @@ class ProductionPlanController extends Controller
             $this->service->buildPlanPayload($plan),
         )->toArray());
 
-        return Inertia::render('Admin/ProductionPlans/Index', [
+        return Inertia::render(InertiaPage::ADMIN_PRODUCTION_PLANS_INDEX->value, [
             'productionPlans' => $plans,
             'products' => $this->service->listSelectableProducts(),
             'statuses' => $this->service->listStatuses(),
@@ -62,7 +63,7 @@ class ProductionPlanController extends Controller
     {
         $this->authorize('create', ProductionPlan::class);
 
-        return Inertia::render('Admin/ProductionPlans/CreateFlow', [
+        return Inertia::render(InertiaPage::ADMIN_PRODUCTION_PLANS_CREATE_FLOW->value, [
             'products' => $this->service->listActiveProductsForCreateFlow(),
             'statuses' => $this->service->listStatuses(),
         ]);
@@ -81,7 +82,7 @@ class ProductionPlanController extends Controller
     {
         $this->authorize('view', $productionPlan);
 
-        return Inertia::render('Admin/ProductionPlans/Show', [
+        return Inertia::render(InertiaPage::ADMIN_PRODUCTION_PLANS_SHOW->value, [
             'plan' => ProductionPlanDetailData::from($this->service->buildPlanPayload($productionPlan))->toArray(),
         ]);
     }

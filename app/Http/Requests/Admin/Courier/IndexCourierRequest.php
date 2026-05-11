@@ -1,0 +1,34 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Requests\Admin\Courier;
+
+use App\Enums\Delivery\VehicleType;
+use App\Support\PermissionRegistry;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class IndexCourierRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return $this->user()?->can(PermissionRegistry::COURIERS_VIEW_ANY) ?? false;
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    public function rules(): array
+    {
+        return [
+            'search' => ['nullable', 'string', 'max:255'],
+            'vehicle_type' => ['nullable', Rule::in(VehicleType::values())],
+            'active' => ['nullable', 'boolean'],
+            'page' => ['nullable', 'integer', 'min:1'],
+            'per_page' => ['nullable', 'integer', 'min:5', 'max:50'],
+            'sort_field' => ['nullable', Rule::in(['name', 'email', 'phone', 'vehicle_type', 'active', 'updated_at'])],
+            'sort_direction' => ['nullable', Rule::in(['asc', 'desc'])],
+        ];
+    }
+}

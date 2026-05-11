@@ -7,6 +7,7 @@ use App\Http\Requests\Cart\UpdateCartItemRequest;
 use App\Services\CartService;
 use App\Services\ConversionTrackingService;
 use App\Support\ConversionEventRegistry;
+use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -28,7 +29,7 @@ class CartController extends Controller
             step: 'view',
         );
 
-        return Inertia::render('Cart/Index', [
+        return Inertia::render(InertiaPage::CART_INDEX->value, [
             'cart' => $this->cartService->getCartPayload(),
         ]);
     }

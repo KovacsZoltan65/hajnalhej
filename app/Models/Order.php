@@ -31,6 +31,12 @@ use Illuminate\Support\Carbon;
  * @property array<array-key, mixed>|null $shipping_address_snapshot
  * @property string|null $delivery_notes
  * @property numeric $delivery_fee
+ * @property int|null $courier_id
+ * @property string|null $delivery_status
+ * @property Carbon|null $delivery_scheduled_at
+ * @property Carbon|null $out_for_delivery_at
+ * @property Carbon|null $delivered_at
+ * @property string|null $failed_delivery_reason
  * @property Carbon|null $placed_at
  * @property Carbon|null $confirmed_at
  * @property Carbon|null $completed_at
@@ -42,6 +48,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, OrderItem> $items
  * @property-read int|null $items_count
  * @property-read Branch|null $pickupBranch
+ * @property-read Courier|null $courier
  * @property-read User|null $user
  *
  * @method static \Database\Factories\OrderFactory factory($count = null, $state = [])
@@ -115,6 +122,12 @@ class Order extends Model
         'shipping_address_snapshot',
         'delivery_notes',
         'delivery_fee',
+        'courier_id',
+        'delivery_status',
+        'delivery_scheduled_at',
+        'out_for_delivery_at',
+        'delivered_at',
+        'failed_delivery_reason',
         'placed_at',
         'confirmed_at',
         'completed_at',
@@ -136,6 +149,9 @@ class Order extends Model
             'pickup_date' => 'date',
             'billing_address_snapshot' => 'array',
             'shipping_address_snapshot' => 'array',
+            'delivery_scheduled_at' => 'datetime',
+            'out_for_delivery_at' => 'datetime',
+            'delivered_at' => 'datetime',
             'placed_at' => 'datetime',
             'confirmed_at' => 'datetime',
             'completed_at' => 'datetime',
@@ -157,6 +173,11 @@ class Order extends Model
     public function pickupBranch(): BelongsTo
     {
         return $this->belongsTo(Branch::class, 'pickup_branch_id');
+    }
+
+    public function courier(): BelongsTo
+    {
+        return $this->belongsTo(Courier::class);
     }
 
     /**

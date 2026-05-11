@@ -14,6 +14,7 @@ use App\Http\Requests\UpdateStockCountRequest;
 use App\Models\StockCount;
 use App\Services\IngredientService;
 use App\Services\StockCountService;
+use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -35,7 +36,7 @@ class StockCountController extends Controller
             ->paginateForAdmin($filters)
             ->through(static fn (StockCount $count): array => StockCountListItemData::fromModel($count)->toArray());
 
-        return Inertia::render('Admin/StockCounts/Index', [
+        return Inertia::render(InertiaPage::ADMIN_STOCK_COUNTS_INDEX->value, [
             'stock_counts' => $stockCounts,
             'statuses' => StockCount::statuses(),
             'ingredient_options' => $this->ingredientService->listSelectableActive()->values()->all(),
@@ -49,7 +50,7 @@ class StockCountController extends Controller
 
         $stockCount = $this->service->findWithItems($stockCount->id) ?? $stockCount;
 
-        return Inertia::render('Admin/StockCounts/Show', [
+        return Inertia::render(InertiaPage::ADMIN_STOCK_COUNTS_SHOW->value, [
             'stock_count' => StockCountDetailData::fromModel($stockCount)->toArray(),
         ]);
     }

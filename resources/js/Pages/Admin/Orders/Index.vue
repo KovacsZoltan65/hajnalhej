@@ -7,6 +7,7 @@ import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import Button from "primevue/button";
 
+import DeliveryStatusBadge from "@/Components/Admin/Orders/DeliveryStatusBadge.vue";
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
 import OrderFulfillmentBadge from "@/Components/Orders/OrderFulfillmentBadge.vue";
 import OrderStatusBadge from "@/Components/Orders/OrderStatusBadge.vue";
@@ -185,6 +186,16 @@ const { formatCurrency } = useLocaleFormat();
                     <Column field="fulfillment_method" :header="$t('orders.fulfillment.method')">
                         <template #body="{ data }">
                             <OrderFulfillmentBadge :method="data.fulfillment_method" :label="data.fulfillment_label" />
+                        </template>
+                    </Column>
+                    <Column field="delivery_status" :header="$t('delivery.status')">
+                        <template #body="{ data }">
+                            <DeliveryStatusBadge
+                                v-if="data.fulfillment_method === 'delivery'"
+                                :status="data.delivery_status"
+                                :label="data.delivery_status_label"
+                            />
+                            <span v-else class="text-sm text-bakery-dark/45">-</span>
                         </template>
                     </Column>
                     <Column field="pickup_date" :header="$t('common.pickup')" sortable>

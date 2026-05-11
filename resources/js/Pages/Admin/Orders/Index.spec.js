@@ -84,6 +84,14 @@ const stubs = {
         props: ["status"],
         template: "<span>{{ status }}</span>",
     },
+    DeliveryStatusBadge: {
+        props: ["status", "label"],
+        template: "<span>{{ label || status }}</span>",
+    },
+    OrderFulfillmentBadge: {
+        props: ["method", "label"],
+        template: "<span>{{ label || method }}</span>",
+    },
     SectionTitle: {
         props: ["eyebrow", "title", "description"],
         template: "<section>{{ eyebrow }} {{ title }} {{ description }}</section>",

@@ -121,6 +121,13 @@ const menuGroups = computed(() => {
                           icon: "pi pi-building",
                       }
                     : null,
+                can.view_couriers
+                    ? {
+                          label: trans("nav.couriers"),
+                          route: route("admin.couriers.index"),
+                          icon: "pi pi-send",
+                      }
+                    : null,
                 can.manage_stock_counts
                     ? {
                           label: trans("nav.stock_count"),

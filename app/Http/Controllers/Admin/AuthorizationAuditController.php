@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AuditLogIndexRequest;
 use App\Services\Audit\AuthorizationAuditLogService;
+use App\Support\InertiaPage;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Activitylog\Models\Activity;
@@ -23,7 +24,7 @@ class AuthorizationAuditController extends Controller
             ->paginateForAdmin($filters)
             ->through(fn (Activity $activity): array => $this->service->buildListPayload($activity));
 
-        return Inertia::render('Admin/AuditLogs/Index', [
+        return Inertia::render(InertiaPage::ADMIN_AUDIT_LOGS_INDEX->value, [
             'logs' => $logs,
             'filters' => [
                 'search' => (string) ($filters['search'] ?? ''),
@@ -45,7 +46,7 @@ class AuthorizationAuditController extends Controller
 
         $activity = $this->service->findById((int) $activity->id);
 
-        return Inertia::render('Admin/AuditLogs/Show', [
+        return Inertia::render(InertiaPage::ADMIN_AUDIT_LOGS_SHOW->value, [
             'log' => $this->service->buildDetailPayload($activity),
             'eventLabels' => $this->service->eventLabels(),
         ]);

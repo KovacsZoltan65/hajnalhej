@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\UserDiscount;
 use App\Models\UserTemporaryPermission;
 use App\Services\UserAdminService;
+use App\Support\InertiaPage;
 use App\Support\PermissionRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,7 +42,7 @@ class UserController extends Controller
             ->paginateForAdmin($filters)
             ->through(fn (User $user): array => $this->service->serializeUser($user, $canViewOrders));
 
-        return Inertia::render('Admin/Users/Index', [
+        return Inertia::render(InertiaPage::ADMIN_USERS_INDEX->value, [
             'users' => $users,
             'roles' => $this->service->roleOptions(),
             'permissions' => Permission::query()

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PermissionIndexRequest;
 use App\Http\Requests\Admin\SyncPermissionsRequest;
 use App\Services\PermissionManagementService;
+use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -36,7 +37,7 @@ class PermissionController extends Controller
                 return $row;
             });
 
-        return Inertia::render('Admin/Permissions/Index', [
+        return Inertia::render(InertiaPage::ADMIN_PERMISSIONS_INDEX->value, [
             'permissions' => $permissions,
             'modules' => $this->service->modules(),
             'filters' => [
@@ -68,7 +69,7 @@ class PermissionController extends Controller
             $detail['role_names'] = [];
         }
 
-        return Inertia::render('Admin/Permissions/Show', [
+        return Inertia::render(InertiaPage::ADMIN_PERMISSIONS_SHOW->value, [
             'permission' => $detail,
             'can' => [
                 'view_usage' => $canViewUsage,
