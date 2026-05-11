@@ -147,6 +147,20 @@ Never duplicate validation elsewhere.
 
 ---
 
+## Laravel Data Rules
+
+- Complex input contracts MUST use spatie/laravel-data.
+- Controllers SHOULD pass typed Data objects to services.
+- Services SHOULD NOT accept raw validated arrays for complex domains.
+- Data objects MUST NOT contain:
+    - DB writes
+    - transactions
+    - query builders
+    - authorization
+    - policies
+
+---
+
 # 5. Frontend Rules
 
 ## Vue Pages
