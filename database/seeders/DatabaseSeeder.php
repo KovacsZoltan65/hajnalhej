@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             CategorySeeder::class,
+            BranchSeeder::class,
             ProductSeeder::class,
             IngredientSeeder::class,
             ProductIngredientSeeder::class,

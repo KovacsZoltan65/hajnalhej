@@ -114,6 +114,13 @@ const menuGroups = computed(() => {
                           icon: "pi pi-chart-scatter",
                       }
                     : null,
+                can.view_branches
+                    ? {
+                          label: trans("nav.branches"),
+                          route: route("admin.branches.index"),
+                          icon: "pi pi-building",
+                      }
+                    : null,
                 can.manage_stock_counts
                     ? {
                           label: trans("nav.stock_count"),

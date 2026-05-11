@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Branch;
 use App\Models\Category;
 use App\Models\ConversionEvent;
 use App\Models\Ingredient;
@@ -16,6 +17,7 @@ use App\Models\Supplier;
 use App\Models\User;
 use App\Models\WeeklyMenu;
 use App\Policies\AuthorizationAuditPolicy;
+use App\Policies\BranchPolicy;
 use App\Policies\CategoryPolicy;
 use App\Policies\ConversionAnalyticsPolicy;
 use App\Policies\IngredientPolicy;
@@ -81,6 +83,7 @@ class AppServiceProvider extends ServiceProvider
             fn (User $user): bool => app(ProcurementIntelligencePolicy::class)->viewAny($user),
         );
 
+        Gate::policy(Branch::class, BranchPolicy::class);
         Gate::policy(Category::class, CategoryPolicy::class);
         Gate::policy(ConversionEvent::class, ConversionAnalyticsPolicy::class);
         Gate::policy(Ingredient::class, IngredientPolicy::class);

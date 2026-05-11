@@ -1,0 +1,66 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repositories;
+
+use App\Data\Branches\BranchIndexData;
+use App\Models\Branch;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+
+class BranchRepository
+{
+    public function paginateForAdmin(BranchIndexData $filters): LengthAwarePaginator
+    {
+        return $this->adminQuery($filters)
+            ->paginate($filters->per_page)
+            ->withQueryString();
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function create(array $data): Branch
+    {
+        return Branch::query()->create($data);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function update(Branch $branch, array $data): Branch
+    {
+        $branch->update($data);
+
+        return $branch->refresh();
+    }
+
+    public function delete(Branch $branch): void
+    {
+        $branch->delete();
+    }
+
+    private function adminQuery(BranchIndexData $filters): Builder
+    {
+        $query = Branch::query()
+            ->when($filters->search !== null, function (Builder $query) use ($filters): void {
+                $query->where(function (Builder $innerQuery) use ($filters): void {
+                    $innerQuery
+                        ->where('name', 'like', "%{$filters->search}%")
+                        ->orWhere('code', 'like', "%{$filters->search}%")
+                        ->orWhere('email', 'like', "%{$filters->search}%")
+                        ->orWhere('phone', 'like', "%{$filters->search}%")
+                        ->orWhere('address', 'like', "%{$filters->search}%");
+                });
+            })
+            ->when($filters->type !== null, fn (Builder $query): Builder => $query->where('type', $filters->type))
+            ->when($filters->active !== null, fn (Builder $query): Builder => $query->where('active', $filters->active));
+
+        $query
+            ->orderBy($filters->sort_field, $filters->sort_direction)
+            ->orderBy('id');
+
+        return $query;
+    }
+}

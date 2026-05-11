@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Admin\AuthorizationAuditController as AdminAuthorizationAuditController;
+use App\Http\Controllers\Admin\BranchController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CeoDashboardController as AdminCeoDashboardController;
 use App\Http\Controllers\Admin\ConversionAnalyticsController as AdminConversionAnalyticsController;
@@ -97,6 +98,13 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
         Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
         Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+        Route::name('branches.')->prefix('branches')->controller(BranchController::class)->group(function (): void {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::put('/{branch}', 'update')->name('update');
+            Route::delete('/{branch}', 'destroy')->name('destroy');
+        });
 
         Route::name('users.')->prefix('users')->controller(AdminUserController::class)->group(function (): void {
             Route::get('/', 'index')->name('index');
