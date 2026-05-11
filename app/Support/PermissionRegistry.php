@@ -17,6 +17,8 @@ class PermissionRegistry
         'Admin' => 'admin',
         'Analytics' => 'analytics',
         'Beszerzés' => 'procurement',
+        'Branches' => 'branches',
+        'Couriers' => 'couriers',
         'Categories' => 'categories',
         'Felhasználók' => 'users',
         'Ingredients' => 'ingredients',
@@ -55,6 +57,30 @@ class PermissionRegistry
     public const CATEGORIES_UPDATE = 'categories.update';
 
     public const CATEGORIES_DELETE = 'categories.delete';
+
+    public const BRANCHES_VIEW_ANY = 'branches.viewAny';
+
+    public const BRANCHES_VIEW = 'branches.view';
+
+    public const BRANCHES_CREATE = 'branches.create';
+
+    public const BRANCHES_UPDATE = 'branches.update';
+
+    public const BRANCHES_DELETE = 'branches.delete';
+
+    public const BRANCHES_DELETE_ANY = 'branches.deleteAny';
+
+    public const COURIERS_VIEW_ANY = 'couriers.viewAny';
+
+    public const COURIERS_VIEW = 'couriers.view';
+
+    public const COURIERS_CREATE = 'couriers.create';
+
+    public const COURIERS_UPDATE = 'couriers.update';
+
+    public const COURIERS_DELETE = 'couriers.delete';
+
+    public const COURIERS_DELETE_ANY = 'couriers.deleteAny';
 
     public const ADMIN_USERS_VIEW = 'admin.users.view';
 
@@ -326,6 +352,126 @@ class PermissionRegistry
                 'description' => 'Kategóriák törlése.',
                 'dangerous' => true,
                 'sort' => 110,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::BRANCHES_VIEW_ANY,
+                'module' => 'Branches',
+                'label' => 'Telephelyek listázása',
+                'description' => 'Üzletek, pékségek, átvételi pontok és raktárak listázása adminban.',
+                'dangerous' => false,
+                'sort' => 111,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::BRANCHES_VIEW,
+                'module' => 'Branches',
+                'label' => 'Telephely megtekintése',
+                'description' => 'Egy telephely admin adatainak megtekintése.',
+                'dangerous' => false,
+                'sort' => 112,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::BRANCHES_CREATE,
+                'module' => 'Branches',
+                'label' => 'Telephely létrehozása',
+                'description' => 'Új üzlet, pékség, átvételi pont vagy raktár létrehozása.',
+                'dangerous' => false,
+                'sort' => 113,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::BRANCHES_UPDATE,
+                'module' => 'Branches',
+                'label' => 'Telephely szerkesztése',
+                'description' => 'Telephely admin adatainak módosítása.',
+                'dangerous' => false,
+                'sort' => 114,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::BRANCHES_DELETE,
+                'module' => 'Branches',
+                'label' => 'Telephely törlése',
+                'description' => 'Egy telephely törlése.',
+                'dangerous' => true,
+                'sort' => 115,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::BRANCHES_DELETE_ANY,
+                'module' => 'Branches',
+                'label' => 'Telephelyek tömeges törlése',
+                'description' => 'Telephely törlési műveletek engedélyezése adminban.',
+                'dangerous' => true,
+                'sort' => 116,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::COURIERS_VIEW_ANY,
+                'module' => 'Couriers',
+                'label' => 'Futárok listázása',
+                'description' => 'Futár törzsadatok listázása adminban.',
+                'dangerous' => false,
+                'sort' => 117,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::COURIERS_VIEW,
+                'module' => 'Couriers',
+                'label' => 'Futár megtekintése',
+                'description' => 'Egy futár admin adatainak megtekintése.',
+                'dangerous' => false,
+                'sort' => 118,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::COURIERS_CREATE,
+                'module' => 'Couriers',
+                'label' => 'Futár létrehozása',
+                'description' => 'Új futár létrehozása.',
+                'dangerous' => false,
+                'sort' => 119,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::COURIERS_UPDATE,
+                'module' => 'Couriers',
+                'label' => 'Futár szerkesztése',
+                'description' => 'Futár admin adatainak módosítása.',
+                'dangerous' => false,
+                'sort' => 120,
+                'system' => true,
+                'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::COURIERS_DELETE,
+                'module' => 'Couriers',
+                'label' => 'Futár törlése',
+                'description' => 'Egy futár törlése.',
+                'dangerous' => true,
+                'sort' => 121,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::COURIERS_DELETE_ANY,
+                'module' => 'Couriers',
+                'label' => 'Futárok tömeges törlése',
+                'description' => 'Futár törlési műveletek engedélyezése adminban.',
+                'dangerous' => true,
+                'sort' => 122,
                 'system' => true,
                 'audit_sensitive' => true,
             ],

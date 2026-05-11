@@ -6,6 +6,7 @@ use App\Services\ConversionTrackingService;
 use App\Services\HeroExperimentService;
 use App\Services\WeeklyMenuService;
 use App\Support\ConversionEventRegistry;
+use App\Support\InertiaPage;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -41,7 +42,7 @@ class PublicPageController extends Controller
             heroVariant: $variant,
         );
 
-        return Inertia::render('Home', [
+        return Inertia::render(InertiaPage::HOME->value, [
             'heroExperiment' => [
                 'variant' => $variant,
             ],
@@ -50,11 +51,11 @@ class PublicPageController extends Controller
 
     public function weeklyMenu(): Response
     {
-        return Inertia::render('WeeklyMenu', $this->weeklyMenuService->getPublicWeeklyMenuPayload());
+        return Inertia::render(InertiaPage::WEEKLY_MENU->value, $this->weeklyMenuService->getPublicWeeklyMenuPayload());
     }
 
     public function about(): Response
     {
-        return Inertia::render('About');
+        return Inertia::render(InertiaPage::ABOUT->value);
     }
 }

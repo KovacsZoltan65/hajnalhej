@@ -1,6 +1,20 @@
 import { mount } from "@vue/test-utils";
 import OrderStatusBadge from "./OrderStatusBadge.vue";
 
+const { translate } = vi.hoisted(() => {
+    const translations = {
+        "order_status.ready_for_pickup": "Átvételre kész",
+    };
+
+    return {
+        translate: (key) => translations[key] ?? key,
+    };
+});
+
+vi.mock("laravel-vue-i18n", () => ({
+    trans: translate,
+}));
+
 describe("OrderStatusBadge", () => {
     it("renders known status label", () => {
         const wrapper = mount(OrderStatusBadge, {

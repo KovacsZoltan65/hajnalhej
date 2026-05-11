@@ -17,6 +17,19 @@ const { translate } = vi.hoisted(() => {
         "common.phone": "Telefon",
         "common.pickup": "Átvétel",
         "common.status": "Státusz",
+        "orders.address.address": "Cím",
+        "orders.address.billing": "Számlázási cím",
+        "orders.address.company_name": "Cégnév",
+        "orders.address.door": "Ajtó",
+        "orders.address.floor": "Emelet",
+        "orders.address.notes": "Megjegyzés",
+        "orders.address.shipping": "Szállítási cím",
+        "orders.address.street": "Utca",
+        "orders.address.tax_number": "Adószám",
+        "orders.fulfillment.delivery_fee": "Szállítási díj",
+        "orders.fulfillment.delivery_notes": "Szállítási megjegyzés",
+        "orders.fulfillment.method": "Teljesítési mód",
+        "orders.fulfillment.pickup_branch": "Átvételi pont",
         "admin_orders.fields.internal_notes": "Belső megjegyzés",
         "common.pickup_date": "Átvétel dátuma",
         "common.pickup_time_slot": "Átvételi idősáv",
@@ -76,6 +89,7 @@ vi.mock("primevue/textarea", () => ({
 }));
 
 const stubs = {
+    OrderFulfillmentBadge: { props: ["method", "label"], template: "<span>{{ label || method }}</span>" },
     OrderStatusBadge: { props: ["status"], template: "<span>{{ status }}</span>" },
     SectionTitle: {
         props: ["eyebrow", "title", "description"],
@@ -94,6 +108,26 @@ describe("Admin Orders Show", () => {
                     internal_notes: null,
                     pickup_date: "2026-05-02",
                     pickup_time_slot: "08:00-10:00",
+                    fulfillment_method: "pickup",
+                    fulfillment_label: "Átvétel",
+                    pickup_branch: {
+                        id: 1,
+                        name: "Belvárosi üzlet",
+                        code: "BEL",
+                        type: "shop",
+                        address: "Fő utca 1.",
+                    },
+                    billing_address_snapshot: {
+                        name: "Teszt Elek",
+                        country: "Magyarország",
+                        postal_code: "1111",
+                        city: "Budapest",
+                        street: "Kovászos utca",
+                        house_number: "12",
+                    },
+                    shipping_address_snapshot: null,
+                    delivery_notes: null,
+                    delivery_fee: 0,
                     customer_name: "Teszt Elek",
                     customer_email: "teszt@example.com",
                     customer_phone: "+361234567",
@@ -120,6 +154,8 @@ describe("Admin Orders Show", () => {
         expect(wrapper.text()).toContain("Rendelés: ORD-001");
         expect(wrapper.text()).toContain("Ügyfél adatok");
         expect(wrapper.text()).toContain("Rendelési tételek");
+        expect(wrapper.text()).toContain("Teljesítési mód");
+        expect(wrapper.text()).toContain("Számlázási cím");
         expect(wrapper.text()).toContain("Vissza a listára");
         expect(wrapper.find('a[href="/admin/orders"]').exists()).toBe(true);
         expect(wrapper.text()).toContain("Státusz frissítése");

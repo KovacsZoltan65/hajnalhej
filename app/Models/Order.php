@@ -25,6 +25,18 @@ use Illuminate\Support\Carbon;
  * @property string|null $notes
  * @property Carbon|null $pickup_date
  * @property string|null $pickup_time_slot
+ * @property string $fulfillment_method
+ * @property int|null $pickup_branch_id
+ * @property array<array-key, mixed>|null $billing_address_snapshot
+ * @property array<array-key, mixed>|null $shipping_address_snapshot
+ * @property string|null $delivery_notes
+ * @property numeric $delivery_fee
+ * @property int|null $courier_id
+ * @property string|null $delivery_status
+ * @property Carbon|null $delivery_scheduled_at
+ * @property Carbon|null $out_for_delivery_at
+ * @property Carbon|null $delivered_at
+ * @property string|null $failed_delivery_reason
  * @property Carbon|null $placed_at
  * @property Carbon|null $confirmed_at
  * @property Carbon|null $completed_at
@@ -35,6 +47,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, OrderItem> $items
  * @property-read int|null $items_count
+ * @property-read Branch|null $pickupBranch
+ * @property-read Courier|null $courier
  * @property-read User|null $user
  *
  * @method static \Database\Factories\OrderFactory factory($count = null, $state = [])
@@ -56,7 +70,9 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereNotes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereOrderNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order wherePickupDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order wherePickupBranchId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order wherePickupTimeSlot($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereFulfillmentMethod($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order wherePlacedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereSubtotal($value)
@@ -100,6 +116,18 @@ class Order extends Model
         'notes',
         'pickup_date',
         'pickup_time_slot',
+        'fulfillment_method',
+        'pickup_branch_id',
+        'billing_address_snapshot',
+        'shipping_address_snapshot',
+        'delivery_notes',
+        'delivery_fee',
+        'courier_id',
+        'delivery_status',
+        'delivery_scheduled_at',
+        'out_for_delivery_at',
+        'delivered_at',
+        'failed_delivery_reason',
         'placed_at',
         'confirmed_at',
         'completed_at',
@@ -117,7 +145,13 @@ class Order extends Model
             'subtotal' => 'decimal:2',
             'total' => 'decimal:2',
             'material_cost_total' => 'decimal:2',
+            'delivery_fee' => 'decimal:2',
             'pickup_date' => 'date',
+            'billing_address_snapshot' => 'array',
+            'shipping_address_snapshot' => 'array',
+            'delivery_scheduled_at' => 'datetime',
+            'out_for_delivery_at' => 'datetime',
+            'delivered_at' => 'datetime',
             'placed_at' => 'datetime',
             'confirmed_at' => 'datetime',
             'completed_at' => 'datetime',
@@ -134,6 +168,16 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function pickupBranch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class, 'pickup_branch_id');
+    }
+
+    public function courier(): BelongsTo
+    {
+        return $this->belongsTo(Courier::class);
     }
 
     /**

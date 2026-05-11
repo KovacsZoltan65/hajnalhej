@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Data\Orders\OrderCheckoutData;
+use App\Enums\Delivery\DeliveryStatus;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -23,10 +25,7 @@ class CheckoutService
         private readonly ConversionTrackingService $conversionTrackingService,
     ) {}
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    public function placeOrder(array $payload, ?User $user, ?string $sessionId = null): Order
+    public function placeOrder(OrderCheckoutData $payload, ?User $user, ?string $sessionId = null): Order
     {
         $lines = $this->cartService->getCheckoutLines();
 
@@ -38,20 +37,28 @@ class CheckoutService
             $orderNumber = $this->generateOrderNumber();
             $lineSnapshots = $this->buildLineSnapshots($lines);
             $subtotal = $lineSnapshots->sum(fn (array $line): float => (float) $line['line_total']);
+            $deliveryFee = $payload->method()->isDelivery() ? 0.0 : 0.0;
 
             $order = $this->orderRepository->createOrder([
                 'order_number' => $orderNumber,
                 'user_id' => $user?->id,
-                'customer_name' => trim((string) $payload['customer_name']),
-                'customer_email' => mb_strtolower(trim((string) $payload['customer_email'])),
-                'customer_phone' => trim((string) $payload['customer_phone']),
+                'customer_name' => trim($payload->customer_name),
+                'customer_email' => mb_strtolower(trim($payload->customer_email)),
+                'customer_phone' => trim($payload->customer_phone),
                 'status' => Order::STATUS_PENDING,
                 'currency' => 'HUF',
                 'subtotal' => round($subtotal, 2),
-                'total' => round($subtotal, 2),
-                'notes' => $payload['notes'] ?? null,
-                'pickup_date' => $payload['pickup_date'] ?? null,
-                'pickup_time_slot' => $payload['pickup_time_slot'] ?? null,
+                'total' => round($subtotal + $deliveryFee, 2),
+                'notes' => $payload->notes,
+                'pickup_date' => $payload->pickup_date,
+                'pickup_time_slot' => $payload->pickup_time_slot,
+                'fulfillment_method' => $payload->fulfillment_method,
+                'pickup_branch_id' => $payload->method()->isPickup() ? $payload->pickup_branch_id : null,
+                'delivery_status' => $payload->method()->isDelivery() ? DeliveryStatus::PENDING->value : null,
+                'billing_address_snapshot' => $payload->billingSnapshot(),
+                'shipping_address_snapshot' => $payload->shippingSnapshot(),
+                'delivery_notes' => $payload->normalizedDeliveryNotes(),
+                'delivery_fee' => $deliveryFee,
                 'placed_at' => Carbon::now(),
                 'metadata' => $this->orderService->buildFutureProductionMetadata($lineSnapshots->all()),
             ]);

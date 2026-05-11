@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ConversionAnalyticsIndexRequest;
 use App\Models\ConversionEvent;
 use App\Services\ConversionAnalyticsService;
+use App\Support\InertiaPage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,7 +20,7 @@ class ConversionAnalyticsController extends Controller
 
         $days = (int) ($request->validated('days') ?? 30);
 
-        return Inertia::render('Admin/ConversionAnalytics/Index', [
+        return Inertia::render(InertiaPage::ADMIN_CONVERSION_ANALYTICS_INDEX->value, [
             'filters' => [
                 'days' => $days,
             ],

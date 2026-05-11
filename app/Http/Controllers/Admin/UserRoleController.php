@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SyncUserRolesRequest;
 use App\Models\User;
 use App\Services\UserRoleAssignmentService;
+use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -39,7 +40,7 @@ class UserRoleController extends Controller
                     : [],
             ]);
 
-        return Inertia::render('Admin/UserRoles/Index', [
+        return Inertia::render(InertiaPage::ADMIN_USER_ROLES_INDEX->value, [
             'users' => $users,
             'role_options' => $this->service->roleOptions(),
             'filters' => [

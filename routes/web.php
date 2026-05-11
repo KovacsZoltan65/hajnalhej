@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Admin\AuthorizationAuditController as AdminAuthorizationAuditController;
+use App\Http\Controllers\Admin\BranchController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CeoDashboardController as AdminCeoDashboardController;
 use App\Http\Controllers\Admin\ConversionAnalyticsController as AdminConversionAnalyticsController;
+use App\Http\Controllers\Admin\CourierController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\IngredientController;
 use App\Http\Controllers\Admin\IngredientSupplierTermController;
@@ -98,6 +100,20 @@ Route::middleware('auth')->group(function (): void {
         Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
         Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
+        Route::name('branches.')->prefix('branches')->controller(BranchController::class)->group(function (): void {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::put('/{branch}', 'update')->name('update');
+            Route::delete('/{branch}', 'destroy')->name('destroy');
+        });
+
+        Route::name('couriers.')->prefix('couriers')->controller(CourierController::class)->group(function (): void {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::put('/{courier}', 'update')->name('update');
+            Route::delete('/{courier}', 'destroy')->name('destroy');
+        });
+
         Route::name('users.')->prefix('users')->controller(AdminUserController::class)->group(function (): void {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
@@ -174,6 +190,11 @@ Route::middleware('auth')->group(function (): void {
             Route::get('/', 'index')->name('index');
             Route::get('/{order}', 'show')->name('show');
             Route::patch('/{order}/status', 'updateStatus')->name('status.update');
+            Route::post('/{order}/delivery/assign', 'assignCourier')->name('delivery.assign');
+            Route::post('/{order}/delivery/start', 'startDelivery')->name('delivery.start');
+            Route::post('/{order}/delivery/delivered', 'markDelivered')->name('delivery.delivered');
+            Route::post('/{order}/delivery/failed', 'markFailed')->name('delivery.failed');
+            Route::post('/{order}/delivery/cancel', 'cancelDelivery')->name('delivery.cancel');
         });
 
         // Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');

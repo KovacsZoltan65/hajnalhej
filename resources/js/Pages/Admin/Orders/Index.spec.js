@@ -16,6 +16,7 @@ const { translate } = vi.hoisted(() => {
         "admin_orders.columns.customer": "Vásárló",
         "common.status": "Státusz",
         "common.pickup": "Átvétel",
+        "orders.fulfillment.method": "Teljesítési mód",
         "admin_orders.columns.total": "Végösszeg",
         "common.search": "Keresés",
         "common.details": "Részletek",
@@ -83,6 +84,14 @@ const stubs = {
         props: ["status"],
         template: "<span>{{ status }}</span>",
     },
+    DeliveryStatusBadge: {
+        props: ["status", "label"],
+        template: "<span>{{ label || status }}</span>",
+    },
+    OrderFulfillmentBadge: {
+        props: ["method", "label"],
+        template: "<span>{{ label || method }}</span>",
+    },
     SectionTitle: {
         props: ["eyebrow", "title", "description"],
         template: "<section>{{ eyebrow }} {{ title }} {{ description }}</section>",
@@ -103,6 +112,9 @@ describe("Admin Orders Index", () => {
                             status: "pending",
                             pickup_date: "2026-05-02",
                             pickup_time_slot: "08:00-10:00",
+                            fulfillment_method: "pickup",
+                            fulfillment_label: "Átvétel",
+                            pickup_branch_name: "Belvárosi üzlet",
                             total: 4500,
                         },
                     ],

@@ -12,6 +12,7 @@ use App\Http\Requests\StoreSupplierRequest;
 use App\Http\Requests\UpdateSupplierRequest;
 use App\Models\Supplier;
 use App\Services\SupplierService;
+use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -29,7 +30,7 @@ class SupplierController extends Controller
             ->paginateForAdmin($filters)
             ->through(static fn (Supplier $supplier): array => SupplierListItemData::from($supplier)->toArray());
 
-        return Inertia::render('Admin/Suppliers/Index', [
+        return Inertia::render(InertiaPage::ADMIN_SUPPLIERS_INDEX->value, [
             'suppliers' => $suppliers,
             'filters' => $filters->toFrontendFilters(),
         ]);

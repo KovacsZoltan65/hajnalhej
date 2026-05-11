@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Branch;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -92,6 +93,10 @@ it('logs order placement with structured snapshots', function (): void {
         'price' => 1200,
     ]);
     publishProductForOrdering($product);
+    $branch = Branch::factory()->create([
+        'type' => 'shop',
+        'active' => true,
+    ]);
 
     $this->post('/cart/items', [
         'product_id' => $product->id,
@@ -105,6 +110,17 @@ it('logs order placement with structured snapshots', function (): void {
         'notes' => 'Please prepare fresh.',
         'pickup_date' => now()->addDay()->toDateString(),
         'pickup_time_slot' => '08:00-10:00',
+        'fulfillment_method' => 'pickup',
+        'pickup_branch_id' => $branch->id,
+        'billing_address' => [
+            'name' => 'Bakery Guest',
+            'country' => 'Magyarorszag',
+            'postal_code' => '1111',
+            'city' => 'Budapest',
+            'street' => 'Kovaszos utca',
+            'house_number' => '12',
+        ],
+        'same_as_billing' => true,
         'accept_privacy' => true,
         'accept_terms' => true,
     ])->assertRedirect();

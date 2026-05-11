@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\GeneratePurchaseDraftRequest;
 use App\Http\Requests\Admin\ProcurementIntelligenceIndexRequest;
 use App\Services\ProcurementIntelligenceService;
 use App\Services\PurchaseDraftGenerationService;
+use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -26,7 +27,7 @@ class ProcurementIntelligenceController extends Controller
         $filters = $request->validated();
         $days = (int) ($filters['days'] ?? 30);
 
-        return Inertia::render('Admin/ProcurementIntelligence/Index', [
+        return Inertia::render(InertiaPage::ADMIN_PROCUREMENT_INTELLIGENCE_INDEX->value, [
             'filters' => [
                 'days' => $days,
                 'ingredient_id' => $filters['ingredient_id'] ?? null,

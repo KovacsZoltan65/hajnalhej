@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StoreRoleRequest;
 use App\Http\Requests\Admin\SyncRolePermissionsRequest;
 use App\Http\Requests\Admin\UpdateRoleRequest;
 use App\Services\RoleManagementService;
+use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -36,7 +37,7 @@ class RoleController extends Controller
                 'is_system_role' => $this->service->isSystemRole($role->name),
             ]);
 
-        return Inertia::render('Admin/Roles/Index', [
+        return Inertia::render(InertiaPage::ADMIN_ROLES_INDEX->value, [
             'roles' => $roles,
             'filters' => [
                 'search' => (string) ($filters['search'] ?? ''),
@@ -55,7 +56,7 @@ class RoleController extends Controller
     {
         $this->authorize('view', $role);
 
-        return Inertia::render('Admin/Roles/Show', [
+        return Inertia::render(InertiaPage::ADMIN_ROLES_SHOW->value, [
             'role' => $this->service->buildRolePayload($role),
             'permission_groups' => $this->service->permissionGroups(),
             'can' => [

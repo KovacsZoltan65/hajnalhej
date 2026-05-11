@@ -155,7 +155,7 @@ class OrderRepository
                 });
             })
             ->when($filters->status !== null, fn (EloquentBuilder $query): EloquentBuilder => $query->where('status', $filters->status))
-            ->with('user:id,name,email')
+            ->with(['user:id,name,email', 'pickupBranch:id,name,code,type,address', 'courier:id,name,phone,email,vehicle_type'])
             ->orderBy($filters->sort_field, $filters->sort_direction)
             ->orderByDesc('id');
     }
