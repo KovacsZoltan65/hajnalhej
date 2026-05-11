@@ -311,6 +311,43 @@ Minimum:
 - decimals for money
 - timestamps
 
+## Migration table comments
+
+Minden új adatbázis tábla létrehozásakor kötelező magyar nyelvű tábla kommentet megadni.
+
+Laravel migrációban:
+
+```php
+Schema::create('products', function (Blueprint $table) {
+    $table->id();
+
+    // columns...
+
+    $table->comment('Értékesíthető termékek törzsadatai');
+});
+```
+
+Szabályok:
+
+- A komment magyar nyelvű legyen.
+- Rövid, üzleti/domain jelentést írjon le.
+- Ne technikai magyarázat legyen.
+- Ne ismételje feleslegesen a tábla nevét.
+- Új migráció review során ellenőrizni kell, hogy minden Schema::create() tartalmaz-e $table->comment(...) hívást.
+
+Jó példák:
+
+- Termék kategóriák
+- Gyártási tervek
+- Beszerzési átvételi tételek
+- Rendszer aktivitási és audit napló
+
+Rossz példák:
+
+- Products table
+- Ez a tábla adatokat tárol
+- Táblázat a product rekordokhoz
+
 ---
 
 # 11. Naming Rules
