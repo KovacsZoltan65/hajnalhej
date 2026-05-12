@@ -49,15 +49,7 @@ Route::controller(PublicPageController::class)->group(function (): void {
     Route::get('/about', 'about')->name('about');
 });
 
-/*
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/items', [CartController::class, 'store'])->name('cart.items.store');
-Route::patch('/cart/items/{productId}', [CartController::class, 'update'])->name('cart.items.update');
-Route::delete('/cart/items/{productId}', [CartController::class, 'destroy'])->name('cart.items.destroy');
-Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
-*/
-
-Route::prefix('cart')->name('cart.')->controller(CartController::class)->group(function () {
+Route::prefix('cart')->name('cart.')->controller(CartController::class)->group(function (): void {
     Route::get('/', 'index')->name('index');
     Route::post('/items', 'store')->name('items.store');
     Route::patch('/items/{productId}', 'update')->name('items.update');
@@ -126,29 +118,50 @@ Route::middleware('auth')->group(function (): void {
             Route::delete('/{user}/discounts/{discount}', 'destroyDiscount')->name('discounts.destroy');
         });
 
-        Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-        Route::get('/products/create-flow', [ProductController::class, 'createFlow'])->name('products.create-flow');
-        Route::post('/products/create-flow', [ProductController::class, 'storeFlow'])->name('products.create-flow.store');
-        Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-        Route::patch('/products/{product}/inline', [ProductController::class, 'updateInline'])->name('products.inline.update');
-        Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
-        Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
-        Route::post('/products/{product}/ingredients', [ProductIngredientController::class, 'store'])->name('products.ingredients.store');
-        Route::put('/products/{product}/ingredients/{productIngredient}', [ProductIngredientController::class, 'update'])->name('products.ingredients.update');
-        Route::delete('/products/{product}/ingredients/{productIngredient}', [ProductIngredientController::class, 'destroy'])->name('products.ingredients.destroy');
-        Route::post('/products/{product}/recipe-steps', [RecipeStepController::class, 'store'])->name('products.recipe-steps.store');
-        Route::put('/products/{product}/recipe-steps/{recipeStep}', [RecipeStepController::class, 'update'])->name('products.recipe-steps.update');
-        Route::delete('/products/{product}/recipe-steps/{recipeStep}', [RecipeStepController::class, 'destroy'])->name('products.recipe-steps.destroy');
+        Route::prefix('products')->name('products.')->group(function (): void {
 
-        Route::get('/ingredients', [IngredientController::class, 'index'])->name('ingredients.index');
-        Route::post('/ingredients', [IngredientController::class, 'store'])->name('ingredients.store');
-        Route::patch('/ingredients/{ingredient}/inline', [IngredientController::class, 'updateInline'])->name('ingredients.inline.update');
-        Route::put('/ingredients/{ingredient}', [IngredientController::class, 'update'])->name('ingredients.update');
-        Route::delete('/ingredients/{ingredient}', [IngredientController::class, 'destroy'])->name('ingredients.destroy');
+            Route::get('/', [ProductController::class, 'index'])->name('index');
+            Route::get('/create-flow', [ProductController::class, 'createFlow'])->name('create-flow');
+            Route::post('/create-flow', [ProductController::class, 'storeFlow'])->name('create-flow.store');
+            Route::post('/', [ProductController::class, 'store'])->name('store');
+            Route::patch('/{product}/inline', [ProductController::class, 'updateInline'])->name('inline.update');
+            Route::put('/{product}', [ProductController::class, 'update'])->name('update');
+            Route::delete('/{product}', [ProductController::class, 'destroy'])->name('destroy');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Product Ingredients
+            |--------------------------------------------------------------------------
+            */
+            Route::prefix('{product}/ingredients')->name('ingredients.')->group(function (): void {
+                Route::post('/', [ProductIngredientController::class, 'store'])->name('store');
+                Route::put('/{productIngredient}', [ProductIngredientController::class, 'update'])->name('update');
+                Route::delete('/{productIngredient}', [ProductIngredientController::class, 'destroy'])->name('destroy');
+            });
+
+            /*
+            |--------------------------------------------------------------------------
+            | Recipe Steps
+            |--------------------------------------------------------------------------
+            */
+            Route::prefix('{product}/recipe-steps')->name('recipe-steps.')->group(function (): void {
+                Route::post('/', [RecipeStepController::class, 'store'])->name('store');
+                Route::put('/{recipeStep}', [RecipeStepController::class, 'update'])->name('update');
+                Route::delete('/{recipeStep}', [RecipeStepController::class, 'destroy'])->name('destroy');
+            });
+        });
+
+        Route::prefix('ingredients')->name('ingredients.')->group(function (): void {
+            Route::get('/', [IngredientController::class, 'index'])->name('index');
+            Route::post('/', [IngredientController::class, 'store'])->name('store');
+            Route::patch('/{ingredient}/inline', [IngredientController::class, 'updateInline'])->name('inline.update');
+            Route::put('/{ingredient}', [IngredientController::class, 'update'])->name('update');
+            Route::delete('/{ingredient}', [IngredientController::class, 'destroy'])->name('destroy');
+        });
 
         Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
 
-        Route::name('production-plans.')->prefix('production-plans')->controller(ProductionPlanController::class)->group(function () {
+        Route::name('production-plans.')->prefix('production-plans')->controller(ProductionPlanController::class)->group(function (): void {
             Route::get('/', 'index')->name('index');
             Route::get('/create-flow', 'createFlow')->name('create-flow');
             Route::post('/create-flow', 'storeFlow')->name('create-flow.store');
@@ -157,12 +170,8 @@ Route::middleware('auth')->group(function (): void {
             Route::put('/{productionPlan}', 'update')->name('update');
             Route::delete('/{productionPlan}', 'destroy')->name('destroy');
         });
-        // Route::get('/production-plans', [ProductionPlanController::class, 'index'])->name('production-plans.index');
-        // Route::post('/production-plans', [ProductionPlanController::class, 'store'])->name('production-plans.store');
-        // Route::put('/production-plans/{productionPlan}', [ProductionPlanController::class, 'update'])->name('production-plans.update');
-        // Route::delete('/production-plans/{productionPlan}', [ProductionPlanController::class, 'destroy'])->name('production-plans.destroy');
 
-        Route::name('weekly-menus.')->prefix('weekly-menus')->controller(WeeklyMenuController::class)->group(function () {
+        Route::name('weekly-menus.')->prefix('weekly-menus')->controller(WeeklyMenuController::class)->group(function (): void {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
             Route::patch('/{weeklyMenu}/inline', 'updateInline')->name('inline.update');
@@ -176,17 +185,7 @@ Route::middleware('auth')->group(function (): void {
             Route::delete('/{weeklyMenu}/items/{item}', 'destroyItem')->name('items.destroy');
         });
 
-        // Route::get('/weekly-menus', [WeeklyMenuController::class, 'index'])->name('weekly-menus.index');
-        // Route::post('/weekly-menus', [WeeklyMenuController::class, 'store'])->name('weekly-menus.store');
-        // Route::put('/weekly-menus/{weeklyMenu}', [WeeklyMenuController::class, 'update'])->name('weekly-menus.update');
-        // Route::delete('/weekly-menus/{weeklyMenu}', [WeeklyMenuController::class, 'destroy'])->name('weekly-menus.destroy');
-        // Route::post('/weekly-menus/{weeklyMenu}/publish', [WeeklyMenuController::class, 'publish'])->name('weekly-menus.publish');
-        // Route::post('/weekly-menus/{weeklyMenu}/unpublish', [WeeklyMenuController::class, 'unpublish'])->name('weekly-menus.unpublish');
-        // Route::post('/weekly-menus/{weeklyMenu}/items', [WeeklyMenuController::class, 'storeItem'])->name('weekly-menus.items.store');
-        // Route::put('/weekly-menus/{weeklyMenu}/items/{item}', [WeeklyMenuController::class, 'updateItem'])->name('weekly-menus.items.update');
-        // Route::delete('/weekly-menus/{weeklyMenu}/items/{item}', [WeeklyMenuController::class, 'destroyItem'])->name('weekly-menus.items.destroy');
-
-        Route::name('orders.')->prefix('orders')->controller(AdminOrderController::class)->group(function () {
+        Route::name('orders.')->prefix('orders')->controller(AdminOrderController::class)->group(function (): void {
             Route::get('/', 'index')->name('index');
             Route::get('/{order}', 'show')->name('show');
             Route::patch('/{order}/status', 'updateStatus')->name('status.update');
@@ -197,69 +196,40 @@ Route::middleware('auth')->group(function (): void {
             Route::post('/{order}/delivery/cancel', 'cancelDelivery')->name('delivery.cancel');
         });
 
-        // Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
-        // Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
-        // Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status.update');
+        Route::prefix('roles')->name('roles.')->middleware('permission:roles.view')->group(function (): void {
+            Route::get('/', [AdminRoleController::class, 'index'])->name('index');
+            Route::get('/{role}', [AdminRoleController::class, 'show'])->name('show');
+            Route::post('/', [AdminRoleController::class, 'store'])->middleware('permission:roles.create')->name('store');
+            Route::put('/{role}', [AdminRoleController::class, 'update'])->middleware('permission:roles.update')->name('update');
+            Route::delete('/{role}', [AdminRoleController::class, 'destroy'])->middleware('permission:roles.delete')->name('destroy');
+            Route::put('/{role}/permissions', [AdminRoleController::class, 'syncPermissions'])->middleware('permission:roles.assign-permissions')->name('permissions.sync');
+        });
 
-        Route::get('/roles', [AdminRoleController::class, 'index'])
-            ->middleware('permission:roles.view')
-            ->name('roles.index');
-        Route::get('/roles/{role}', [AdminRoleController::class, 'show'])
-            ->middleware('permission:roles.view')
-            ->name('roles.show');
-        Route::post('/roles', [AdminRoleController::class, 'store'])
-            ->middleware('permission:roles.create')
-            ->name('roles.store');
-        Route::put('/roles/{role}', [AdminRoleController::class, 'update'])
-            ->middleware('permission:roles.update')
-            ->name('roles.update');
-        Route::delete('/roles/{role}', [AdminRoleController::class, 'destroy'])
-            ->middleware('permission:roles.delete')
-            ->name('roles.destroy');
-        Route::put('/roles/{role}/permissions', [AdminRoleController::class, 'syncPermissions'])
-            ->middleware('permission:roles.assign-permissions')
-            ->name('roles.permissions.sync');
+        Route::get('/user-roles', [AdminUserRoleController::class, 'index'])->middleware('role_or_permission:users.assign-roles|users.view-permissions')->name('user-roles.index');
+        Route::put('/users/{user}/roles', [AdminUserRoleController::class, 'update'])->middleware('permission:users.assign-roles')->name('users.roles.update');
 
-        Route::get('/user-roles', [AdminUserRoleController::class, 'index'])
-            ->middleware('role_or_permission:users.assign-roles|users.view-permissions')
-            ->name('user-roles.index');
-        Route::put('/users/{user}/roles', [AdminUserRoleController::class, 'update'])
-            ->middleware('permission:users.assign-roles')
-            ->name('users.roles.update');
+        Route::prefix('permissions')->name('permissions.')->middleware('permission:permissions.view')->group(function (): void {
+            Route::get('/', [AdminPermissionController::class, 'index'])->name('index');
+            Route::post('/sync', [AdminPermissionController::class, 'sync'])->middleware('permission:permissions.sync')->name('sync');
+            Route::get('/{permissionName}', [AdminPermissionController::class, 'show'])
+                ->where('permissionName', '[A-Za-z0-9\.\-_]+')
+                ->name('show');
+        });
 
-        Route::get('/permissions', [AdminPermissionController::class, 'index'])
-            ->middleware('permission:permissions.view')
-            ->name('permissions.index');
-        Route::post('/permissions/sync', [AdminPermissionController::class, 'sync'])
-            ->middleware('permission:permissions.sync')
-            ->name('permissions.sync');
-        Route::get('/permissions/{permissionName}', [AdminPermissionController::class, 'show'])
-            ->middleware('permission:permissions.view')
-            ->name('permissions.show');
+        Route::prefix('audit-logs')->name('audit-logs.')->middleware('permission:audit-logs.view')->group(function (): void {
+            Route::get('/', [AdminAuthorizationAuditController::class, 'index'])->name('index');
+            Route::get('/{activity}', [AdminAuthorizationAuditController::class, 'show'])->whereNumber('activity')->name('show');
+        });
 
-        Route::get('/audit-logs', [AdminAuthorizationAuditController::class, 'index'])
-            ->middleware('permission:audit-logs.view')
-            ->name('audit-logs.index');
-        Route::get('/audit-logs/{activity}', [AdminAuthorizationAuditController::class, 'show'])
-            ->middleware('permission:audit-logs.view')
-            ->name('audit-logs.show');
+        Route::prefix('security-dashboard')->name('security-dashboard.')->middleware('permission:security-dashboard.view')->group(function (): void {
+            Route::get('/', [AdminSecurityDashboardController::class, 'index'])->name('index');
+            Route::get('/events/{activity}', [AdminSecurityDashboardController::class, 'showEvent'])->whereNumber('activity')->name('events.show');
+        });
 
-        Route::get('/security-dashboard', [AdminSecurityDashboardController::class, 'index'])
-            ->middleware('permission:security-dashboard.view')
-            ->name('security-dashboard.index');
-        Route::get('/security-dashboard/events/{activity}', [AdminSecurityDashboardController::class, 'showEvent'])
-            ->middleware('permission:security-dashboard.view')
-            ->name('security-dashboard.events.show');
+        Route::get('/conversion-analytics', [AdminConversionAnalyticsController::class, 'index'])->middleware('permission:conversion-analytics.view')->name('conversion-analytics.index');
+        Route::get('/profit-dashboard', [AdminProfitDashboardController::class, 'index'])->middleware('permission:profit-dashboard.view')->name('profit-dashboard.index');
 
-        Route::get('/conversion-analytics', [AdminConversionAnalyticsController::class, 'index'])
-            ->middleware('permission:conversion-analytics.view')
-            ->name('conversion-analytics.index');
-        Route::get('/profit-dashboard', [AdminProfitDashboardController::class, 'index'])
-            ->middleware('permission:profit-dashboard.view')
-            ->name('profit-dashboard.index');
-        Route::get('/ceo-dashboard', [AdminCeoDashboardController::class, 'index'])
-            ->middleware('permission:ceo-dashboard.view')
-            ->name('ceo-dashboard.index');
+        Route::get('/ceo-dashboard', [AdminCeoDashboardController::class, 'index'])->middleware('permission:ceo-dashboard.view')->name('ceo-dashboard.index');
 
         Route::name('suppliers.')->prefix('suppliers')->controller(AdminSupplierController::class)->group(function (): void {
             Route::get('/', 'index')->middleware('permission:suppliers.view')->name('index');
@@ -285,12 +255,10 @@ Route::middleware('auth')->group(function (): void {
             Route::post('/{purchase}/cancel', 'cancel')->middleware('permission:purchases.manage')->name('cancel');
         });
 
-        Route::get('/procurement-intelligence', [AdminProcurementIntelligenceController::class, 'index'])
-            ->middleware('permission:procurement-intelligence.view')
-            ->name('procurement-intelligence.index');
-        Route::post('/procurement-intelligence/purchase-drafts', [AdminProcurementIntelligenceController::class, 'generatePurchaseDrafts'])
-            ->middleware('permission:purchases.manage')
-            ->name('procurement-intelligence.purchase-drafts.store');
+        Route::prefix('procurement-intelligence')->name('procurement-intelligence.')->middleware('permission:procurement-intelligence.view')->group(function (): void {
+            Route::get('/', [AdminProcurementIntelligenceController::class, 'index'])->name('index');
+            Route::post('/purchase-drafts', [AdminProcurementIntelligenceController::class, 'generatePurchaseDrafts'])->middleware('permission:purchases.manage')->name('purchase-drafts.store');
+        });
 
         Route::name('inventory.')->prefix('inventory')->controller(InventoryController::class)->group(function (): void {
             Route::get('/', 'index')->middleware('permission:inventory-dashboard.view')->name('index');
