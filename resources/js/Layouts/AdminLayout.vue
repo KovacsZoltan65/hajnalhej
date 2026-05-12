@@ -171,7 +171,7 @@ const menuGroups = computed(() => {
                 can.view_admin_users
                     ? {
                           label: trans("nav.users"),
-                          route: trans("admin.users.index"),
+                          route: route("admin.users.index"),
                           icon: "pi pi-users",
                       }
                     : null,
