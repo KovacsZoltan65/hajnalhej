@@ -2,6 +2,27 @@ import { mount } from '@vue/test-utils';
 import { reactive } from 'vue';
 import CheckoutPage from './Index.vue';
 
+const translations = {
+    'checkout.page.meta_title': 'Pénztár',
+    'checkout.page.title': 'Pénztár',
+    'checkout.page.subtitle': 'Töltsd ki az adatokat, ellenőrizd az összegzést, és add le a rendelést.',
+    'checkout.page.customer_name': 'Teljes név',
+    'checkout.page.customer_email': 'Email',
+    'checkout.page.customer_phone': 'Telefonszám',
+    'checkout.page.pickup_date': 'Átvétel dátuma',
+    'checkout.page.pickup_time_slot': 'Átvételi idősáv',
+    'checkout.page.pickup_time_placeholder': 'pl. 08:00-10:00',
+    'checkout.page.notes': 'Megjegyzés',
+    'checkout.page.accept_privacy': 'Elfogadom az adatkezelési tájékoztatót.',
+    'checkout.page.accept_terms': 'Elfogadom az ÁSZF-et.',
+    'checkout.page.submit_order': 'Rendelés leadása',
+    'checkout.page.order_summary': 'Rendelés összegzése',
+    'checkout.page.total_label': 'Végösszeg',
+    'checkout.page.back_to_cart': 'Vissza a kosárhoz',
+};
+
+const translate = (key) => translations[key] ?? key;
+
 let formState = reactive({
     customer_name: '',
     customer_email: '',
@@ -81,9 +102,16 @@ describe('Checkout page', () => {
                     pickup_time_slot: null,
                 },
             },
+            global: {
+                mocks: {
+                    $t: translate,
+                },
+            },
         });
 
         expect(wrapper.text()).toContain('Rendelés összegzése');
+        expect(wrapper.text()).toContain('Végösszeg');
+        expect(wrapper.text()).toContain('Vissza a kosárhoz');
         expect(wrapper.text()).toContain('Kovaszos vekni');
     });
 
@@ -102,9 +130,13 @@ describe('Checkout page', () => {
                     pickup_time_slot: null,
                 },
             },
+            global: {
+                mocks: {
+                    $t: translate,
+                },
+            },
         });
 
         expect(wrapper.find('button').attributes('disabled')).toBeDefined();
     });
 });
-
