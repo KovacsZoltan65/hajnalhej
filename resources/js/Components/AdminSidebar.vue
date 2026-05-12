@@ -12,18 +12,27 @@ const props = defineProps({
     },
 });
 
-const toPath = (route) => {
-    try {
-        return new URL(route, window.location.origin).pathname;
-    } catch {
-        return route;
+const normalizePath = (value) => {
+    if (!value) {
+        return "/";
     }
+
+    let path = String(value);
+
+    try {
+        path = new URL(path, window.location.origin).pathname;
+    } catch {
+        path = path.split("#")[0].split("?")[0] || "/";
+    }
+
+    return path.length > 1 ? path.replace(/\/+$/, "") : path;
 };
 
 const isActive = (route) => {
-    const path = toPath(route);
+    const currentPath = normalizePath(page.url);
+    const routePath = normalizePath(route);
 
-    return page.url === path || page.url.startsWith(`${path}/`);
+    return currentPath === routePath || currentPath.startsWith(`${routePath}/`);
 };
 
 const visibleGroups = computed(() => {

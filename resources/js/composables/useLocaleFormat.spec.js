@@ -15,12 +15,12 @@ vi.mock("@inertiajs/vue3", () => ({
 import { useLocaleFormat } from "./useLocaleFormat";
 
 describe("useLocaleFormat", () => {
-    it("formats numbers and currency from Inertia page preferences", () => {
+    it("formats numbers from the shared page locale and currency from preferences", () => {
         mockPage.props = {
-            locale: "en-US",
+            locale: "de-DE",
             preferences: {
                 currency: "EUR",
-                locale: "de-DE",
+                locale: "en-US",
             },
         };
 
@@ -30,16 +30,16 @@ describe("useLocaleFormat", () => {
         expect(formatCurrency(1234.5)).toMatch(/1\.235\s?€/);
     });
 
-    it("does not use legacy page locale when preferences are absent", () => {
+    it("uses the shared page locale when preferences are absent", () => {
         mockPage.props = {
             locale: "en-US",
         };
 
         const { locale, currency, formatCurrency } = useLocaleFormat();
 
-        expect(locale.value).toBe("hu-HU");
+        expect(locale.value).toBe("en-US");
         expect(currency.value).toBe("HUF");
-        expect(formatCurrency(1234.5)).toContain("Ft");
+        expect(formatCurrency(1234.5)).toContain("HUF");
     });
 
     it("returns dash for blank or invalid currency and quantity values", () => {

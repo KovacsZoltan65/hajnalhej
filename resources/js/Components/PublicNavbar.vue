@@ -3,6 +3,7 @@ import { Link, usePage } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 import { trans } from "laravel-vue-i18n";
 import Button from "primevue/button";
+import LocaleSwitcher from "./LocaleSwitcher.vue";
 
 const page = usePage();
 const isMobileOpen = ref(false);
@@ -14,21 +15,33 @@ const links = computed(() => [
 ]);
 
 const user = computed(() => page.props.auth?.user ?? null);
-const navUi = computed(() => page.props.ui?.nav ?? {});
 const cartTotalQuantity = computed(() => page.props.cart?.total_quantity ?? 0);
 
-const navLabel = (key) => navUi.value[key] ?? trans(`nav.${key}`);
-const toPath = (href) => {
-    try {
-        return new URL(href, window.location.origin).pathname;
-    } catch {
-        return href;
+const navLabel = (key) => trans(`nav.${key}`);
+const normalizePath = (value) => {
+    if (!value) {
+        return "/";
     }
+
+    let path = String(value);
+
+    try {
+        path = new URL(path, window.location.origin).pathname;
+    } catch {
+        path = path.split("#")[0].split("?")[0] || "/";
+    }
+
+    return path.length > 1 ? path.replace(/\/+$/, "") : path;
 };
 const isActive = (href) => {
-    const path = toPath(href);
+    const currentPath = normalizePath(page.url);
+    const targetPath = normalizePath(href);
 
-    return page.url === path || (path !== "/" && page.url.startsWith(`${path}/`));
+    if (targetPath === "/") {
+        return currentPath === "/";
+    }
+
+    return currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
 };
 const closeMobile = () => {
     isMobileOpen.value = false;
@@ -54,9 +67,12 @@ const closeMobile = () => {
         </nav>
 
         <div class="hidden items-center gap-2 md:flex">
+            <LocaleSwitcher />
+
             <Link
                 :href="route('cart.index')"
                 class="relative rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
+                :class="isActive('/cart') ? 'bg-bakery-brown !text-bakery-cream' : ''"
             >
                 {{ navLabel("cart") }}
                 <span
@@ -70,12 +86,14 @@ const closeMobile = () => {
                 <Link
                     :href="route('login')"
                     class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
+                    :class="isActive('/login') ? 'bg-bakery-brown !text-bakery-cream' : ''"
                 >
                     {{ navLabel("login") }}
                 </Link>
                 <Link
                     :href="route('register')"
                     class="rounded-full bg-bakery-brown px-4 py-2 text-sm font-semibold text-bakery-cream transition hover:bg-bakery-dark"
+                    :class="{ 'ring-2 ring-bakery-gold/70': isActive('/register') }"
                 >
                     {{ navLabel("register") }}
                 </Link>
@@ -85,6 +103,7 @@ const closeMobile = () => {
                 <Link
                     :href="route('account')"
                     class="rounded-full border border-bakery-brown/25 px-4 py-2 text-sm font-semibold text-bakery-brown transition hover:bg-bakery-brown hover:text-bakery-cream"
+                    :class="isActive('/account') ? 'bg-bakery-brown !text-bakery-cream' : ''"
                 >
                     {{ navLabel("account") }}
                 </Link>
@@ -92,6 +111,7 @@ const closeMobile = () => {
                     v-if="user.can_access_admin_panel"
                     :href="route('admin.dashboard')"
                     class="rounded-full bg-bakery-gold px-4 py-2 text-sm font-semibold text-bakery-dark transition hover:bg-[#edbb5a]"
+                    :class="{ 'ring-2 ring-bakery-brown/50': isActive('/admin') }"
                 >
                     {{ navLabel("admin") }}
                 </Link>
@@ -139,9 +159,12 @@ const closeMobile = () => {
             </nav>
 
             <div class="mt-3 space-y-2 border-t border-bakery-brown/15 pt-3">
+                <LocaleSwitcher />
+
                 <Link
                     :href="route('cart.index')"
                     class="block rounded-xl px-3 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10"
+                    :class="isActive('/cart') ? 'bg-bakery-brown !text-bakery-cream' : ''"
                     @click="closeMobile"
                 >
                     {{ navLabel("cart") }}
@@ -156,6 +179,7 @@ const closeMobile = () => {
                     <Link
                         :href="route('login')"
                         class="block rounded-xl px-3 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10"
+                        :class="isActive('/login') ? 'bg-bakery-brown !text-bakery-cream' : ''"
                         @click="closeMobile"
                     >
                         {{ navLabel("login") }}
@@ -164,6 +188,7 @@ const closeMobile = () => {
                     <Link
                         :href="route('register')"
                         class="block rounded-xl bg-bakery-brown px-3 py-2 text-sm font-semibold text-bakery-cream"
+                        :class="{ 'ring-2 ring-bakery-gold/70': isActive('/register') }"
                         @click="closeMobile"
                     >
                         {{ navLabel("register") }}
@@ -174,6 +199,7 @@ const closeMobile = () => {
                     <Link
                         :href="route('account')"
                         class="block rounded-xl px-3 py-2 text-sm font-semibold text-bakery-brown hover:bg-bakery-brown/10"
+                        :class="isActive('/account') ? 'bg-bakery-brown !text-bakery-cream' : ''"
                         @click="closeMobile"
                     >
                         {{ navLabel("account") }}
@@ -182,6 +208,7 @@ const closeMobile = () => {
                         v-if="user.can_access_admin_panel"
                         :href="route('admin.dashboard')"
                         class="block rounded-xl bg-bakery-gold px-3 py-2 text-sm font-semibold text-bakery-dark"
+                        :class="{ 'ring-2 ring-bakery-brown/50': isActive('/admin') }"
                         @click="closeMobile"
                     >
                         {{ navLabel("admin") }}

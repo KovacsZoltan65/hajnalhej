@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'admin@hajnalhej.hu'],
             [
                 'name' => 'Hajnalhej Admin',
+                'locale' => 'hu',
                 'password' => 'bakery1234',
             ],
         );

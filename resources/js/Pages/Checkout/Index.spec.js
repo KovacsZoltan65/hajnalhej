@@ -189,7 +189,10 @@ describe("Checkout page", () => {
                 pickupBranches: [{ id: 1, name: "Belvarosi uzlet", code: "BEL", type: "shop", address: "Fo utca 1." }],
             },
             global: {
-                mocks: { $t: translate },
+                mocks: {
+                    $t: translate,
+                    route: (name) => `/${name.replaceAll(".", "/")}`,
+                },
             },
         });
 

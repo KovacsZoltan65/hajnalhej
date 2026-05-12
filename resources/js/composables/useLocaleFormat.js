@@ -1,11 +1,17 @@
-import { usePage } from "@inertiajs/vue3";
 import { computed } from "vue";
+import { usePage } from "@inertiajs/vue3";
 
 export function useLocaleFormat() {
     const page = usePage();
     const pageProps = computed(() => page?.props ?? {});
 
-    const locale = computed(() => pageProps.value.preferences?.locale ?? "hu-HU");
+    const locale = computed(
+        () =>
+            pageProps.value.locale ||
+            pageProps.value.preferences?.locale ||
+            document.documentElement.getAttribute("lang") ||
+            "hu"
+    );
 
     const currency = computed(() => pageProps.value.preferences?.currency ?? "HUF");
 
@@ -42,31 +48,41 @@ export function useLocaleFormat() {
         }).format(numericValue);
     };
 
+    const formatNumber = (value, options = {}) => number(value, options);
+
     const formatQuantity = (value, unit = "", options = {}) => {
         if (value === null || value === undefined || value === "") {
             return "-";
         }
 
-        const numericValue = Number(value);
+        const formatted = number(value, options);
 
-        if (Number.isNaN(numericValue)) {
-            return "-";
+        return formatted === "-" || !unit ? formatted : `${formatted} ${unit}`;
+    };
+
+    const formatDate = (value, options = {}) => {
+        if (!value) {
+            return "";
         }
 
-        const formatted = new Intl.NumberFormat(locale.value, {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 3,
-            ...options,
-        }).format(numericValue);
-
-        return unit ? `${formatted} ${unit}` : formatted;
+        return new Intl.DateTimeFormat(locale.value, options).format(new Date(value));
     };
+
+    const formatDateTime = (value, options = {}) =>
+        formatDate(value, {
+            dateStyle: "medium",
+            timeStyle: "short",
+            ...options,
+        });
 
     return {
         locale,
         currency,
         number,
         formatCurrency,
+        formatNumber,
         formatQuantity,
+        formatDate,
+        formatDateTime,
     };
 }

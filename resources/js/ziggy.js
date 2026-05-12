@@ -3,6 +3,7 @@ const Ziggy = {
     port: null,
     defaults: {},
     routes: {
+        "locale.switch": { uri: "locale", methods: ["POST"] },
         "preferences.locale": { uri: "preferences\/locale", methods: ["POST"] },
         home: { uri: "\/", methods: ["GET", "HEAD"] },
         "weekly-menu": { uri: "weekly-menu", methods: ["GET", "HEAD"] },

@@ -36,11 +36,13 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ConversionTrackingController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PreferenceController;
 use App\Http\Controllers\PublicPageController;
 use Illuminate\Support\Facades\Route;
 
+Route::post('/locale', LocaleController::class)->name('locale.switch');
 Route::post('/preferences/locale', [PreferenceController::class, 'setLocale'])->name('preferences.locale');
 
 Route::controller(PublicPageController::class)->group(function (): void {

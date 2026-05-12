@@ -149,7 +149,9 @@ const submit = () => {
                     </div>
 
                     <div class="space-y-2">
-                        <label for="customer_email" class="text-sm font-medium text-bakery-dark">Email</label>
+                        <label for="customer_email" class="text-sm font-medium text-bakery-dark">{{
+                            $t("fields.email")
+                        }}</label>
                         <InputText
                             id="customer_email"
                             v-model="form.customer_email"
@@ -243,7 +245,7 @@ const submit = () => {
                             <InputText
                                 id="pickup_time_slot"
                                 v-model="form.pickup_time_slot"
-                                placeholder="pl. 08:00-10:00"
+                                :placeholder="$t('checkout.page.pickup_time_placeholder')"
                                 class="w-full"
                                 :invalid="Boolean(form.errors.pickup_time_slot)"
                             />
@@ -319,7 +321,7 @@ const submit = () => {
                     </p>
 
                     <div v-if="!form.same_as_billing" class="space-y-3">
-                        <h2 class="font-heading text-2xl text-bakery-dark">Szállítási cím</h2>
+                        <h2 class="font-heading text-2xl text-bakery-dark">{{ $t("orders.address.shipping") }}</h2>
                         <div class="grid gap-4 sm:grid-cols-2">
                             <div
                                 v-for="field in addressFields"

@@ -20,14 +20,19 @@ createInertiaApp({
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob("./Pages/**/*.vue")),
     setup({ el, App, props, plugin }) {
         const locale = normalizeLocale(
-            props?.initialPage?.props?.preferences?.locale || document.documentElement.getAttribute("lang") || "hu"
+            props?.initialPage?.props?.locale ||
+                props?.initialPage?.props?.preferences?.locale ||
+                document.documentElement.getAttribute("lang") ||
+                "hu"
         );
 
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
             .use(i18nVue, {
+                lang: locale,
                 locale,
+                fallbackLang: locale,
                 fallbackLocale: "hu",
                 resolve: async (lang) => {
                     const normalizedLang = normalizeLocale(lang);
@@ -38,6 +43,9 @@ createInertiaApp({
             .use(ToastService)
             .use(ConfirmationService)
             .use(PrimeVue, {
+                locale: {
+                    firstDayOfWeek: 1,
+                },
                 theme: {
                     preset: Aura,
                     options: {

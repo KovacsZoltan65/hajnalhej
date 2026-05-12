@@ -44,13 +44,13 @@ const clearCart = () => {
 </script>
 
 <template>
-    <Head :title="$t('nav.cart')" />
+    <Head :title="$t('cart.page.meta_title')" />
 
     <section class="mx-auto max-w-5xl space-y-6">
         <header class="rounded-3xl border border-bakery-brown/15 bg-[#fff7eb] p-6 sm:p-8">
-            <h1 class="font-heading text-4xl text-bakery-dark">Kosar</h1>
+            <h1 class="font-heading text-4xl text-bakery-dark">{{ $t("cart.page.title") }}</h1>
             <p class="mt-2 text-sm text-bakery-dark/75">
-                {{ $t("cart.check_product") }}
+                {{ $t("cart.page.subtitle") }}
             </p>
         </header>
 
@@ -59,10 +59,10 @@ const clearCart = () => {
             class="rounded-2xl border border-dashed border-bakery-brown/30 bg-[#fcf7ef] p-10 text-center"
         >
             <h2 class="font-heading text-3xl text-bakery-dark">
-                {{ $t("cart.empty") }}
+                {{ $t("cart.page.empty_title") }}
             </h2>
             <p class="mt-3 text-sm text-bakery-dark/75">
-                {{ $t("cart.choose_favorites") }}
+                {{ $t("cart.page.empty_description") }}
             </p>
             <Link
                 :href="route('weekly-menu')"
@@ -74,7 +74,7 @@ const clearCart = () => {
                     })
                 "
             >
-                {{ $t("cart.view_weekly_menu") }}
+                {{ $t("cart.page.view_weekly_menu") }}
             </Link>
         </section>
 
@@ -94,7 +94,7 @@ const clearCart = () => {
                                 {{ item.short_description }}
                             </p>
                             <p class="mt-2 text-sm font-semibold text-bakery-brown">
-                                {{ formatCurrency(item.unit_price) }} / db
+                                {{ formatCurrency(item.unit_price) }} / {{ $t("cart.page.unit_piece") }}
                             </p>
                         </div>
 
@@ -114,13 +114,13 @@ const clearCart = () => {
                                 class="text-xs font-semibold text-rose-700 hover:underline"
                                 @click="removeItem(item)"
                             >
-                                {{ $t("common.delete") }}
+                                {{ $t("cart.page.remove_item") }}
                             </Button>
                         </div>
                     </div>
 
                     <div class="mt-4 border-t border-bakery-brown/10 pt-4 text-right">
-                        <p class="text-sm text-bakery-dark/70">Reszosszeg</p>
+                        <p class="text-sm text-bakery-dark/70">{{ $t("cart.page.line_total") }}</p>
                         <p class="text-lg font-semibold text-bakery-dark">
                             {{ formatCurrency(item.line_total) }}
                         </p>
@@ -130,15 +130,15 @@ const clearCart = () => {
 
             <aside class="h-fit rounded-2xl border border-bakery-brown/15 bg-[#fff9f1] p-5 shadow-sm">
                 <h2 class="font-heading text-2xl text-bakery-dark">
-                    {{ $t("common.summary") }}
+                    {{ $t("cart.page.summary_title") }}
                 </h2>
                 <dl class="mt-4 space-y-2 text-sm">
                     <div class="flex justify-between">
-                        <dt>{{ $t("common.items") }}</dt>
-                        <dd>{{ cart.summary.total_quantity }} db</dd>
+                        <dt>{{ $t("cart.page.items_label") }}</dt>
+                        <dd>{{ $t("cart.page.quantity_count", { count: cart.summary.total_quantity }) }}</dd>
                     </div>
                     <div class="flex justify-between font-semibold text-bakery-dark">
-                        <dt>{{ $t("admin_orders.columns.total") }}</dt>
+                        <dt>{{ $t("cart.page.total_label") }}</dt>
                         <dd>
                             {{ formatCurrency(cart.summary.total) }}
                         </dd>
@@ -156,11 +156,11 @@ const clearCart = () => {
                             })
                         "
                     >
-                        {{ $t("cart.proceed_to_checkout") }}
+                        {{ $t("cart.page.proceed_to_checkout") }}
                     </Link>
                     <Button
                         type="button"
-                        label="Kosar uritese"
+                        :label="$t('cart.page.clear_cart')"
                         severity="secondary"
                         outlined
                         class="w-full"

@@ -85,11 +85,11 @@ return [
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
 
     'available_locales' => [
-        ['label' => 'English', 'value' => 'en'],
-        ['label' => 'Magyar', 'value' => 'hu'],
+        ['code' => 'hu', 'label' => 'Magyar'],
+        ['code' => 'en', 'label' => 'English'],
     ],
 
-    'supported_locales' => ['en', 'hu'],
+    'supported_locales' => ['hu', 'en'],
 
     'currency' => env('APP_CURRENCY', 'HUF'),
 
