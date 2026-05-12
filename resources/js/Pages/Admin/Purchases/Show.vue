@@ -4,6 +4,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import Button from 'primevue/button';
 import PurchaseForm from '@/Components/Admin/Purchases/PurchaseForm.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useLocaleFormat } from '@/composables/useLocaleFormat';
 
 defineOptions({ layout: AdminLayout });
 
@@ -20,6 +21,7 @@ const ingredientOptions = computed(() =>
         unit: ingredient.unit,
     })),
 );
+const { formatCurrency } = useLocaleFormat();
 
 const form = useForm({
     supplier_id: props.purchase.supplier_id,
@@ -56,7 +58,7 @@ const submitUpdate = () => {
                 <p><strong>Dátum:</strong> {{ purchase.purchase_date }}</p>
                 <p><strong>Státusz:</strong> {{ purchase.status }}</p>
                 <p><strong>Könyvelt:</strong> {{ purchase.posted_at || '-' }}</p>
-                <p><strong>Összesen:</strong> {{ new Intl.NumberFormat('hu-HU').format(purchase.total) }} Ft</p>
+                <p><strong>Összesen:</strong> {{ formatCurrency(purchase.total) }}</p>
             </div>
             <p v-if="purchase.notes" class="mt-3 text-sm text-bakery-dark/75">{{ purchase.notes }}</p>
         </div>
@@ -92,8 +94,8 @@ const submitUpdate = () => {
                     <tr v-for="item in purchase.items" :key="item.id" class="border-b border-bakery-brown/10">
                         <td class="px-2 py-2">{{ item.ingredient_name }}</td>
                         <td class="px-2 py-2 text-right">{{ item.quantity }} {{ item.unit }}</td>
-                        <td class="px-2 py-2 text-right">{{ new Intl.NumberFormat('hu-HU').format(item.unit_cost) }} Ft</td>
-                        <td class="px-2 py-2 text-right">{{ new Intl.NumberFormat('hu-HU').format(item.line_total) }} Ft</td>
+                        <td class="px-2 py-2 text-right">{{ formatCurrency(item.unit_cost) }}</td>
+                        <td class="px-2 py-2 text-right">{{ formatCurrency(item.line_total) }}</td>
                     </tr>
                 </tbody>
             </table>

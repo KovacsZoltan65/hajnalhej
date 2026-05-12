@@ -1,9 +1,10 @@
 <script setup>
 import { Head, router } from "@inertiajs/vue3";
 import { computed } from "vue";
-import { currentLocale, transChoice } from "laravel-vue-i18n";
+import { transChoice } from "laravel-vue-i18n";
 import Select from "primevue/select";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 defineOptions({ layout: AdminLayout });
 
@@ -45,36 +46,25 @@ const topProductRevenueRows = computed(() => props.analytics.top_product_revenue
 const funnelStats = computed(() => props.analytics.funnel_stats ?? []);
 const heroComparison = computed(() => props.analytics.hero_comparison ?? []);
 const dropOffRows = computed(() => props.analytics.drop_off_top ?? []);
-const localeCode = computed(() => currentLocale.value ?? "hu");
-const numberLocale = computed(() => {
-    const locales = {
-        hu: "hu-HU",
-        en: "en-US",
-    };
-
-    return locales[localeCode.value] ?? localeCode.value;
-});
+const {
+    formatCurrency,
+    formatDate: formatLocalizedDate,
+    formatNumber,
+} = useLocaleFormat();
 
 const formatPercent = (value) =>
-    new Intl.NumberFormat(numberLocale.value, {
+    formatNumber(Number(value ?? 0) / 100, {
         style: "percent",
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-    }).format(Number(value ?? 0) / 100);
-
-const formatCurrency = (value) =>
-    new Intl.NumberFormat(numberLocale.value, {
-        style: "currency",
-        currency: "HUF",
-        maximumFractionDigits: 0,
-    }).format(Number(value ?? 0));
+    });
 
 const formatDate = (value) => {
     if (!value) {
         return "-";
     }
 
-    return new Intl.DateTimeFormat(numberLocale.value).format(new Date(value));
+    return formatLocalizedDate(value);
 };
 </script>
 

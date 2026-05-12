@@ -12,6 +12,7 @@ import OrderStatusBadge from "@/Components/Orders/OrderStatusBadge.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 defineOptions({ layout: AdminLayout });
 
@@ -43,6 +44,7 @@ const filterState = reactive({
 const currentPage = computed(() => props.orders.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.orders.per_page ?? 15));
 const sortOrder = computed(() => (filterState.sort_direction === "asc" ? 1 : -1));
+const { formatCurrency } = useLocaleFormat();
 
 const perPageOptions = [
     { label: trans("admin_orders.filters.per_page_option", { count: 15 }), value: 15 },
@@ -54,13 +56,6 @@ const statusSelectOptions = computed(() => [
     { label: trans("common.all"), value: "" },
     ...props.statusOptions.map((status) => ({ label: status, value: status })),
 ]);
-
-const formatCurrency = (value) =>
-    new Intl.NumberFormat(trans("common.locale"), {
-        style: "currency",
-        currency: trans("common.currency"),
-        maximumFractionDigits: 0,
-    }).format(Number(value ?? 0));
 
 const load = (extra = {}) => {
     loading.value = true;
@@ -203,5 +198,4 @@ const onPage = (event) => {
         </div>
     </div>
 </template>
-
 

@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue';
+import { useLocaleFormat } from '@/composables/useLocaleFormat';
 
 const props = defineProps({
     currentStock: {
@@ -17,19 +18,20 @@ const props = defineProps({
 });
 
 const isLowStock = computed(() => props.currentStock <= props.minimumStock);
+const { formatNumber } = useLocaleFormat();
 
 const formattedCurrent = computed(() =>
-    new Intl.NumberFormat('hu-HU', {
+    formatNumber(props.currentStock, {
         minimumFractionDigits: 0,
         maximumFractionDigits: 3,
-    }).format(props.currentStock),
+    }),
 );
 
 const formattedMinimum = computed(() =>
-    new Intl.NumberFormat('hu-HU', {
+    formatNumber(props.minimumStock, {
         minimumFractionDigits: 0,
         maximumFractionDigits: 3,
-    }).format(props.minimumStock),
+    }),
 );
 </script>
 
@@ -44,4 +46,3 @@ const formattedMinimum = computed(() =>
         <p class="text-xs text-bakery-dark/70">{{ formattedCurrent }} {{ unit }} / min {{ formattedMinimum }} {{ unit }}</p>
     </div>
 </template>
-

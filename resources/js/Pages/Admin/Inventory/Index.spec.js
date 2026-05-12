@@ -38,7 +38,6 @@ const { translate } = vi.hoisted(() => {
         'common.all': 'Mind',
         'common.clear_filters': 'Szűrők törlése',
         'common.day_count': ':count nap',
-        'common.locale': 'hu-HU',
         'common.currency': 'HUF',
     };
 

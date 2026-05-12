@@ -44,7 +44,6 @@ const translations = {
 };
 
 vi.mock('laravel-vue-i18n', () => ({
-    currentLocale: { value: 'en' },
     trans: (key) => translations[key] ?? key,
     transChoice: (key, count, replacements = {}) => {
         if (key !== 'common.day_count') {
@@ -73,6 +72,7 @@ describe('Admin CEO Dashboard page', () => {
         const wrapper = mount(IndexPage, {
             global: {
                 mocks: {
+                    $page: { props: { locale: 'en' } },
                     $t: (key) => translations[key] ?? key,
                 },
             },

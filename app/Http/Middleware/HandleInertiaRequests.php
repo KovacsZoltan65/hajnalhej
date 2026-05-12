@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use App\Services\CartService;
+use App\Services\LocaleSettingsService;
 use App\Support\PermissionRegistry;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -35,11 +38,14 @@ class HandleInertiaRequests extends Middleware
 
         return [
             ...parent::share($request),
+            'locale' => app()->getLocale(),
+            'available_locales' => app(LocaleSettingsService::class)->availableLocales(),
             'auth' => [
                 'user' => $user === null ? null : [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
+                    'locale' => $user->locale,
                     'roles' => $user->getRoleNames()->values()->all(),
                     'is_admin' => $user->hasRole(PermissionRegistry::ROLE_ADMIN),
                     'can_access_admin_panel' => $user->can(PermissionRegistry::ADMIN_PANEL_ACCESS),

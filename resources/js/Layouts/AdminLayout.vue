@@ -5,6 +5,7 @@ import AppHeader from "../Components/AppHeader.vue";
 import AppLogo from "../Components/AppLogo.vue";
 import AdminSidebar from "../Components/AdminSidebar.vue";
 import FlashToast from "../Components/FlashToast.vue";
+import LocaleSwitcher from "../Components/LocaleSwitcher.vue";
 import { trans } from "laravel-vue-i18n";
 
 const page = usePage();
@@ -62,7 +63,7 @@ const menuGroups = computed(() => {
                 },
                 {
                     label: trans("nav.categories"),
-                    route: route("admin.categories.store"),
+                    route: route("admin.categories.index"),
                     icon: "pi pi-tags",
                 },
                 {
@@ -157,7 +158,7 @@ const menuGroups = computed(() => {
                 can.view_admin_users
                     ? {
                           label: trans("nav.users"),
-                          route: trans("admin.users.index"),
+                          route: route("admin.users.index"),
                           icon: "pi pi-users",
                       }
                     : null,
@@ -233,6 +234,7 @@ onUnmounted(() => {
             <AppHeader container-class="max-w-none">
                 <template #actions>
                     <div class="flex items-center gap-3">
+                        <LocaleSwitcher />
                         <p class="hidden text-sm text-bakery-dark/75 sm:block">
                             {{ $t("common.entering") }}:
                             <span class="font-semibold">{{

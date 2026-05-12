@@ -3,6 +3,7 @@ import { Head, router } from "@inertiajs/vue3";
 import { computed } from "vue";
 import Select from "primevue/select";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 defineOptions({ layout: AdminLayout });
 
@@ -39,13 +40,7 @@ const updateDays = (value) => {
 const productMargins = computed(() => props.dashboard.product_margins ?? []);
 const topProfitProducts = computed(() => props.dashboard.top_profit_products ?? []);
 const trendPoints = computed(() => props.dashboard.order_profit_trend?.points ?? []);
-
-const formatCurrency = (value) =>
-    new Intl.NumberFormat("hu-HU", {
-        style: "currency",
-        currency: "HUF",
-        maximumFractionDigits: 0,
-    }).format(Number(value ?? 0));
+const { formatCurrency } = useLocaleFormat();
 
 const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
 </script>

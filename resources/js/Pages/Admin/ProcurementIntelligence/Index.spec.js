@@ -5,7 +5,6 @@ import IndexPage from './Index.vue';
 const { translate } = vi.hoisted(() => {
     const translations = {
         'common.clear_filters': 'Szűrők törlése',
-        'common.locale': 'hu-HU',
         'common.currency': 'HUF',
         'admin_procurement_intelligence.meta_title': 'Beszerzési intelligencia',
         'admin_procurement_intelligence.eyebrow': 'Admin / Beszerzés',

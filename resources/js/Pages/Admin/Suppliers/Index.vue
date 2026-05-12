@@ -13,6 +13,7 @@ import CreateModal from '@/Components/Admin/Suppliers/CreateModal.vue';
 import EditModal from '@/Components/Admin/Suppliers/EditModal.vue';
 import SectionTitle from '@/Components/SectionTitle.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useLocaleFormat } from '@/composables/useLocaleFormat';
 
 defineOptions({ layout: AdminLayout });
 
@@ -32,6 +33,7 @@ const loading = ref(false);
 const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const editingId = ref(null);
+const { formatDateTime: formatLocalizedDateTime } = useLocaleFormat();
 
 const filterState = reactive({
     search: props.filters.search ?? '',
@@ -186,7 +188,7 @@ const formatDateTime = (value) => {
         return '-';
     }
 
-    return new Date(value).toLocaleString('hu-HU');
+    return formatLocalizedDateTime(value);
 };
 </script>
 

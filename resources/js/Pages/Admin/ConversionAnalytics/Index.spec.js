@@ -55,7 +55,6 @@ const translations = {
 };
 
 vi.mock('laravel-vue-i18n', () => ({
-    currentLocale: { value: 'en' },
     transChoice: (key, count, replacements = {}) => {
         if (key !== 'common.day_count') {
             return key;
@@ -83,6 +82,7 @@ describe('Admin Conversion Analytics page', () => {
         const wrapper = mount(IndexPage, {
             global: {
                 mocks: {
+                    $page: { props: { locale: 'en' } },
                     $t: (key) => translations[key] ?? key,
                 },
             },

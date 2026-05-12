@@ -33,14 +33,31 @@ describe('AdminSidebar', () => {
     });
 
     it('marks the current route as active', () => {
-        mockPage = { url: '/admin/products' };
+        mockPage = { url: '/admin/products?sort=name' };
 
         const wrapper = mount(AdminSidebar, {
             props: {
                 groups: [
                     {
                         label: 'Katalógus',
-                        items: [{ label: 'Products', route: '/admin/products', icon: 'pi pi-box' }],
+                        items: [{ label: 'Products', route: 'http://localhost/admin/products', icon: 'pi pi-box' }],
+                    },
+                ],
+            },
+        });
+
+        expect(wrapper.find('a').classes()).toContain('bg-bakery-brown');
+    });
+
+    it('marks parent routes active for detail pages', () => {
+        mockPage = { url: '/admin/orders/42' };
+
+        const wrapper = mount(AdminSidebar, {
+            props: {
+                groups: [
+                    {
+                        label: 'Működés',
+                        items: [{ label: 'Orders', route: '/admin/orders', icon: 'pi pi-shopping-bag' }],
                     },
                 ],
             },
@@ -63,4 +80,3 @@ describe('AdminSidebar', () => {
         expect(wrapper.text()).toContain('Roles');
     });
 });
-

@@ -15,6 +15,7 @@ import PreferredBadge from "@/Components/Admin/IngredientSupplierTerms/Preferred
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 defineOptions({ layout: AdminLayout });
 
@@ -30,6 +31,7 @@ const loading = ref(false);
 const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const editingId = ref(null);
+const { formatNumber, formatCurrency: formatLocalizedCurrency } = useLocaleFormat();
 
 const filterState = reactive({
     search: props.filters.search ?? "",
@@ -204,7 +206,7 @@ const formatQuantity = (value, unit = "") => {
         return "-";
     }
 
-    return `${Number(value).toLocaleString(trans("common.locale"), { maximumFractionDigits: 3 })}${unit ? ` ${unit}` : ""}`;
+    return `${formatNumber(value, { maximumFractionDigits: 3 })}${unit ? ` ${unit}` : ""}`;
 };
 
 const formatCurrency = (value) => {
@@ -212,11 +214,7 @@ const formatCurrency = (value) => {
         return "-";
     }
 
-    return new Intl.NumberFormat(trans("common.locale"), {
-        style: "currency",
-        currency: trans("common.currency"),
-        maximumFractionDigits: 0,
-    }).format(Number(value));
+    return formatLocalizedCurrency(value);
 };
 </script>
 

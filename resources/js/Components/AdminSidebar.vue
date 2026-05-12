@@ -12,7 +12,28 @@ const props = defineProps({
     },
 });
 
-const isActive = (route) => page.url === route || page.url.startsWith(`${route}/`);
+const normalizePath = (value) => {
+    if (!value) {
+        return "/";
+    }
+
+    let path = String(value);
+
+    try {
+        path = new URL(path, window.location.origin).pathname;
+    } catch {
+        path = path.split("#")[0].split("?")[0] || "/";
+    }
+
+    return path.length > 1 ? path.replace(/\/+$/, "") : path;
+};
+
+const isActive = (route) => {
+    const currentPath = normalizePath(page.url);
+    const routePath = normalizePath(route);
+
+    return currentPath === routePath || currentPath.startsWith(`${routePath}/`);
+};
 
 const visibleGroups = computed(() => {
     return props.groups

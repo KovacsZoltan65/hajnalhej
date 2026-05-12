@@ -4,6 +4,7 @@ import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
 import PublicLayout from '../../Layouts/PublicLayout.vue';
 import { useConversionTracking } from '@/composables/useConversionTracking';
+import { useLocaleFormat } from '@/composables/useLocaleFormat';
 
 defineOptions({ layout: PublicLayout });
 
@@ -15,6 +16,7 @@ const props = defineProps({
 });
 
 const { trackCtaClick } = useConversionTracking();
+const { formatCurrency } = useLocaleFormat();
 
 const updateQuantity = (item, quantity) => {
     router.patch(`/cart/items/${item.product_id}`, {
@@ -65,7 +67,7 @@ const clearCart = () => {
                         <div>
                             <h3 class="font-heading text-2xl text-bakery-dark">{{ item.name }}</h3>
                             <p v-if="item.short_description" class="mt-1 text-sm text-bakery-dark/70">{{ item.short_description }}</p>
-                            <p class="mt-2 text-sm font-semibold text-bakery-brown">{{ new Intl.NumberFormat('hu-HU').format(item.unit_price) }} Ft / db</p>
+                            <p class="mt-2 text-sm font-semibold text-bakery-brown">{{ formatCurrency(item.unit_price) }} / db</p>
                         </div>
 
                         <div class="flex flex-col items-end gap-2">
@@ -84,7 +86,7 @@ const clearCart = () => {
 
                     <div class="mt-4 border-t border-bakery-brown/10 pt-4 text-right">
                         <p class="text-sm text-bakery-dark/70">Reszosszeg</p>
-                        <p class="text-lg font-semibold text-bakery-dark">{{ new Intl.NumberFormat('hu-HU').format(item.line_total) }} Ft</p>
+                        <p class="text-lg font-semibold text-bakery-dark">{{ formatCurrency(item.line_total) }}</p>
                     </div>
                 </article>
             </div>
@@ -98,7 +100,7 @@ const clearCart = () => {
                     </div>
                     <div class="flex justify-between font-semibold text-bakery-dark">
                         <dt>Vegosszeg</dt>
-                        <dd>{{ new Intl.NumberFormat('hu-HU').format(cart.summary.total) }} Ft</dd>
+                        <dd>{{ formatCurrency(cart.summary.total) }}</dd>
                     </div>
                 </dl>
 

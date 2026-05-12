@@ -34,7 +34,6 @@ const { confirmRequire, translate } = vi.hoisted(() => {
         'common.delete': 'Törlés',
         'common.clear_filters': 'Szűrők törlése',
         'common.actions': 'Műveletek',
-        'common.locale': 'hu-HU',
         'common.currency': 'HUF',
     };
 

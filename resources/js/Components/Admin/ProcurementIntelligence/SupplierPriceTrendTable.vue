@@ -1,5 +1,6 @@
 <script setup>
 import { trans } from 'laravel-vue-i18n';
+import { useLocaleFormat } from '@/composables/useLocaleFormat';
 
 defineProps({
     rows: {
@@ -7,11 +8,12 @@ defineProps({
         required: true,
     },
 });
+const { formatCurrency: formatLocalizedCurrency } = useLocaleFormat();
 
 const formatCurrency = (value) =>
     value === null || value === undefined
         ? '-'
-        : new Intl.NumberFormat(trans('common.locale'), { style: 'currency', currency: trans('common.currency'), maximumFractionDigits: 0 }).format(Number(value));
+        : formatLocalizedCurrency(value);
 
 const formatPercent = (value) => `${Number(value ?? 0).toFixed(2)}%`;
 </script>

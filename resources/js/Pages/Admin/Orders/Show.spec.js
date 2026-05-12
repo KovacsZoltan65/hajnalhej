@@ -23,7 +23,6 @@ const { translate } = vi.hoisted(() => {
         'admin_orders.fields.total': 'Végösszeg',
         'admin_orders.actions.update_status': 'Státusz frissítése',
         'admin_orders.placeholders.pickup_time_slot': 'pl. 08:00-10:00',
-        'common.locale': 'hu-HU',
         'common.currency': 'HUF',
     };
 

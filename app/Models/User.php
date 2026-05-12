@@ -1,55 +1,65 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Support\PermissionRegistry;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
-use App\Support\PermissionRegistry;
 
 /**
  * @property int $id
  * @property string $name
  * @property string $email
- * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property Carbon|null $email_verified_at
+ * @property string|null $locale
  * @property string $password
  * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DailyBriefing> $acknowledgedDailyBriefings
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, DailyBriefing> $acknowledgedDailyBriefings
  * @property-read int|null $acknowledged_daily_briefings_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BranchTransfer> $completedBranchTransfers
+ * @property-read Collection<int, BranchTransfer> $completedBranchTransfers
  * @property-read int|null $completed_branch_transfers_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Purchase> $createdPurchases
+ * @property-read Collection<int, Purchase> $createdPurchases
  * @property-read int|null $created_purchases_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ForecastRun> $forecastRuns
+ * @property-read Collection<int, ForecastRun> $forecastRuns
  * @property-read int|null $forecast_runs_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DailyBriefing> $generatedDailyBriefings
+ * @property-read Collection<int, DailyBriefing> $generatedDailyBriefings
  * @property-read int|null $generated_daily_briefings_count
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
+ * @property-read Collection<int, Order> $orders
  * @property-read int|null $orders_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
+ * @property-read Collection<int, Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseRecommendation> $purchaseRecommendations
+ * @property-read Collection<int, PurchaseRecommendation> $purchaseRecommendations
  * @property-read int|null $purchase_recommendations_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PurchaseReceipt> $receivedPurchaseReceipts
+ * @property-read Collection<int, PurchaseReceipt> $receivedPurchaseReceipts
  * @property-read int|null $received_purchase_receipts_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BranchTransfer> $requestedBranchTransfers
+ * @property-read Collection<int, BranchTransfer> $requestedBranchTransfers
  * @property-read int|null $requested_branch_transfers_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProcurementAlert> $resolvedProcurementAlerts
+ * @property-read Collection<int, ProcurementAlert> $resolvedProcurementAlerts
  * @property-read int|null $resolved_procurement_alerts_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
+ * @property-read Collection<int, Role> $roles
  * @property-read int|null $roles_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SupplierNegotiation> $supplierNegotiations
+ * @property-read Collection<int, SupplierNegotiation> $supplierNegotiations
  * @property-read int|null $supplier_negotiations_count
+ *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -60,23 +70,26 @@ use App\Support\PermissionRegistry;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLocale($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutPermission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, ?string $guard = null)
+ *
  * @mixin \Eloquent
  */
-#[Fillable(['name', 'email', 'phone', 'password', 'status'])]
+#[Fillable(['name', 'email', 'locale', 'phone', 'password', 'status'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
     public const STATUS_ACTIVE = 'active';
+
     public const STATUS_INACTIVE = 'inactive';
 
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles {
+    use HasFactory, HasRoles, Notifiable {
         HasRoles::hasPermissionTo as spatieHasPermissionTo;
     }
 
@@ -89,6 +102,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return [
             'email_verified_at' => 'datetime',
+            'locale' => 'string',
             'password' => 'hashed',
         ];
     }

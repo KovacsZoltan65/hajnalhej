@@ -4,6 +4,7 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import Textarea from 'primevue/textarea';
+import { useLocaleFormat } from '@/composables/useLocaleFormat';
 
 const props = defineProps({
     form: {
@@ -29,6 +30,7 @@ const unitOptions = [
 ];
 
 const supplierOptions = computed(() => [{ id: null, name: 'Nincs megadva' }, ...props.suppliers]);
+const { formatNumber } = useLocaleFormat();
 
 const newItem = () => ({ ingredient_id: null, quantity: 1, unit: 'db', unit_cost: 0 });
 
@@ -63,9 +65,9 @@ const total = computed(() =>
 );
 
 const formatMoney = (value) =>
-    new Intl.NumberFormat('hu-HU', {
+    formatNumber(value, {
         maximumFractionDigits: 0,
-    }).format(Number(value || 0));
+    });
 </script>
 
 <template>

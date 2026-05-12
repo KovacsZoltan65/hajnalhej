@@ -25,11 +25,11 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(i18nVue, {
-                locale:
-                    props?.initialPage?.props?.preferences?.locale ||
+                lang:
+                    props?.initialPage?.props?.locale ||
                     document.documentElement.getAttribute("lang") ||
-                    "hu",
-                falbackLocale: "hu",
+                    undefined,
+                fallbackLang: props?.initialPage?.props?.locale,
                 resolve: async (lang) => {
                     const messages = import.meta.glob("../../lang/*.json"); // */
                     return await messages[`../../lang/${lang}.json`]();
@@ -38,6 +38,9 @@ createInertiaApp({
             .use(ToastService)
             .use(ConfirmationService)
             .use(PrimeVue, {
+                locale: {
+                    firstDayOfWeek: 1,
+                },
                 theme: {
                     preset: Aura,
                     options: {

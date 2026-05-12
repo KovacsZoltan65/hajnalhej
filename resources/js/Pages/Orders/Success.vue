@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '../../Layouts/PublicLayout.vue';
+import { useLocaleFormat } from '@/composables/useLocaleFormat';
 
 defineOptions({ layout: PublicLayout });
 
@@ -10,6 +11,8 @@ const props = defineProps({
         required: true,
     },
 });
+
+const { formatCurrency } = useLocaleFormat();
 </script>
 
 <template>
@@ -30,7 +33,7 @@ const props = defineProps({
                 </div>
                 <div>
                     <dt class="text-bakery-dark/60">Vegosszeg</dt>
-                    <dd class="font-semibold text-bakery-dark">{{ new Intl.NumberFormat('hu-HU').format(order.total) }} Ft</dd>
+                    <dd class="font-semibold text-bakery-dark">{{ formatCurrency(order.total) }}</dd>
                 </div>
                 <div>
                     <dt class="text-bakery-dark/60">Átvétel dátuma</dt>
@@ -53,5 +56,4 @@ const props = defineProps({
         </div>
     </section>
 </template>
-
 

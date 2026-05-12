@@ -1,6 +1,6 @@
 <script setup>
 import { Link, useForm } from "@inertiajs/vue3";
-import { trans } from "laravel-vue-i18n";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 defineProps({
     menu: {
@@ -21,6 +21,7 @@ const cartForm = useForm({
     product_id: null,
     quantity: 1,
 });
+const { formatCurrency } = useLocaleFormat();
 
 const addToCart = (productId) => {
     cartForm.product_id = productId;
@@ -30,12 +31,6 @@ const addToCart = (productId) => {
     });
 };
 
-const formatCurrency = (value) =>
-    new Intl.NumberFormat(trans("common.locale"), {
-        style: "currency",
-        currency: trans("common.currency"),
-        maximumFractionDigits: 0,
-    }).format(Number(value ?? 0));
 </script>
 
 <template>

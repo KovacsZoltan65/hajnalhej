@@ -14,6 +14,7 @@ import WasteEntryModal from "@/Components/Admin/Inventory/WasteEntryModal.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 defineOptions({ layout: AdminLayout });
 
@@ -30,6 +31,7 @@ const props = defineProps({
 const loading = ref(false);
 const wasteModalVisible = ref(false);
 const adjustmentModalVisible = ref(false);
+const { formatCurrency } = useLocaleFormat();
 
 const filterState = reactive({
     days: props.filters.days ?? 7,
@@ -187,11 +189,7 @@ const submitAdjustment = () => {
 };
 
 const asCurrency = (value) =>
-    new Intl.NumberFormat(trans("common.locale"), {
-        style: "currency",
-        currency: trans("common.currency"),
-        maximumFractionDigits: 0,
-    }).format(Number(value ?? 0));
+    formatCurrency(value);
 
 const movementTypeLabel = (type) => {
     const map = {

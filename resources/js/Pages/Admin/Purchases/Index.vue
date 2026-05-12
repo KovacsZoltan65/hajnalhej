@@ -13,6 +13,7 @@ import AdminTableToolbar from '@/Components/Admin/AdminTableToolbar.vue';
 import CreateModal from '@/Components/Admin/Purchases/CreateModal.vue';
 import SectionTitle from '@/Components/SectionTitle.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useLocaleFormat } from '@/composables/useLocaleFormat';
 
 defineOptions({ layout: AdminLayout });
 
@@ -42,6 +43,7 @@ const props = defineProps({
 const confirm = useConfirm();
 const loading = ref(false);
 const createModalVisible = ref(false);
+const { formatCurrency } = useLocaleFormat();
 
 const filterState = reactive({
     search: props.filters.search ?? '',
@@ -185,11 +187,6 @@ const cancelPurchase = (purchase) => {
         },
     });
 };
-
-const formatCurrency = (value) =>
-    `${new Intl.NumberFormat('hu-HU', {
-        maximumFractionDigits: 0,
-    }).format(Number(value || 0))} Ft`;
 
 const statusLabel = (status) => {
     const map = {

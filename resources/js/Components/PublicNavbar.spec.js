@@ -44,6 +44,9 @@ describe('PublicNavbar', () => {
                 mocks: {
                     $t: (key) => translations[key] ?? key,
                 },
+                stubs: {
+                    LocaleSwitcher: { template: '<div />' },
+                },
             },
         });
 
@@ -55,7 +58,7 @@ describe('PublicNavbar', () => {
         expect(wrapper.text()).toContain('Regisztráció');
     });
 
-    it('uses shared nav props before translation fallbacks', () => {
+    it('uses client translations instead of stale shared nav props', () => {
         page.props.ui.nav = { cart: 'Kosár teszt' };
 
         const wrapper = mount(PublicNavbar, {
@@ -63,11 +66,59 @@ describe('PublicNavbar', () => {
                 mocks: {
                     $t: (key) => translations[key] ?? key,
                 },
+                stubs: {
+                    LocaleSwitcher: { template: '<div />' },
+                },
             },
         });
 
-        expect(wrapper.text()).toContain('Kosár teszt');
+        expect(wrapper.text()).toContain('Kosár');
+        expect(wrapper.text()).not.toContain('Kosár teszt');
 
         page.props.ui.nav = {};
+    });
+
+    it('highlights the active public menu item with query strings', () => {
+        page.url = '/weekly-menu?preview=1';
+
+        const wrapper = mount(PublicNavbar, {
+            global: {
+                mocks: {
+                    $t: (key) => translations[key] ?? key,
+                },
+                stubs: {
+                    LocaleSwitcher: { template: '<div />' },
+                },
+            },
+        });
+
+        const weeklyMenuLink = wrapper
+            .findAll('a')
+            .find((link) => link.text() === 'Heti menü');
+
+        expect(weeklyMenuLink.classes()).toContain('bg-bakery-brown');
+
+        page.url = '/';
+    });
+
+    it('highlights secondary menu actions', () => {
+        page.url = '/cart';
+
+        const wrapper = mount(PublicNavbar, {
+            global: {
+                mocks: {
+                    $t: (key) => translations[key] ?? key,
+                },
+                stubs: {
+                    LocaleSwitcher: { template: '<div />' },
+                },
+            },
+        });
+
+        const cartLink = wrapper.findAll('a').find((link) => link.text().includes('Kosár'));
+
+        expect(cartLink.classes()).toContain('bg-bakery-brown');
+
+        page.url = '/';
     });
 });

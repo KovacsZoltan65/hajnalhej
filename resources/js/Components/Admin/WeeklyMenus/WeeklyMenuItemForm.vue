@@ -3,11 +3,13 @@ import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import ToggleSwitch from 'primevue/toggleswitch';
+import { useLocaleFormat } from '@/composables/useLocaleFormat';
 
 const props = defineProps({
     form: { type: Object, required: true },
     products: { type: Array, required: true },
 });
+const { formatCurrency } = useLocaleFormat();
 </script>
 
 <template>
@@ -33,7 +35,7 @@ const props = defineProps({
                             </p>
                         </div>
                         <span class="text-xs text-bakery-brown">
-                            {{ new Intl.NumberFormat('hu-HU').format(slotProps.option.price) }} Ft
+                            {{ formatCurrency(slotProps.option.price) }}
                         </span>
                     </div>
                 </template>

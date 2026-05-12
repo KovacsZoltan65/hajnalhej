@@ -9,6 +9,7 @@ import OrderStatusBadge from "@/Components/Orders/OrderStatusBadge.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
+import { useLocaleFormat } from "@/composables/useLocaleFormat";
 
 defineOptions({ layout: AdminLayout });
 
@@ -29,13 +30,7 @@ const statusForm = useForm({
     pickup_date: props.order.pickup_date ?? "",
     pickup_time_slot: props.order.pickup_time_slot ?? "",
 });
-
-const formatCurrency = (value) =>
-    new Intl.NumberFormat(trans("common.locale"), {
-        style: "currency",
-        currency: trans("common.currency"),
-        maximumFractionDigits: 0,
-    }).format(Number(value ?? 0));
+const { formatCurrency } = useLocaleFormat();
 
 const updateStatus = () => {
     statusForm.patch(`/admin/orders/${props.order.id}/status`);
@@ -133,4 +128,3 @@ const updateStatus = () => {
         </div>
     </div>
 </template>
-

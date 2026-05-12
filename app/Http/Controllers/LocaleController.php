@@ -9,13 +9,13 @@ use App\Services\LocaleSettingsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
-class PreferenceController extends Controller
+final class LocaleController extends Controller
 {
     public function __construct(
         private readonly LocaleSettingsService $localeSettings,
     ) {}
 
-    public function setLocale(SwitchLocaleRequest $request): RedirectResponse|JsonResponse
+    public function __invoke(SwitchLocaleRequest $request): RedirectResponse|JsonResponse
     {
         $locale = $request->locale();
 
