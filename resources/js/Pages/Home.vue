@@ -142,7 +142,7 @@ const faqs = computed(() => [
             <div class="relative grid gap-8 lg:grid-cols-[1.25fr_0.95fr] lg:items-start">
                 <div class="space-y-6">
                     <p class="text-xs font-semibold uppercase tracking-[0.24em] text-bakery-gold">
-                        Hajnalhéj Bakery | Budapest
+                        {{ $t("home.hero_eyebrow") }}
                     </p>
                     <h1 class="font-heading text-[2.1rem] leading-tight text-bakery-dark sm:text-5xl">
                         {{ $t("home.crispy_mornings") }}.

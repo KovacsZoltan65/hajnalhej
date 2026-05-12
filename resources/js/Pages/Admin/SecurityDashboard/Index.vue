@@ -81,19 +81,21 @@ const applyFilters = () => {
 </script>
 
 <template>
-    <Head title="Biztonsági irányítópult" />
+    <Head :title="$t('security_dashboard.meta_title')" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Biztonság"
-            title="Biztonsági irányítópult"
-            description="Jogosultsági kockázatok, árva anomáliák, kiemelt felhasználók és kritikus audit események egy helyen."
+            :eyebrow="$t('security_dashboard.eyebrow')"
+            :title="$t('security_dashboard.title')"
+            :description="$t('security_dashboard.description')"
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4">
             <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                 <div class="space-y-1">
-                    <label class="text-xs font-medium uppercase tracking-[0.12em] text-bakery-brown/80">Idoablak</label>
+                    <label class="text-xs font-medium uppercase tracking-[0.12em] text-bakery-brown/80">{{
+                        $t("security_dashboard.filters.window")
+                    }}</label>
                     <Select
                         v-model="form.window"
                         :options="filter_options.windows"
@@ -103,9 +105,9 @@ const applyFilters = () => {
                     />
                 </div>
                 <div class="space-y-1">
-                    <label class="text-xs font-medium uppercase tracking-[0.12em] text-bakery-brown/80"
-                        >Risk szint</label
-                    >
+                    <label class="text-xs font-medium uppercase tracking-[0.12em] text-bakery-brown/80">{{
+                        $t("security_dashboard.filters.risk_level")
+                    }}</label>
                     <Select
                         v-model="form.risk_level"
                         :options="filter_options.risk_levels"
@@ -115,9 +117,9 @@ const applyFilters = () => {
                     />
                 </div>
                 <div class="space-y-1">
-                    <label class="text-xs font-medium uppercase tracking-[0.12em] text-bakery-brown/80"
-                        >Log domain</label
-                    >
+                    <label class="text-xs font-medium uppercase tracking-[0.12em] text-bakery-brown/80">{{
+                        $t("security_dashboard.filters.log_domain")
+                    }}</label>
                     <Select
                         v-model="form.log_name"
                         :options="filter_options.log_names"
@@ -127,31 +129,38 @@ const applyFilters = () => {
                     />
                 </div>
                 <div class="space-y-1">
-                    <label class="text-xs font-medium uppercase tracking-[0.12em] text-bakery-brown/80"
-                        >Csak veszélyes</label
-                    >
+                    <label class="text-xs font-medium uppercase tracking-[0.12em] text-bakery-brown/80">{{
+                        $t("security_dashboard.filters.dangerous_only")
+                    }}</label>
                     <div class="flex h-10 items-center gap-2 rounded-lg border border-bakery-brown/15 px-3">
                         <Checkbox v-model="form.dangerous_only" binary />
-                        <span class="text-sm text-bakery-dark">Csak veszelyes elemek</span>
+                        <span class="text-sm text-bakery-dark">{{
+                            $t("security_dashboard.filters.dangerous_only_items")
+                        }}</span>
                     </div>
                 </div>
             </div>
             <div class="mt-3 flex flex-wrap gap-2">
-                <Button icon="pi pi-filter" label="Szűrők alkalmazása" :loading="loading" @click="applyFilters" />
+                <Button
+                    icon="pi pi-filter"
+                    :label="$t('security_dashboard.actions.apply_filters')"
+                    :loading="loading"
+                    @click="applyFilters"
+                />
                 <Link
                     :href="links.permissions"
                     class="rounded-full border border-bakery-brown/20 px-4 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
-                    >Jogosultságok</Link
+                    >{{ $t("security_dashboard.actions.permissions") }}</Link
                 >
                 <Link
                     :href="links.roles"
                     class="rounded-full border border-bakery-brown/20 px-4 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
-                    >Szerepkörök</Link
+                    >{{ $t("security_dashboard.actions.roles") }}</Link
                 >
                 <Link
                     :href="links.user_roles"
                     class="rounded-full border border-bakery-brown/20 px-4 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
-                    >Felhasználói szerepkörök</Link
+                    >{{ $t("security_dashboard.actions.user_roles") }}</Link
                 >
             </div>
         </div>

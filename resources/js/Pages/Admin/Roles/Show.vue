@@ -39,50 +39,66 @@ const submit = () => {
 </script>
 
 <template>
-    <Head :title="`Szerepkör - ${props.role.name}`" />
+    <Head :title="$t('admin_roles.show.meta_title', { name: props.role.name })" />
 
     <div class="space-y-6">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <SectionTitle
-                eyebrow="Admin / Szerepkörök"
-                :title="`Szerepkör: ${props.role.name}`"
-                description="A role-hoz tartozó jogosultságok szinkronizálása modulonként."
+                :eyebrow="$t('admin_roles.show.eyebrow')"
+                :title="$t('admin_roles.show.title', { name: props.role.name })"
+                :description="$t('admin_roles.show.description')"
             />
 
             <Link :href="route('admin.roles.index')">
-                <Button label="Vissza a listara" icon="pi pi-arrow-left" text />
+                <Button :label="$t('admin_roles.show.back_to_list')" icon="pi pi-arrow-left" text />
             </Link>
         </div>
 
         <div class="grid gap-4 rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:grid-cols-3 sm:p-5">
             <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Szerepkör</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">
+                    {{ $t("admin_roles.role") }}
+                </p>
                 <div class="mt-2">
                     <RoleBadge :role="props.role.name" :system="props.role.is_system_role" />
                 </div>
             </div>
             <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Guard</p>
-                <p class="mt-2 text-sm font-semibold text-bakery-dark">{{ props.role.guard_name }}</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">
+                    {{ $t("admin_roles.show.guard") }}
+                </p>
+                <p class="mt-2 text-sm font-semibold text-bakery-dark">
+                    {{ props.role.guard_name }}
+                </p>
             </div>
             <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">Felhasználók</p>
-                <p class="mt-2 text-sm font-semibold text-bakery-dark">{{ props.role.users_count }}</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-bakery-brown/70">
+                    {{ $t("admin_roles.show.users") }}
+                </p>
+                <p class="mt-2 text-sm font-semibold text-bakery-dark">
+                    {{ props.role.users_count }}
+                </p>
             </div>
         </div>
 
         <div class="space-y-4 rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                    <p class="text-lg font-semibold text-bakery-dark">Jogosultság matrix</p>
+                    <p class="text-lg font-semibold text-bakery-dark">
+                        {{ $t("admin_roles.show.permission_matrix") }}
+                    </p>
                     <p class="text-sm text-bakery-dark/70">
-                        Összesen {{ selectedPermissions.length }} jogosultság kiválasztva.
+                        {{
+                            $t("admin_roles.show.selected_permissions_count", {
+                                count: selectedPermissions.length,
+                            })
+                        }}
                     </p>
                 </div>
 
                 <Button
                     v-if="can.assign_permissions"
-                    label="Jogosultságok mentese"
+                    :label="$t('admin_roles.show.save_permissions')"
                     icon="pi pi-save"
                     :loading="form.processing"
                     :disabled="form.processing"
@@ -90,7 +106,9 @@ const submit = () => {
                 />
             </div>
 
-            <p v-if="form.errors.permissions" class="text-sm text-red-700">{{ form.errors.permissions }}</p>
+            <p v-if="form.errors.permissions" class="text-sm text-red-700">
+                {{ form.errors.permissions }}
+            </p>
 
             <RolePermissionMatrix
                 v-model="selectedPermissions"

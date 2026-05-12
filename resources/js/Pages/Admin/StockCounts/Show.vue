@@ -14,23 +14,34 @@ const closeCount = () =>
 </script>
 
 <template>
-    <Head :title="`Leltár #${stock_count.id}`" />
+    <Head :title="$t('admin_stock_count.show.meta_title', { id: stock_count.id })" />
 
     <section class="space-y-6">
         <div class="ui-card p-4 sm:p-5">
             <div class="flex items-center justify-between">
-                <h1 class="font-heading text-2xl">Leltár #{{ stock_count.id }}</h1>
-                <Link :href="route('admin.stock-counts.index')" class="text-sm underline">Vissza</Link>
+                <h1 class="font-heading text-2xl">
+                    {{ $t("admin_stock_count.show.title", { id: stock_count.id }) }}
+                </h1>
+                <Link :href="route('admin.stock-counts.index')" class="text-sm underline">{{
+                    $t("common.back_to_list")
+                }}</Link>
             </div>
             <div class="mt-4 grid gap-3 md:grid-cols-3 text-sm">
-                <p><strong>Dátum:</strong> {{ stock_count.count_date }}</p>
-                <p><strong>Státusz:</strong> {{ stock_count.status }}</p>
-                <p><strong>Lezárva:</strong> {{ stock_count.closed_at || "-" }}</p>
+                <p>
+                    <strong>{{ $t("common.date") }}:</strong> {{ stock_count.count_date }}
+                </p>
+                <p>
+                    <strong>{{ $t("common.status") }}:</strong> {{ stock_count.status }}
+                </p>
+                <p>
+                    <strong>{{ $t("admin_stock_count.show.closed_at") }}:</strong>
+                    {{ stock_count.closed_at || "-" }}
+                </p>
             </div>
             <p v-if="stock_count.notes" class="mt-3 text-sm text-bakery-dark/75">{{ stock_count.notes }}</p>
             <Button
                 v-if="stock_count.status === 'draft'"
-                label="Leltár lezárása és könyvelés"
+                :label="$t('admin_stock_count.actions.close_and_post')"
                 class="min-h-11! mt-4"
                 @click="closeCount"
             />
@@ -42,10 +53,10 @@ const closeCount = () =>
                     class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60"
                 >
                     <tr>
-                        <th class="px-2 py-2">Alapanyag</th>
-                        <th class="px-2 py-2 text-right">Várt</th>
-                        <th class="px-2 py-2 text-right">Számolt</th>
-                        <th class="px-2 py-2 text-right">Különbözet</th>
+                        <th class="px-2 py-2">{{ $t("common.ingredient") }}</th>
+                        <th class="px-2 py-2 text-right">{{ $t("admin_stock_count.columns.expected") }}</th>
+                        <th class="px-2 py-2 text-right">{{ $t("admin_stock_count.columns.counted") }}</th>
+                        <th class="px-2 py-2 text-right">{{ $t("admin_stock_count.columns.difference") }}</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -61,13 +61,6 @@ const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPag
 });
 
 const perPageOptions = createPerPageOptions(trans, [15, 30, 50]);
-/*
-const perPageOptions = [
-    { label: '15 / oldal', value: 15 },
-    { label: '30 / oldal', value: 30 },
-    { label: '50 / oldal', value: 50 },
-];
-*/
 
 const currentPage = computed(() => props.users.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.users.per_page ?? 15));
@@ -106,34 +99,34 @@ const saveRoles = () => {
 </script>
 
 <template>
-    <Head title="Felhasználói szerepkörök" />
+    <Head :title="$t('admin_user_roles.meta_title')" />
 
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Felhasználói szerepkörök"
-            title="Felhasználói szerepkörök"
-            description="Felhasználók szerepköreinek kezelése és effektív jogosultságaik áttekintése."
+            :eyebrow="$t('admin_user_roles.eyebrow')"
+            :title="$t('admin_user_roles.title')"
+            :description="$t('admin_user_roles.description')"
         />
 
         <div class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-4 sm:p-5">
             <AdminTableToolbar :filters-grid-class="'grid gap-3 sm:grid-cols-2 lg:grid-cols-3'">
                 <template #filters>
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Keresés</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.search")
+                        }}</label>
                         <InputText
                             v-model="filterState.search"
                             class="w-full"
-                            placeholder="Név vagy email..."
+                            :placeholder="$t('admin_user_roles.filters.search_placeholder')"
                             @keyup.enter="submitFilters"
                         />
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80"
-                            >Találat / oldal</label
-                        >
+                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">{{
+                            $t("common.rows_per_page")
+                        }}</label>
                         <Select
                             v-model="filterState.per_page"
                             :options="perPageOptions"
@@ -146,7 +139,7 @@ const saveRoles = () => {
                 </template>
 
                 <template #actions>
-                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
+                    <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
                 </template>
             </AdminTableToolbar>
 
@@ -168,17 +161,22 @@ const saveRoles = () => {
                         <div
                             class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
                         >
-                            <p>Nincs megjeleníthető felhasználó.</p>
+                            <p>{{ $t("admin_user_roles.empty") }}</p>
                             <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button label="Szűrők törlése" outlined size="small" @click="clearFilters" />
+                                <Button
+                                    :label="$t('common.clear_filters')"
+                                    outlined
+                                    size="small"
+                                    @click="clearFilters"
+                                />
                             </div>
                         </div>
                     </template>
 
-                    <Column field="name" header="Név" />
-                    <Column field="email" header="Email" />
+                    <Column field="name" :header="$t('common.name')" />
+                    <Column field="email" :header="$t('common.email')" />
 
-                    <Column header="Szerepkörök">
+                    <Column :header="$t('common.roles')">
                         <template #body="{ data }">
                             <div class="flex flex-wrap gap-1.5">
                                 <RoleBadge
@@ -191,17 +189,17 @@ const saveRoles = () => {
                         </template>
                     </Column>
 
-                    <Column v-if="can.view_permissions" header="Effektív jogosultságok">
+                    <Column v-if="can.view_permissions" :header="$t('admin_user_roles.columns.effective_permissions')">
                         <template #body="{ data }">
                             <span class="text-sm text-bakery-dark/75">{{ data.permissions.length }}</span>
                         </template>
                     </Column>
 
-                    <Column header="Műveletek" :style="{ width: '12rem' }">
+                    <Column :header="$t('common.actions')" :style="{ width: '12rem' }">
                         <template #body="{ data }">
                             <Button
                                 v-if="can.assign_roles"
-                                label="Szerepkörök kezelése"
+                                :label="$t('admin_user_roles.actions.manage_roles')"
                                 size="small"
                                 outlined
                                 class="min-h-11!"

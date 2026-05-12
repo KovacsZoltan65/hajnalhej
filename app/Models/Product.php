@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 
 /**
  * @property int $id Rekord azonosító
- * @property int $category_id
+ * @property int $category_id Kategória azonosító
  * @property string $name Megnevezés
  * @property string|null $slug Egyedi URL azonosító, SEO célra
  * @property string|null $short_description Rövid leírás

@@ -67,15 +67,7 @@ const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPag
 
 const perPageOptions = createPerPageOptions(trans, [15, 30, 50]);
 const statusOptions = createActiveOptions(trans);
-/*
-const statusOptions = computed(() => [
-    { label: "Mind", value: "" },
-    ...props.status_options.map((status) => ({
-        label: status === "active" ? "Aktív" : "Inaktív",
-        value: status,
-    })),
-]);
-*/
+
 const roleOptions = computed(() => props.roles.map((role) => ({ label: role.name, value: role.name })));
 const permissionOptions = computed(() =>
     props.permissions.map((permission) => ({

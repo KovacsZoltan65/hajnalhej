@@ -1,12 +1,13 @@
 <script setup>
 import { Head, Link, router, useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
+import { trans } from "laravel-vue-i18n";
 
 defineOptions({ layout: AdminLayout });
 
@@ -18,6 +19,10 @@ const props = defineProps({
 });
 
 const status = ref(props.filters.status ?? "");
+const statusOptions = computed(() => [
+    { label: trans("admin_stock_count.filters.all_statuses"), value: "" },
+    ...props.statuses.map((status) => ({ label: status, value: status })),
+]);
 const load = () => {
     router.get(
         route("admin.stock-counts.index"),
@@ -38,24 +43,19 @@ const form = useForm({
 </script>
 
 <template>
-    <Head title="Leltár" />
+    <Head :title="$t('admin_stock_count.meta_title')" />
     <div class="space-y-6">
         <SectionTitle
-            eyebrow="Admin / Leltár"
-            title="Leltárak"
-            description="Készletszámlálás, különbözet könyvelés és zárás auditált folyamatban."
+            :eyebrow="$t('admin_stock_count.eyebrow')"
+            :title="$t('admin_stock_count.title')"
+            :description="$t('admin_stock_count.description')"
         />
 
         <section class="ui-card p-4 sm:p-5 space-y-4">
             <div class="grid gap-3 md:grid-cols-3">
-                <Select
-                    v-model="status"
-                    :options="[{ label: 'Mind', value: '' }, ...statuses.map((s) => ({ label: s, value: s }))]"
-                    option-label="label"
-                    option-value="value"
-                />
+                <Select v-model="status" :options="statusOptions" option-label="label" option-value="value" />
                 <div />
-                <Button label="Szűrés" class="min-h-11!" @click="load" />
+                <Button :label="$t('admin_stock_count.actions.filter')" class="min-h-11!" @click="load" />
             </div>
 
             <div class="overflow-x-auto">
@@ -64,11 +64,11 @@ const form = useForm({
                         class="border-b border-bakery-brown/15 text-left text-xs uppercase tracking-widest text-bakery-dark/60"
                     >
                         <tr>
-                            <th class="px-2 py-2">Dátum</th>
-                            <th class="px-2 py-2">Státusz</th>
-                            <th class="px-2 py-2 text-right">Tételek</th>
-                            <th class="px-2 py-2">Készítette</th>
-                            <th class="px-2 py-2 text-right">Művelet</th>
+                            <th class="px-2 py-2">{{ $t("common.date") }}</th>
+                            <th class="px-2 py-2">{{ $t("common.status") }}</th>
+                            <th class="px-2 py-2 text-right">{{ $t("admin_stock_count.columns.items") }}</th>
+                            <th class="px-2 py-2">{{ $t("admin_stock_count.columns.created_by") }}</th>
+                            <th class="px-2 py-2 text-right">{{ $t("admin_stock_count.columns.action") }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -78,9 +78,9 @@ const form = useForm({
                             <td class="px-2 py-2 text-right">{{ row.items_count }}</td>
                             <td class="px-2 py-2">{{ row.created_by || "-" }}</td>
                             <td class="px-2 py-2 text-right">
-                                <Link :href="route('admin.stock-counts.show', row.id)" class="underline"
-                                    >Részletek</Link
-                                >
+                                <Link :href="route('admin.stock-counts.show', row.id)" class="underline">{{
+                                    $t("admin_stock_count.actions.details")
+                                }}</Link>
                             </td>
                         </tr>
                     </tbody>
@@ -89,9 +89,11 @@ const form = useForm({
         </section>
 
         <section class="ui-card p-4 sm:p-5 space-y-3">
-            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">Új leltár</h2>
+            <h2 class="text-sm font-semibold uppercase tracking-[0.12em] text-bakery-brown/80">
+                {{ $t("admin_stock_count.actions.create") }}
+            </h2>
             <BaseDatePicker v-model="form.count_date" class="w-full" />
-            <InputText v-model="form.notes" placeholder="Megjegyzés" />
+            <InputText v-model="form.notes" :placeholder="$t('common.notes')" />
             <div class="space-y-2">
                 <div v-for="(item, idx) in form.items" :key="idx" class="grid gap-2 md:grid-cols-3">
                     <Select
@@ -104,18 +106,18 @@ const form = useForm({
                         v-model="item.expected_quantity"
                         type="number"
                         step="0.001"
-                        placeholder="Várt mennyiség"
+                        :placeholder="$t('admin_stock_count.fields.expected_quantity')"
                     />
                     <InputText
                         v-model="item.counted_quantity"
                         type="number"
                         step="0.001"
-                        placeholder="Számolt mennyiség"
+                        :placeholder="$t('admin_stock_count.fields.counted_quantity')"
                     />
                 </div>
             </div>
             <Button
-                label="Leltár mentése"
+                :label="$t('admin_stock_count.actions.save')"
                 class="min-h-11!"
                 :disabled="form.processing"
                 @click="form.post(route('admin.stock-counts.store'), { preserveScroll: true })"

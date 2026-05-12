@@ -76,6 +76,10 @@ const { filterState, sortOrder, load, submitFilters, clearFilters, onSort, onPag
 
 const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
 const activeOptions = createActiveOptions(trans);
+const categoryFilterOptions = computed(() => [
+    { id: null, name: trans("admin_product.filters.all_categories") },
+    ...props.categories,
+]);
 
 const form = useForm({
     category_id: null,
@@ -217,7 +221,7 @@ const confirmDelete = (product) => {
                         }}</label>
                         <Select
                             v-model="filterState.category_id"
-                            :options="[{ id: null, name: 'Mind' }, ...categories]"
+                            :options="categoryFilterOptions"
                             option-label="name"
                             option-value="id"
                             class="w-full"
@@ -265,10 +269,10 @@ const confirmDelete = (product) => {
                         :href="route('admin.recipes.index')"
                         class="inline-flex items-center whitespace-nowrap rounded-lg border border-bakery-brown/20 px-3 py-2 text-sm font-medium text-bakery-brown hover:bg-bakery-brown/10"
                     >
-                        Receptek oldal
+                        {{ $t("admin_product.actions.open_recipes") }}
                     </Link>
-                    <Button icon="pi pi-search" label="Keresés" @click="submitFilters" />
-                    <Button icon="pi pi-plus" label="Új termék" @click="openCreate" />
+                    <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
+                    <Button icon="pi pi-plus" :label="$t('admin_product.actions.create')" @click="openCreate" />
                 </template>
             </AdminTableToolbar>
 
@@ -305,7 +309,7 @@ const confirmDelete = (product) => {
                     @clear-selection="selectedProducts = []"
                 >
                     <Column selection-mode="multiple" header-style="width:3rem" />
-                    <Column field="name" header="Név" sortable>
+                    <Column field="name" :header="$t('admin_product.columns.name')" sortable>
                         <template #body="{ data }">
                             <div>
                                 <p class="font-semibold text-bakery-dark">
@@ -332,7 +336,7 @@ const confirmDelete = (product) => {
                             />
                         </template>
                     </Column>
-                    <Column field="price" header="Ár" sortable>
+                    <Column field="price" :header="$t('admin_product.columns.price')" sortable>
                         <template #body="{ data }">
                             <InlineEditableNumber
                                 :model-value="data.price"
@@ -343,7 +347,7 @@ const confirmDelete = (product) => {
                             />
                         </template>
                     </Column>
-                    <Column field="is_active" header="Státusz" sortable>
+                    <Column field="is_active" :header="$t('admin_product.columns.status')" sortable>
                         <template #body="{ data }">
                             <div class="flex items-center gap-3">
                                 <InlineEditableToggle
@@ -357,7 +361,7 @@ const confirmDelete = (product) => {
                             </div>
                         </template>
                     </Column>
-                    <Column header="Műveletek" :exportable="false">
+                    <Column :header="$t('admin_product.columns.actions')" :exportable="false">
                         <template #body="{ data }">
                             <div class="flex items-center gap-2">
                                 <Link
@@ -368,14 +372,14 @@ const confirmDelete = (product) => {
                                     "
                                     class="inline-flex min-h-11 items-center rounded-md border border-bakery-brown/20 px-3 py-2 text-xs font-medium text-bakery-brown hover:bg-bakery-brown/10"
                                 >
-                                    Recept
+                                    {{ $t("admin_product.actions.recipe") }}
                                 </Link>
                                 <Button
                                     icon="pi pi-pencil"
                                     text
                                     rounded
                                     class="h-11! w-11!"
-                                    aria-label="Termék szerkesztése"
+                                    :aria-label="$t('admin_product.actions.edit')"
                                     @click="openEdit(data)"
                                 />
                                 <Button
@@ -384,7 +388,7 @@ const confirmDelete = (product) => {
                                     rounded
                                     severity="danger"
                                     class="h-11! w-11!"
-                                    aria-label="Termék törlése"
+                                    :aria-label="$t('admin_product.actions.delete')"
                                     @click="confirmDelete(data)"
                                 />
                             </div>
