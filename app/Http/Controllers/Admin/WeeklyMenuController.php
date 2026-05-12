@@ -21,7 +21,6 @@ use App\Services\WeeklyMenuService;
 use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 use RuntimeException;
 
@@ -54,7 +53,7 @@ class WeeklyMenuController extends Controller
         $filters = WeeklyMenuIndexData::from($validated);
         $paginator = $this->service->paginate($filters);
 
-        return Inertia::render(InertiaPage::ADMIN_WEEKLY_MENUS_INDEX->value, [
+        return InertiaPage::ADMIN_WEEKLY_MENUS_INDEX->render([
             'weeklyMenus' => $paginator,
             'filters' => $filters->toFrontendFilters(),
             'statuses' => [

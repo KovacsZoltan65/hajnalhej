@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Support\InertiaPage;
 use App\Support\PermissionRegistry;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class AccountController extends Controller
@@ -14,7 +13,7 @@ class AccountController extends Controller
     {
         abort_unless($request->user()?->can(PermissionRegistry::ACCOUNT_VIEW), 403);
 
-        return Inertia::render(InertiaPage::ACCOUNT_INDEX->value, [
+        return InertiaPage::ACCOUNT_INDEX->render([
             'account' => [
                 'name' => (string) $request->user()?->name,
                 'email' => (string) $request->user()?->email,

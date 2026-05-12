@@ -9,7 +9,6 @@ use App\Models\RecipeStep;
 use App\Services\RecipeService;
 use App\Support\InertiaPage;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class RecipeController extends Controller
@@ -84,7 +83,7 @@ class RecipeController extends Controller
             'recipe_summary' => $this->service->buildRecipeWorkflowSummary($product),
         ]);
 
-        return Inertia::render(InertiaPage::ADMIN_RECIPES_INDEX->value, [
+        return InertiaPage::ADMIN_RECIPES_INDEX->render([
             'recipes' => $recipes,
             'categories' => $this->service->listSelectableCategories(),
             'ingredients' => $this->service->listSelectableIngredients(),

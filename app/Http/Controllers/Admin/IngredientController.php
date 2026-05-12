@@ -16,7 +16,6 @@ use App\Services\IngredientService;
 use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class IngredientController extends Controller
@@ -40,7 +39,7 @@ class IngredientController extends Controller
             ->paginateForAdmin($filters)
             ->through(fn (Ingredient $ingredient): array => IngredientListItemData::from($ingredient)->toArray());
 
-        return Inertia::render(InertiaPage::ADMIN_INGREDIENTS_INDEX->value, [
+        return InertiaPage::ADMIN_INGREDIENTS_INDEX->render([
             'ingredients' => $paginator,
             'filters' => $filters->toFrontendFilters(),
             'units' => Ingredient::allowedUnits(),

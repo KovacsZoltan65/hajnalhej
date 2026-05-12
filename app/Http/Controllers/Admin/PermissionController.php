@@ -9,7 +9,6 @@ use App\Services\PermissionManagementService;
 use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Permission;
 
@@ -37,7 +36,7 @@ class PermissionController extends Controller
                 return $row;
             });
 
-        return Inertia::render(InertiaPage::ADMIN_PERMISSIONS_INDEX->value, [
+        return InertiaPage::ADMIN_PERMISSIONS_INDEX->render([
             'permissions' => $permissions,
             'modules' => $this->service->modules(),
             'filters' => [
@@ -69,7 +68,7 @@ class PermissionController extends Controller
             $detail['role_names'] = [];
         }
 
-        return Inertia::render(InertiaPage::ADMIN_PERMISSIONS_SHOW->value, [
+        return InertiaPage::ADMIN_PERMISSIONS_SHOW->render([
             'permission' => $detail,
             'can' => [
                 'view_usage' => $canViewUsage,

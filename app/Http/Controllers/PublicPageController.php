@@ -8,7 +8,6 @@ use App\Services\WeeklyMenuService;
 use App\Support\ConversionEventRegistry;
 use App\Support\InertiaPage;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class PublicPageController extends Controller
@@ -42,7 +41,7 @@ class PublicPageController extends Controller
             heroVariant: $variant,
         );
 
-        return Inertia::render(InertiaPage::HOME->value, [
+        return InertiaPage::HOME->render([
             'heroExperiment' => [
                 'variant' => $variant,
             ],
@@ -51,11 +50,11 @@ class PublicPageController extends Controller
 
     public function weeklyMenu(): Response
     {
-        return Inertia::render(InertiaPage::WEEKLY_MENU->value, $this->weeklyMenuService->getPublicWeeklyMenuPayload());
+        return InertiaPage::WEEKLY_MENU->render($this->weeklyMenuService->getPublicWeeklyMenuPayload());
     }
 
     public function about(): Response
     {
-        return Inertia::render(InertiaPage::ABOUT->value);
+        return InertiaPage::ABOUT->render();
     }
 }

@@ -18,7 +18,6 @@ use App\Services\ProductService;
 use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class ProductController extends Controller
@@ -47,7 +46,7 @@ class ProductController extends Controller
         $filters = ProductIndexData::from($validated);
         $paginator = $this->service->paginateForAdmin($filters);
 
-        return Inertia::render(InertiaPage::ADMIN_PRODUCTS_INDEX->value, [
+        return InertiaPage::ADMIN_PRODUCTS_INDEX->render([
             'products' => $paginator,
             'categories' => $this->service->listSelectableCategories(),
             'ingredients' => $this->productIngredientService->listSelectableIngredients(),
@@ -64,7 +63,7 @@ class ProductController extends Controller
     {
         $this->authorize('create', Product::class);
 
-        return Inertia::render(InertiaPage::ADMIN_PRODUCTS_CREATE_FLOW->value, [
+        return InertiaPage::ADMIN_PRODUCTS_CREATE_FLOW->render([
             'categories' => $this->service->listSelectableCategories(),
             'ingredients' => $this->productIngredientService->listSelectableIngredients(),
             'stockStatuses' => [

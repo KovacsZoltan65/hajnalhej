@@ -18,7 +18,6 @@ use App\Services\CourierService;
 use App\Support\InertiaPage;
 use App\Support\PermissionRegistry;
 use Illuminate\Http\RedirectResponse;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class CourierController extends Controller
@@ -33,7 +32,7 @@ class CourierController extends Controller
             ->paginateForAdmin($filters)
             ->through(fn (Courier $courier): array => CourierListItemData::fromModel($courier)->toArray());
 
-        return Inertia::render(InertiaPage::ADMIN_COURIERS_INDEX->value, [
+        return InertiaPage::ADMIN_COURIERS_INDEX->render([
             'couriers' => $paginator,
             'filters' => $filters->toFrontendFilters(),
             'options' => CourierFormOptionsData::make()->toArray(),

@@ -16,7 +16,6 @@ use App\Support\InertiaPage;
 use App\Support\PermissionRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Permission;
 
@@ -42,7 +41,7 @@ class UserController extends Controller
             ->paginateForAdmin($filters)
             ->through(fn (User $user): array => $this->service->serializeUser($user, $canViewOrders));
 
-        return Inertia::render(InertiaPage::ADMIN_USERS_INDEX->value, [
+        return InertiaPage::ADMIN_USERS_INDEX->render([
             'users' => $users,
             'roles' => $this->service->roleOptions(),
             'permissions' => Permission::query()

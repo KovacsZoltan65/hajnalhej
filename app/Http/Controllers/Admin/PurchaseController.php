@@ -17,7 +17,6 @@ use App\Services\IngredientService;
 use App\Services\PurchaseService;
 use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
-use Inertia\Inertia;
 use Inertia\Response;
 use RuntimeException;
 
@@ -37,7 +36,7 @@ class PurchaseController extends Controller
             ->paginateForAdmin($filters)
             ->through(static fn (Purchase $purchase): array => PurchaseListItemData::from($purchase)->toArray());
 
-        return Inertia::render(InertiaPage::ADMIN_PURCHASES_INDEX->value, [
+        return InertiaPage::ADMIN_PURCHASES_INDEX->render([
             'purchases' => $purchases,
             'suppliers' => Supplier::query()->orderBy('name')->get(['id', 'name']),
             'ingredient_options' => $this->ingredientService->listSelectableActive()->values()->all(),
@@ -51,7 +50,7 @@ class PurchaseController extends Controller
         $this->authorize('view', $purchase);
         $purchase = $this->service->findWithItems($purchase->id) ?? $purchase;
 
-        return Inertia::render(InertiaPage::ADMIN_PURCHASES_SHOW->value, [
+        return InertiaPage::ADMIN_PURCHASES_SHOW->render([
             'purchase' => [
                 'id' => $purchase->id,
                 'supplier_id' => $purchase->supplier_id,

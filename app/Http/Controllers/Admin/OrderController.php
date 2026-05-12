@@ -21,7 +21,6 @@ use App\Services\DeliveryService;
 use App\Services\OrderService;
 use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
-use Inertia\Inertia;
 use Inertia\Response;
 use RuntimeException;
 
@@ -43,7 +42,7 @@ class OrderController extends Controller
             ->paginateForAdmin($filters)
             ->through(fn (Order $order): array => OrderListItemData::fromModel($order)->toArray());
 
-        return Inertia::render(InertiaPage::ADMIN_ORDERS_INDEX->value, [
+        return InertiaPage::ADMIN_ORDERS_INDEX->render([
             'orders' => $orders,
             'statusOptions' => $this->service->statuses(),
             'filters' => $filters->toFrontendFilters(),
@@ -56,7 +55,7 @@ class OrderController extends Controller
 
         $order->load(['items.product:id,name,slug', 'pickupBranch:id,name,code,type,address', 'courier:id,name,phone,email,vehicle_type']);
 
-        return Inertia::render(InertiaPage::ADMIN_ORDERS_SHOW->value, [
+        return InertiaPage::ADMIN_ORDERS_SHOW->render([
             'order' => OrderDetailData::fromModel($order)->toArray(),
             'statusOptions' => $this->service->statuses(),
             'courierOptions' => $this->courierService

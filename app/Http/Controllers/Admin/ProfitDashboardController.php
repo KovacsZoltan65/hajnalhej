@@ -7,7 +7,6 @@ use App\Http\Requests\Admin\ProfitDashboardIndexRequest;
 use App\Models\ConversionEvent;
 use App\Services\ProfitDashboardService;
 use App\Support\InertiaPage;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class ProfitDashboardController extends Controller
@@ -22,7 +21,7 @@ class ProfitDashboardController extends Controller
 
         $days = (int) ($request->validated('days') ?? 30);
 
-        return Inertia::render(InertiaPage::ADMIN_PROFIT_DASHBOARD_INDEX->value, [
+        return InertiaPage::ADMIN_PROFIT_DASHBOARD_INDEX->render([
             'filters' => [
                 'days' => $days,
             ],

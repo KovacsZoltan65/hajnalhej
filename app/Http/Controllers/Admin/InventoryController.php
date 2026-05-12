@@ -17,7 +17,6 @@ use App\Services\InventoryService;
 use App\Services\ProductService;
 use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class InventoryController extends Controller
@@ -41,7 +40,7 @@ class InventoryController extends Controller
             ->paginateLedger($filters)
             ->through(static fn (InventoryMovement $movement): array => InventoryMovementListItemData::fromModel($movement)->toArray());
 
-        return Inertia::render(InertiaPage::ADMIN_INVENTORY_INDEX->value, [
+        return InertiaPage::ADMIN_INVENTORY_INDEX->render([
             'dashboard' => $dashboard,
             'ledger' => $ledger,
             'filters' => $filters->toFrontendFilters(),

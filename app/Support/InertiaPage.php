@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use Inertia\Inertia;
+use Inertia\Response;
+
 enum InertiaPage: string
 {
     case ACCOUNT_INDEX = 'Account/Index';
@@ -54,4 +57,14 @@ enum InertiaPage: string
     case HOME = 'Home';
     case ORDERS_SUCCESS = 'Orders/Success';
     case WEEKLY_MENU = 'WeeklyMenu';
+
+    public function component(): string
+    {
+        return $this->value;
+    }
+
+    public function render(array $props = []): Response
+    {
+        return Inertia::render($this->value, $props);
+    }
 }

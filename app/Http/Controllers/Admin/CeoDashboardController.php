@@ -7,7 +7,6 @@ use App\Http\Requests\Admin\CeoDashboardIndexRequest;
 use App\Models\ConversionEvent;
 use App\Services\CeoDashboardService;
 use App\Support\InertiaPage;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class CeoDashboardController extends Controller
@@ -22,7 +21,7 @@ class CeoDashboardController extends Controller
 
         $days = (int) ($request->validated('days') ?? 30);
 
-        return Inertia::render(InertiaPage::ADMIN_CEO_DASHBOARD_INDEX->value, [
+        return InertiaPage::ADMIN_CEO_DASHBOARD_INDEX->render([
             'filters' => [
                 'days' => $days,
             ],

@@ -6,7 +6,6 @@ use App\Models\Order;
 use App\Support\InertiaPage;
 use App\Support\PermissionRegistry;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class OrderController extends Controller
@@ -21,7 +20,7 @@ class OrderController extends Controller
 
         abort_unless($canView, 403);
 
-        return Inertia::render(InertiaPage::ORDERS_SUCCESS->value, [
+        return InertiaPage::ORDERS_SUCCESS->render([
             'order' => [
                 'id' => $order->id,
                 'order_number' => $order->order_number,

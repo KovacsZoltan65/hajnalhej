@@ -10,7 +10,6 @@ use App\Support\ConversionEventRegistry;
 use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class RegisteredUserController extends Controller
@@ -29,7 +28,7 @@ class RegisteredUserController extends Controller
             step: 'view',
         );
 
-        return Inertia::render(InertiaPage::AUTH_REGISTER->value);
+        return InertiaPage::AUTH_REGISTER->render();
     }
 
     public function store(RegisterCustomerRequest $request): RedirectResponse

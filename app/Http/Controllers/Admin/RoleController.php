@@ -10,7 +10,6 @@ use App\Services\RoleManagementService;
 use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
 
@@ -37,7 +36,7 @@ class RoleController extends Controller
                 'is_system_role' => $this->service->isSystemRole($role->name),
             ]);
 
-        return Inertia::render(InertiaPage::ADMIN_ROLES_INDEX->value, [
+        return InertiaPage::ADMIN_ROLES_INDEX->render([
             'roles' => $roles,
             'filters' => [
                 'search' => (string) ($filters['search'] ?? ''),
@@ -56,7 +55,7 @@ class RoleController extends Controller
     {
         $this->authorize('view', $role);
 
-        return Inertia::render(InertiaPage::ADMIN_ROLES_SHOW->value, [
+        return InertiaPage::ADMIN_ROLES_SHOW->render([
             'role' => $this->service->buildRolePayload($role),
             'permission_groups' => $this->service->permissionGroups(),
             'can' => [

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SecurityDashboardRequest;
 use App\Services\SecurityDashboardService;
 use App\Support\InertiaPage;
-use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Activitylog\Models\Activity;
 
@@ -20,7 +19,7 @@ class SecurityDashboardController extends Controller
     {
         $this->authorize('viewAny', Activity::class);
 
-        return Inertia::render(InertiaPage::ADMIN_SECURITY_DASHBOARD_INDEX->value, [
+        return InertiaPage::ADMIN_SECURITY_DASHBOARD_INDEX->render([
             ...$this->service->dashboardPayload($request->validated()),
             'links' => [
                 'permissions' => '/admin/permissions',
@@ -34,7 +33,7 @@ class SecurityDashboardController extends Controller
     {
         $this->authorize('view', Activity::class);
 
-        return Inertia::render(InertiaPage::ADMIN_SECURITY_DASHBOARD_EVENT->value, [
+        return InertiaPage::ADMIN_SECURITY_DASHBOARD_EVENT->render([
             'event' => $this->service->activityDetailPayload($activity),
         ]);
     }
