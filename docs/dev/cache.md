@@ -9,6 +9,8 @@ Selector keys include the namespace version:
 ```text
 selectors.categories:v1:<hash>
 selectors.categories:v2:<hash>
+selectors.ingredients:v1:<hash>
+selectors.suppliers:v1:<hash>
 ```
 
 When source data changes, the namespace version is bumped. Old keys can expire naturally, so invalidation does not need physical pattern deletion.
@@ -25,11 +27,19 @@ Use `SelectorCacheInvalidator` from the service layer after successful writes:
 
 ```php
 $this->selectorCacheInvalidator->categories();
+$this->selectorCacheInvalidator->ingredients();
+$this->selectorCacheInvalidator->suppliers();
 ```
 
 ## Current cached selectors
 
 - `selectors.categories`: category selector options from `CategoryRepository::listSelectable()`
+- `selectors.ingredients`: active ingredient selector options from `IngredientRepository::listSelectableActive()`
+- `selectors.suppliers`: supplier selector options from `SupplierRepository::listSelectable()`
+
+The category selector is invalidated by `CategoryService` after category create, update, and delete.
+The ingredient selector is invalidated by `IngredientService` after ingredient create, update, inline update, and delete.
+The supplier selector is invalidated by `SupplierService` after supplier create, update, and delete.
 
 ## Store compatibility
 
