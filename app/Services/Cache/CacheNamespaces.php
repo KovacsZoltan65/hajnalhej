@@ -20,5 +20,7 @@ final class CacheNamespaces
 
     public const DASHBOARD_CEO = 'dashboard.ceo';
 
+    public const DASHBOARD_CONVERSION_ANALYTICS = 'dashboard.conversion_analytics';
+
     public const PERMISSIONS_SUMMARY = 'permissions.summary';
 }

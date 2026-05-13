@@ -53,6 +53,12 @@ The product selector is invalidated by `ProductService` after product create, up
 
 Product selector cache payload includes locale, active-only filtering, the `has_product_ingredients` requirement, selected fields, sort order, and soft delete exclusion.
 
+## Current cached dashboards
+
+- `dashboard.conversion_analytics`: aggregated conversion analytics dashboard data from `ConversionAnalyticsService::buildDashboard()`
+
+This is not selector cache. It uses a short 5 minute TTL and no event-based invalidation in the first iteration, because conversion analytics is aggregate reporting data and can tolerate a small delay between admin refreshes. The cache payload includes `days`, locale, and app timezone.
+
 ## Store compatibility
 
 The version value is stored through Laravel cache and works with the database cache store. Redis is also compatible because the architecture does not require key scans or tags.
