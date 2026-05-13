@@ -5,12 +5,16 @@ namespace App\Services;
 use App\Models\Product;
 use App\Models\ProductIngredient;
 use App\Repositories\ProductIngredientRepository;
+use App\Services\Cache\SelectorCacheInvalidator;
 use Illuminate\Support\Collection;
 use RuntimeException;
 
 class ProductIngredientService
 {
-    public function __construct(private readonly ProductIngredientRepository $repository) {}
+    public function __construct(
+        private readonly ProductIngredientRepository $repository,
+        private readonly SelectorCacheInvalidator $selectorCacheInvalidator,
+    ) {}
 
     /**
      * @return Collection<int, array{id:int,name:string,unit:string,is_low_stock:bool}>
@@ -39,7 +43,11 @@ class ProductIngredientService
             throw new RuntimeException(__('admin_ingredients.ingredient_already_included').'.');
         }
 
-        return $this->repository->create($product, $normalized);
+        $productIngredient = $this->repository->create($product, $normalized);
+
+        $this->selectorCacheInvalidator->products();
+
+        return $productIngredient;
     }
 
     /**
@@ -59,6 +67,8 @@ class ProductIngredientService
     public function delete(ProductIngredient $productIngredient): void
     {
         $this->repository->delete($productIngredient);
+
+        $this->selectorCacheInvalidator->products();
     }
 
     /**

@@ -8,6 +8,7 @@ use App\Data\Products\ProductStoreData;
 use App\Data\Products\ProductUpdateData;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
+use App\Services\Cache\SelectorCacheInvalidator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,10 @@ use Illuminate\Support\Str;
 
 class ProductService
 {
-    public function __construct(private readonly ProductRepository $repository) {}
+    public function __construct(
+        private readonly ProductRepository $repository,
+        private readonly SelectorCacheInvalidator $selectorCacheInvalidator,
+    ) {}
 
     public function paginateForAdmin(ProductIndexData $filters): LengthAwarePaginator
     {
@@ -43,7 +47,13 @@ class ProductService
         $normalized = $this->normalizePayload($data->toPayload());
         $normalized['slug'] = $this->resolveUniqueSlug((string) $normalized['slug']);
 
-        return DB::transaction(fn (): Product => $this->repository->create($normalized));
+        return DB::transaction(function () use ($normalized): Product {
+            $product = $this->repository->create($normalized);
+
+            $this->selectorCacheInvalidator->products();
+
+            return $product;
+        });
     }
 
     public function update(Product $product, ProductUpdateData $data): Product
@@ -51,7 +61,13 @@ class ProductService
         $normalized = $this->normalizePayload($data->toPayload(), $product);
         $normalized['slug'] = $this->resolveUniqueSlug((string) $normalized['slug'], $product->id);
 
-        return DB::transaction(fn (): Product => $this->repository->update($product, $normalized));
+        return DB::transaction(function () use ($product, $normalized): Product {
+            $product = $this->repository->update($product, $normalized);
+
+            $this->selectorCacheInvalidator->products();
+
+            return $product;
+        });
     }
 
     public function updateInline(Product $product, ProductInlineUpdateData $payload): Product
@@ -67,12 +83,20 @@ class ProductService
             default => [],
         };
 
-        return DB::transaction(fn (): Product => $this->repository->update($product, $normalized));
+        return DB::transaction(function () use ($product, $normalized): Product {
+            $product = $this->repository->update($product, $normalized);
+
+            $this->selectorCacheInvalidator->products();
+
+            return $product;
+        });
     }
 
     public function delete(Product $product): void
     {
         $this->repository->delete($product);
+
+        $this->selectorCacheInvalidator->products();
     }
 
     /**
