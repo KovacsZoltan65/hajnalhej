@@ -8,13 +8,17 @@ use App\Data\Ingredients\IngredientStoreData;
 use App\Data\Ingredients\IngredientUpdateData;
 use App\Models\Ingredient;
 use App\Repositories\IngredientRepository;
+use App\Services\Cache\SelectorCacheInvalidator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class IngredientService
 {
-    public function __construct(private readonly IngredientRepository $repository) {}
+    public function __construct(
+        private readonly IngredientRepository $repository,
+        private readonly SelectorCacheInvalidator $selectorCacheInvalidator,
+    ) {}
 
     public function paginateForAdmin(IngredientIndexData $filters): LengthAwarePaginator
     {
@@ -35,7 +39,11 @@ class IngredientService
         $normalized['slug'] = $normalized['slug'] !== '' ? $normalized['slug'] : Str::slug((string) $normalized['name']);
         $normalized['slug'] = $this->resolveUniqueSlug((string) $normalized['slug']);
 
-        return $this->repository->create($normalized);
+        $ingredient = $this->repository->create($normalized);
+
+        $this->selectorCacheInvalidator->ingredients();
+
+        return $ingredient;
     }
 
     public function update(Ingredient $ingredient, IngredientUpdateData $payload): Ingredient
@@ -44,7 +52,11 @@ class IngredientService
         $normalized['slug'] = $normalized['slug'] !== '' ? $normalized['slug'] : $ingredient->slug;
         $normalized['slug'] = $this->resolveUniqueSlug((string) $normalized['slug'], $ingredient->id);
 
-        return $this->repository->update($ingredient, $normalized);
+        $ingredient = $this->repository->update($ingredient, $normalized);
+
+        $this->selectorCacheInvalidator->ingredients();
+
+        return $ingredient;
     }
 
     public function updateInline(Ingredient $ingredient, IngredientInlineUpdateData $payload): Ingredient
@@ -56,7 +68,11 @@ class IngredientService
             default => [],
         };
 
-        return $this->repository->update($ingredient, $normalized);
+        $ingredient = $this->repository->update($ingredient, $normalized);
+
+        $this->selectorCacheInvalidator->ingredients();
+
+        return $ingredient;
     }
 
     /**
@@ -65,6 +81,8 @@ class IngredientService
     public function delete(Ingredient $ingredient): void
     {
         $this->repository->delete($ingredient);
+
+        $this->selectorCacheInvalidator->ingredients();
     }
 
     /**

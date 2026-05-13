@@ -4,12 +4,20 @@ namespace App\Repositories;
 
 use App\Data\Ingredients\IngredientIndexData;
 use App\Models\Ingredient;
+use App\Services\Cache\CacheKeyService;
+use App\Services\Cache\CacheNamespaces;
+use App\Services\Cache\CacheVersionService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class IngredientRepository
 {
+    public function __construct(
+        private readonly CacheVersionService $cacheVersionService,
+    ) {}
+
     public function paginateForAdmin(IngredientIndexData $filters): LengthAwarePaginator
     {
         return $this->adminQuery($filters)
@@ -22,7 +30,12 @@ class IngredientRepository
      */
     public function listSelectableActive(): Collection
     {
-        return Ingredient::query()
+        $version = $this->cacheVersionService->get(CacheNamespaces::SELECTORS_INGREDIENTS);
+        $key = CacheKeyService::make(CacheNamespaces::SELECTORS_INGREDIENTS, $version, [
+            'locale' => app()->getLocale(),
+        ]);
+
+        return Cache::remember($key, now()->addMinutes(30), fn (): Collection => Ingredient::query()
             ->where('is_active', true)
             ->orderBy('name')
             ->get(['id', 'name', 'unit', 'current_stock', 'minimum_stock'])
@@ -34,7 +47,7 @@ class IngredientRepository
                 'current_stock' => (float) $ingredient->current_stock,
                 'minimum_stock' => (float) $ingredient->minimum_stock,
                 'is_low_stock' => $ingredient->isLowStock(),
-            ]);
+            ]));
     }
 
     /**
