@@ -10,6 +10,7 @@ use App\Models\ProductIngredient;
 use App\Models\User;
 use App\Repositories\InventoryMovementRepository;
 use App\Services\Audit\InventoryAuditService;
+use App\Services\Cache\SelectorCacheInvalidator;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,7 @@ class InventoryService
     public function __construct(
         private readonly InventoryMovementRepository $movementRepository,
         private readonly InventoryAuditService $auditService,
+        private readonly SelectorCacheInvalidator $selectorCacheInvalidator,
     ) {}
 
     /**
@@ -82,6 +84,8 @@ class InventoryService
 
             return $movement->refresh();
         });
+
+        $this->selectorCacheInvalidator->ingredients();
 
         return $movement;
     }

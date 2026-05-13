@@ -17,6 +17,8 @@ selectors.products:v1:<hash>
 
 When source data changes, the namespace version is bumped. Old keys can expire naturally, so invalidation does not need physical pattern deletion.
 
+Selector cache entries use a 30 minute TTL. Namespace version values are long-lived cache entries.
+
 ## Adding a namespace
 
 Add the constant to `App\Services\Cache\CacheNamespaces`, then use `CacheVersionService` and `CacheKeyService` when building the cache key.
@@ -44,7 +46,7 @@ $this->selectorCacheInvalidator->products();
 - `selectors.products`: active product selector options with at least one product ingredient from `ProductRepository::listSelectableActiveProducts()`
 
 The category selector is invalidated by `CategoryService` after category create, update, and delete.
-The ingredient selector is invalidated by `IngredientService` after ingredient create, update, inline update, and delete.
+The ingredient selector is invalidated by `IngredientService` after ingredient create, update, inline update, and delete. `InventoryService` also invalidates it after stock movements because the selector exposes `current_stock`, `minimum_stock`, and `is_low_stock`.
 The supplier selector is invalidated by `SupplierService` after supplier create, update, and delete.
 The branch selector is invalidated by `BranchService` after branch create, update, and delete.
 The product selector is invalidated by `ProductService` after product create, update, inline update, and delete. `ProductIngredientService` also invalidates it after product ingredient create and delete because the selector requires `whereHas('productIngredients')`.

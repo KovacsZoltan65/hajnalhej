@@ -26,7 +26,7 @@ class IngredientRepository
     }
 
     /**
-     * @return Collection<int, array{id:int,name:string,unit:string,current_stock:float,minimum_stock:float,is_low_stock:bool}>
+     * @return Collection<int, array{id:int,name:string,unit:string,estimated_unit_cost:mixed,current_stock:float,minimum_stock:float,is_low_stock:bool}>
      */
     public function listSelectableActive(): Collection
     {
@@ -38,7 +38,7 @@ class IngredientRepository
         return Cache::remember($key, now()->addMinutes(30), fn (): Collection => Ingredient::query()
             ->where('is_active', true)
             ->orderBy('name')
-            ->get(['id', 'name', 'unit', 'current_stock', 'minimum_stock'])
+            ->get(['id', 'name', 'unit', 'estimated_unit_cost', 'current_stock', 'minimum_stock'])
             ->map(fn (Ingredient $ingredient): array => [
                 'id' => $ingredient->id,
                 'name' => $ingredient->name,

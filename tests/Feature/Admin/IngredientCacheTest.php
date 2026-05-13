@@ -3,11 +3,13 @@
 use App\Data\Ingredients\IngredientStoreData;
 use App\Data\Ingredients\IngredientUpdateData;
 use App\Models\Ingredient;
+use App\Models\InventoryMovement;
 use App\Repositories\IngredientRepository;
 use App\Services\Cache\CacheKeyService;
 use App\Services\Cache\CacheNamespaces;
 use App\Services\Cache\CacheVersionService;
 use App\Services\IngredientService;
+use App\Services\InventoryService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -150,4 +152,43 @@ it('returns fresh ingredient selector data after invalidation', function (): voi
     $service->delete($ingredient->refresh());
 
     expect($repository->listSelectableActive())->toHaveCount(0);
+});
+
+it('bumps ingredient selector version and returns fresh stock after inventory movement', function (): void {
+    $ingredient = Ingredient::factory()->create([
+        'name' => 'Buzaliszt',
+        'slug' => 'buzaliszt',
+        'unit' => 'kg',
+        'estimated_unit_cost' => '450.0000',
+        'current_stock' => '10.000',
+        'minimum_stock' => '12.000',
+        'is_active' => true,
+    ]);
+
+    $repository = app(IngredientRepository::class);
+    $inventoryService = app(InventoryService::class);
+    $versions = app(CacheVersionService::class);
+
+    $cached = $repository->listSelectableActive()->first();
+
+    expect($versions->get(CacheNamespaces::SELECTORS_INGREDIENTS))->toBe(1)
+        ->and($cached['current_stock'])->toBe(10.0)
+        ->and($cached['is_low_stock'])->toBeTrue();
+
+    $inventoryService->createMovement([
+        'ingredient_id' => $ingredient->id,
+        'movement_type' => InventoryMovement::TYPE_ADJUSTMENT_IN,
+        'direction' => InventoryMovement::DIRECTION_IN,
+        'quantity' => 5,
+        'unit_cost' => 450,
+        'occurred_at' => now(),
+        'reference_type' => 'test',
+        'notes' => 'Selector cache audit',
+    ]);
+
+    $fresh = $repository->listSelectableActive()->first();
+
+    expect($versions->get(CacheNamespaces::SELECTORS_INGREDIENTS))->toBe(2)
+        ->and($fresh['current_stock'])->toBe(15.0)
+        ->and($fresh['is_low_stock'])->toBeFalse();
 });
