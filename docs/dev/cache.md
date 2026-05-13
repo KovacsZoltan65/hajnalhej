@@ -57,6 +57,7 @@ Product selector cache payload includes locale, active-only filtering, the `has_
 
 - `dashboard.conversion_analytics`: aggregated conversion analytics dashboard data from `ConversionAnalyticsService::buildDashboard()`
 - `dashboard.profit`: aggregated profit dashboard data from `ProfitDashboardService::buildDashboard()`
+- `dashboard.ceo`: aggregated CEO dashboard data from `CeoDashboardService::buildDashboard()`
 
 These are not selector caches. They use a short 5 minute TTL and no event-based invalidation in the first iteration, because dashboard analytics data can tolerate a small delay between admin refreshes while avoiding repeated aggregate queries. The cache payload includes `days`, locale, and app timezone.
 
