@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\Repositories\ProfitDashboardRepository;
+use App\Services\Cache\CacheKeyService;
+use App\Services\Cache\CacheNamespaces;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class ProfitDashboardService
 {
@@ -15,6 +18,20 @@ class ProfitDashboardService
      * @return array<string, mixed>
      */
     public function buildDashboard(int $days): array
+    {
+        $key = CacheKeyService::make(CacheNamespaces::DASHBOARD_PROFIT, 1, [
+            'days' => $days,
+            'locale' => app()->getLocale(),
+            'timezone' => config('app.timezone'),
+        ]);
+
+        return Cache::remember($key, now()->addMinutes(5), fn (): array => $this->buildDashboardPayload($days));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildDashboardPayload(int $days): array
     {
         $catalog = $this->repository->catalogSummary();
         $period = $this->repository->periodSummary($days);
