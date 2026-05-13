@@ -9,13 +9,17 @@ use App\Data\Categories\CategoryStoreData;
 use App\Data\Categories\CategoryUpdateData;
 use App\Models\Category;
 use App\Repositories\CategoryRepository;
+use App\Services\Cache\SelectorCacheInvalidator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class CategoryService
 {
-    public function __construct(private readonly CategoryRepository $repository) {}
+    public function __construct(
+        private readonly CategoryRepository $repository,
+        private readonly SelectorCacheInvalidator $selectorCacheInvalidator,
+    ) {}
 
     public function paginateForAdmin(CategoryIndexData $filters): LengthAwarePaginator
     {
@@ -36,7 +40,11 @@ class CategoryService
         $normalized['slug'] = $normalized['slug'] !== '' ? $normalized['slug'] : Str::slug((string) $normalized['name']);
         $normalized['slug'] = $this->resolveUniqueSlug((string) $normalized['slug']);
 
-        return $this->repository->create($normalized);
+        $category = $this->repository->create($normalized);
+
+        $this->selectorCacheInvalidator->categories();
+
+        return $category;
     }
 
     public function update(Category $category, CategoryUpdateData $payload): Category
@@ -45,7 +53,11 @@ class CategoryService
         $normalized['slug'] = $normalized['slug'] !== '' ? $normalized['slug'] : $category->slug;
         $normalized['slug'] = $this->resolveUniqueSlug((string) $normalized['slug'], $category->id);
 
-        return $this->repository->update($category, $normalized);
+        $category = $this->repository->update($category, $normalized);
+
+        $this->selectorCacheInvalidator->categories();
+
+        return $category;
     }
 
     /**
@@ -54,6 +66,8 @@ class CategoryService
     public function delete(Category $category): void
     {
         $this->repository->delete($category);
+
+        $this->selectorCacheInvalidator->categories();
     }
 
     /**

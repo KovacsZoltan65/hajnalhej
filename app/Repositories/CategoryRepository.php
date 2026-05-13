@@ -6,11 +6,14 @@ namespace App\Repositories;
 
 use App\Data\Categories\CategoryIndexData;
 use App\Models\Category;
-use App\Services\CacheService;
+use App\Services\Cache\CacheKeyService;
+use App\Services\Cache\CacheNamespaces;
+use App\Services\Cache\CacheVersionService;
 use App\Traits\Functions;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryRepository
 {
@@ -18,7 +21,9 @@ class CategoryRepository
 
     protected $tag = 'category';
 
-    public function __construct(private readonly CacheService $cacheService) {}
+    public function __construct(
+        private readonly CacheVersionService $cacheVersionService,
+    ) {}
 
     /**
      * Admin oldalon megjelenítendő adatokat szolgáltatja
@@ -38,7 +43,12 @@ class CategoryRepository
      */
     public function listSelectable(): Collection
     {
-        return Category::query()
+        $version = $this->cacheVersionService->get(CacheNamespaces::SELECTORS_CATEGORIES);
+        $key = CacheKeyService::make(CacheNamespaces::SELECTORS_CATEGORIES, $version, [
+            'locale' => app()->getLocale(),
+        ]);
+
+        return Cache::remember($key, now()->addMinutes(30), fn (): Collection => Category::query()
             ->where('is_active', true)
             ->orderBy('sort_order')
             ->orderBy('name')
@@ -46,7 +56,7 @@ class CategoryRepository
             ->map(fn (Category $category): array => [
                 'id' => $category->id,
                 'name' => $category->name,
-            ]);
+            ]));
     }
 
     /**
