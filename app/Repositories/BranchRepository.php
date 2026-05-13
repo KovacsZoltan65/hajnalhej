@@ -7,12 +7,20 @@ namespace App\Repositories;
 use App\Data\Branches\BranchIndexData;
 use App\Data\Branches\BranchType;
 use App\Models\Branch;
+use App\Services\Cache\CacheKeyService;
+use App\Services\Cache\CacheNamespaces;
+use App\Services\Cache\CacheVersionService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class BranchRepository
 {
+    public function __construct(
+        private readonly CacheVersionService $cacheVersionService,
+    ) {}
+
     public function paginateForAdmin(BranchIndexData $filters): LengthAwarePaginator
     {
         return $this->adminQuery($filters)
@@ -48,17 +56,26 @@ class BranchRepository
      */
     public function activePickupOptions(): Collection
     {
-        return Branch::query()
+        $types = [
+            BranchType::BAKERY,
+            BranchType::SHOP,
+            BranchType::PICKUP_POINT,
+        ];
+
+        $version = $this->cacheVersionService->get(CacheNamespaces::SELECTORS_BRANCHES);
+        $key = CacheKeyService::make(CacheNamespaces::SELECTORS_BRANCHES, $version, [
+            'active' => true,
+            'locale' => app()->getLocale(),
+            'types' => $types,
+        ]);
+
+        return Cache::remember($key, now()->addMinutes(30), fn (): Collection => Branch::query()
             ->select(['id', 'name', 'code', 'type', 'address'])
             ->where('active', true)
-            ->whereIn('type', [
-                BranchType::BAKERY,
-                BranchType::SHOP,
-                BranchType::PICKUP_POINT,
-            ])
+            ->whereIn('type', $types)
             ->orderBy('name')
             ->orderBy('id')
-            ->get();
+            ->get());
     }
 
     private function adminQuery(BranchIndexData $filters): Builder
