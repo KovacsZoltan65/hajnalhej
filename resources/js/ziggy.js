@@ -10,16 +10,8 @@ const Ziggy = {
         about: { uri: "about", methods: ["GET", "HEAD"] },
         "cart.index": { uri: "cart", methods: ["GET", "HEAD"] },
         "cart.items.store": { uri: "cart\/items", methods: ["POST"] },
-        "cart.items.update": {
-            uri: "cart\/items\/{productId}",
-            methods: ["PATCH"],
-            parameters: ["productId"],
-        },
-        "cart.items.destroy": {
-            uri: "cart\/items\/{productId}",
-            methods: ["DELETE"],
-            parameters: ["productId"],
-        },
+        "cart.items.update": { uri: "cart\/items\/{productId}", methods: ["PATCH"], parameters: ["productId"] },
+        "cart.items.destroy": { uri: "cart\/items\/{productId}", methods: ["DELETE"], parameters: ["productId"] },
         "cart.clear": { uri: "cart", methods: ["DELETE"] },
         "checkout.index": { uri: "checkout", methods: ["GET", "HEAD"] },
         "checkout.store": { uri: "checkout", methods: ["POST"] },
@@ -29,41 +21,31 @@ const Ziggy = {
             parameters: ["order"],
             bindings: { order: "id" },
         },
-        "conversion-events.store": {
-            uri: "conversion-events",
-            methods: ["POST"],
-        },
+        "conversion-events.store": { uri: "conversion-events", methods: ["POST"] },
         register: { uri: "register", methods: ["GET", "HEAD"] },
         "register.store": { uri: "register", methods: ["POST"] },
         login: { uri: "login", methods: ["GET", "HEAD"] },
         "login.store": { uri: "login", methods: ["POST"] },
         logout: { uri: "logout", methods: ["POST"] },
         account: { uri: "account", methods: ["GET", "HEAD"] },
-        "verification.notice": {
-            uri: "email\/verify",
-            methods: ["GET", "HEAD"],
-        },
+        "verification.notice": { uri: "email\/verify", methods: ["GET", "HEAD"] },
         "verification.verify": {
             uri: "email\/verify\/{id}\/{hash}",
             methods: ["GET", "HEAD"],
             parameters: ["id", "hash"],
         },
-        "verification.send": {
-            uri: "email\/verification-notification",
-            methods: ["POST"],
-        },
-        "admin.dashboard": {
-            uri: "admin\/dashboard",
+        "verification.send": { uri: "email\/verification-notification", methods: ["POST"] },
+        "admin.dashboard": { uri: "admin\/dashboard", methods: ["GET", "HEAD"] },
+        "admin.exports.index": { uri: "admin\/exports", methods: ["GET", "HEAD"] },
+        "admin.exports.store": { uri: "admin\/exports", methods: ["POST"] },
+        "admin.exports.download": {
+            uri: "admin\/exports\/{exportJob}\/download",
             methods: ["GET", "HEAD"],
+            parameters: ["exportJob"],
+            bindings: { exportJob: "id" },
         },
-        "admin.categories.index": {
-            uri: "admin\/categories",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.categories.store": {
-            uri: "admin\/categories",
-            methods: ["POST"],
-        },
+        "admin.categories.index": { uri: "admin\/categories", methods: ["GET", "HEAD"] },
+        "admin.categories.store": { uri: "admin\/categories", methods: ["POST"] },
         "admin.categories.update": {
             uri: "admin\/categories\/{category}",
             methods: ["PUT"],
@@ -75,6 +57,34 @@ const Ziggy = {
             methods: ["DELETE"],
             parameters: ["category"],
             bindings: { category: "id" },
+        },
+        "admin.branches.index": { uri: "admin\/branches", methods: ["GET", "HEAD"] },
+        "admin.branches.store": { uri: "admin\/branches", methods: ["POST"] },
+        "admin.branches.update": {
+            uri: "admin\/branches\/{branch}",
+            methods: ["PUT"],
+            parameters: ["branch"],
+            bindings: { branch: "id" },
+        },
+        "admin.branches.destroy": {
+            uri: "admin\/branches\/{branch}",
+            methods: ["DELETE"],
+            parameters: ["branch"],
+            bindings: { branch: "id" },
+        },
+        "admin.couriers.index": { uri: "admin\/couriers", methods: ["GET", "HEAD"] },
+        "admin.couriers.store": { uri: "admin\/couriers", methods: ["POST"] },
+        "admin.couriers.update": {
+            uri: "admin\/couriers\/{courier}",
+            methods: ["PUT"],
+            parameters: ["courier"],
+            bindings: { courier: "id" },
+        },
+        "admin.couriers.destroy": {
+            uri: "admin\/couriers\/{courier}",
+            methods: ["DELETE"],
+            parameters: ["courier"],
+            bindings: { courier: "id" },
         },
         "admin.users.index": { uri: "admin\/users", methods: ["GET", "HEAD"] },
         "admin.users.store": { uri: "admin\/users", methods: ["POST"] },
@@ -120,18 +130,9 @@ const Ziggy = {
             parameters: ["user", "discount"],
             bindings: { user: "id", discount: "id" },
         },
-        "admin.products.index": {
-            uri: "admin\/products",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.products.create-flow": {
-            uri: "admin\/products\/create-flow",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.products.create-flow.store": {
-            uri: "admin\/products\/create-flow",
-            methods: ["POST"],
-        },
+        "admin.products.index": { uri: "admin\/products", methods: ["GET", "HEAD"] },
+        "admin.products.create-flow": { uri: "admin\/products\/create-flow", methods: ["GET", "HEAD"] },
+        "admin.products.create-flow.store": { uri: "admin\/products\/create-flow", methods: ["POST"] },
         "admin.products.store": { uri: "admin\/products", methods: ["POST"] },
         "admin.products.inline.update": {
             uri: "admin\/products\/{product}\/inline",
@@ -187,14 +188,8 @@ const Ziggy = {
             parameters: ["product", "recipeStep"],
             bindings: { product: "id", recipeStep: "id" },
         },
-        "admin.ingredients.index": {
-            uri: "admin\/ingredients",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.ingredients.store": {
-            uri: "admin\/ingredients",
-            methods: ["POST"],
-        },
+        "admin.ingredients.index": { uri: "admin\/ingredients", methods: ["GET", "HEAD"] },
+        "admin.ingredients.store": { uri: "admin\/ingredients", methods: ["POST"] },
         "admin.ingredients.inline.update": {
             uri: "admin\/ingredients\/{ingredient}\/inline",
             methods: ["PATCH"],
@@ -213,26 +208,11 @@ const Ziggy = {
             parameters: ["ingredient"],
             bindings: { ingredient: "id" },
         },
-        "admin.recipes.index": {
-            uri: "admin\/recipes",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.production-plans.index": {
-            uri: "admin\/production-plans",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.production-plans.create-flow": {
-            uri: "admin\/production-plans\/create-flow",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.production-plans.create-flow.store": {
-            uri: "admin\/production-plans\/create-flow",
-            methods: ["POST"],
-        },
-        "admin.production-plans.store": {
-            uri: "admin\/production-plans",
-            methods: ["POST"],
-        },
+        "admin.recipes.index": { uri: "admin\/recipes", methods: ["GET", "HEAD"] },
+        "admin.production-plans.index": { uri: "admin\/production-plans", methods: ["GET", "HEAD"] },
+        "admin.production-plans.create-flow": { uri: "admin\/production-plans\/create-flow", methods: ["GET", "HEAD"] },
+        "admin.production-plans.create-flow.store": { uri: "admin\/production-plans\/create-flow", methods: ["POST"] },
+        "admin.production-plans.store": { uri: "admin\/production-plans", methods: ["POST"] },
         "admin.production-plans.show": {
             uri: "admin\/production-plans\/{productionPlan}",
             methods: ["GET", "HEAD"],
@@ -251,14 +231,8 @@ const Ziggy = {
             parameters: ["productionPlan"],
             bindings: { productionPlan: "id" },
         },
-        "admin.weekly-menus.index": {
-            uri: "admin\/weekly-menus",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.weekly-menus.store": {
-            uri: "admin\/weekly-menus",
-            methods: ["POST"],
-        },
+        "admin.weekly-menus.index": { uri: "admin\/weekly-menus", methods: ["GET", "HEAD"] },
+        "admin.weekly-menus.store": { uri: "admin\/weekly-menus", methods: ["POST"] },
         "admin.weekly-menus.inline.update": {
             uri: "admin\/weekly-menus\/{weeklyMenu}\/inline",
             methods: ["PATCH"],
@@ -307,10 +281,7 @@ const Ziggy = {
             parameters: ["weeklyMenu", "item"],
             bindings: { weeklyMenu: "id", item: "id" },
         },
-        "admin.orders.index": {
-            uri: "admin\/orders",
-            methods: ["GET", "HEAD"],
-        },
+        "admin.orders.index": { uri: "admin\/orders", methods: ["GET", "HEAD"] },
         "admin.orders.show": {
             uri: "admin\/orders\/{order}",
             methods: ["GET", "HEAD"],
@@ -320,6 +291,36 @@ const Ziggy = {
         "admin.orders.status.update": {
             uri: "admin\/orders\/{order}\/status",
             methods: ["PATCH"],
+            parameters: ["order"],
+            bindings: { order: "id" },
+        },
+        "admin.orders.delivery.assign": {
+            uri: "admin\/orders\/{order}\/delivery\/assign",
+            methods: ["POST"],
+            parameters: ["order"],
+            bindings: { order: "id" },
+        },
+        "admin.orders.delivery.start": {
+            uri: "admin\/orders\/{order}\/delivery\/start",
+            methods: ["POST"],
+            parameters: ["order"],
+            bindings: { order: "id" },
+        },
+        "admin.orders.delivery.delivered": {
+            uri: "admin\/orders\/{order}\/delivery\/delivered",
+            methods: ["POST"],
+            parameters: ["order"],
+            bindings: { order: "id" },
+        },
+        "admin.orders.delivery.failed": {
+            uri: "admin\/orders\/{order}\/delivery\/failed",
+            methods: ["POST"],
+            parameters: ["order"],
+            bindings: { order: "id" },
+        },
+        "admin.orders.delivery.cancel": {
+            uri: "admin\/orders\/{order}\/delivery\/cancel",
+            methods: ["POST"],
             parameters: ["order"],
             bindings: { order: "id" },
         },
@@ -349,65 +350,41 @@ const Ziggy = {
             parameters: ["role"],
             bindings: { role: "id" },
         },
-        "admin.user-roles.index": {
-            uri: "admin\/user-roles",
-            methods: ["GET", "HEAD"],
-        },
+        "admin.user-roles.index": { uri: "admin\/user-roles", methods: ["GET", "HEAD"] },
         "admin.users.roles.update": {
             uri: "admin\/users\/{user}\/roles",
             methods: ["PUT"],
             parameters: ["user"],
             bindings: { user: "id" },
         },
-        "admin.permissions.index": {
-            uri: "admin\/permissions",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.permissions.sync": {
-            uri: "admin\/permissions\/sync",
-            methods: ["POST"],
-        },
+        "admin.permissions.index": { uri: "admin\/permissions", methods: ["GET", "HEAD"] },
+        "admin.permissions.sync": { uri: "admin\/permissions\/sync", methods: ["POST"] },
         "admin.permissions.show": {
             uri: "admin\/permissions\/{permissionName}",
             methods: ["GET", "HEAD"],
+            wheres: { permissionName: "[A-Za-z0-9\\.\\-_]+" },
             parameters: ["permissionName"],
         },
-        "admin.audit-logs.index": {
-            uri: "admin\/audit-logs",
-            methods: ["GET", "HEAD"],
-        },
+        "admin.audit-logs.index": { uri: "admin\/audit-logs", methods: ["GET", "HEAD"] },
         "admin.audit-logs.show": {
             uri: "admin\/audit-logs\/{activity}",
             methods: ["GET", "HEAD"],
+            wheres: { activity: "[0-9]+" },
             parameters: ["activity"],
             bindings: { activity: "id" },
         },
-        "admin.security-dashboard.index": {
-            uri: "admin\/security-dashboard",
-            methods: ["GET", "HEAD"],
-        },
+        "admin.security-dashboard.index": { uri: "admin\/security-dashboard", methods: ["GET", "HEAD"] },
         "admin.security-dashboard.events.show": {
             uri: "admin\/security-dashboard\/events\/{activity}",
             methods: ["GET", "HEAD"],
+            wheres: { activity: "[0-9]+" },
             parameters: ["activity"],
             bindings: { activity: "id" },
         },
-        "admin.conversion-analytics.index": {
-            uri: "admin\/conversion-analytics",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.profit-dashboard.index": {
-            uri: "admin\/profit-dashboard",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.ceo-dashboard.index": {
-            uri: "admin\/ceo-dashboard",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.suppliers.index": {
-            uri: "admin\/suppliers",
-            methods: ["GET", "HEAD"],
-        },
+        "admin.conversion-analytics.index": { uri: "admin\/conversion-analytics", methods: ["GET", "HEAD"] },
+        "admin.profit-dashboard.index": { uri: "admin\/profit-dashboard", methods: ["GET", "HEAD"] },
+        "admin.ceo-dashboard.index": { uri: "admin\/ceo-dashboard", methods: ["GET", "HEAD"] },
+        "admin.suppliers.index": { uri: "admin\/suppliers", methods: ["GET", "HEAD"] },
         "admin.suppliers.store": { uri: "admin\/suppliers", methods: ["POST"] },
         "admin.suppliers.update": {
             uri: "admin\/suppliers\/{supplier}",
@@ -421,14 +398,8 @@ const Ziggy = {
             parameters: ["supplier"],
             bindings: { supplier: "id" },
         },
-        "admin.ingredient-supplier-terms.index": {
-            uri: "admin\/ingredient-supplier-terms",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.ingredient-supplier-terms.store": {
-            uri: "admin\/ingredient-supplier-terms",
-            methods: ["POST"],
-        },
+        "admin.ingredient-supplier-terms.index": { uri: "admin\/ingredient-supplier-terms", methods: ["GET", "HEAD"] },
+        "admin.ingredient-supplier-terms.store": { uri: "admin\/ingredient-supplier-terms", methods: ["POST"] },
         "admin.ingredient-supplier-terms.inline.update": {
             uri: "admin\/ingredient-supplier-terms\/{ingredientSupplierTerm}\/inline",
             methods: ["PATCH"],
@@ -447,10 +418,7 @@ const Ziggy = {
             parameters: ["ingredientSupplierTerm"],
             bindings: { ingredientSupplierTerm: "id" },
         },
-        "admin.purchases.index": {
-            uri: "admin\/purchases",
-            methods: ["GET", "HEAD"],
-        },
+        "admin.purchases.index": { uri: "admin\/purchases", methods: ["GET", "HEAD"] },
         "admin.purchases.show": {
             uri: "admin\/purchases\/{purchase}",
             methods: ["GET", "HEAD"],
@@ -476,40 +444,22 @@ const Ziggy = {
             parameters: ["purchase"],
             bindings: { purchase: "id" },
         },
-        "admin.procurement-intelligence.index": {
-            uri: "admin\/procurement-intelligence",
-            methods: ["GET", "HEAD"],
-        },
+        "admin.procurement-intelligence.index": { uri: "admin\/procurement-intelligence", methods: ["GET", "HEAD"] },
         "admin.procurement-intelligence.purchase-drafts.store": {
             uri: "admin\/procurement-intelligence\/purchase-drafts",
             methods: ["POST"],
         },
-        "admin.inventory.index": {
-            uri: "admin\/inventory",
-            methods: ["GET", "HEAD"],
-        },
-        "admin.inventory.waste.store": {
-            uri: "admin\/inventory\/waste",
-            methods: ["POST"],
-        },
-        "admin.inventory.adjustments.store": {
-            uri: "admin\/inventory\/adjustments",
-            methods: ["POST"],
-        },
-        "admin.stock-counts.index": {
-            uri: "admin\/stock-counts",
-            methods: ["GET", "HEAD"],
-        },
+        "admin.inventory.index": { uri: "admin\/inventory", methods: ["GET", "HEAD"] },
+        "admin.inventory.waste.store": { uri: "admin\/inventory\/waste", methods: ["POST"] },
+        "admin.inventory.adjustments.store": { uri: "admin\/inventory\/adjustments", methods: ["POST"] },
+        "admin.stock-counts.index": { uri: "admin\/stock-counts", methods: ["GET", "HEAD"] },
         "admin.stock-counts.show": {
             uri: "admin\/stock-counts\/{stockCount}",
             methods: ["GET", "HEAD"],
             parameters: ["stockCount"],
             bindings: { stockCount: "id" },
         },
-        "admin.stock-counts.store": {
-            uri: "admin\/stock-counts",
-            methods: ["POST"],
-        },
+        "admin.stock-counts.store": { uri: "admin\/stock-counts", methods: ["POST"] },
         "admin.stock-counts.update": {
             uri: "admin\/stock-counts\/{stockCount}",
             methods: ["PUT"],

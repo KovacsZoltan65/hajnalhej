@@ -8,6 +8,7 @@ import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import ExportButton from "@/Components/Admin/Export/ExportButton.vue";
 import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 import AdjustmentModal from "@/Components/Admin/Inventory/AdjustmentModal.vue";
 import WasteEntryModal from "@/Components/Admin/Inventory/WasteEntryModal.vue";
@@ -29,6 +30,7 @@ const props = defineProps({
     ingredient_options: { type: Array, required: true },
     product_options: { type: Array, required: true },
     waste_reasons: { type: Array, required: true },
+    canExport: { type: Boolean, default: false },
 });
 
 const loading = ref(false);
@@ -346,6 +348,7 @@ const directionClass = (direction) => (direction === "out" ? "text-rose-700" : "
                         outlined
                         @click="clearFilters"
                     />
+                    <ExportButton type="inventory_movements" :filters="filterState" :disabled="!canExport" />
                     <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
                     <Button
                         icon="pi pi-exclamation-triangle"

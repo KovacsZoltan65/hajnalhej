@@ -19,6 +19,7 @@ enum InertiaPage: string
     case ADMIN_CONVERSION_ANALYTICS_INDEX = 'Admin/ConversionAnalytics/Index';
     case ADMIN_COURIERS_INDEX = 'Admin/Couriers/Index';
     case ADMIN_DASHBOARD = 'Admin/Dashboard';
+    case ADMIN_EXPORTS_INDEX = 'Admin/Exports/Index';
     case ADMIN_INGREDIENTS_INDEX = 'Admin/Ingredients/Index';
     case ADMIN_INGREDIENT_SUPPLIER_TERMS_INDEX = 'Admin/IngredientSupplierTerms/Index';
     case ADMIN_INVENTORY_INDEX = 'Admin/Inventory/Index';

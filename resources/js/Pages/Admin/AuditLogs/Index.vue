@@ -8,6 +8,7 @@ import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import ExportButton from "@/Components/Admin/Export/ExportButton.vue";
 import AuditEventBadge from "@/Components/Admin/AuditLogs/AuditEventBadge.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
@@ -41,6 +42,10 @@ const props = defineProps({
     logNameLabels: {
         type: Object,
         required: true,
+    },
+    canExport: {
+        type: Boolean,
+        default: false,
     },
 });
 
@@ -184,6 +189,7 @@ const subjectTypeOptions = computed(() => [
                 </template>
 
                 <template #actions>
+                    <ExportButton type="audit_logs" :filters="filterState" :disabled="!canExport" />
                     <Button icon="pi pi-search" :label="$t('common.filter')" @click="submitFilters" />
                 </template>
             </AdminTableToolbar>

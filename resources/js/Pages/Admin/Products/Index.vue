@@ -9,6 +9,7 @@ import Select from "primevue/select";
 import { useConfirm } from "primevue/useconfirm";
 
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import ExportButton from "@/Components/Admin/Export/ExportButton.vue";
 import BaseDataTable from "@/Components/Admin/Table/BaseDataTable.vue";
 import EntityStatusBadge from "@/Components/Admin/Table/EntityStatusBadge.vue";
 import InlineEditableNumber from "@/Components/Admin/Table/InlineEditableNumber.vue";
@@ -42,6 +43,10 @@ const props = defineProps({
     filters: {
         type: Object,
         required: true,
+    },
+    canExport: {
+        type: Boolean,
+        default: false,
     },
 });
 
@@ -259,6 +264,7 @@ const confirmDelete = (product) => {
                 </template>
 
                 <template #actions>
+                    <ExportButton type="products" :filters="filterState" :disabled="!canExport" />
                     <Link
                         :href="route('admin.products.create-flow')"
                         class="inline-flex items-center whitespace-nowrap rounded-lg bg-bakery-brown px-3 py-2 text-sm font-medium text-white hover:bg-bakery-dark"

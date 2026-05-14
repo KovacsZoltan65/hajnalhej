@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CeoDashboardController as AdminCeoDashboardContro
 use App\Http\Controllers\Admin\ConversionAnalyticsController as AdminConversionAnalyticsController;
 use App\Http\Controllers\Admin\CourierController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\IngredientController;
 use App\Http\Controllers\Admin\IngredientSupplierTermController;
 use App\Http\Controllers\Admin\InventoryController;
@@ -88,6 +89,12 @@ Route::middleware('auth')->group(function (): void {
 
     Route::prefix('admin')->middleware('permission:admin.panel.access')->name('admin.')->group(function (): void {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        Route::prefix('exports')->name('exports.')->controller(ExportController::class)->group(function (): void {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{exportJob}/download', 'download')->name('download');
+        });
 
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');

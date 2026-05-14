@@ -16,6 +16,7 @@ use App\Services\InventoryDashboardService;
 use App\Services\InventoryService;
 use App\Services\ProductService;
 use App\Support\InertiaPage;
+use App\Support\PermissionRegistry;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
 
@@ -54,6 +55,7 @@ class InventoryController extends Controller
                 __('admin_inventory.waste_reason_spoiled'),
                 __('admin_inventory.waste_reason_unknown'),
             ],
+            'canExport' => $request->user()?->can(PermissionRegistry::INVENTORY_EXPORT) ?? false,
         ]);
     }
 

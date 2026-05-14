@@ -13,6 +13,8 @@
         "inertiajs/inertia-laravel": "^3.0",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
+        "league/csv": "^9.28",
+        "openspout/openspout": "^5.7",
         "spatie/laravel-activitylog": "5.0",
         "spatie/laravel-data": "^4.22",
         "spatie/laravel-permission": "^7.3",

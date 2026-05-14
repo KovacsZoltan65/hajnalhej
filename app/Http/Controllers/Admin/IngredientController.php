@@ -14,6 +14,7 @@ use App\Http\Requests\UpdateIngredientRequest;
 use App\Models\Ingredient;
 use App\Services\IngredientService;
 use App\Support\InertiaPage;
+use App\Support\PermissionRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -43,6 +44,7 @@ class IngredientController extends Controller
             'ingredients' => $paginator,
             'filters' => $filters->toFrontendFilters(),
             'units' => Ingredient::allowedUnits(),
+            'canExport' => $request->user()?->can(PermissionRegistry::INGREDIENTS_EXPORT) ?? false,
         ]);
     }
 

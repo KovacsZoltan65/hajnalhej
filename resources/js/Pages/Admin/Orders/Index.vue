@@ -9,6 +9,7 @@ import Button from "primevue/button";
 
 import DeliveryStatusBadge from "@/Components/Admin/Orders/DeliveryStatusBadge.vue";
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import ExportButton from "@/Components/Admin/Export/ExportButton.vue";
 import OrderFulfillmentBadge from "@/Components/Orders/OrderFulfillmentBadge.vue";
 import OrderStatusBadge from "@/Components/Orders/OrderStatusBadge.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
@@ -32,6 +33,10 @@ const props = defineProps({
     filters: {
         type: Object,
         required: true,
+    },
+    canExport: {
+        type: Boolean,
+        default: false,
     },
 });
 
@@ -128,6 +133,7 @@ const { formatCurrency } = useLocaleFormat();
                 </template>
 
                 <template #actions>
+                    <ExportButton type="orders" :filters="filterState" :disabled="!canExport" />
                     <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
                 </template>
             </AdminTableToolbar>

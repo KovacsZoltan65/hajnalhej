@@ -8,6 +8,7 @@ import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import { useConfirm } from "primevue/useconfirm";
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import ExportButton from "@/Components/Admin/Export/ExportButton.vue";
 import BaseDataTable from "@/Components/Admin/Table/BaseDataTable.vue";
 import InlineEditableNumber from "@/Components/Admin/Table/InlineEditableNumber.vue";
 import InlineEditableSelect from "@/Components/Admin/Table/InlineEditableSelect.vue";
@@ -36,6 +37,10 @@ const props = defineProps({
     units: {
         type: Array,
         required: true,
+    },
+    canExport: {
+        type: Boolean,
+        default: false,
     },
 });
 
@@ -258,6 +263,7 @@ const confirmDelete = (ingredient) => {
                 </template>
 
                 <template #actions>
+                    <ExportButton type="ingredients" :filters="filterState" :disabled="!canExport" />
                     <Button icon="pi pi-search" :label="$t('common.search')" @click="submitFilters" />
                     <Button icon="pi pi-plus" :label="$t('admin_ingredients.actions.create')" @click="openCreate" />
                 </template>

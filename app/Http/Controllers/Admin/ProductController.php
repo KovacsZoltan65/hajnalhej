@@ -16,6 +16,7 @@ use App\Services\ProductCreateFlowService;
 use App\Services\ProductIngredientService;
 use App\Services\ProductService;
 use App\Support\InertiaPage;
+use App\Support\PermissionRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -56,6 +57,7 @@ class ProductController extends Controller
                 ['value' => Product::STOCK_OUT_OF_STOCK, 'label' => __('admin_product.status_out_of_stock')],
             ],
             'filters' => $filters->toFrontendFilters(),
+            'canExport' => $request->user()?->can(PermissionRegistry::PRODUCTS_EXPORT) ?? false,
         ]);
     }
 

@@ -20,6 +20,7 @@ use App\Services\CourierService;
 use App\Services\DeliveryService;
 use App\Services\OrderService;
 use App\Support\InertiaPage;
+use App\Support\PermissionRegistry;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
 use RuntimeException;
@@ -46,6 +47,7 @@ class OrderController extends Controller
             'orders' => $orders,
             'statusOptions' => $this->service->statuses(),
             'filters' => $filters->toFrontendFilters(),
+            'canExport' => $request->user()?->can(PermissionRegistry::ORDERS_EXPORT) ?? false,
         ]);
     }
 

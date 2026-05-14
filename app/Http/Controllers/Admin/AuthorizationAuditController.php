@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AuditLogIndexRequest;
 use App\Services\Audit\AuthorizationAuditLogService;
 use App\Support\InertiaPage;
+use App\Support\PermissionRegistry;
 use Inertia\Response;
 use Spatie\Activitylog\Models\Activity;
 
@@ -36,6 +37,7 @@ class AuthorizationAuditController extends Controller
             'eventOptions' => $this->service->eventKeys(),
             'eventLabels' => $this->service->eventLabels(),
             'subjectTypeLabels' => $this->service->subjectTypeLabels(),
+            'canExport' => $request->user()?->can(PermissionRegistry::AUDIT_LOGS_EXPORT) ?? false,
         ]);
     }
 

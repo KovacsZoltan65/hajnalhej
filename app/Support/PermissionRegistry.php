@@ -23,6 +23,7 @@ class PermissionRegistry
         'Felhasználók' => 'users',
         'Ingredients' => 'ingredients',
         'Készlet' => 'inventory',
+        'Exports' => 'exports',
         'Orders' => 'orders',
         'Products' => 'products',
         'Production Plans' => 'production_plans',
@@ -42,6 +43,8 @@ class PermissionRegistry
 
     public const ORDERS_UPDATE = 'orders.update';
 
+    public const ORDERS_EXPORT = 'orders.export';
+
     public const PRODUCTS_VIEW = 'products.view';
 
     public const PRODUCTS_CREATE = 'products.create';
@@ -49,6 +52,8 @@ class PermissionRegistry
     public const PRODUCTS_UPDATE = 'products.update';
 
     public const PRODUCTS_DELETE = 'products.delete';
+
+    public const PRODUCTS_EXPORT = 'products.export';
 
     public const CATEGORIES_VIEW = 'categories.view';
 
@@ -106,6 +111,8 @@ class PermissionRegistry
 
     public const INGREDIENTS_DELETE = 'ingredients.delete';
 
+    public const INGREDIENTS_EXPORT = 'ingredients.export';
+
     public const WEEKLY_MENU_VIEW = 'weekly-menu.view';
 
     public const WEEKLY_MENU_CREATE = 'weekly-menu.create';
@@ -146,6 +153,8 @@ class PermissionRegistry
 
     public const AUDIT_LOGS_VIEW = 'audit-logs.view';
 
+    public const AUDIT_LOGS_EXPORT = 'audit-logs.export';
+
     public const SECURITY_DASHBOARD_VIEW = 'security-dashboard.view';
 
     public const CONVERSION_ANALYTICS_VIEW = 'conversion-analytics.view';
@@ -165,6 +174,8 @@ class PermissionRegistry
     public const PROCUREMENT_INTELLIGENCE_VIEW = 'procurement-intelligence.view';
 
     public const INVENTORY_VIEW = 'inventory.view';
+
+    public const INVENTORY_EXPORT = 'inventory.export';
 
     public const INVENTORY_ADJUST = 'inventory.adjust';
 
@@ -231,11 +242,13 @@ class PermissionRegistry
             self::PERMISSIONS_VIEW,
             self::PERMISSIONS_SYNC,
             self::AUDIT_LOGS_VIEW,
+            self::AUDIT_LOGS_EXPORT,
             self::SECURITY_DASHBOARD_VIEW,
             self::CONVERSION_ANALYTICS_VIEW,
             self::PROFIT_DASHBOARD_VIEW,
             self::CEO_DASHBOARD_VIEW,
             self::INVENTORY_DASHBOARD_VIEW,
+            self::INVENTORY_EXPORT,
         ];
     }
 
@@ -276,6 +289,16 @@ class PermissionRegistry
                 'audit_sensitive' => true,
             ],
             [
+                'name' => self::ORDERS_EXPORT,
+                'module' => 'Exports',
+                'label' => 'Rendelések exportálása',
+                'description' => 'Rendelés exportok indítása és letöltése.',
+                'dangerous' => true,
+                'sort' => 35,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
                 'name' => self::PRODUCTS_VIEW,
                 'module' => 'Products',
                 'label' => 'Termékek megtekintése',
@@ -312,6 +335,16 @@ class PermissionRegistry
                 'description' => 'Termék archiv/törlés muvelet.',
                 'dangerous' => true,
                 'sort' => 70,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::PRODUCTS_EXPORT,
+                'module' => 'Exports',
+                'label' => 'Termékek exportálása',
+                'description' => 'Termék exportok indítása és letöltése.',
+                'dangerous' => false,
+                'sort' => 75,
                 'system' => true,
                 'audit_sensitive' => true,
             ],
@@ -596,6 +629,16 @@ class PermissionRegistry
                 'audit_sensitive' => true,
             ],
             [
+                'name' => self::INGREDIENTS_EXPORT,
+                'module' => 'Exports',
+                'label' => 'Alapanyagok exportálása',
+                'description' => 'Alapanyag exportok indítása és letöltése.',
+                'dangerous' => false,
+                'sort' => 155,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
                 'name' => self::WEEKLY_MENU_VIEW,
                 'module' => 'Weekly Menu',
                 'label' => 'Heti menü megtekintése',
@@ -767,6 +810,16 @@ class PermissionRegistry
                 'audit_sensitive' => false,
             ],
             [
+                'name' => self::AUDIT_LOGS_EXPORT,
+                'module' => 'Exports',
+                'label' => 'Audit naplók exportálása',
+                'description' => 'Audit log exportok indítása és letöltése.',
+                'dangerous' => true,
+                'sort' => 316,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
                 'name' => self::PERMISSIONS_VIEW,
                 'module' => 'Roles & Permissions',
                 'label' => 'Jogosultságok megtekintése',
@@ -895,6 +948,16 @@ class PermissionRegistry
                 'sort' => 430,
                 'system' => true,
                 'audit_sensitive' => false,
+            ],
+            [
+                'name' => self::INVENTORY_EXPORT,
+                'module' => 'Exports',
+                'label' => 'Készletmozgások exportálása',
+                'description' => 'Készletmozgás exportok indítása és letöltése.',
+                'dangerous' => false,
+                'sort' => 435,
+                'system' => true,
+                'audit_sensitive' => true,
             ],
             [
                 'name' => self::INVENTORY_ADJUST,
