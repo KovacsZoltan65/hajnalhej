@@ -27,6 +27,94 @@ php artisan ziggy:generate resources/js/ziggy.js --types
 npm run format:all
 
 =========================================
+= Git merge cunflict vizsgálat
+=========================================
+1. Dry-run merge (ajánlott)
+
+Átváltasz arra az ágra, amibe merge-ölni akarsz:
+
+```bash
+git checkout A_2
+```
+
+Majd:
+```Bash
+git merge --no-commit --no-ff main
+```
+
+Ha konfliktus van, Git azonnal jelzi.
+
+Előny:
+
+- még nincs commit
+- pontosan látod a konfliktusokat
+- utána vissza tudod vonni:
+
+```bash
+git merge --abort
+```
+
+Ez a legbiztonságosabb előzetes ellenőrzés.
+
+
+2. Konfliktusok listázása merge nélkül
+
+Nagyon elegáns megoldás:
+
+```Bash
+git merge-tree $(git merge-base A_2 main) A_2 main
+```
+
+Ez megmutatja, hol lenne konfliktus.
+
+Modern Git verzióknál különösen hasznos CI/CD vagy script esetén.
+
+3. Csak fájlok ellenőrzése
+
+```Bash
+git diff --name-only --diff-filter=U
+```
+
+DE:
+ez csak már meglévő merge conflict után működik.
+
+4. Rebase próba (haladóbb workflow)
+```Bash
+git checkout A_2
+git rebase main
+```
+
+Ha konfliktus van, azonnal megáll.
+
+Visszavonás:
+```Bash
+git rebase --abort
+```
+
+Sok senior fejlesztő ezt preferálja feature branch frissítésre.
+
+5. napi workflow-ra
+
+A te flow-dhoz:
+```Bash
+git checkout A_2
+git fetch origin
+git merge --no-commit --no-ff main
+```
+
+Ha minden OK:
+
+```Bash
+git commit
+```
+
+Ha nem:
+
+```Bash
+git merge --abort
+```
+
+=========================================
 = patch fájl használata
 =========================================
 ✅ 1. Menj a projekt gyökerébe
