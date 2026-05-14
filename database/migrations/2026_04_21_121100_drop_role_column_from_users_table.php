@@ -34,7 +34,7 @@ return new class extends Migration
         }
 
         Schema::table('users', function (Blueprint $table): void {
-            $table->string('role', 32)->default('customer')->after('password')->index();
+            $table->string('role', 32)->default('customer')->after('password')->index()->comment('Felhasználó szerepköre');
         });
     }
 };

@@ -10,16 +10,16 @@ return new class extends Migration
     {
         Schema::create('forecast_snapshots', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('forecast_run_id')->constrained('forecast_runs')->cascadeOnDelete();
-            $table->foreignId('ingredient_id')->constrained('ingredients')->restrictOnDelete();
-            $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete();
-            $table->date('forecast_date')->index();
-            $table->decimal('forecast_quantity', 12, 3);
-            $table->decimal('actual_quantity', 12, 3)->nullable();
-            $table->decimal('variance_quantity', 12, 3)->nullable();
-            $table->decimal('confidence_percent', 8, 4)->nullable();
-            $table->decimal('estimated_cost', 12, 2)->nullable();
-            $table->json('drivers')->nullable();
+            $table->foreignId('forecast_run_id')->comment('Kapcsolódó előrejelzés futtatás')->constrained('forecast_runs')->cascadeOnDelete();
+            $table->foreignId('ingredient_id')->comment('Kapcsolódó alapanyag')->constrained('ingredients')->restrictOnDelete();
+            $table->foreignId('product_id')->nullable()->comment('Kapcsolódó termék')->constrained('products')->nullOnDelete();
+            $table->date('forecast_date')->index()->comment('Előrejelzési pillanatkép dátuma');
+            $table->decimal('forecast_quantity', 12, 3)->comment('Előrejelzett mennyiség');
+            $table->decimal('actual_quantity', 12, 3)->nullable()->comment('Actual quantity');
+            $table->decimal('variance_quantity', 12, 3)->nullable()->comment('Variance quantity');
+            $table->decimal('confidence_percent', 8, 4)->nullable()->comment('Confidence percent');
+            $table->decimal('estimated_cost', 12, 2)->nullable()->comment('Estimated cost');
+            $table->json('drivers')->nullable()->comment('Előrejelzési pillanatkép számítási tényezői JSON formátumban');
             $table->timestamps();
 
             $table->unique(['forecast_run_id', 'ingredient_id', 'forecast_date'], 'forecast_snapshots_unique');

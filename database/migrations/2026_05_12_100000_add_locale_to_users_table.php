@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table): void {
-            $table->string('locale', 5)->nullable()->after('email');
+            $table->string('locale', 5)->nullable()->after('email')->comment('Felhasználó nyelvi beállítása');
         });
     }
 

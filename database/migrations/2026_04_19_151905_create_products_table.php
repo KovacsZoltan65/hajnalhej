@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table): void {
-            $table->id()->comment('Rekord azonosító');
+            $table->id();
             $table->foreignId('category_id')->constrained('categories')->comment('Kapcsolódó kategória azonosító');
             $table->string('name')->comment('Megnevezés');
             $table->string('slug')->unique()->comment('Egyedi URL azonosító, SEO célra');
@@ -21,11 +21,11 @@ return new class extends Migration
             $table->decimal('price', 10, 2)->comment('Ár');
             $table->boolean('is_active')->default(true)->index()->comment('Publikus láthatóság státusza');
             $table->boolean('is_featured')->default(false)->index()->comment('Kiemelt termék jelző');
-            $table->string('stock_status')->default('in_stock')->index()->comment('Készletállapot: in_stock|preorder|out_of_stock');
+            $table->string('stock_status')->default('in_stock')->index()->comment('Készletállapot: in_stock, preorder, out_of_stock');
             $table->string('image_path')->nullable()->comment('Kép útvonala');
             $table->unsignedInteger('sort_order')->default(0)->index()->comment('Admin listázási sorrend');
             $table->timestamps();
-            $table->softDeletes()->comment('Soft delete időpontja');
+            $table->softDeletes();
 
             $table->index(['category_id', 'is_active']);
         });

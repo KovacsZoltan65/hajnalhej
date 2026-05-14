@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('product_ingredients', function (Blueprint $table): void {
-            $table->id()->comment('Rekord azonosító');
+            $table->id();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete()->comment('Kapcsolódó termék azonosító');
             $table->foreignId('ingredient_id')->constrained('ingredients')->cascadeOnDelete()->comment('Kapcsolódó alapanyag azonosító');
             $table->decimal('quantity', 12, 3)->comment('Felhasznált mennyiség');

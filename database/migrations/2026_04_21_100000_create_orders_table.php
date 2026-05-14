@@ -13,24 +13,24 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table): void {
             $table->id();
-            $table->string('order_number', 32)->unique();
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('customer_name', 120);
-            $table->string('customer_email', 255);
-            $table->string('customer_phone', 40);
-            $table->string('status', 40)->index();
-            $table->string('currency', 3)->default('HUF');
-            $table->decimal('subtotal', 12, 2);
-            $table->decimal('total', 12, 2);
-            $table->text('notes')->nullable();
-            $table->date('pickup_date')->nullable()->index();
-            $table->string('pickup_time_slot', 60)->nullable();
-            $table->timestamp('placed_at')->nullable()->index();
-            $table->timestamp('confirmed_at')->nullable();
-            $table->timestamp('completed_at')->nullable();
-            $table->timestamp('cancelled_at')->nullable();
-            $table->text('internal_notes')->nullable();
-            $table->json('metadata')->nullable();
+            $table->string('order_number', 32)->unique()->comment('Egyedi rendelési azonosító');
+            $table->foreignId('user_id')->nullable()->comment('Kapcsolódó felhasználó')->constrained()->nullOnDelete();
+            $table->string('customer_name', 120)->comment('Rendelő neve');
+            $table->string('customer_email', 255)->comment('Rendelő email címe');
+            $table->string('customer_phone', 40)->comment('Rendelő telefonszáma');
+            $table->string('status', 40)->index()->comment('Rendelés státusza');
+            $table->string('currency', 3)->default('HUF')->comment('Rendelés pénzneme');
+            $table->decimal('subtotal', 12, 2)->comment('Részösszeg');
+            $table->decimal('total', 12, 2)->comment('Végösszeg');
+            $table->text('notes')->nullable()->comment('Rendelés megjegyzése');
+            $table->date('pickup_date')->nullable()->index()->comment('Átvétel dátuma');
+            $table->string('pickup_time_slot', 60)->nullable()->comment('Átvételi idősáv');
+            $table->timestamp('placed_at')->nullable()->index()->comment('Rendelés leadásának időpontja');
+            $table->timestamp('confirmed_at')->nullable()->comment('Rendelés visszaigazolásának időpontja');
+            $table->timestamp('completed_at')->nullable()->comment('Rendelés teljesítésének időpontja');
+            $table->timestamp('cancelled_at')->nullable()->comment('Rendelés lemondásának időpontja');
+            $table->text('internal_notes')->nullable()->comment('Belső rendelési megjegyzés');
+            $table->json('metadata')->nullable()->comment('Rendelés kiegészítő üzleti adatai JSON formátumban');
             $table->timestamps();
         });
     }

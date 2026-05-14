@@ -10,19 +10,19 @@ return new class extends Migration
     {
         Schema::create('procurement_alerts', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('ingredient_id')->nullable()->constrained('ingredients')->nullOnDelete();
-            $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->nullOnDelete();
-            $table->string('alert_type', 48)->index();
-            $table->string('severity', 24)->default('medium')->index();
-            $table->string('status', 32)->default('open')->index();
-            $table->date('alert_date')->index();
-            $table->decimal('quantity_gap', 12, 3)->nullable();
-            $table->decimal('estimated_cash_impact', 12, 2)->nullable();
-            $table->string('title', 180);
-            $table->text('message')->nullable();
-            $table->json('context')->nullable();
-            $table->timestamp('resolved_at')->nullable()->index();
-            $table->foreignId('resolved_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('ingredient_id')->nullable()->comment('Kapcsolódó alapanyag')->constrained('ingredients')->nullOnDelete();
+            $table->foreignId('supplier_id')->nullable()->comment('Kapcsolódó beszállító')->constrained('suppliers')->nullOnDelete();
+            $table->string('alert_type', 48)->index()->comment('Beszerzési riasztás típusa');
+            $table->string('severity', 24)->default('medium')->index()->comment('Beszerzési riasztás Severity');
+            $table->string('status', 32)->default('open')->index()->comment('Beszerzési riasztás státusza');
+            $table->date('alert_date')->index()->comment('Beszerzési riasztás dátuma');
+            $table->decimal('quantity_gap', 12, 3)->nullable()->comment('Hiányzó mennyiség');
+            $table->decimal('estimated_cash_impact', 12, 2)->nullable()->comment('Beszerzési riasztás Estimated cash impact');
+            $table->string('title', 180)->comment('Beszerzési riasztás címe');
+            $table->text('message')->nullable()->comment('Beszerzési riasztás üzenete');
+            $table->json('context')->nullable()->comment('Beszerzési riasztás döntési kontextusa JSON formátumban');
+            $table->timestamp('resolved_at')->nullable()->index()->comment('Beszerzési riasztás lezárásának időpontja');
+            $table->foreignId('resolved_by')->nullable()->comment('Beszerzési riasztás Resolved by')->constrained('users')->nullOnDelete();
             $table->timestamps();
 
             $table->index(['status', 'severity', 'alert_date']);

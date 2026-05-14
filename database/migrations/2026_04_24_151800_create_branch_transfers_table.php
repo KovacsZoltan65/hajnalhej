@@ -10,18 +10,18 @@ return new class extends Migration
     {
         Schema::create('branch_transfers', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('from_branch_id')->constrained('branches')->restrictOnDelete();
-            $table->foreignId('to_branch_id')->constrained('branches')->restrictOnDelete();
-            $table->foreignId('ingredient_id')->constrained('ingredients')->restrictOnDelete();
-            $table->string('transfer_number', 64)->unique();
-            $table->string('status', 32)->default('draft')->index();
-            $table->decimal('quantity', 12, 3);
-            $table->string('unit', 16);
-            $table->date('requested_date')->index();
-            $table->date('transferred_date')->nullable()->index();
-            $table->text('notes')->nullable();
-            $table->foreignId('requested_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('completed_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('from_branch_id')->comment('Kapcsolódó forrás telephely')->constrained('branches')->restrictOnDelete();
+            $table->foreignId('to_branch_id')->comment('Kapcsolódó cél telephely')->constrained('branches')->restrictOnDelete();
+            $table->foreignId('ingredient_id')->comment('Kapcsolódó alapanyag')->constrained('ingredients')->restrictOnDelete();
+            $table->string('transfer_number', 64)->unique()->comment('Telephelyközi átadás Transfer number');
+            $table->string('status', 32)->default('draft')->index()->comment('Telephelyközi átadás státusza');
+            $table->decimal('quantity', 12, 3)->comment('Mennyiség');
+            $table->string('unit', 16)->comment('Telephelyközi átadás mértékegysége');
+            $table->date('requested_date')->index()->comment('Telephelyközi átadás dátuma');
+            $table->date('transferred_date')->nullable()->index()->comment('Telephelyközi átadás dátuma');
+            $table->text('notes')->nullable()->comment('Telephelyközi átadás megjegyzése');
+            $table->foreignId('requested_by')->nullable()->comment('Telephelyközi átadás Requested by')->constrained('users')->nullOnDelete();
+            $table->foreignId('completed_by')->nullable()->comment('Telephelyközi átadás Completed by')->constrained('users')->nullOnDelete();
             $table->timestamps();
 
             $table->index(['from_branch_id', 'status']);

@@ -14,13 +14,13 @@ return new class extends Migration
 
         Schema::create('ingredient_supplier_terms', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('ingredient_id')->constrained('ingredients')->cascadeOnDelete();
-            $table->foreignId('supplier_id')->constrained('suppliers')->cascadeOnDelete();
+            $table->foreignId('ingredient_id')->comment('Kapcsolódó alapanyag')->constrained('ingredients')->cascadeOnDelete();
+            $table->foreignId('supplier_id')->comment('Kapcsolódó beszállító')->constrained('suppliers')->cascadeOnDelete();
             $table->unsignedSmallInteger('lead_time_days')->nullable();
-            $table->decimal('minimum_order_quantity', 12, 3)->nullable();
-            $table->decimal('pack_size', 12, 3)->nullable();
-            $table->boolean('preferred')->default(false)->index();
-            $table->decimal('unit_cost_override', 12, 4)->nullable();
+            $table->decimal('minimum_order_quantity', 12, 3)->nullable()->comment('Minimum order quantity');
+            $table->decimal('pack_size', 12, 3)->nullable()->comment('Beszállítói alapanyag feltétel Pack size');
+            $table->boolean('preferred')->default(false)->index()->comment('Preferred-e');
+            $table->decimal('unit_cost_override', 12, 4)->nullable()->comment('Felülírt egységköltség');
             $table->timestamps();
 
             $table->unique(['ingredient_id', 'supplier_id'], 'ingredient_supplier_terms_unique');

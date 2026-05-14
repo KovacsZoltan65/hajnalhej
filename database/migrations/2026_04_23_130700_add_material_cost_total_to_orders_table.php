@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table): void {
             if (! Schema::hasColumn('orders', 'material_cost_total')) {
-                $table->decimal('material_cost_total', 14, 2)->default(0)->after('total');
+                $table->decimal('material_cost_total', 14, 2)->default(0)->after('total')->comment('Material cost total');
             }
         });
     }

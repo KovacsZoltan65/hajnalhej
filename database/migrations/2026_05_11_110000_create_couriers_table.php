@@ -12,13 +12,13 @@ return new class extends Migration
     {
         Schema::create('couriers', function (Blueprint $table): void {
             $table->id();
-            $table->string('name');
-            $table->string('phone', 50)->nullable();
-            $table->string('email')->nullable();
-            $table->string('vehicle_type', 50)->nullable()->index();
-            $table->boolean('active')->default(true)->index();
-            $table->text('notes')->nullable();
-            $table->json('meta')->nullable();
+            $table->string('name')->comment('Futár neve');
+            $table->string('phone', 50)->nullable()->comment('Futár telefonszáma');
+            $table->string('email')->nullable()->comment('Futár email címe');
+            $table->string('vehicle_type', 50)->nullable()->index()->comment('Futár típusa');
+            $table->boolean('active')->default(true)->index()->comment('Aktív-e');
+            $table->text('notes')->nullable()->comment('Futár megjegyzése');
+            $table->json('meta')->nullable()->comment('Futár kiegészítő JSON adatai');
             $table->timestamps();
 
             $table->comment('Kiszállítást végző futárok törzsadatai');

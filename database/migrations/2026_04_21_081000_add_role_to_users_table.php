@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('role', 32)
                 ->default('customer')
                 ->after('password')
-                ->index();
+                ->index()->comment('Felhasználó szerepköre');
         });
 
         DB::table('users')->update(['role' => 'admin']);

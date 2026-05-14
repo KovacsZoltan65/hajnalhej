@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::table('ingredients', function (Blueprint $table): void {
             if (! Schema::hasColumn('ingredients', 'average_unit_cost')) {
-                $table->decimal('average_unit_cost', 14, 4)->nullable()->after('estimated_unit_cost');
+                $table->decimal('average_unit_cost', 14, 4)->nullable()->after('estimated_unit_cost')->comment('Average unit cost');
             }
 
             if (! Schema::hasColumn('ingredients', 'stock_value')) {
-                $table->decimal('stock_value', 14, 2)->nullable()->after('average_unit_cost');
+                $table->decimal('stock_value', 14, 2)->nullable()->after('average_unit_cost')->comment('Készletérték');
             }
         });
     }

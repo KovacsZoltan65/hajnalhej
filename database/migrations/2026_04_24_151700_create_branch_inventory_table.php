@@ -10,14 +10,14 @@ return new class extends Migration
     {
         Schema::create('branch_inventory', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete();
-            $table->foreignId('ingredient_id')->constrained('ingredients')->restrictOnDelete();
-            $table->decimal('current_stock', 12, 3)->default(0);
-            $table->decimal('reserved_stock', 12, 3)->default(0);
-            $table->decimal('minimum_stock', 12, 3)->default(0);
-            $table->decimal('reorder_point', 12, 3)->default(0);
-            $table->decimal('target_stock', 12, 3)->nullable();
-            $table->timestamp('last_counted_at')->nullable()->index();
+            $table->foreignId('branch_id')->comment('Kapcsolódó telephely')->constrained('branches')->cascadeOnDelete();
+            $table->foreignId('ingredient_id')->comment('Kapcsolódó alapanyag')->constrained('ingredients')->restrictOnDelete();
+            $table->decimal('current_stock', 12, 3)->default(0)->comment('Aktuális készlet');
+            $table->decimal('reserved_stock', 12, 3)->default(0)->comment('Reserved stock');
+            $table->decimal('minimum_stock', 12, 3)->default(0)->comment('Minimum stock');
+            $table->decimal('reorder_point', 12, 3)->default(0)->comment('Telephelyi készlet Reorder point');
+            $table->decimal('target_stock', 12, 3)->nullable()->comment('Célkészlet');
+            $table->timestamp('last_counted_at')->nullable()->index()->comment('Telephelyi készlet időpontja');
             $table->timestamps();
 
             $table->unique(['branch_id', 'ingredient_id']);

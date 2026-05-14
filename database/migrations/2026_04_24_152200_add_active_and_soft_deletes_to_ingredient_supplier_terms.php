@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ingredient_supplier_terms', function (Blueprint $table): void {
-            $table->boolean('active')->default(true)->index()->after('preferred');
+            $table->boolean('active')->default(true)->index()->after('preferred')->comment('Aktív-e');
             $table->softDeletes()->after('updated_at');
 
             $table->index(['ingredient_id', 'active', 'preferred'], 'ist_ingredient_active_preferred_index');

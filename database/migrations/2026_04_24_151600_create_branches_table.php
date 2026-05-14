@@ -10,14 +10,14 @@ return new class extends Migration
     {
         Schema::create('branches', function (Blueprint $table): void {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('code', 50)->unique();
-            $table->string('type', 48)->default('bakery')->index();
-            $table->string('email')->nullable();
-            $table->string('phone', 50)->nullable();
-            $table->string('address', 500)->nullable();
-            $table->boolean('active')->default(true)->index();
-            $table->json('meta')->nullable();
+            $table->string('name')->unique()->comment('Telephely neve');
+            $table->string('code', 50)->unique()->comment('Telephely kódja');
+            $table->string('type', 48)->default('bakery')->index()->comment('Telephely típusa');
+            $table->string('email')->nullable()->comment('Telephely email címe');
+            $table->string('phone', 50)->nullable()->comment('Telephely telefonszáma');
+            $table->string('address', 500)->nullable()->comment('Telephely Address');
+            $table->boolean('active')->default(true)->index()->comment('Aktív-e');
+            $table->json('meta')->nullable()->comment('Telephely kiegészítő JSON adatai');
             $table->timestamps();
             $table->softDeletes();
 

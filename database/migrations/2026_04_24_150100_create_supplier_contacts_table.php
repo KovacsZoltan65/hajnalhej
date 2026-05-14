@@ -10,14 +10,14 @@ return new class extends Migration
     {
         Schema::create('supplier_contacts', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('supplier_id')->constrained('suppliers')->cascadeOnDelete();
-            $table->string('name', 160);
-            $table->string('role', 120)->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone', 64)->nullable();
-            $table->boolean('is_primary')->default(false)->index();
-            $table->boolean('active')->default(true)->index();
-            $table->text('notes')->nullable();
+            $table->foreignId('supplier_id')->comment('Kapcsolódó beszállító')->constrained('suppliers')->cascadeOnDelete();
+            $table->string('name', 160)->comment('Beszállítói kapcsolattartó neve');
+            $table->string('role', 120)->nullable()->comment('Beszállítói kapcsolattartó szerepköre');
+            $table->string('email')->nullable()->comment('Beszállítói kapcsolattartó email címe');
+            $table->string('phone', 64)->nullable()->comment('Beszállítói kapcsolattartó telefonszáma');
+            $table->boolean('is_primary')->default(false)->index()->comment('Is primary-e');
+            $table->boolean('active')->default(true)->index()->comment('Aktív-e');
+            $table->text('notes')->nullable()->comment('Beszállítói kapcsolattartó megjegyzése');
             $table->timestamps();
             $table->softDeletes();
 

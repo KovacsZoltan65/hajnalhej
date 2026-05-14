@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::table('recipe_steps', function (Blueprint $table): void {
             $table->text('work_instruction')->nullable()->after('description')->comment('Mit kell vegrehajtani pontosan');
-            $table->text('completion_criteria')->nullable()->after('work_instruction')->comment('Mibol latszik, hogy a lepes kesz');
-            $table->text('attention_points')->nullable()->after('completion_criteria')->comment('Kritikus figyelmeztetesek, hibalehetosegek');
-            $table->text('required_tools')->nullable()->after('attention_points')->comment('Szukseges eszkozok, gepek, segedanyagok');
-            $table->text('expected_result')->nullable()->after('required_tools')->comment('Elvart allapot vagy kimenet a lepes vegen');
+            $table->text('completion_criteria')->nullable()->after('work_instruction')->comment('Lépés elkészülésének feltétele');
+            $table->text('attention_points')->nullable()->after('completion_criteria')->comment('Kritikus figyelmeztetések és hibalehetőségek');
+            $table->text('required_tools')->nullable()->after('attention_points')->comment('Szükséges eszközök, gépek és segédanyagok');
+            $table->text('expected_result')->nullable()->after('required_tools')->comment('Lépés elvárt eredménye');
         });
     }
 

@@ -14,13 +14,14 @@ return new class extends Migration
             $table->foreignId('courier_id')
                 ->nullable()
                 ->after('delivery_fee')
+                ->comment('Kapcsolódó futár')
                 ->constrained('couriers')
                 ->nullOnDelete();
-            $table->string('delivery_status', 50)->nullable()->after('courier_id')->index();
-            $table->dateTime('delivery_scheduled_at')->nullable()->after('delivery_status')->index();
-            $table->dateTime('out_for_delivery_at')->nullable()->after('delivery_scheduled_at');
-            $table->dateTime('delivered_at')->nullable()->after('out_for_delivery_at');
-            $table->text('failed_delivery_reason')->nullable()->after('delivered_at');
+            $table->string('delivery_status', 50)->nullable()->after('courier_id')->index()->comment('Kiszállítás státusza');
+            $table->dateTime('delivery_scheduled_at')->nullable()->after('delivery_status')->index()->comment('Tervezett kiszállítás időpontja');
+            $table->dateTime('out_for_delivery_at')->nullable()->after('delivery_scheduled_at')->comment('Futárnak átadás időpontja');
+            $table->dateTime('delivered_at')->nullable()->after('out_for_delivery_at')->comment('Kézbesítés időpontja');
+            $table->text('failed_delivery_reason')->nullable()->after('delivered_at')->comment('Sikertelen kézbesítés oka');
         });
     }
 

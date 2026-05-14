@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('weekly_menu_items', function (Blueprint $table): void {
-            $table->id()->comment('Rekord azonosító');
+            $table->id();
             $table->foreignId('weekly_menu_id')->constrained('weekly_menus')->cascadeOnDelete()->comment('Kapcsolódó heti menü azonosító');
             $table->foreignId('product_id')->constrained('products')->comment('Kapcsolódó termék azonosító');
             $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete()->comment('Megjelenített kategória azonosító');

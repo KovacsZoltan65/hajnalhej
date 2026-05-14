@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('production_plan_steps', function (Blueprint $table): void {
-            $table->text('work_instruction')->nullable()->after('description')->comment('A vegrehajtando muvelet utasitasa (snapshot)');
-            $table->text('completion_criteria')->nullable()->after('work_instruction')->comment('Lepes kesz allapotanak kriteriuma (snapshot)');
-            $table->text('attention_points')->nullable()->after('completion_criteria')->comment('Kritikus figyelmeztetesek (snapshot)');
-            $table->text('required_tools')->nullable()->after('attention_points')->comment('Szukseges eszkozok (snapshot)');
-            $table->text('expected_result')->nullable()->after('required_tools')->comment('Elvart eredmeny (snapshot)');
+            $table->text('work_instruction')->nullable()->after('description')->comment('Végrehajtandó művelet pillanatképe');
+            $table->text('completion_criteria')->nullable()->after('work_instruction')->comment('Lépés elkészülési feltételének pillanatképe');
+            $table->text('attention_points')->nullable()->after('completion_criteria')->comment('Kritikus figyelmeztetések pillanatképe');
+            $table->text('required_tools')->nullable()->after('attention_points')->comment('Szükséges eszközök pillanatképe');
+            $table->text('expected_result')->nullable()->after('required_tools')->comment('Lépés elvárt eredményének pillanatképe');
         });
     }
 

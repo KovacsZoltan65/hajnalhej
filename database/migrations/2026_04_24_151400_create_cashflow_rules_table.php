@@ -10,16 +10,16 @@ return new class extends Migration
     {
         Schema::create('cashflow_rules', function (Blueprint $table): void {
             $table->id();
-            $table->string('name', 160);
-            $table->string('rule_type', 48)->index();
-            $table->decimal('threshold_amount', 12, 2)->nullable();
-            $table->decimal('warning_percent', 8, 4)->nullable();
-            $table->unsignedInteger('lookahead_days')->default(14);
-            $table->string('action', 64);
-            $table->boolean('active')->default(true)->index();
-            $table->unsignedInteger('priority')->default(0)->index();
-            $table->json('conditions')->nullable();
-            $table->text('notes')->nullable();
+            $table->string('name', 160)->comment('Cashflow szabály neve');
+            $table->string('rule_type', 48)->index()->comment('Cashflow szabály típusa');
+            $table->decimal('threshold_amount', 12, 2)->nullable()->comment('Threshold amount');
+            $table->decimal('warning_percent', 8, 4)->nullable()->comment('Warning percent');
+            $table->unsignedInteger('lookahead_days')->default(14)->comment('Lookahead days');
+            $table->string('action', 64)->comment('Javasolt művelet');
+            $table->boolean('active')->default(true)->index()->comment('Aktív-e');
+            $table->unsignedInteger('priority')->default(0)->index()->comment('Szabály prioritása');
+            $table->json('conditions')->nullable()->comment('Cashflow szabály feltételei JSON formátumban');
+            $table->text('notes')->nullable()->comment('Cashflow szabály megjegyzése');
             $table->timestamps();
 
             $table->unique('name');

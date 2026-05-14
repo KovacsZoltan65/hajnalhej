@@ -10,18 +10,18 @@ return new class extends Migration
     {
         Schema::create('risk_events', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->nullOnDelete();
-            $table->foreignId('ingredient_id')->nullable()->constrained('ingredients')->nullOnDelete();
-            $table->string('event_type', 64)->index();
-            $table->string('severity', 24)->default('medium')->index();
-            $table->string('status', 32)->default('open')->index();
-            $table->date('event_date')->index();
-            $table->decimal('estimated_impact_amount', 12, 2)->nullable();
-            $table->decimal('probability_percent', 8, 4)->nullable();
-            $table->string('title', 180);
-            $table->text('description')->nullable();
-            $table->text('mitigation_plan')->nullable();
-            $table->timestamp('resolved_at')->nullable()->index();
+            $table->foreignId('supplier_id')->nullable()->comment('Kapcsolódó beszállító')->constrained('suppliers')->nullOnDelete();
+            $table->foreignId('ingredient_id')->nullable()->comment('Kapcsolódó alapanyag')->constrained('ingredients')->nullOnDelete();
+            $table->string('event_type', 64)->index()->comment('Kockázati esemény típusa');
+            $table->string('severity', 24)->default('medium')->index()->comment('Kockázati esemény Severity');
+            $table->string('status', 32)->default('open')->index()->comment('Kockázati esemény státusza');
+            $table->date('event_date')->index()->comment('Kockázati esemény dátuma');
+            $table->decimal('estimated_impact_amount', 12, 2)->nullable()->comment('Estimated impact amount');
+            $table->decimal('probability_percent', 8, 4)->nullable()->comment('Probability percent');
+            $table->string('title', 180)->comment('Kockázati esemény címe');
+            $table->text('description')->nullable()->comment('Kockázati esemény leírása');
+            $table->text('mitigation_plan')->nullable()->comment('Kockázati esemény Mitigation plan');
+            $table->timestamp('resolved_at')->nullable()->index()->comment('Kockázati esemény időpontja');
             $table->timestamps();
 
             $table->index(['status', 'severity', 'event_date']);

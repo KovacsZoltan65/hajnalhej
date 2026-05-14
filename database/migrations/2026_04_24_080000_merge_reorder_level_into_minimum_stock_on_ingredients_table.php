@@ -24,7 +24,7 @@ return new class extends Migration
     {
         Schema::table('ingredients', function (Blueprint $table): void {
             if (! Schema::hasColumn('ingredients', 'reorder_level')) {
-                $table->decimal('reorder_level', 12, 3)->nullable()->after('minimum_stock');
+                $table->decimal('reorder_level', 12, 3)->nullable()->after('minimum_stock')->comment('Alapanyag Reorder level');
             }
         });
 

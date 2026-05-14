@@ -10,13 +10,13 @@ return new class extends Migration
     {
         Schema::create('user_temporary_permissions', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('permission_name');
-            $table->timestamp('starts_at')->nullable();
-            $table->timestamp('expires_at')->nullable();
-            $table->text('reason')->nullable();
-            $table->foreignId('granted_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->timestamp('revoked_at')->nullable();
+            $table->foreignId('user_id')->comment('Kapcsolódó felhasználó')->constrained()->cascadeOnDelete();
+            $table->string('permission_name')->comment('Ideiglenes jogosultság neve');
+            $table->timestamp('starts_at')->nullable()->comment('Ideiglenes jogosultság kezdete');
+            $table->timestamp('expires_at')->nullable()->comment('Ideiglenes jogosultság lejárata');
+            $table->text('reason')->nullable()->comment('Ideiglenes jogosultság indoklása');
+            $table->foreignId('granted_by')->nullable()->comment('Jogosultságot adó felhasználó')->constrained('users')->nullOnDelete();
+            $table->timestamp('revoked_at')->nullable()->comment('Ideiglenes jogosultság visszavonásának időpontja');
             $table->timestamps();
 
             $table->index(['user_id', 'permission_name']);

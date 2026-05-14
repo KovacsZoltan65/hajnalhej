@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('recipe_steps', function (Blueprint $table): void {
-            $table->id()->comment('Rekord azonosító');
+            $table->id();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete()->comment('Kapcsolódó termék azonosító');
             $table->string('title')->comment('Lépés megnevezése');
             $table->string('step_type')->index()->comment('Lépés típusa: preparation|mixing|resting|proofing|baking|cooling|finishing');

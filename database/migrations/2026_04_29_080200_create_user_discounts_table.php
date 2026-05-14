@@ -10,14 +10,14 @@ return new class extends Migration
     {
         Schema::create('user_discounts', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('type', 20);
-            $table->decimal('value', 10, 2);
-            $table->timestamp('starts_at')->nullable();
-            $table->timestamp('expires_at')->nullable();
-            $table->boolean('active')->default(true)->index();
-            $table->text('reason')->nullable();
-            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('user_id')->comment('Kapcsolódó felhasználó')->constrained()->cascadeOnDelete();
+            $table->string('type', 20)->comment('Felhasználói kedvezmény típusa');
+            $table->decimal('value', 10, 2)->comment('Kedvezmény értéke');
+            $table->timestamp('starts_at')->nullable()->comment('Felhasználói kedvezmény kezdete');
+            $table->timestamp('expires_at')->nullable()->comment('Felhasználói kedvezmény lejárata');
+            $table->boolean('active')->default(true)->index()->comment('Aktív-e');
+            $table->text('reason')->nullable()->comment('Felhasználói kedvezmény indoklása');
+            $table->foreignId('created_by')->nullable()->comment('Kedvezményt létrehozó felhasználó')->constrained('users')->nullOnDelete();
             $table->timestamps();
 
             $table->index(['user_id', 'active']);

@@ -10,17 +10,17 @@ return new class extends Migration
     {
         Schema::create('price_alerts', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('ingredient_id')->constrained('ingredients')->restrictOnDelete();
-            $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->nullOnDelete();
-            $table->string('alert_type', 48)->index();
-            $table->string('status', 32)->default('open')->index();
-            $table->decimal('previous_unit_cost', 12, 2)->nullable();
-            $table->decimal('current_unit_cost', 12, 2);
-            $table->decimal('change_percent', 8, 4)->nullable();
-            $table->decimal('margin_impact', 12, 2)->nullable();
-            $table->date('detected_on')->index();
-            $table->text('notes')->nullable();
-            $table->timestamp('resolved_at')->nullable()->index();
+            $table->foreignId('ingredient_id')->comment('Kapcsolódó alapanyag')->constrained('ingredients')->restrictOnDelete();
+            $table->foreignId('supplier_id')->nullable()->comment('Kapcsolódó beszállító')->constrained('suppliers')->nullOnDelete();
+            $table->string('alert_type', 48)->index()->comment('Árriasztás típusa');
+            $table->string('status', 32)->default('open')->index()->comment('Árriasztás státusza');
+            $table->decimal('previous_unit_cost', 12, 2)->nullable()->comment('Previous unit cost');
+            $table->decimal('current_unit_cost', 12, 2)->comment('Aktuális egységköltség');
+            $table->decimal('change_percent', 8, 4)->nullable()->comment('Change percent');
+            $table->decimal('margin_impact', 12, 2)->nullable()->comment('Árrésre gyakorolt becsült hatás');
+            $table->date('detected_on')->index()->comment('Árriasztás dátuma');
+            $table->text('notes')->nullable()->comment('Árriasztás megjegyzése');
+            $table->timestamp('resolved_at')->nullable()->index()->comment('Árriasztás időpontja');
             $table->timestamps();
 
             $table->index(['ingredient_id', 'detected_on']);

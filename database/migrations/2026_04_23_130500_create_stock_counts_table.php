@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::create('stock_counts', function (Blueprint $table): void {
             $table->id();
-            $table->date('count_date')->index();
-            $table->string('status', 32)->default('draft')->index();
-            $table->text('notes')->nullable();
-            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->timestamp('closed_at')->nullable()->index();
+            $table->date('count_date')->index()->comment('Leltár dátuma');
+            $table->string('status', 32)->default('draft')->index()->comment('Leltár státusza');
+            $table->text('notes')->nullable()->comment('Leltár megjegyzése');
+            $table->foreignId('created_by')->nullable()->comment('Leltárt rögzítő felhasználó')->constrained('users')->nullOnDelete();
+            $table->timestamp('closed_at')->nullable()->index()->comment('Leltár lezárásának időpontja');
             $table->timestamps();
         });
     }
