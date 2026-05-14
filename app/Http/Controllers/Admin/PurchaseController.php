@@ -12,9 +12,9 @@ use App\Http\Requests\Admin\PurchaseIndexRequest;
 use App\Http\Requests\StorePurchaseRequest;
 use App\Http\Requests\UpdatePurchaseRequest;
 use App\Models\Purchase;
-use App\Models\Supplier;
 use App\Services\IngredientService;
 use App\Services\PurchaseService;
+use App\Services\SupplierService;
 use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
@@ -25,6 +25,7 @@ class PurchaseController extends Controller
     public function __construct(
         private readonly PurchaseService $service,
         private readonly IngredientService $ingredientService,
+        private readonly SupplierService $supplierService,
     ) {}
 
     public function index(PurchaseIndexRequest $request): Response
@@ -38,7 +39,7 @@ class PurchaseController extends Controller
 
         return InertiaPage::ADMIN_PURCHASES_INDEX->render([
             'purchases' => $purchases,
-            'suppliers' => Supplier::query()->orderBy('name')->get(['id', 'name']),
+            'suppliers' => $this->supplierService->listSelectable(),
             'ingredient_options' => $this->ingredientService->listSelectableActive()->values()->all(),
             'statuses' => Purchase::statuses(),
             'filters' => $filters->toFrontendFilters(),
@@ -67,7 +68,7 @@ class PurchaseController extends Controller
                     ->values()
                     ->all(),
             ],
-            'suppliers' => Supplier::query()->orderBy('name')->get(['id', 'name']),
+            'suppliers' => $this->supplierService->listSelectable(),
             'ingredient_options' => $this->ingredientService->listSelectableActive()->values()->all(),
         ]);
     }

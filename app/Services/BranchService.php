@@ -9,12 +9,16 @@ use App\Data\Branches\BranchStoreData;
 use App\Data\Branches\BranchUpdateData;
 use App\Models\Branch;
 use App\Repositories\BranchRepository;
+use App\Services\Cache\SelectorCacheInvalidator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class BranchService
 {
-    public function __construct(private readonly BranchRepository $repository) {}
+    public function __construct(
+        private readonly BranchRepository $repository,
+        private readonly SelectorCacheInvalidator $selectorCacheInvalidator,
+    ) {}
 
     public function paginateForAdmin(BranchIndexData $filters): LengthAwarePaginator
     {
@@ -23,17 +27,27 @@ class BranchService
 
     public function create(BranchStoreData $payload): Branch
     {
-        return $this->repository->create($payload->toPayload());
+        $branch = $this->repository->create($payload->toPayload());
+
+        $this->selectorCacheInvalidator->branches();
+
+        return $branch;
     }
 
     public function update(Branch $branch, BranchUpdateData $payload): Branch
     {
-        return $this->repository->update($branch, $payload->toPayload());
+        $branch = $this->repository->update($branch, $payload->toPayload());
+
+        $this->selectorCacheInvalidator->branches();
+
+        return $branch;
     }
 
     public function delete(Branch $branch): void
     {
         $this->repository->delete($branch);
+
+        $this->selectorCacheInvalidator->branches();
     }
 
     /**

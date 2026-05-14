@@ -4,9 +4,11 @@ use App\Models\Order;
 use App\Models\User;
 use App\Support\ConversionEventRegistry;
 use Database\Seeders\RolesAndPermissionsSeeder;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Testing\AssertableInertia as Assert;
 
 beforeEach(function (): void {
+    Cache::flush();
     $this->seed(RolesAndPermissionsSeeder::class);
 });
 

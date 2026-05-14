@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Cache;
 
 use App\Models\Role;
 use Closure;
 use DateInterval;
 use DateTimeInterface;
-use Illuminate\Cache\RedisStore;
 use Illuminate\Cache\TaggableStore;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -47,6 +46,8 @@ class CacheService
 
         /** @var TCacheValue $value */
         $value = Cache::remember($cacheKey, $ttl, $callback);
+
+        $this->storeKey($tag, $cacheKey);
 
         return $value;
     }
@@ -110,7 +111,7 @@ class CacheService
     {
         $store = Cache::getStore();
 
-        if (\method_exists($store, 'deleteUsingPattern')) {
+        if (! app()->isProduction() && \method_exists($store, 'deleteUsingPattern')) {
             $store->deleteUsingPattern($pattern);
 
             return;
@@ -135,12 +136,8 @@ class CacheService
     {
         $store = Cache::getStore();
 
-        if ($store instanceof RedisStore) {
-            $prefix = (string) config('cache.prefix');
-            $keys = $store->connection()->keys($prefix.":{$pattern}");
-            foreach ($keys as $key) {
-                Cache::forget(str_replace("{$prefix}:", '', (string) $key));
-            }
+        if (app()->isProduction()) {
+            Log::warning('Pattern-based cache deletion skipped in production.');
 
             return;
         }

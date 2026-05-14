@@ -14,15 +14,18 @@ use App\Http\Requests\Admin\StoreIngredientSupplierTermRequest;
 use App\Http\Requests\Admin\UpdateIngredientSupplierTermRequest;
 use App\Models\Ingredient;
 use App\Models\IngredientSupplierTerm;
-use App\Models\Supplier;
 use App\Services\IngredientSupplierTermService;
+use App\Services\SupplierService;
 use App\Support\InertiaPage;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
 
 class IngredientSupplierTermController extends Controller
 {
-    public function __construct(private readonly IngredientSupplierTermService $service) {}
+    public function __construct(
+        private readonly IngredientSupplierTermService $service,
+        private readonly SupplierService $supplierService,
+    ) {}
 
     public function index(IngredientSupplierTermIndexRequest $request): Response
     {
@@ -38,10 +41,7 @@ class IngredientSupplierTermController extends Controller
                 ->where('is_active', true)
                 ->orderBy('name')
                 ->get(['id', 'name', 'unit']),
-            'suppliers' => Supplier::query()
-                ->where('active', true)
-                ->orderBy('name')
-                ->get(['id', 'name']),
+            'suppliers' => $this->supplierService->listSelectable(active: true),
         ]);
     }
 

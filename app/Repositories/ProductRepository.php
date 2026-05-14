@@ -7,13 +7,21 @@ use App\Data\Products\ProductListItemData;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\WeeklyMenu;
+use App\Services\Cache\CacheKeyService;
+use App\Services\Cache\CacheNamespaces;
+use App\Services\Cache\CacheVersionService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class ProductRepository
 {
+    public function __construct(
+        private readonly CacheVersionService $cacheVersionService,
+    ) {}
+
     public function paginate(ProductIndexData $filters): LengthAwarePaginator
     {
         return $this->adminQuery($filters)
@@ -47,7 +55,17 @@ class ProductRepository
      */
     public function listSelectableActiveProducts(): Collection
     {
-        return Product::query()
+        $version = $this->cacheVersionService->get(CacheNamespaces::SELECTORS_PRODUCTS);
+        $key = CacheKeyService::make(CacheNamespaces::SELECTORS_PRODUCTS, $version, [
+            'active' => true,
+            'fields' => ['id', 'name', 'slug'],
+            'has_product_ingredients' => true,
+            'locale' => app()->getLocale(),
+            'sort' => ['sort_order', 'name'],
+            'without_trashed' => true,
+        ]);
+
+        return Cache::remember($key, now()->addMinutes(30), fn (): Collection => Product::query()
             ->where('is_active', true)
             ->whereHas('productIngredients')
             ->orderBy('sort_order')
@@ -57,7 +75,7 @@ class ProductRepository
                 'id' => $product->id,
                 'name' => $product->name,
                 'slug' => $product->slug,
-            ]);
+            ]));
     }
 
     /**
