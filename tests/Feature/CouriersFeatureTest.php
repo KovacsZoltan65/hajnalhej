@@ -13,79 +13,85 @@ it('jogosulatlan user nem eri el a couriers indexet', function (): void {
     $user = User::factory()->customer()->create();
 
     $this->actingAs($user)
-        ->get('/admin/couriers')
+        ->get(route('admin.couriers.index'))
         ->assertForbidden();
 });
 
 it('jogosult user listazza a futarokat', function (): void {
     $user = User::factory()->admin()->create();
-    Courier::factory()->create(['name' => 'Hajnalhéj Teszt Futár', 'vehicle_type' => 'bicycle']);
+    Courier::factory()->create(['name' => 'Hajnalhéj Teszt Futár', 'status' => Courier::STATUS_ACTIVE]);
 
     $this->actingAs($user)
-        ->get('/admin/couriers')
+        ->get(route('admin.couriers.index'))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('Admin/Couriers/Index')
             ->has('couriers.data', 1)
             ->where('couriers.data.0.name', 'Hajnalhéj Teszt Futár')
-            ->has('options.vehicleTypes'));
+            ->where('couriers.data.0.status', Courier::STATUS_ACTIVE)
+            ->has('options.statusOptions'));
 });
 
 it('courier create mukodik', function (): void {
     $user = User::factory()->admin()->create();
 
     $this->actingAs($user)
-        ->post('/admin/couriers', [
+        ->post(route('admin.couriers.store'), [
             'name' => 'Biciklis Futár',
             'phone' => '+36 30 111 1111',
             'email' => 'biciklis@example.test',
-            'vehicle_type' => 'bicycle',
-            'active' => true,
+            'status' => Courier::STATUS_ACTIVE,
             'notes' => 'Délelőtti műszak',
-            'meta' => ['zone' => 'belvaros'],
         ])
-        ->assertRedirect('/admin/couriers');
+        ->assertRedirect(route('admin.couriers.index', absolute: false));
 
     $this->assertDatabaseHas('couriers', [
         'name' => 'Biciklis Futár',
-        'vehicle_type' => 'bicycle',
+        'status' => Courier::STATUS_ACTIVE,
         'active' => true,
+    ]);
+
+    $this->assertDatabaseHas('activity_log', [
+        'log_name' => 'couriers',
+        'event' => 'courier.created',
     ]);
 });
 
-it('invalid vehicle type hibazik', function (): void {
+it('courier validacio hibazik ervenytelen statuszra', function (): void {
     $user = User::factory()->admin()->create();
 
     $this->actingAs($user)
-        ->post('/admin/couriers', [
+        ->post(route('admin.couriers.store'), [
             'name' => 'Hibás Futár',
-            'vehicle_type' => 'rocket',
-            'active' => true,
+            'status' => 'paused',
         ])
-        ->assertSessionHasErrors('vehicle_type');
+        ->assertSessionHasErrors('status');
 });
 
 it('courier update mukodik', function (): void {
     $user = User::factory()->admin()->create();
-    $courier = Courier::factory()->create(['vehicle_type' => 'walking']);
+    $courier = Courier::factory()->create(['status' => Courier::STATUS_ACTIVE, 'active' => true]);
 
     $this->actingAs($user)
-        ->put("/admin/couriers/{$courier->id}", [
+        ->put(route('admin.couriers.update', $courier), [
             'name' => 'Frissített Futár',
             'phone' => '+36 30 222 2222',
             'email' => 'frissitett@example.test',
-            'vehicle_type' => 'car',
-            'active' => false,
+            'status' => Courier::STATUS_INACTIVE,
             'notes' => null,
-            'meta' => null,
         ])
-        ->assertRedirect('/admin/couriers');
+        ->assertRedirect(route('admin.couriers.index', absolute: false));
 
     $this->assertDatabaseHas('couriers', [
         'id' => $courier->id,
         'name' => 'Frissített Futár',
-        'vehicle_type' => 'car',
+        'status' => Courier::STATUS_INACTIVE,
         'active' => false,
+    ]);
+
+    $this->assertDatabaseHas('activity_log', [
+        'log_name' => 'couriers',
+        'event' => 'courier.updated',
     ]);
 });
 
@@ -94,8 +100,43 @@ it('courier delete mukodik', function (): void {
     $courier = Courier::factory()->create();
 
     $this->actingAs($user)
-        ->delete("/admin/couriers/{$courier->id}")
-        ->assertRedirect('/admin/couriers');
+        ->delete(route('admin.couriers.destroy', $courier))
+        ->assertRedirect(route('admin.couriers.index', absolute: false));
 
-    $this->assertDatabaseMissing('couriers', ['id' => $courier->id]);
+    $this->assertSoftDeleted('couriers', ['id' => $courier->id]);
+
+    $this->assertDatabaseHas('activity_log', [
+        'log_name' => 'couriers',
+        'event' => 'courier.deleted',
+    ]);
+});
+
+it('status szerint szur', function (): void {
+    $user = User::factory()->admin()->create();
+    Courier::factory()->create(['name' => 'Aktív Futár', 'status' => Courier::STATUS_ACTIVE]);
+    Courier::factory()->create(['name' => 'Inaktív Futár', 'status' => Courier::STATUS_INACTIVE]);
+
+    $this->actingAs($user)
+        ->get(route('admin.couriers.index', ['status' => Courier::STATUS_INACTIVE]))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('couriers.data', 1)
+            ->where('couriers.data.0.name', 'Inaktív Futár'));
+});
+
+it('nev telefon es email alapjan keres', function (): void {
+    $user = User::factory()->admin()->create();
+    Courier::factory()->create([
+        'name' => 'Keresett Futár',
+        'phone' => '+36 30 999 0000',
+        'email' => 'keresett@example.test',
+    ]);
+    Courier::factory()->create(['name' => 'Másik Futár']);
+
+    $this->actingAs($user)
+        ->get(route('admin.couriers.index', ['search' => '999']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('couriers.data', 1)
+            ->where('couriers.data.0.email', 'keresett@example.test'));
 });

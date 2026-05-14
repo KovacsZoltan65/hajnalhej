@@ -294,6 +294,12 @@ const Ziggy = {
             parameters: ["order"],
             bindings: { order: "id" },
         },
+        "admin.orders.assign-courier": {
+            uri: "admin\/orders\/{order}\/courier",
+            methods: ["PATCH"],
+            parameters: ["order"],
+            bindings: { order: "id" },
+        },
         "admin.orders.delivery.assign": {
             uri: "admin\/orders\/{order}\/delivery\/assign",
             methods: ["POST"],

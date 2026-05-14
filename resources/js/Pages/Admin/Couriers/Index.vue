@@ -1,22 +1,22 @@
 <script setup>
-import { Head, router, useForm } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Column from "primevue/column";
-import ConfirmDialog from "primevue/confirmdialog";
-import DataTable from "primevue/datatable";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
-import { useConfirm } from "primevue/useconfirm";
 import AdminTableToolbar from "@/Components/Admin/AdminTableToolbar.vue";
+import BaseDataTable from "@/Components/Admin/Table/BaseDataTable.vue";
+import RowActionMenu from "@/Components/Admin/Table/RowActionMenu.vue";
 import CourierStatusBadge from "@/Components/Admin/Couriers/CourierStatusBadge.vue";
-import VehicleTypeBadge from "@/Components/Admin/Couriers/VehicleTypeBadge.vue";
 import CreateModal from "@/Components/Admin/Couriers/CreateModal.vue";
+import DeleteModal from "@/Components/Admin/Couriers/DeleteModal.vue";
 import EditModal from "@/Components/Admin/Couriers/EditModal.vue";
 import SectionTitle from "@/Components/SectionTitle.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { trans } from "laravel-vue-i18n";
 import { useAdminFilterState } from "@/composables/useAdminFilterState.js";
+import { useLocaleFormat } from "@/composables/useLocaleFormat.js";
 import { pageOptions as createPerPageOptions } from "@/Utils/functions.js";
 
 defineOptions({ layout: AdminLayout });
@@ -31,18 +31,20 @@ const props = defineProps({
     },
 });
 
-const confirm = useConfirm();
 const loading = ref(false);
 const createModalVisible = ref(false);
 const editModalVisible = ref(false);
+const deleteModalVisible = ref(false);
 const editingId = ref(null);
+const deletingCourier = ref(null);
+const deleteForm = useForm({});
+const { formatDateTime } = useLocaleFormat();
 
 const { filterState, sortOrder, submitFilters, clearFilters, onSort, onPage } = useAdminFilterState({
     filters: props.filters,
     defaults: {
         search: "",
-        vehicle_type: "",
-        active: "",
+        status: "",
         sort_field: "name",
         sort_direction: "asc",
         per_page: 10,
@@ -51,8 +53,7 @@ const { filterState, sortOrder, submitFilters, clearFilters, onSort, onPage } = 
     loading,
     toQuery: (state) => ({
         search: state.search || undefined,
-        vehicle_type: state.vehicle_type || undefined,
-        active: state.active === "" ? undefined : state.active,
+        status: state.status || undefined,
         sort_field: state.sort_field,
         sort_direction: state.sort_direction,
         per_page: state.per_page,
@@ -60,10 +61,7 @@ const { filterState, sortOrder, submitFilters, clearFilters, onSort, onPage } = 
 });
 
 const perPageOptions = createPerPageOptions(trans, [10, 20, 50]);
-const vehicleTypeFilterOptions = computed(() => [
-    { value: "", label: trans("common.all") },
-    ...props.options.vehicleTypes,
-]);
+const formStatusOptions = computed(() => props.options.statusOptions.filter((option) => option.value !== ""));
 const currentPage = computed(() => props.couriers.current_page ?? 1);
 const first = computed(() => (currentPage.value - 1) * (props.couriers.per_page ?? 10));
 
@@ -71,25 +69,17 @@ const form = useForm({
     name: "",
     phone: "",
     email: "",
-    vehicle_type: null,
-    active: true,
+    status: "active",
     notes: "",
-    meta_json: "",
 });
 
-const metaToText = (meta) => (meta && Object.keys(meta).length > 0 ? JSON.stringify(meta, null, 2) : "");
-
 const formPayload = (data) => {
-    const metaText = String(data.meta_json ?? "").trim();
-
     return {
         name: data.name,
         phone: data.phone || null,
         email: data.email || null,
-        vehicle_type: data.vehicle_type || null,
-        active: data.active,
+        status: data.status,
         notes: data.notes || null,
-        meta: metaText === "" ? null : JSON.parse(metaText),
     };
 };
 
@@ -99,10 +89,8 @@ const resetForm = () => {
     form.name = "";
     form.phone = "";
     form.email = "";
-    form.vehicle_type = null;
-    form.active = true;
+    form.status = "active";
     form.notes = "";
-    form.meta_json = "";
 };
 
 const openCreate = () => {
@@ -119,25 +107,19 @@ const openEdit = (courier) => {
     form.name = courier.name;
     form.phone = courier.phone ?? "";
     form.email = courier.email ?? "";
-    form.vehicle_type = courier.vehicle_type ?? null;
-    form.active = courier.active;
+    form.status = courier.status;
     form.notes = courier.notes ?? "";
-    form.meta_json = metaToText(courier.meta);
     editModalVisible.value = true;
 };
 
 const submitCreate = () => {
-    try {
-        form.transform(formPayload).post(route("admin.couriers.store"), {
-            preserveScroll: true,
-            onSuccess: () => {
-                createModalVisible.value = false;
-                resetForm();
-            },
-        });
-    } catch {
-        form.setError("meta", trans("admin_couriers.meta_invalid"));
-    }
+    form.transform(formPayload).post(route("admin.couriers.store"), {
+        preserveScroll: true,
+        onSuccess: () => {
+            createModalVisible.value = false;
+            resetForm();
+        },
+    });
 };
 
 const submitEdit = () => {
@@ -145,34 +127,52 @@ const submitEdit = () => {
         return;
     }
 
-    try {
-        form.transform(formPayload).put(route("admin.couriers.update", editingId.value), {
-            preserveScroll: true,
-            onSuccess: () => {
-                editModalVisible.value = false;
-                resetForm();
-                editingId.value = null;
-            },
-        });
-    } catch {
-        form.setError("meta", trans("admin_couriers.meta_invalid"));
-    }
-};
-
-const confirmDelete = (courier) => {
-    confirm.require({
-        header: trans("admin_couriers.confirm_delete_header"),
-        message: trans("admin_couriers.confirm_delete_message", { name: courier.name }),
-        rejectLabel: trans("common.cancel"),
-        acceptLabel: trans("common.delete"),
-        acceptClass: "p-button-danger",
-        accept: () => {
-            router.delete(route("admin.couriers.destroy", courier.id), {
-                preserveScroll: true,
-            });
+    form.transform(formPayload).put(route("admin.couriers.update", editingId.value), {
+        preserveScroll: true,
+        onSuccess: () => {
+            editModalVisible.value = false;
+            resetForm();
+            editingId.value = null;
         },
     });
 };
+
+const confirmDelete = (courier) => {
+    deletingCourier.value = courier;
+    deleteModalVisible.value = true;
+};
+
+const deleteCourier = () => {
+    if (!deletingCourier.value) {
+        return;
+    }
+
+    deleteForm.delete(route("admin.couriers.destroy", deletingCourier.value.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            deleteModalVisible.value = false;
+            deletingCourier.value = null;
+        },
+    });
+};
+
+const actionItemsFor = (courier) =>
+    [
+        props.can.update
+            ? {
+                  label: trans("admin_couriers.actions.edit"),
+                  icon: "pi pi-pencil",
+                  command: () => openEdit(courier),
+              }
+            : null,
+        props.can.delete
+            ? {
+                  label: trans("admin_couriers.actions.delete"),
+                  icon: "pi pi-trash",
+                  command: () => confirmDelete(courier),
+              }
+            : null,
+    ].filter(Boolean);
 </script>
 
 <template>
@@ -202,25 +202,11 @@ const confirmDelete = (courier) => {
 
                     <div class="space-y-1">
                         <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
-                            {{ $t("delivery.vehicle_type") }}
-                        </label>
-                        <Select
-                            v-model="filterState.vehicle_type"
-                            :options="vehicleTypeFilterOptions"
-                            option-label="label"
-                            option-value="value"
-                            class="w-full"
-                            @change="submitFilters"
-                        />
-                    </div>
-
-                    <div class="space-y-1">
-                        <label class="text-xs font-medium uppercase tracking-[0.14em] text-bakery-brown/80">
                             {{ $t("common.status") }}
                         </label>
                         <Select
-                            v-model="filterState.active"
-                            :options="options.activeOptions"
+                            v-model="filterState.status"
+                            :options="options.statusOptions"
                             option-label="label"
                             option-value="value"
                             class="w-full"
@@ -255,7 +241,7 @@ const confirmDelete = (courier) => {
             </AdminTableToolbar>
 
             <div class="mt-4 overflow-x-auto">
-                <DataTable
+                <BaseDataTable
                     :value="couriers.data"
                     lazy
                     paginator
@@ -268,31 +254,15 @@ const confirmDelete = (courier) => {
                     sort-mode="single"
                     :sort-field="filterState.sort_field"
                     :sort-order="sortOrder"
+                    :empty-title="$t('admin_couriers.empty_title')"
+                    :empty-description="$t('admin_couriers.empty')"
+                    :empty-primary-label="can.create ? $t('admin_couriers.actions.create') : ''"
+                    :empty-secondary-label="$t('common.clear_filters')"
                     @sort="onSort"
                     @page="onPage"
+                    @empty-primary="openCreate"
+                    @empty-secondary="clearFilters"
                 >
-                    <template #empty>
-                        <div
-                            class="rounded-xl border border-dashed border-bakery-brown/25 bg-[#fcf7ef] p-6 text-center text-sm text-bakery-dark/70"
-                        >
-                            <p>{{ $t("admin_couriers.empty") }}</p>
-                            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                                <Button
-                                    :label="$t('common.clear_filters')"
-                                    outlined
-                                    size="small"
-                                    @click="clearFilters"
-                                />
-                                <Button
-                                    v-if="can.create"
-                                    :label="$t('admin_couriers.actions.create')"
-                                    size="small"
-                                    @click="openCreate"
-                                />
-                            </div>
-                        </div>
-                    </template>
-
                     <Column field="name" :header="$t('common.name')" sortable>
                         <template #body="{ data }">
                             <div>
@@ -302,57 +272,47 @@ const confirmDelete = (courier) => {
                         </template>
                     </Column>
                     <Column field="phone" :header="$t('common.phone')" sortable />
-                    <Column field="vehicle_type" :header="$t('delivery.vehicle_type')" sortable>
+                    <Column field="email" :header="$t('common.email')" sortable>
                         <template #body="{ data }">
-                            <VehicleTypeBadge :type="data.vehicle_type" :label="data.vehicle_type_label" />
+                            {{ data.email || "-" }}
                         </template>
                     </Column>
-                    <Column field="active" :header="$t('common.status')" sortable>
+                    <Column field="status" :header="$t('common.status')" sortable>
                         <template #body="{ data }">
-                            <CourierStatusBadge :active="data.active" />
+                            <CourierStatusBadge :status="data.status" />
+                        </template>
+                    </Column>
+                    <Column field="created_at" :header="$t('common.create')" sortable>
+                        <template #body="{ data }">
+                            {{ formatDateTime(data.created_at) }}
                         </template>
                     </Column>
                     <Column :header="$t('common.actions')" :exportable="false">
                         <template #body="{ data }">
-                            <div class="flex items-center gap-2">
-                                <Button
-                                    v-if="can.update"
-                                    icon="pi pi-pencil"
-                                    text
-                                    rounded
-                                    class="h-11! w-11!"
-                                    :aria-label="$t('admin_couriers.actions.edit')"
-                                    @click="openEdit(data)"
-                                />
-                                <Button
-                                    v-if="can.delete"
-                                    icon="pi pi-trash"
-                                    text
-                                    rounded
-                                    severity="danger"
-                                    class="h-11! w-11!"
-                                    :aria-label="$t('admin_couriers.actions.delete')"
-                                    @click="confirmDelete(data)"
-                                />
-                            </div>
+                            <RowActionMenu v-if="actionItemsFor(data).length" :items="actionItemsFor(data)" />
                         </template>
                     </Column>
-                </DataTable>
+                </BaseDataTable>
             </div>
         </div>
 
         <CreateModal
             v-model:visible="createModalVisible"
             :form="form"
-            :vehicle-type-options="options.vehicleTypes"
+            :status-options="formStatusOptions"
             @submit="submitCreate"
         />
         <EditModal
             v-model:visible="editModalVisible"
             :form="form"
-            :vehicle-type-options="options.vehicleTypes"
+            :status-options="formStatusOptions"
             @submit="submitEdit"
         />
-        <ConfirmDialog />
+        <DeleteModal
+            v-model:visible="deleteModalVisible"
+            :courier="deletingCourier"
+            :processing="deleteForm.processing"
+            @confirm="deleteCourier"
+        />
     </div>
 </template>

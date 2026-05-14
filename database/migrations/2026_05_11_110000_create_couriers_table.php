@@ -15,11 +15,13 @@ return new class extends Migration
             $table->string('name')->comment('Futár neve');
             $table->string('phone', 50)->nullable()->comment('Futár telefonszáma');
             $table->string('email')->nullable()->comment('Futár email címe');
-            $table->string('vehicle_type', 50)->nullable()->index()->comment('Futár típusa');
-            $table->boolean('active')->default(true)->index()->comment('Aktív-e');
+            $table->string('status', 20)->default('active')->index()->comment('Futár státusza: active, inactive');
+            $table->string('vehicle_type', 50)->nullable()->index()->comment('Futár járműtípusa');
+            $table->boolean('active')->default(true)->index()->comment('Delivery hozzárendeléshez aktív-e');
             $table->text('notes')->nullable()->comment('Futár megjegyzése');
             $table->json('meta')->nullable()->comment('Futár kiegészítő JSON adatai');
             $table->timestamps();
+            $table->softDeletes()->comment('Futár törlésének időpontja');
 
             $table->comment('Kiszállítást végző futárok törzsadatai');
         });

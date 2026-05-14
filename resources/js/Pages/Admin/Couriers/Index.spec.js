@@ -1,13 +1,14 @@
 import { mount } from "@vue/test-utils";
 import CouriersIndexPage from "./Index.vue";
 
-const { confirmRequire, routeMock, translate } = vi.hoisted(() => {
+const { routeMock, translate } = vi.hoisted(() => {
     const translations = {
         "admin_couriers.actions.create": "Új futár",
         "admin_couriers.actions.delete": "Futár törlése",
         "admin_couriers.actions.edit": "Futár szerkesztése",
         "admin_couriers.description": "Futárok kezelése.",
         "admin_couriers.empty": "Nincs megjeleníthető futár.",
+        "admin_couriers.empty_title": "Nincs futár",
         "admin_couriers.eyebrow": "Admin / Futárok",
         "admin_couriers.meta_title": "Futárok",
         "admin_couriers.search_placeholder": "Név, email vagy telefon",
@@ -15,16 +16,15 @@ const { confirmRequire, routeMock, translate } = vi.hoisted(() => {
         "common.actions": "Műveletek",
         "common.all": "Mind",
         "common.clear_filters": "Szűrők törlése",
+        "common.create": "Létrehozva",
         "common.name": "Név",
         "common.phone": "Telefon",
         "common.rows_per_page": "Találat / oldal",
         "common.search": "Keresés",
         "common.status": "Állapot",
-        "delivery.vehicle_type": "Járműtípus",
     };
 
     return {
-        confirmRequire: vi.fn(),
         routeMock: vi.fn((name, params) => (params ? `/${name}/${params}` : `/${name}`)),
         translate: (key, replacements = {}) => {
             let value = translations[key] ?? key;
@@ -43,6 +43,7 @@ globalThis.route = routeMock;
 vi.mock("@inertiajs/vue3", () => ({
     Head: { name: "Head", template: "<span />" },
     router: { get: vi.fn(), delete: vi.fn() },
+    usePage: () => ({ props: { locale: "hu" } }),
     useForm: (defaults) => ({
         ...defaults,
         errors: {},
@@ -55,15 +56,12 @@ vi.mock("@inertiajs/vue3", () => ({
         }),
         post: vi.fn(),
         put: vi.fn(),
+        delete: vi.fn(),
     }),
 }));
 
 vi.mock("laravel-vue-i18n", () => ({
     trans: translate,
-}));
-
-vi.mock("primevue/useconfirm", () => ({
-    useConfirm: () => ({ require: confirmRequire }),
 }));
 
 vi.mock("@/Layouts/AdminLayout.vue", () => ({
@@ -75,14 +73,6 @@ vi.mock("primevue/button", () => ({
         props: ["label", "ariaLabel"],
         emits: ["click"],
         template: '<button :aria-label="ariaLabel" @click="$emit(\'click\')">{{ label }}<slot /></button>',
-    },
-}));
-vi.mock("primevue/confirmdialog", () => ({ default: { template: "<div />" } }));
-vi.mock("primevue/datatable", () => ({
-    default: {
-        props: ["value"],
-        template:
-            '<div><slot name="empty" /><div v-for="row in value" :key="row.id">{{ row.name }} {{ row.email }} {{ row.vehicle_type_label }}<slot name="body" :data="row" /></div><slot /></div>',
     },
 }));
 vi.mock("primevue/column", () => ({
@@ -105,13 +95,19 @@ const stubs = {
     AdminTableToolbar: {
         template: '<div><slot name="filters" /><slot name="actions" /></div>',
     },
-    CourierStatusBadge: {
-        props: ["active"],
-        template: '<span>{{ active ? "Aktív" : "Inaktív" }}</span>',
+    BaseDataTable: {
+        props: ["value", "emptyTitle", "emptyDescription"],
+        template:
+            '<div><div v-if="!value.length">{{ emptyTitle }} {{ emptyDescription }}</div><div v-for="row in value" :key="row.id">{{ row.name }} {{ row.email }} {{ row.status }}<slot name="body" :data="row" /></div><slot /></div>',
     },
-    VehicleTypeBadge: {
-        props: ["type", "label"],
-        template: "<span>{{ label || type }}</span>",
+    RowActionMenu: {
+        props: ["items"],
+        template:
+            '<div><button v-for="item in items" :key="item.label" :aria-label="item.label" @click="item.command">{{ item.label }}</button></div>',
+    },
+    CourierStatusBadge: {
+        props: ["status"],
+        template: '<span>{{ status === "active" ? "Aktív" : "Inaktív" }}</span>',
     },
     CreateModal: {
         props: ["visible"],
@@ -120,6 +116,10 @@ const stubs = {
     EditModal: {
         props: ["visible"],
         template: '<div v-if="visible">edit courier modal open</div>',
+    },
+    DeleteModal: {
+        props: ["visible"],
+        template: '<div v-if="visible">delete courier modal open</div>',
     },
     SectionTitle: {
         props: ["eyebrow", "title", "description"],
@@ -140,21 +140,16 @@ const mountPage = (couriers = []) => {
             },
             filters: {
                 search: "",
-                vehicle_type: "",
-                active: "",
+                status: "",
                 sort_field: "name",
                 sort_direction: "asc",
                 per_page: 10,
             },
             options: {
-                vehicleTypes: [
-                    { value: "bicycle", label: "Bicikli" },
-                    { value: "car", label: "Autó" },
-                ],
-                activeOptions: [
+                statusOptions: [
                     { value: "", label: "Mind" },
-                    { value: "1", label: "Aktív" },
-                    { value: "0", label: "Inaktív" },
+                    { value: "active", label: "Aktív" },
+                    { value: "inactive", label: "Inaktív" },
                 ],
             },
             can: {
@@ -180,17 +175,15 @@ describe("Admin Couriers Index", () => {
                 name: "Hajnalhéj Biciklis Futár",
                 email: "courier@example.test",
                 phone: "+36 30 111 1111",
-                vehicle_type: "bicycle",
-                vehicle_type_label: "Bicikli",
-                active: true,
+                status: "active",
                 notes: null,
-                meta: null,
+                created_at: "2026-05-14 10:00:00",
             },
         ]);
 
         expect(wrapper.text()).toContain("Admin / Futárok");
         expect(wrapper.text()).toContain("Hajnalhéj Biciklis Futár");
-        expect(wrapper.text()).toContain("Bicikli");
+        expect(wrapper.text()).toContain("Aktív");
     });
 
     it("opens create modal", async () => {
@@ -211,11 +204,9 @@ describe("Admin Couriers Index", () => {
                 name: "Autós Futár",
                 email: null,
                 phone: null,
-                vehicle_type: "car",
-                vehicle_type_label: "Autó",
-                active: true,
+                status: "active",
                 notes: null,
-                meta: null,
+                created_at: "2026-05-14 10:00:00",
             },
         ]);
 
@@ -225,5 +216,32 @@ describe("Admin Couriers Index", () => {
             .trigger("click");
 
         expect(wrapper.text()).toContain("edit courier modal open");
+    });
+
+    it("renders empty state", () => {
+        const wrapper = mountPage();
+
+        expect(wrapper.text()).toContain("Nincs megjeleníthető futár.");
+    });
+
+    it("opens delete modal", async () => {
+        const wrapper = mountPage([
+            {
+                id: 1,
+                name: "Törlendő Futár",
+                email: null,
+                phone: null,
+                status: "inactive",
+                notes: null,
+                created_at: "2026-05-14 10:00:00",
+            },
+        ]);
+
+        await wrapper
+            .findAll("button")
+            .find((button) => button.attributes("aria-label") === "Futár törlése")
+            .trigger("click");
+
+        expect(wrapper.text()).toContain("delete courier modal open");
     });
 });

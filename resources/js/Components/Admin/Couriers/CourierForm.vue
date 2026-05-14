@@ -2,14 +2,13 @@
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import Textarea from "primevue/textarea";
-import ToggleSwitch from "primevue/toggleswitch";
 
 defineProps({
     form: {
         type: Object,
         required: true,
     },
-    vehicleTypeOptions: {
+    statusOptions: {
         type: Array,
         required: true,
     },
@@ -36,27 +35,18 @@ defineProps({
             <p v-if="form.errors.email" class="text-xs text-red-700">{{ form.errors.email }}</p>
         </div>
 
-        <div class="space-y-2">
-            <label for="courier-vehicle-type" class="text-sm font-medium text-bakery-dark">
-                {{ $t("delivery.vehicle_type") }}
-            </label>
+        <div class="space-y-2 md:col-span-2">
+            <label for="courier-status" class="text-sm font-medium text-bakery-dark">{{ $t("common.status") }}</label>
             <Select
-                id="courier-vehicle-type"
-                v-model="form.vehicle_type"
-                :options="vehicleTypeOptions"
+                id="courier-status"
+                v-model="form.status"
+                :options="statusOptions"
                 option-label="label"
                 option-value="value"
-                show-clear
                 class="w-full"
-                :invalid="Boolean(form.errors.vehicle_type)"
+                :invalid="Boolean(form.errors.status)"
             />
-            <p v-if="form.errors.vehicle_type" class="text-xs text-red-700">{{ form.errors.vehicle_type }}</p>
-        </div>
-
-        <div class="flex items-center gap-2 pt-7">
-            <ToggleSwitch id="courier-active" v-model="form.active" />
-            <label for="courier-active" class="text-sm text-bakery-dark/80">{{ $t("common.active") }}</label>
-            <p v-if="form.errors.active" class="text-xs text-red-700">{{ form.errors.active }}</p>
+            <p v-if="form.errors.status" class="text-xs text-red-700">{{ form.errors.status }}</p>
         </div>
 
         <div class="space-y-2 md:col-span-2">
@@ -70,21 +60,6 @@ defineProps({
                 :invalid="Boolean(form.errors.notes)"
             />
             <p v-if="form.errors.notes" class="text-xs text-red-700">{{ form.errors.notes }}</p>
-        </div>
-
-        <div class="space-y-2 md:col-span-2">
-            <label for="courier-meta" class="text-sm font-medium text-bakery-dark">{{
-                $t("admin_couriers.meta")
-            }}</label>
-            <Textarea
-                id="courier-meta"
-                v-model="form.meta_json"
-                rows="4"
-                class="w-full font-mono text-sm"
-                auto-resize
-                :invalid="Boolean(form.errors.meta)"
-            />
-            <p v-if="form.errors.meta" class="text-xs text-red-700">{{ form.errors.meta }}</p>
         </div>
     </div>
 </template>

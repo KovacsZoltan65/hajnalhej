@@ -2,8 +2,6 @@
 import { computed } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import Button from "primevue/button";
-import InputText from "primevue/inputtext";
-import Select from "primevue/select";
 import Textarea from "primevue/textarea";
 
 import DeliveryStatusBadge from "@/Components/Admin/Orders/DeliveryStatusBadge.vue";
@@ -12,10 +10,6 @@ const props = defineProps({
     order: {
         type: Object,
         required: true,
-    },
-    couriers: {
-        type: Array,
-        default: () => [],
     },
 });
 
@@ -28,40 +22,19 @@ const canMarkDelivered = computed(() => status.value === "out_for_delivery");
 const canMarkFailed = computed(() => ["assigned", "out_for_delivery"].includes(status.value));
 const canCancel = computed(() => !finalStatuses.includes(status.value));
 
-const courierOptions = computed(() =>
-    props.couriers
-        .filter((courier) => courier.active !== false)
-        .map((courier) => ({
-            label: [courier.name, courier.vehicle_type_label].filter(Boolean).join(" - "),
-            value: courier.id,
-        }))
-);
-
-const normalizeDateTimeLocal = (value) => (value ? String(value).replace(" ", "T").slice(0, 16) : "");
-
-const assignForm = useForm({
-    courier_id: props.order.courier?.id ?? null,
-    delivery_scheduled_at: normalizeDateTimeLocal(props.order.delivery_scheduled_at),
-});
-
+const workflowForm = useForm({});
 const failedForm = useForm({
     failed_delivery_reason: "",
 });
 
-const assignCourier = () => {
-    assignForm.post(route("admin.orders.delivery.assign", props.order.id), {
-        preserveScroll: true,
-    });
-};
-
 const startDelivery = () => {
-    assignForm.post(route("admin.orders.delivery.start", props.order.id), {
+    workflowForm.post(route("admin.orders.delivery.start", props.order.id), {
         preserveScroll: true,
     });
 };
 
 const markDelivered = () => {
-    assignForm.post(route("admin.orders.delivery.delivered", props.order.id), {
+    workflowForm.post(route("admin.orders.delivery.delivered", props.order.id), {
         preserveScroll: true,
     });
 };
@@ -74,7 +47,7 @@ const markFailed = () => {
 };
 
 const cancelDelivery = () => {
-    assignForm.post(route("admin.orders.delivery.cancel", props.order.id), {
+    workflowForm.post(route("admin.orders.delivery.cancel", props.order.id), {
         preserveScroll: true,
     });
 };
@@ -116,50 +89,13 @@ const cancelDelivery = () => {
             </div>
         </dl>
 
-        <form v-if="canAssign" class="mt-4 grid gap-3 md:grid-cols-[1fr_12rem_auto]" @submit.prevent="assignCourier">
-            <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">{{ $t("delivery.fields.courier") }}</label>
-                <Select
-                    v-model="assignForm.courier_id"
-                    :options="courierOptions"
-                    option-label="label"
-                    option-value="value"
-                    class="w-full"
-                    :placeholder="$t('delivery.actions.assign')"
-                />
-                <p v-if="assignForm.errors.courier_id" class="text-xs text-red-700">
-                    {{ assignForm.errors.courier_id }}
-                </p>
-            </div>
-
-            <div class="space-y-2">
-                <label class="text-sm font-medium text-bakery-dark">{{
-                    $t("delivery.fields.delivery_scheduled_at")
-                }}</label>
-                <InputText v-model="assignForm.delivery_scheduled_at" type="datetime-local" class="w-full" />
-                <p v-if="assignForm.errors.delivery_scheduled_at" class="text-xs text-red-700">
-                    {{ assignForm.errors.delivery_scheduled_at }}
-                </p>
-            </div>
-
-            <div class="flex items-end">
-                <Button
-                    type="submit"
-                    icon="pi pi-send"
-                    :label="$t('delivery.actions.assign')"
-                    :loading="assignForm.processing"
-                    :disabled="assignForm.processing"
-                />
-            </div>
-        </form>
-
         <div class="mt-4 flex flex-wrap gap-2">
             <Button
                 v-if="canStart"
                 icon="pi pi-truck"
                 :label="$t('delivery.actions.start')"
-                :loading="assignForm.processing"
-                :disabled="assignForm.processing"
+                :loading="workflowForm.processing"
+                :disabled="workflowForm.processing"
                 @click="startDelivery"
             />
             <Button
@@ -167,8 +103,8 @@ const cancelDelivery = () => {
                 icon="pi pi-check"
                 severity="success"
                 :label="$t('delivery.actions.mark_delivered')"
-                :loading="assignForm.processing"
-                :disabled="assignForm.processing"
+                :loading="workflowForm.processing"
+                :disabled="workflowForm.processing"
                 @click="markDelivered"
             />
             <Button
@@ -177,8 +113,8 @@ const cancelDelivery = () => {
                 severity="secondary"
                 outlined
                 :label="$t('delivery.actions.cancel')"
-                :loading="assignForm.processing"
-                :disabled="assignForm.processing"
+                :loading="workflowForm.processing"
+                :disabled="workflowForm.processing"
                 @click="cancelDelivery"
             />
         </div>

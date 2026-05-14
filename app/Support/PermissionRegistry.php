@@ -43,6 +43,8 @@ class PermissionRegistry
 
     public const ORDERS_UPDATE = 'orders.update';
 
+    public const ORDERS_ASSIGN_COURIER = 'orders.assignCourier';
+
     public const ORDERS_EXPORT = 'orders.export';
 
     public const PRODUCTS_VIEW = 'products.view';
@@ -84,8 +86,6 @@ class PermissionRegistry
     public const COURIERS_UPDATE = 'couriers.update';
 
     public const COURIERS_DELETE = 'couriers.delete';
-
-    public const COURIERS_DELETE_ANY = 'couriers.deleteAny';
 
     public const ADMIN_USERS_VIEW = 'admin.users.view';
 
@@ -285,6 +285,16 @@ class PermissionRegistry
                 'description' => 'Rendelés státusz és belső jegyzet módosítás.',
                 'dangerous' => true,
                 'sort' => 30,
+                'system' => true,
+                'audit_sensitive' => true,
+            ],
+            [
+                'name' => self::ORDERS_ASSIGN_COURIER,
+                'module' => 'Rendelések',
+                'label' => 'Futár hozzárendelése',
+                'description' => 'Delivery rendelések futár hozzárendelésének módosítása.',
+                'dangerous' => true,
+                'sort' => 32,
                 'system' => true,
                 'audit_sensitive' => true,
             ],
@@ -495,16 +505,6 @@ class PermissionRegistry
                 'description' => 'Egy futár törlése.',
                 'dangerous' => true,
                 'sort' => 121,
-                'system' => true,
-                'audit_sensitive' => true,
-            ],
-            [
-                'name' => self::COURIERS_DELETE_ANY,
-                'module' => 'Couriers',
-                'label' => 'Futárok tömeges törlése',
-                'description' => 'Futár törlési műveletek engedélyezése adminban.',
-                'dangerous' => true,
-                'sort' => 122,
                 'system' => true,
                 'audit_sensitive' => true,
             ],

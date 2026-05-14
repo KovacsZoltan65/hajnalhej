@@ -5,6 +5,7 @@ import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import Textarea from "primevue/textarea";
 
+import CourierAssignmentCard from "@/Components/Admin/Orders/CourierAssignmentCard.vue";
 import CourierAssignPanel from "@/Components/Admin/Orders/CourierAssignPanel.vue";
 import BaseDatePicker from "@/Components/BaseDatePicker.vue";
 import OrderFulfillmentBadge from "@/Components/Orders/OrderFulfillmentBadge.vue";
@@ -32,6 +33,12 @@ const props = defineProps({
     deliveryStatusOptions: {
         type: Array,
         default: () => [],
+    },
+    can: {
+        type: Object,
+        default: () => ({
+            assignCourier: false,
+        }),
     },
 });
 
@@ -182,11 +189,9 @@ const addressRows = (address) => {
                     </div>
                 </article>
 
-                <CourierAssignPanel
-                    v-if="order.fulfillment_method === 'delivery'"
-                    :order="order"
-                    :couriers="courierOptions"
-                />
+                <CourierAssignmentCard :order="order" :couriers="courierOptions" :can-assign="can.assignCourier" />
+
+                <CourierAssignPanel v-if="order.fulfillment_method === 'delivery'" :order="order" />
 
                 <article class="rounded-2xl border border-bakery-brown/15 bg-white/80 p-5">
                     <h2 class="font-heading text-2xl text-bakery-dark">

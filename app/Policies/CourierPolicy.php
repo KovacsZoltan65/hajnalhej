@@ -35,11 +35,6 @@ class CourierPolicy
         return $user->can(PermissionRegistry::COURIERS_DELETE);
     }
 
-    public function deleteAny(User $user): bool
-    {
-        return $user->can(PermissionRegistry::COURIERS_DELETE_ANY);
-    }
-
     public function restore(User $user, Courier $courier): bool
     {
         return $user->can(PermissionRegistry::COURIERS_UPDATE);

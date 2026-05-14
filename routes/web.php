@@ -198,6 +198,7 @@ Route::middleware('auth')->group(function (): void {
             Route::get('/', 'index')->name('index');
             Route::get('/{order}', 'show')->name('show');
             Route::patch('/{order}/status', 'updateStatus')->name('status.update');
+            Route::patch('/{order}/courier', 'assignCourier')->name('assign-courier');
             Route::post('/{order}/delivery/assign', 'assignCourier')->name('delivery.assign');
             Route::post('/{order}/delivery/start', 'startDelivery')->name('delivery.start');
             Route::post('/{order}/delivery/delivered', 'markDelivered')->name('delivery.delivered');

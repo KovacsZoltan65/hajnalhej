@@ -84,6 +84,8 @@ class OrderDetailData extends Data
                 'name' => $order->courier->name,
                 'phone' => $order->courier->phone,
                 'email' => $order->courier->email,
+                'status' => $order->courier->status,
+                'active' => $order->courier->active,
                 'vehicle_type' => $order->courier->vehicle_type,
             ],
             delivery_scheduled_at: $order->delivery_scheduled_at?->toDateTimeString(),

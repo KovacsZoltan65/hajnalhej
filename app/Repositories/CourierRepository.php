@@ -48,7 +48,8 @@ class CourierRepository
     public function activeOptions(): Collection
     {
         return Courier::query()
-            ->select(['id', 'name', 'phone', 'email', 'vehicle_type', 'active'])
+            ->select(['id', 'name', 'phone', 'email', 'status', 'vehicle_type', 'active'])
+            ->where('status', Courier::STATUS_ACTIVE)
             ->where('active', true)
             ->orderBy('name')
             ->orderBy('id')
@@ -66,8 +67,7 @@ class CourierRepository
                         ->orWhere('phone', 'like', "%{$filters->search}%");
                 });
             })
-            ->when($filters->vehicle_type !== null, fn (Builder $query): Builder => $query->where('vehicle_type', $filters->vehicle_type))
-            ->when($filters->active !== null, fn (Builder $query): Builder => $query->where('active', $filters->active));
+            ->when($filters->status !== null, fn (Builder $query): Builder => $query->where('status', $filters->status));
 
         $query
             ->orderBy($filters->sort_field, $filters->sort_direction)

@@ -22,4 +22,9 @@ class OrderPolicy
     {
         return $user->can(PermissionRegistry::ORDERS_UPDATE);
     }
+
+    public function assignCourier(User $user, Order $order): bool
+    {
+        return $user->can(PermissionRegistry::ORDERS_ASSIGN_COURIER);
+    }
 }

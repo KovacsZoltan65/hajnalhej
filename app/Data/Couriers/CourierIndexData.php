@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Data\Couriers;
 
-use App\Enums\Delivery\VehicleType;
+use App\Models\Courier;
 use Spatie\LaravelData\Data;
 
 class CourierIndexData extends Data
 {
     public function __construct(
         public ?string $search = null,
-        public ?string $vehicle_type = null,
-        public ?bool $active = null,
+        public ?string $status = null,
         public int $page = 1,
         public int $per_page = 10,
         public string $sort_field = 'name',
@@ -26,13 +25,12 @@ class CourierIndexData extends Data
     {
         return new self(
             search: self::nullableString($payload['search'] ?? null),
-            vehicle_type: self::allowedNullableString($payload['vehicle_type'] ?? null, VehicleType::values()),
-            active: self::nullableBoolean($payload['active'] ?? null),
+            status: self::allowedNullableString($payload['status'] ?? null, Courier::statuses()),
             page: max(1, (int) ($payload['page'] ?? 1)),
             per_page: min(50, max(5, (int) ($payload['per_page'] ?? 10))),
             sort_field: self::allowedString(
                 $payload['sort_field'] ?? null,
-                ['name', 'email', 'phone', 'vehicle_type', 'active', 'updated_at'],
+                ['name', 'email', 'phone', 'status', 'created_at'],
                 'name',
             ),
             sort_direction: self::allowedString($payload['sort_direction'] ?? null, ['asc', 'desc'], 'asc'),
@@ -46,8 +44,7 @@ class CourierIndexData extends Data
     {
         return [
             'search' => $this->search ?? '',
-            'vehicle_type' => $this->vehicle_type ?? '',
-            'active' => $this->active === null ? '' : ($this->active ? '1' : '0'),
+            'status' => $this->status ?? '',
             'sort_field' => $this->sort_field,
             'sort_direction' => $this->sort_direction,
             'per_page' => $this->per_page,
@@ -75,15 +72,6 @@ class CourierIndexData extends Data
         }
 
         return $value;
-    }
-
-    private static function nullableBoolean(mixed $value): ?bool
-    {
-        if ($value === null || $value === '') {
-            return null;
-        }
-
-        return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 
     /**

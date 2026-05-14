@@ -6,7 +6,7 @@ import CourierForm from "./CourierForm.vue";
 defineProps({
     visible: { type: Boolean, required: true },
     form: { type: Object, required: true },
-    vehicleTypeOptions: { type: Array, required: true },
+    statusOptions: { type: Array, required: true },
 });
 
 const emit = defineEmits(["update:visible", "submit"]);
@@ -23,7 +23,7 @@ const close = () => emit("update:visible", false);
         @update:visible="(value) => emit('update:visible', value)"
     >
         <form id="courier-create-form" class="space-y-4" @submit.prevent="emit('submit')">
-            <CourierForm :form="form" :vehicle-type-options="vehicleTypeOptions" />
+            <CourierForm :form="form" :status-options="statusOptions" />
         </form>
 
         <template #footer>

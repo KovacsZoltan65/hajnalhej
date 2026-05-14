@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Data\Couriers;
 
+use App\Models\Courier;
 use Spatie\LaravelData\Data;
 
 class CourierStoreData extends Data
@@ -15,8 +16,8 @@ class CourierStoreData extends Data
         public string $name,
         public ?string $phone = null,
         public ?string $email = null,
+        public string $status = Courier::STATUS_ACTIVE,
         public ?string $vehicle_type = null,
-        public bool $active = true,
         public ?string $notes = null,
         public ?array $meta = null,
     ) {}
@@ -30,8 +31,9 @@ class CourierStoreData extends Data
             'name' => trim($this->name),
             'phone' => $this->nullableTrim($this->phone),
             'email' => $this->nullableTrim($this->email),
+            'status' => $this->status,
             'vehicle_type' => $this->nullableTrim($this->vehicle_type),
-            'active' => $this->active,
+            'active' => $this->status === Courier::STATUS_ACTIVE,
             'notes' => $this->nullableTrim($this->notes),
             'meta' => $this->meta,
         ];

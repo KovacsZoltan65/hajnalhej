@@ -18,12 +18,13 @@ class CourierListItemData extends Data
         public string $name,
         public ?string $phone,
         public ?string $email,
+        public string $status,
         public ?string $vehicle_type,
         public ?string $vehicle_type_label,
         public bool $active,
         public ?string $notes,
         public ?array $meta,
-        public ?string $updated_at,
+        public ?string $created_at,
     ) {}
 
     public static function fromModel(Courier $courier): self
@@ -35,12 +36,13 @@ class CourierListItemData extends Data
             name: $courier->name,
             phone: $courier->phone,
             email: $courier->email,
+            status: $courier->status,
             vehicle_type: $vehicleType?->value,
             vehicle_type_label: $vehicleType === null ? null : __($vehicleType->labelKey()),
             active: $courier->active,
             notes: $courier->notes,
             meta: $courier->meta,
-            updated_at: $courier->updated_at?->toDateTimeString(),
+            created_at: $courier->created_at?->toDateTimeString(),
         );
     }
 }

@@ -51,7 +51,7 @@ it('pickup orderhez nem rendelheto futar', function (): void {
 
     $this->actingAs($admin)
         ->post("/admin/orders/{$order->id}/delivery/assign", ['courier_id' => $courier->id])
-        ->assertSessionHas('error');
+        ->assertSessionHasErrors('courier_id');
 
     expect($order->refresh()->courier_id)->toBeNull();
 });
@@ -63,7 +63,7 @@ it('inactive courier nem rendelheto', function (): void {
 
     $this->actingAs($admin)
         ->post("/admin/orders/{$order->id}/delivery/assign", ['courier_id' => $courier->id])
-        ->assertSessionHas('error');
+        ->assertSessionHasErrors('courier_id');
 
     expect($order->refresh()->courier_id)->toBeNull()
         ->and($order->delivery_status)->toBe(DeliveryStatus::PENDING->value);

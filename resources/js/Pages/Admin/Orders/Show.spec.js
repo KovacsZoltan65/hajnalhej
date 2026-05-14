@@ -89,6 +89,10 @@ vi.mock("primevue/textarea", () => ({
 }));
 
 const stubs = {
+    CourierAssignmentCard: {
+        props: ["order", "couriers", "canAssign"],
+        template: "<section>courier assignment card</section>",
+    },
     OrderFulfillmentBadge: { props: ["method", "label"], template: "<span>{{ label || method }}</span>" },
     OrderStatusBadge: { props: ["status"], template: "<span>{{ status }}</span>" },
     SectionTitle: {

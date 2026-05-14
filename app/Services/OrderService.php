@@ -4,12 +4,16 @@ namespace App\Services;
 
 use App\Data\Orders\OrderIndexData;
 use App\Data\Orders\OrderStatusUpdateData;
+use App\Enums\Delivery\DeliveryStatus;
+use App\Enums\Orders\FulfillmentMethod;
+use App\Models\Courier;
 use App\Models\Order;
 use App\Models\User;
 use App\Repositories\OrderRepository;
 use App\Services\Audit\OrderAuditService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 class OrderService
@@ -98,6 +102,55 @@ class OrderService
         return $updated;
     }
 
+    public function assignCourier(Order $order, Courier $courier, ?User $actor = null): Order
+    {
+        return DB::transaction(function () use ($order, $courier, $actor): Order {
+            $order->refresh()->load('courier');
+            $courier->refresh();
+
+            if ($order->fulfillment_method !== FulfillmentMethod::DELIVERY->value) {
+                throw new RuntimeException(__('delivery.errors.only_delivery_orders'));
+            }
+
+            if (in_array($order->status, [Order::STATUS_COMPLETED, Order::STATUS_CANCELLED], true)) {
+                throw new RuntimeException(__('delivery.errors.cannot_assign'));
+            }
+
+            if (! $this->deliveryStatus($order)->canAssignCourier()) {
+                throw new RuntimeException(__('delivery.errors.cannot_assign'));
+            }
+
+            if (! $courier->active || $courier->status !== Courier::STATUS_ACTIVE) {
+                throw new RuntimeException(__('delivery.errors.inactive_courier'));
+            }
+
+            $previousCourier = $order->courier;
+
+            $updated = $this->repository->update($order, [
+                'courier_id' => $courier->id,
+                'delivery_status' => DeliveryStatus::ASSIGNED->value,
+                'failed_delivery_reason' => null,
+            ])->load('courier');
+
+            activity('orders')
+                ->event('order.courier_assigned')
+                ->performedOn($updated)
+                ->causedBy($actor)
+                ->withProperties([
+                    'order_id' => $updated->id,
+                    'order_number' => $updated->order_number,
+                    'previous_courier_id' => $previousCourier?->id,
+                    'previous_courier_name' => $previousCourier?->name,
+                    'new_courier_id' => $courier->id,
+                    'new_courier_name' => $courier->name,
+                    'user_id' => $actor?->id,
+                ])
+                ->log('Courier assigned to order');
+
+            return $updated;
+        });
+    }
+
     /**
      * @param  array<int, array<string, mixed>>  $lineSnapshots
      * @return array<string, mixed>
@@ -164,5 +217,14 @@ class OrderService
         $normalized = trim((string) $value);
 
         return $normalized === '' ? null : $normalized;
+    }
+
+    private function deliveryStatus(Order $order): DeliveryStatus
+    {
+        if ($order->delivery_status === null) {
+            return DeliveryStatus::PENDING;
+        }
+
+        return DeliveryStatus::from($order->delivery_status);
     }
 }

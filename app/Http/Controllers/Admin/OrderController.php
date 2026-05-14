@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Data\Couriers\CourierListItemData;
-use App\Data\Orders\DeliveryAssignData;
 use App\Data\Orders\DeliveryFailedData;
 use App\Data\Orders\OrderDetailData;
 use App\Data\Orders\OrderIndexData;
@@ -15,6 +14,7 @@ use App\Http\Requests\Admin\Order\Delivery\AssignCourierRequest;
 use App\Http\Requests\Admin\Order\Delivery\MarkDeliveryFailedRequest;
 use App\Http\Requests\Admin\OrderIndexRequest;
 use App\Http\Requests\Admin\UpdateOrderStatusRequest;
+use App\Models\Courier;
 use App\Models\Order;
 use App\Services\CourierService;
 use App\Services\DeliveryService;
@@ -55,7 +55,7 @@ class OrderController extends Controller
     {
         $this->authorize('view', $order);
 
-        $order->load(['items.product:id,name,slug', 'pickupBranch:id,name,code,type,address', 'courier:id,name,phone,email,vehicle_type']);
+        $order->load(['items.product:id,name,slug', 'pickupBranch:id,name,code,type,address', 'courier:id,name,phone,email,status,vehicle_type,active']);
 
         return InertiaPage::ADMIN_ORDERS_SHOW->render([
             'order' => OrderDetailData::fromModel($order)->toArray(),
@@ -66,6 +66,9 @@ class OrderController extends Controller
                 ->values()
                 ->all(),
             'deliveryStatusOptions' => DeliveryStatus::options(),
+            'can' => [
+                'assignCourier' => request()->user()?->can(PermissionRegistry::ORDERS_ASSIGN_COURIER) ?? false,
+            ],
         ]);
     }
 
@@ -84,10 +87,14 @@ class OrderController extends Controller
 
     public function assignCourier(AssignCourierRequest $request, Order $order): RedirectResponse
     {
-        $this->authorize('update', $order);
+        $this->authorize('assignCourier', $order);
 
         try {
-            $this->deliveryService->assignCourier($order, DeliveryAssignData::from($request->validated()));
+            $this->service->assignCourier(
+                $order,
+                Courier::query()->findOrFail($request->integer('courier_id')),
+                $request->user(),
+            );
         } catch (RuntimeException $exception) {
             return back()->with('error', $exception->getMessage());
         }
